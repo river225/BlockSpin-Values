@@ -19,22 +19,11 @@ a { color: #fff; text-decoration: none; }
 .sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
 .sections-nav button.active { background: #5a5a5a; }
 
-/* Cards area - 2 per row */
-.sections {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
+/* Cards area */
+.sections { flex: 1; display: flex; flex-direction: column; gap: 16px; }
 
 /* Card */
-.card {
-  display: flex;
-  gap: 12px;
-  border: 1px solid #4a4a4a;
-  border-radius: 12px;
-  padding: 12px;
-  background: #3a3a3a;
-}
+.card { display: flex; gap: 16px; border: 1px solid #4a4a4a; border-radius: 12px; padding: 12px; background: #3a3a3a; }
 .card img { width: 150px; height: 150px; object-fit: contain; border-radius: 8px; background: #2e2e2e; }
 .card-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .card-info h3 { margin: 0; font-size: 1.1rem; }
@@ -47,11 +36,13 @@ a { color: #fff; text-decoration: none; }
 .tax-calculator #taxResult { font-weight: bold; margin-bottom: 8px; }
 .tax-explanation { font-size: 0.85rem; opacity: 0.8; }
 
+/* Section gap tweak */
+#omega { margin-bottom: 12px; } /* tiny gap between Omega and Cars */
+
 /* Responsive */
 @media (max-width: 900px) {
   .main-container { flex-direction: column; }
   .sections-nav, .tax-calculator { width: 100%; position: relative; }
-  .sections { grid-template-columns: 1fr; }
   .card { flex-direction: column; align-items: center; }
   .card img { width: 100%; height: auto; }
   .card-info { text-align: center; }
