@@ -29,7 +29,11 @@
     }
 
     .tiktok-btn {
-      background-color: #1dcaff;
+      background-color: #0eaedc; /* less bright blue */
+    }
+
+    .youtube-btn {
+      background-color: #ff0000; /* YouTube red */
     }
 
     /* Header styling */
@@ -52,7 +56,7 @@
     .search-container {
       width: 100%;
       display: flex;
-      justify-content: center; /* keeps the input centered */
+      justify-content: center;
       margin: 10px 0 20px 0;
     }
 
@@ -62,7 +66,7 @@
       font-size: 1rem;
       border-radius: 8px;
       border: 1px solid #ccc;
-      text-align: left;   /* ✅ align text to the left */
+      text-align: left;
     }
 
     /* Main layout */
@@ -94,7 +98,7 @@
 <body>
   <!-- Header -->
   <header class="site-header">
-    <h1>Rivers Blockspin Values</h1>
+    <h1>Rivers Blockspin Trading Values</h1>
     <p>A value list dedicated to Blockspin, operated and updated by top traders in Blockspin.</p>
     <p><em>(Beta) report bugs in our Discord server</em></p>
   </header>
@@ -114,9 +118,9 @@
     <!-- Tax calculator -->
     <aside class="tax-calculator">
       <h2>Tax Calculator</h2>
-      <input type="number" id="taxInput" placeholder="Enter Amount..." />
+      <input type="number" id="taxInput" placeholder="Amount to give" />
       <div id="taxResult">Amount to withdraw: 0</div>
-      <p class="tax-explanation">Enter the amount you want the other person to receive. The calculator will show how much to withdraw to cover the tax. IMPORTANT; for trades above 100k, you take the same money out.</p>
+      <p class="tax-explanation">Enter the amount you want the other person to receive. The calculator will show how much to withdraw to cover the tax. IMPORTANT: for trades above 100k, you take the same money out.</p>
     </aside>
   </div>
 
@@ -124,6 +128,8 @@
   <div class="bottom-buttons">
     <a class="btn discord-btn" href="https://discord.gg/bU2Y2wA8Sk" target="_blank" rel="noopener">Join Our Discord</a>
     <a class="btn tiktok-btn" href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" target="_blank" rel="noopener">Check Out Rivers TikTok</a>
+    <a class="btn youtube-btn" href="YOUR_YOUTUBE_CHANNEL_LINK_HERE" target="_blank" rel="noopener">Check Out Rivers Youtube</a>
+    <!-- Replace YOUR_YOUTUBE_CHANNEL_LINK_HERE with your YouTube channel URL -->
   </div>
 
   <script src="script.js"></script>
