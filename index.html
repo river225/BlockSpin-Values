@@ -1,137 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rivers Blockspin Trading Values</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Floating buttons at the bottom */
-    .bottom-buttons {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 15px;
-    }
-
-    .bottom-buttons .btn {
-      padding: 12px 20px;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 8px;
-      color: white;
-    }
-
-    .discord-btn {
-      background-color: #5865f2;
-    }
-
-    .tiktok-btn {
-      background-color: #0eaedc; /* less bright blue */
-    }
-
-    .youtube-btn {
-      background-color: #ff0000; /* YouTube red */
-    }
-
-    /* Header styling */
-    .site-header {
-      text-align: center;
-      padding: 20px 20px 10px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .site-header h1 {
-      font-size: 4rem;
-      margin-bottom: 10px;
-      color: white;
-    }
-
-    /* Search bar */
-    .search-container {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      margin: 10px 0 20px 0;
-    }
-
-    .search-container input {
-      width: 300px;
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      text-align: left;
-    }
-
-    /* Main layout */
-    .main-container {
-      display: flex;
-      gap: 20px;
-      padding: 0 20px 40px 20px;
-    }
-
-    .sections-nav {
-      flex: 1;
-    }
-
-    .sections {
-      flex: 3;
-    }
-
-    /* Tax calculator */
-    .tax-calculator {
-      flex: 1;
-      padding: 15px;
-      max-width: 250px;
-      position: sticky;
-      top: 10px;
-      height: fit-content;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Site</title>
+<link rel="stylesheet" href="styles.css"> <!-- Your CSS file -->
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header">
-    <h1>Rivers Blockspin Trading Values</h1>
-    <p>A value list dedicated to Blockspin, operated and updated by top traders in Blockspin.</p>
-    <p><em>(Beta) report bugs in our Discord server</em></p>
-  </header>
 
-  <!-- Search bar -->
-  <div class="search-container">
-    <input id="search" type="text" placeholder="Search items…" aria-label="Search items" />
+<!-- Header -->
+<header class="site-header">
+  <div class="header-top">
+    <h1>Your Site</h1>
+    <div class="header-buttons">
+      <a href="#" class="btn">Login</a>
+      <a href="#" class="btn">Sign Up</a>
+    </div>
+  </div>
+</header>
+
+<!-- Search bar -->
+<div class="search-container">
+  <input type="text" id="search" placeholder="Search...">
+</div>
+
+<!-- Main layout -->
+<div class="main-container">
+
+  <!-- Sections navigation -->
+  <nav class="sections-nav">
+    <button class="active">Section 1</button>
+    <button>Section 2</button>
+    <button>Section 3</button>
+  </nav>
+
+  <!-- Sections -->
+  <div class="sections">
+
+    <!-- Example section with cards -->
+    <div class="section">
+      <h2>Section 1</h2>
+      <div class="cards">
+        <div class="card">
+          <img src="https://via.placeholder.com/150" alt="Item 1">
+          <div class="card-info">
+            <span class="badge">New</span>
+            <h3>Item 1</h3>
+            <p>Item 1 description here.</p>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://via.placeholder.com/150" alt="Item 2">
+          <div class="card-info">
+            <span class="badge">Hot</span>
+            <h3>Item 2</h3>
+            <p>Item 2 description here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add more sections as needed -->
+    
   </div>
 
-  <div class="main-container">
-    <!-- Section navigation -->
-    <nav class="sections-nav" id="sections-nav"></nav>
+  <!-- Tax calculator -->
+  <aside class="tax-calculator">
+    <input type="number" id="price" placeholder="Price">
+    <input type="number" id="tax" placeholder="Tax %">
+    <div id="taxResult">Total: 0</div>
+    <p class="tax-explanation">Enter your price and tax percentage.</p>
+  </aside>
 
-    <!-- Main content area -->
-    <main id="sections" class="sections"></main>
+</div>
 
-    <!-- Tax calculator -->
-    <aside class="tax-calculator">
-      <h2>Tax Calculator</h2>
-      <input type="number" id="taxInput" placeholder="Amount to give" />
-      <div id="taxResult">Amount to withdraw: 0</div>
-      <p class="tax-explanation">Enter the amount you want the other person to receive. The calculator will show how much to withdraw to cover the tax. IMPORTANT: for trades above 100k, you take the same money out.</p>
-    </aside>
-  </div>
+<!-- Floating buttons at bottom -->
+<div class="bottom-buttons">
+  <a href="https://discord.com/yourserver" class="btn discord-btn" target="_blank">Join Discord</a>
+  <a href="https://www.tiktok.com/@yourprofile" class="btn tiktok-btn" target="_blank">Follow TikTok</a>
+  <!-- Replace YOUR_YOUTUBE_CHANNEL_URL below with your actual YouTube channel link -->
+  <a href="YOUR_YOUTUBE_CHANNEL_URL" class="btn youtube-btn" target="_blank">Subscribe YouTube</a>
+</div>
 
-  <!-- Floating buttons at the bottom -->
-  <div class="bottom-buttons">
-    <a class="btn discord-btn" href="https://discord.gg/bU2Y2wA8Sk" target="_blank" rel="noopener">Join Our Discord</a>
-    <a class="btn tiktok-btn" href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" target="_blank" rel="noopener">Check Out Rivers TikTok</a>
-    <a class="btn youtube-btn" href="YOUR_YOUTUBE_CHANNEL_LINK_HERE" target="_blank" rel="noopener">Check Out Rivers Youtube</a>
-    <!-- Replace YOUR_YOUTUBE_CHANNEL_LINK_HERE with your YouTube channel URL -->
-  </div>
+<script>
+// Optional: You can add interactivity here
+</script>
 
-  <script src="script.js"></script>
 </body>
 </html>
