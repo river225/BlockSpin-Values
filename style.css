@@ -23,12 +23,15 @@ a { color: #fff; text-decoration: none; }
 .sections { flex: 1; display: flex; flex-direction: column; gap: 16px; }
 
 /* Card */
-.card { display: flex; gap: 16px; border: 1px solid #4a4a4a; border-radius: 12px; padding: 12px; background: #3a3a3a; }
+.card { display: flex; gap: 16px; border: 1px solid #4a4a4a; border-radius: 12px; padding: 12px; background: #3a3a3a; flex: 1 1 calc(50% - 16px); margin-bottom: 16px; } 
 .card img { width: 150px; height: 150px; object-fit: contain; border-radius: 8px; background: #2e2e2e; }
 .card-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .card-info h3 { margin: 0; font-size: 1.1rem; }
 .card-info .badge { display: inline-block; padding: 2px 6px; border-radius: 999px; border: 1px solid #5a5a5a; background: #2f2f2f; font-size: 0.8rem; margin-bottom: 4px; }
 .hidden { display: none !important; }
+
+/* Section-specific spacing */
+#omega { margin-bottom: 40px; } /* Gap before Cars section */
 
 /* Tax calculator */
 .tax-calculator { width: 240px; padding: 16px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 12px; position: sticky; top: 16px; height: fit-content; }
@@ -36,14 +39,14 @@ a { color: #fff; text-decoration: none; }
 .tax-calculator #taxResult { font-weight: bold; margin-bottom: 8px; }
 .tax-explanation { font-size: 0.85rem; opacity: 0.8; }
 
-/* Section gap tweak */
-#omega { margin-bottom: 12px; } /* tiny gap between Omega and Cars */
-
 /* Responsive */
 @media (max-width: 900px) {
   .main-container { flex-direction: column; }
   .sections-nav, .tax-calculator { width: 100%; position: relative; }
-  .card { flex-direction: column; align-items: center; }
+  .card { flex-direction: column; align-items: center; width: 100%; }
   .card img { width: 100%; height: auto; }
   .card-info { text-align: center; }
 }
+
+/* Card container for two-per-row layout */
+.cards { display: flex; flex-wrap: wrap; gap: 16px; }
