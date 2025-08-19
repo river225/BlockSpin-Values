@@ -8,7 +8,7 @@ const SECTION_NAMES = [
   "Omega",
   "Misc",
   "Cars",
-  "Car Customisation"
+  // "Car Customisation"
 ];
 
 // === FETCH HELPERS ===
@@ -144,5 +144,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Show first section by default
-  if (SECTION_NAMES.length > 0) showSection(SECTION_NAMES[0]);
+  // if (SECTION_NAMES.length > 0) showSection(SECTION_NAMES[0]);
 });
