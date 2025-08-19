@@ -1,85 +1,117 @@
-/* Base */
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #2c2c2c; color: #fff; }
-a { color: #fff; text-decoration: none; }
+/* --- General Styling --- */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
 
-/* Header */
-.site-header { text-align: left; max-width: 1100px; margin: 0 auto 16px; padding: 16px; }
-.header-top { display: flex; align-items: center; justify-content: space-between; }
-.header-buttons { display: flex; gap: 10px; }
-.btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #4a4a4a; background: #3a3a3a; }
+h1, h2 {
+  text-align: center;
+  margin: 20px 0;
+}
 
-/* Search bar */
-.search-container { max-width: 1100px; margin: 0 auto 24px; text-align: center; }
-#search { width: 90%; max-width: 500px; padding: 12px; border-radius: 10px; border: 1px solid #4a4a4a; background: #3a3a3a; color: #fff; }
+/* --- Sections Navigation --- */
+.sections-nav {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
 
-/* Main layout */
-.main-container { display: flex; max-width: 1400px; margin: 0 auto; gap: 20px; }
-.sections-nav { width: 200px; padding: 8px; border-right: 1px solid #4a4a4a; position: sticky; top: 16px; align-self: flex-start; }
-.sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
-.sections-nav button.active { background: #5a5a5a; }
+.sections-nav button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  background: #333;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
 
-/* Sections area */
-.sections { flex: 1; display: flex; flex-direction: column; gap: 24px; }
+.sections-nav button.active,
+.sections-nav button:hover {
+  background: #555;
+}
 
-/* Cards container */
-.cards { display: flex; flex-wrap: wrap; gap: 16px; }
+/* --- Sections & Cards --- */
+.section {
+  display: none;
+  padding: 0 20px 60px 20px; /* extra bottom padding for floating buttons */
+}
 
-/* Card */
-.card { flex: 1 1 calc(50% - 16px); display: flex; gap: 16px; border: 1px solid #4a4a4a; border-radius: 12px; padding: 12px; background: #3a3a3a; }
-.card img { width: 150px; height: 150px; object-fit: contain; border-radius: 8px; background: #2e2e2e; }
-.card-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-.card-info h3 { margin: 0; font-size: 1.1rem; }
-.card-info .badge { display: inline-block; padding: 2px 6px; border-radius: 999px; border: 1px solid #5a5a5a; background: #2f2f2f; font-size: 0.8rem; margin-bottom: 4px; }
-.hidden { display: none !important; }
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
 
-/* Tax calculator */
-.tax-calculator { width: 240px; padding: 16px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 12px; position: sticky; top: 16px; height: fit-content; }
-.tax-calculator input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #4a4a4a; background: #2e2e2e; color: #fff; }
-.tax-calculator #taxResult { font-weight: bold; margin-bottom: 8px; }
-.tax-explanation { font-size: 0.85rem; opacity: 0.8; }
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  min-width: 200px;
+  max-width: 250px;
+  text-align: center;
+}
 
-/* Floating buttons at the bottom */
+/* --- Search Input --- */
+#search {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px;
+  width: 250px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* --- Tax Calculator --- */
+.tax-calculator {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.tax-calculator input {
+  padding: 8px;
+  margin: 5px;
+  width: 100px;
+}
+
+/* --- Floating Bottom Buttons --- */
 .bottom-buttons {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
+  gap: 10px;
   z-index: 1000;
 }
 
-.bottom-buttons .btn {
-  padding: 12px 20px;
-  font-weight: bold;
-  border-radius: 8px;
-  color: #fff;
-  text-align: center;
-  min-width: 180px;
-  transition: background 0.2s;
+.bottom-buttons button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 5px;
+  background: #333;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
 }
 
-.discord-btn { background-color: #5865f2; border: 1px solid #4a4a4a; }
-.tiktok-btn { background-color: #0eaedc; border: 1px solid #4a4a4a; } /* less bright blue */
-.youtube-btn { background-color: #ff0000; border: 1px solid #4a4a4a; } /* YouTube red */
-
-.bottom-buttons .btn:hover { opacity: 0.9; cursor: pointer; }
-
-/* Section spacing */
-.section { margin-bottom: 40px; }
-
-/* Responsive */
-@media (max-width: 900px) {
-  .main-container { flex-direction: column; }
-  .sections-nav, .tax-calculator { width: 100%; position: relative; }
-  .card { flex-direction: column; width: 100%; }
-  .card img { width: 100%; height: auto; }
-  .card-info { text-align: center; }
+.bottom-buttons button:hover {
+  background: #555;
 }
 
-@media (max-width: 500px) {
-  .bottom-buttons .btn { min-width: 140px; padding: 10px; font-size: 0.9rem; }
+/* --- YouTube Button Red --- */
+.bottom-buttons button.youtube {
+  background: #FF0000;
+}
+
+.bottom-buttons button.youtube:hover {
+  background: #cc0000;
 }
