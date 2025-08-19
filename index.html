@@ -1,131 +1,127 @@
- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rivers Blockspin Values</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Floating buttons at the bottom */
-    .bottom-buttons {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 15px;
-    }
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+<title>Rivers Blockspin Values</title> 
+<link rel="stylesheet" href="style.css" /> 
+<style> 
+/* Floating buttons at the bottom */ 
+.bottom-buttons { 
+    position: fixed; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    display: flex; 
+    gap: 15px; 
+} 
+.bottom-buttons .btn { 
+    padding: 12px 20px; 
+    text-decoration: none; 
+    font-weight: bold; 
+    border-radius: 8px; 
+    color: white; 
+} 
+.discord-btn { 
+    background-color: #5865f2; 
+} 
+.tiktok-btn { 
+    background-color: #1dcaff; 
+} 
 
-    .bottom-buttons .btn {
-      padding: 12px 20px;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 8px;
-      color: white;
-    }
+/* Header styling */ 
+.site-header { 
+    text-align: center; 
+    padding: 20px 20px 10px 20px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+} 
+.site-header h1 { 
+    font-size: 4rem; 
+    margin-bottom: 10px; 
+    color: white; 
+} 
 
-    .discord-btn {
-      background-color: #5865f2;
-    }
+/* Search bar */ 
+.search-container { 
+    width: 100%; 
+    display: flex; 
+    justify-content: center; 
+    margin: 10px 0 20px 0; 
+} 
+.search-container input { 
+    width: 300px; 
+    padding: 10px; 
+    font-size: 1rem; 
+    border-radius: 8px; 
+    border: 1px solid #ccc; 
+    text-align: left; 
+} 
 
-    .tiktok-btn {
-      background-color: #1dcaff;
-    }
+/* Main layout */ 
+.main-container { 
+    display: flex; 
+    gap: 20px; 
+    padding: 0 20px 40px 20px; 
+} 
+.sections-nav { 
+    flex: 1; 
+} 
+.sections { 
+    flex: 3; 
+} 
 
-    /* Header styling */
-    .site-header {
-      text-align: center;
-      padding: 20px 20px 10px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+/* Tax calculator */ 
+.tax-calculator { 
+    flex: 1; 
+    padding: 15px; 
+    max-width: 250px; 
+    position: sticky; 
+    top: 10px; 
+    height: fit-content; 
+} 
+</style> 
+</head> 
+<body> 
 
-    .site-header h1 {
-      font-size: 4rem;
-      margin-bottom: 10px;
-      color: white;
-    }
+<!-- Header --> 
+<header class="site-header"> 
+<h1>Rivers Blockspin Values</h1> 
+<p>A value list dedicated to Blockspin, operated and updated by top traders in Blockspin.</p> 
+<p><em>(Beta) report bugs in our Discord server</em></p> 
+</header> 
 
-    /* Search bar */
-    .search-container {
-      width: 100%;
-      display: flex;
-      justify-content: center; /* keeps the input centered */
-      margin: 10px 0 20px 0;
-    }
+<!-- Search bar --> 
+<div class="search-container"> 
+<input id="search" type="text" placeholder="Search items…" aria-label="Search items" /> 
+</div> 
 
-    .search-container input {
-      width: 300px;
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      text-align: left;   /* ✅ align text to the left */
-    }
+<div class="main-container"> 
 
-    /* Main layout */
-    .main-container {
-      display: flex;
-      gap: 20px;
-      padding: 0 20px 40px 20px;
-    }
+    <!-- Section navigation --> 
+    <nav class="sections-nav" id="sections-nav"></nav> 
 
-    .sections-nav {
-      flex: 1;
-    }
+    <!-- Main content area --> 
+    <main id="sections" class="sections"></main> 
 
-    .sections {
-      flex: 3;
-    }
+    <!-- Tax calculator --> 
+    <aside class="tax-calculator"> 
+        <h2>Tax Calculator</h2> 
+        <input type="number" id="taxInput" placeholder="Amount recipient should receive" /> 
+        <div id="taxResult">Amount to withdraw: 0</div> 
+        <p class="tax-explanation">Enter the amount you want the other person to receive. The calculator will show how much to withdraw to cover the tax.</p> 
+    </aside> 
 
-    /* Tax calculator */
-    .tax-calculator {
-      flex: 1;
-      padding: 15px;
-      max-width: 250px;
-      position: sticky;
-      top: 10px;
-      height: fit-content;
-    }
-  </style>
-</head>
-<body>
-  <!-- Header -->
-  <header class="site-header">
-    <h1>Rivers Blockspin Values</h1>
-    <p>A value list dedicated to Blockspin, operated and updated by top traders in Blockspin.</p>
-    <p><em>(Beta) report bugs in our Discord server</em></p>
-  </header>
+</div> 
 
-  <!-- Search bar -->
-  <div class="search-container">
-    <input id="search" type="text" placeholder="Search items…" aria-label="Search items" />
-  </div>
+<!-- Floating buttons at the bottom --> 
+<div class="bottom-buttons"> 
+<a class="btn discord-btn" href="https://discord.gg/bU2Y2wA8Sk" target="_blank" rel="noopener">Join Our Discord</a> 
+<a class="btn tiktok-btn" href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" target="_blank" rel="noopener">Check Out Rivers TikTok</a> 
+</div> 
 
-  <div class="main-container">
-    <!-- Section navigation -->
-    <nav class="sections-nav" id="sections-nav"></nav>
-
-    <!-- Main content area -->
-    <main id="sections" class="sections"></main>
-
-    <!-- Tax calculator -->
-    <aside class="tax-calculator">
-      <h2>Tax Calculator</h2>
-      <input type="number" id="taxInput" placeholder="Amount recipient should receive" />
-      <div id="taxResult">Amount to withdraw: 0</div>
-      <p class="tax-explanation">Enter the amount you want the other person to receive. The calculator will show how much to withdraw to cover the tax.</p>
-    </aside>
-  </div>
-
-  <!-- Floating buttons at the bottom -->
-  <div class="bottom-buttons">
-    <a class="btn discord-btn" href="https://discord.gg/bU2Y2wA8Sk" target="_blank" rel="noopener">Join Our Discord</a>
-    <a class="btn tiktok-btn" href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" target="_blank" rel="noopener">Check Out Rivers TikTok</a>
-  </div>
-
-  <script src="script.js"></script>
-</body>
+<script src="script.js"></script> 
+</body> 
 </html>

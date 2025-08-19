@@ -66,6 +66,8 @@ function createCard(item) {
 }
 
 function renderSection(title, items) {
+  if (!items || items.length === 0) return;
+
   const html = `
     <section class="section" id="${slugify(title)}">
       <h2>${title}</h2>
@@ -138,7 +140,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   for (const sec of SECTION_NAMES) {
     const items = await fetchSheet(sec);
-    console.log(sec, items.length);
     renderSection(sec, items);
   }
 
