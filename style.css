@@ -39,6 +39,35 @@ a { color: #fff; text-decoration: none; }
 .tax-calculator #taxResult { font-weight: bold; margin-bottom: 8px; }
 .tax-explanation { font-size: 0.85rem; opacity: 0.8; }
 
+/* Floating buttons at the bottom */
+.bottom-buttons {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.bottom-buttons .btn {
+  padding: 12px 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  color: #fff;
+  text-align: center;
+  min-width: 180px;
+  transition: background 0.2s;
+}
+
+.discord-btn { background-color: #5865f2; border: 1px solid #4a4a4a; }
+.tiktok-btn { background-color: #0eaedc; border: 1px solid #4a4a4a; } /* less bright blue */
+.youtube-btn { background-color: #ff0000; border: 1px solid #4a4a4a; } /* YouTube red */
+
+.bottom-buttons .btn:hover { opacity: 0.9; cursor: pointer; }
+
 /* Section spacing */
 .section { margin-bottom: 40px; }
 
@@ -49,4 +78,8 @@ a { color: #fff; text-decoration: none; }
   .card { flex-direction: column; width: 100%; }
   .card img { width: 100%; height: auto; }
   .card-info { text-align: center; }
+}
+
+@media (max-width: 500px) {
+  .bottom-buttons .btn { min-width: 140px; padding: 10px; font-size: 0.9rem; }
 }
