@@ -66,7 +66,6 @@ function createCard(item) {
 }
 
 function renderSection(title, items) {
-  if (!items || items.length === 0) return;
   const html = `
     <section class="section" id="${slugify(title)}">
       <h2>${title}</h2>
@@ -109,12 +108,6 @@ function initSearch() {
     document.querySelectorAll(".card").forEach(card => {
       const name = card.dataset.name.toLowerCase();
       card.classList.toggle("hidden", !name.includes(val));
-    });
-
-    // Show sections with at least one visible card
-    document.querySelectorAll(".section").forEach(section => {
-      const visibleCards = section.querySelectorAll(".card:not(.hidden)");
-      section.style.display = visibleCards.length ? "block" : "none";
     });
   });
 }
