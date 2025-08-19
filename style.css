@@ -1,265 +1,52 @@
 /* Base */
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: #2c2c2c;
-  color: #fff;
-}
-
-a {
-  color: #fff;
-  text-decoration: none;
-}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #2c2c2c; color: #fff; }
+a { color: #fff; text-decoration: none; }
 
 /* Header */
-.site-header {
-  text-align: left;
-  max-width: 1100px;
-  margin: 0 auto 16px;
-  padding: 16px;
-}
-
-.header-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.header-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #4a4a4a;
-  background: #3a3a3a;
-}
+.site-header { text-align: left; max-width: 1100px; margin: 0 auto 16px; padding: 16px; }
+.header-top { display: flex; align-items: center; justify-content: space-between; }
+.header-buttons { display: flex; gap: 10px; }
+.btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #4a4a4a; background: #3a3a3a; }
 
 /* Search bar */
-.search-container {
-  max-width: 1100px;
-  margin: 0 auto 24px;
-  text-align: center;
-}
-
-#search {
-  width: 90%;
-  max-width: 500px;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #4a4a4a;
-  background: #3a3a3a;
-  color: #fff;
-}
+.search-container { max-width: 1100px; margin: 0 auto 24px; text-align: center; }
+#search { width: 90%; max-width: 500px; padding: 12px; border-radius: 10px; border: 1px solid #4a4a4a; background: #3a3a3a; color: #fff; }
 
 /* Main layout */
-.main-container {
-  display: flex;
-  max-width: 1400px;
-  margin: 0 auto;
-  gap: 20px;
-}
+.main-container { display: flex; max-width: 1400px; margin: 0 auto; gap: 20px; }
+.sections-nav { width: 200px; padding: 8px; border-right: 1px solid #4a4a4a; position: sticky; top: 16px; align-self: flex-start; }
+.sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
+.sections-nav button.active { background: #5a5a5a; }
 
-.sections-nav {
-  width: 200px;
-  padding: 8px;
-  border-right: 1px solid #4a4a4a;
-  position: sticky;
-  top: 16px;
-  align-self: flex-start;
-}
-
-.sections-nav button {
-  display: block;
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  background: #3a3a3a;
-  border: 1px solid #4a4a4a;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #fff;
-  text-align: left;
-}
-
-.sections-nav button.active {
-  background: #5a5a5a;
-}
-
-/* Sections area */
-.sections {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-/* Cards container */
-.cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
+/* Cards area */
+.sections { flex: 1; display: flex; flex-direction: column; gap: 16px; }
 
 /* Card */
-.card {
-  flex: 1 1 calc(50% - 16px);
-  display: flex;
-  gap: 16px;
-  border: 1px solid #4a4a4a;
-  border-radius: 12px;
-  padding: 12px;
-  background: #3a3a3a;
-}
+.card { display: flex; gap: 16px; border: 1px solid #4a4a4a; border-radius: 12px; padding: 12px; background: #3a3a3a; flex: 1 1 calc(50% - 16px); margin-bottom: 16px; } 
+.card img { width: 150px; height: 150px; object-fit: contain; border-radius: 8px; background: #2e2e2e; }
+.card-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.card-info h3 { margin: 0; font-size: 1.1rem; }
+.card-info .badge { display: inline-block; padding: 2px 6px; border-radius: 999px; border: 1px solid #5a5a5a; background: #2f2f2f; font-size: 0.8rem; margin-bottom: 4px; }
+.hidden { display: none !important; }
 
-.card img {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  border-radius: 8px;
-  background: #2e2e2e;
-}
-
-.card-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.card-info h3 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.card-info .badge {
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 999px;
-  border: 1px solid #5a5a5a;
-  background: #2f2f2f;
-  font-size: 0.8rem;
-  margin-bottom: 4px;
-}
-
-.hidden {
-  display: none !important;
-}
+/* Section-specific spacing */
+#omega { margin-bottom: 40px; } /* Gap before Cars section */
 
 /* Tax calculator */
-.tax-calculator {
-  width: 240px;
-  padding: 16px;
-  background: #3a3a3a;
-  border: 1px solid #4a4a4a;
-  border-radius: 12px;
-  position: sticky;
-  top: 16px;
-  height: fit-content;
-}
-
-.tax-calculator input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 6px;
-  border: 1px solid #4a4a4a;
-  background: #2e2e2e;
-  color: #fff;
-}
-
-.tax-calculator #taxResult {
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.tax-explanation {
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-
-/* Floating buttons at the bottom */
-.bottom-buttons {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.bottom-buttons .btn {
-  padding: 12px 20px;
-  font-weight: bold;
-  border-radius: 8px;
-  color: #fff;
-  text-align: center;
-  min-width: 180px;
-  transition: background 0.2s;
-}
-
-.discord-btn {
-  background-color: #5865f2;
-  border: 1px solid #4a4a4a;
-}
-
-.tiktok-btn {
-  background-color: #0eaedc;
-  border: 1px solid #4a4a4a;
-}
-
-.youtube-btn {
-  background-color: #ff0000;
-  border: 1px solid #4a4a4a;
-}
-
-.bottom-buttons .btn:hover {
-  opacity: 0.9;
-  cursor: pointer;
-}
-
-/* Section spacing */
-.section {
-  margin-bottom: 40px;
-}
+.tax-calculator { width: 240px; padding: 16px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 12px; position: sticky; top: 16px; height: fit-content; }
+.tax-calculator input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #4a4a4a; background: #2e2e2e; color: #fff; }
+.tax-calculator #taxResult { font-weight: bold; margin-bottom: 8px; }
+.tax-explanation { font-size: 0.85rem; opacity: 0.8; }
 
 /* Responsive */
 @media (max-width: 900px) {
-  .main-container {
-    flex-direction: column;
-  }
-  .sections-nav,
-  .tax-calculator {
-    width: 100%;
-    position: relative;
-  }
-  .card {
-    flex-direction: column;
-    width: 100%;
-  }
-  .card img {
-    width: 100%;
-    height: auto;
-  }
-  .card-info {
-    text-align: center;
-  }
+  .main-container { flex-direction: column; }
+  .sections-nav, .tax-calculator { width: 100%; position: relative; }
+  .card { flex-direction: column; align-items: center; width: 100%; }
+  .card img { width: 100%; height: auto; }
+  .card-info { text-align: center; }
 }
 
-@media (max-width: 500px) {
-  .bottom-buttons .btn {
-    min-width: 140px;
-    padding: 10px;
-    font-size: 0.9rem;
-  }
-}
+/* Card container for two-per-row layout */
+.cards { display: flex; flex-wrap: wrap; gap: 16px; }
