@@ -17,7 +17,7 @@ a { color: #fff; text-decoration: none; }
 .main-container { display: flex; max-width: 1400px; margin: 0 auto; gap: 20px; }
 .sections-nav { width: 200px; padding: 8px; border-right: 1px solid #4a4a4a; position: sticky; top: 16px; align-self: flex-start; }
 .sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
-.sections-nav button.active { background: #5a5a5a; }
+.sections-nav button.active { background: #080b5b; }
 
 /* Sections area */
 .sections { flex: 1; display: flex; flex-direction: column; gap: 24px; }
