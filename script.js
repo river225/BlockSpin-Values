@@ -138,6 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   for (const sec of SECTION_NAMES) {
     const items = await fetchSheet(sec);
+    console.log(sec, items.length);
     renderSection(sec, items);
   }
 
