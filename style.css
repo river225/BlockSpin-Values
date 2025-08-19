@@ -17,7 +17,7 @@ a { color: #fff; text-decoration: none; }
 .main-container { display: flex; max-width: 1400px; margin: 0 auto; gap: 20px; }
 .sections-nav { width: 200px; padding: 8px; border-right: 1px solid #4a4a4a; position: sticky; top: 16px; align-self: flex-start; }
 .sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
-.sections-nav button.active { background: #080b5b; }
+.sections-nav button.active { background: #010112; }
 
 /* Sections area */
 .sections { flex: 1; display: flex; flex-direction: column; gap: 24px; }
@@ -34,7 +34,7 @@ a { color: #fff; text-decoration: none; }
 .hidden { display: none !important; }
 
 /* Tax calculator */
-.tax-calculator { width: 240px; padding: 16px; background: #3a3a3a; border: 1px solid #4a4a4a; border-radius: 12px; position: sticky; top: 16px; height: fit-content; }
+.tax-calculator { width: 240px; padding: 16px; background: #304770; border: 1px solid #4a4a4a; border-radius: 12px; position: sticky; top: 16px; height: fit-content; }
 .tax-calculator input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #4a4a4a; background: #2e2e2e; color: #fff; }
 .tax-calculator #taxResult { font-weight: bold; margin-bottom: 8px; }
 .tax-explanation { font-size: 0.85rem; opacity: 0.8; }
