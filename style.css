@@ -60,37 +60,40 @@ a { color: #fff; text-decoration: none; }
   font-weight: bold;
   z-index: 1000;
 }
-/* Black outline for card labels only */
-.card-info label, 
-.card-info .section-label, 
-.tax-calculator label {
-  text-shadow: 
-    2px 2px 0 #000,
-   -2px 2px 0 #000,
-    2px -2px 0 #000,
-   -2px -2px 0 #000;
-}
-
-/* Exclude numeric values and demand values */
-.card-info .value-number, 
-.card-info .demand, 
-.card-info .demand-number, 
-.tax-calculator #averageValue,
-.tax-calculator #afterTaxValue,
-.tax-calculator #rangedValue {
-  text-shadow: none;
-}
-/* Apply black outline to all text */
-* {
+/* Black outline for site header, bios, and calculator description */
+.site-header,
+.bio,
+.tax-explanation {
   text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
 }
 
-/* Exclude search input text */
-#search {
+/* Exclude search bars */
+#search,
+.tax-calculator input {
   text-shadow: none !important;
 }
 
-/* Exclude buttons */
-.header-buttons .btn {
+/* Exclude green floating text */
+#floating-text {
+  text-shadow: none !important;
+}
+
+/* Exclude TikTok and Discord buttons */
+.header-buttons a,
+.header-buttons button {
+  text-shadow: none !important;
+}
+
+/* Item cards: add black outline to all words */
+.card-info span,
+.card-info p,
+.card-info h3 {
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+}
+
+/* Exclude demand, demand numbers, and item names */
+.card-info .demand,
+.card-info .demand-number,
+.card-info .item-name {
   text-shadow: none !important;
 }
