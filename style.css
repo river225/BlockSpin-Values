@@ -16,8 +16,8 @@ a { color: #fff; text-decoration: none; }
 /* Main layout */
 .main-container { display: flex; max-width: 1400px; margin: 0 auto; gap: 20px; }
 .sections-nav { width: 200px; padding: 8px; border-right: 1px solid #4a4a4a; position: sticky; top: 16px; align-self: flex-start; }
-.sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #3a3a3a; border: 1px solid #100101; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
-.sections-nav button.active { background: #131315; }
+.sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #4a4a4a; border: 1px solid #100101; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
+.sections-nav button.active { background: #232324; }
 
 /* Sections area */
 .sections { flex: 1; display: flex; flex-direction: column; gap: 24px; }
@@ -26,7 +26,7 @@ a { color: #fff; text-decoration: none; }
 .cards { display: flex; flex-wrap: wrap; gap: 16px; }
 
 /* Card */
-.card { flex: 1 1 calc(50% - 16px); display: flex; gap: 16px; border: 1px solid #0b0101; border-radius: 12px; padding: 12px; background: #3a3a3a; }
+.card { flex: 1 1 calc(50% - 16px); display: flex; gap: 16px; border: 1px solid #0b0101; border-radius: 12px; padding: 12px; background: #4a4a4a; }
 .card img { width: 150px; height: 150px; object-fit: contain; border-radius: 8px; background: #2e2e2e; }
 .card-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .card-info h3 { margin: 0; font-size: 1.1rem; }
@@ -49,4 +49,14 @@ a { color: #fff; text-decoration: none; }
   .card { flex-direction: column; width: 100%; }
   .card img { width: 100%; height: auto; }
   .card-info { text-align: center; }
+}
+/* your existing styles... */
+
+#floating-text {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  color: rgb(5, 244, 5);
+  font-weight: bold;
+  z-index: 1000;
 }
