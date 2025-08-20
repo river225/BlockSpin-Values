@@ -56,7 +56,41 @@ a { color: #fff; text-decoration: none; }
   position: fixed;
   bottom: 10px;
   right: 10px;
-  color: rgb(5, 244, 5);
+  color: rgb(26, 216, 26);
   font-weight: bold;
   z-index: 1000;
+}
+/* Black outline for card labels only */
+.card-info label, 
+.card-info .section-label, 
+.tax-calculator label {
+  text-shadow: 
+    2px 2px 0 #000,
+   -2px 2px 0 #000,
+    2px -2px 0 #000,
+   -2px -2px 0 #000;
+}
+
+/* Exclude numeric values and demand values */
+.card-info .value-number, 
+.card-info .demand, 
+.card-info .demand-number, 
+.tax-calculator #averageValue,
+.tax-calculator #afterTaxValue,
+.tax-calculator #rangedValue {
+  text-shadow: none;
+}
+/* Apply black outline to all text */
+* {
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+}
+
+/* Exclude search input text */
+#search {
+  text-shadow: none !important;
+}
+
+/* Exclude buttons */
+.header-buttons .btn {
+  text-shadow: none !important;
 }
