@@ -145,4 +145,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Show first section by default
 if (SECTION_NAMES.length > 0) showSection(SECTION_NAMES[0]);
-});
+})

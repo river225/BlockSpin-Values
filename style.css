@@ -60,51 +60,23 @@ a { color: #fff; text-decoration: none; }
   font-weight: bold;
   z-index: 1000;
 }
-/* ===============================
-   SITE HEADER, BIOS, CALCULATOR BIO
-   =============================== */
-.site-header,
-.bio,
-.tax-explanation {
-  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+/* Black outline for card labels only */
+.card-info label, 
+.card-info .section-label, 
+.tax-calculator label {
+  text-shadow: 
+    2px 2px 0 #000,
+   -2px 2px 0 #000,
+    2px -2px 0 #000,
+   -2px -2px 0 #000;
 }
 
-/* Exclude search bar text */
-#search,
-.tax-calculator input {
-  text-shadow: none !important;
-}
-
-/* Exclude green floating text */
-#floating-text {
-  text-shadow: none !important;
-}
-
-/* Exclude TikTok and Discord buttons */
-.header-buttons a,
-.header-buttons button {
-  text-shadow: none !important;
-}
-
-/* ===============================
-   ITEM CARDS
-   =============================== */
-/* Add black outline to all text in item cards */
-.card-info span,
-.card-info p,
-.card-info h3,
-.card-info .average-value-number, /* Spreadsheet numbers */
-.card-info .ranged-value-number,
-.card-info .after-tax-number,
-.card-info .average-value,
-.card-info .ranged-value,
-.card-info .after-tax-value {
-  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
-}
-
-/* Exclude demand and demand numbers */
-.card-info .demand,
-.card-info .demand-number,
-.card-info .item-name {
-  text-shadow: none !important;
+/* Exclude numeric values and demand values */
+.card-info .value-number, 
+.card-info .demand, 
+.card-info .demand-number, 
+.tax-calculator #averageValue,
+.tax-calculator #afterTaxValue,
+.tax-calculator #rangedValue {
+  text-shadow: none;
 }
