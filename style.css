@@ -10,8 +10,31 @@ a { color: #fff; text-decoration: none; }
 .btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #4a4a4a; background: #3a3a3a; }
 
 /* Search bar */
-.search-container { max-width: 1100px; margin: 0 auto 24px; text-align: center; }
-#search { width: 90%; max-width: 500px; padding: 12px; border-radius: 10px; border: 1px solid #0b0101; background: #3a3a3a; color: #fff; }
+.search-container {
+  max-width: 1100px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+/* Center the search bar itself */
+.search-container {
+  width: 100%;
+  text-align: center;   /* ensures container is centered */
+  margin: 10px 0 20px 0; /* spacing above and below */
+}
+
+#search {
+  display: inline-block; /* allows margin auto to work properly */
+  margin: 0 auto;        /* centers the search bar itself */
+  width: 300px;           /* fixed width */
+  max-width: 90%;         /* responsive on mobile */
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #0b0101;
+  background: #3a3a3a;
+  color: #fff;
+}
+
 
 /* Main layout */
 .main-container { display: flex; max-width: 1400px; margin: 0 auto; gap: 20px; }
