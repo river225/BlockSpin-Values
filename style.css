@@ -249,19 +249,17 @@ a { color: #fff; text-decoration: none; }
 
 
 
-/* 📱 Mobile adjustments */
-@media (max-width: 600px) {
-  /* Move buttons up */
-  .bottom-buttons {
-    bottom: 70px; /* was 20px → now higher to leave room */
-  }
 
-  /* Adjust floating texts lower */
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  /* Move the floating texts lower */
+  #floating-text,
   #floating-text-left {
-    bottom: 50px; /* sits above green text */
+    bottom: 60px !important; /* push texts above the very bottom */
   }
 
-  #floating-text {
-    bottom: 20px; /* pinned just above screen edge */
+  /* Raise the buttons */
+  .bottom-buttons {
+    bottom: 120px !important; /* lift buttons higher so they don’t overlap */
   }
 }
