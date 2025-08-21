@@ -1,7 +1,7 @@
 // === CONFIG ===
 const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
 const SECTION_NAMES = [
-  "Common",
+  "Uncommon",
   "Rare",
   "Epic",
   "Legendary",
