@@ -250,16 +250,63 @@ a { color: #fff; text-decoration: none; }
 
 
 
+/* Floating text (desktop & tablet stay floating) */
+#floating-text {
+  position: fixed;
+  bottom: 50px;   /* leave space above buttons */
+  right: 10px;
+  color: rgb(26, 216, 26);
+  font-weight: bold;
+  z-index: 1000;
+  text-shadow: 
+    1px 1px 0 #000,
+   -1px 1px 0 #000,
+    1px -1px 0 #000,
+   -1px -1px 0 #000;
+}
+
+#floating-text-left {
+  position: fixed;
+  bottom: 70px;   /* slightly higher than green so it's above */
+  left: 10px;
+  color: white;
+  font-weight: 500;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  z-index: 1000;
+  text-align: left;
+  text-shadow: 
+    1.5px 1.5px 0 #000,
+   -1.5px 1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+   -1.5px -1.5px 0 #000;
+}
+
+#floating-text-left .discord-line {
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-top: 3px;
+  text-shadow: 
+    1.5px 1.5px 0 #000,
+   -1.5px 1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+   -1.5px -1.5px 0 #000;
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
-  /* Move the floating texts lower */
-  #floating-text,
   #floating-text-left {
-    bottom: 60px !important; /* push texts above the very bottom */
+    bottom: 70px;  /* higher so it stays above green */
+    font-size: 0.8rem;
   }
 
-  /* Raise the buttons */
+  #floating-text {
+    bottom: 45px;  /* directly under white text */
+    font-size: 0.75rem;
+  }
+
   .bottom-buttons {
-    bottom: 120px !important; /* lift buttons higher so they don’t overlap */
+    bottom: 100px; /* raise buttons so they sit above text */
   }
 }
