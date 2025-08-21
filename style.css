@@ -70,13 +70,84 @@ a { color: #fff; text-decoration: none; }
     2px -2px 0 #000,
    -2px -2px 0 #000;
 }
-
-/* Exclude numeric values and demand values */
-.card-info .value-number, 
-.card-info .demand, 
-.card-info .demand-number, 
-.tax-calculator #averageValue,
-.tax-calculator #afterTaxValue,
-.tax-calculator #rangedValue {
-  text-shadow: none;
+/* ===============================
+   SITE HEADER, BIOS, CALCULATOR BIO
+   =============================== */
+.site-header,
+.bio,
+.tax-explanation {
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
 }
+
+/* Exclude search bar text */
+#search,
+.tax-calculator input {
+  text-shadow: none !important;
+}
+
+/* Exclude green floating text */
+#floating-text {
+  text-shadow: none !important;
+}
+
+/* Exclude TikTok and Discord buttons */
+.header-buttons a,
+.header-buttons button {
+  text-shadow: none !important;
+}
+
+/* ===============================
+   ITEM CARDS
+   =============================== */
+/* Add black outline to all text in item cards */
+.card-info span,
+.card-info p,
+.card-info h3,
+.card-info .average-value-number, /* Spreadsheet numbers */
+.card-info .ranged-value-number,
+.card-info .after-tax-number,
+.card-info .average-value,
+.card-info .ranged-value,
+.card-info .after-tax-value {
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+}
+
+/* Exclude demand and demand numbers */
+.card-info .demand,
+.card-info .demand-number,
+.card-info .item-name {
+  text-shadow: none !important;
+}
+#floating-text-left {
+  position: fixed;
+  bottom: 6px;   /* stays aligned with green text */
+  left: 10px;
+  color: white;
+  font-weight: 500;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.85rem;   
+  line-height: 1.25;    
+  z-index: 1000;
+  text-align: left;
+
+  /* Black outline */
+  text-shadow: 
+    1px 1px 0 #000,
+   -1px 1px 0 #000,
+    1px -1px 0 #000,
+   -1px -1px 0 #000;
+}
+
+#floating-text-left .discord-line {
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-top: 3px;
+
+  /* keep the black outline too */
+  text-shadow: 
+    1px 1px 0 #000,
+   -1px 1px 0 #000,
+    1px -1px 0 #000,
+   -1px -1px 0 #000;
+}
+
