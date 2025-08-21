@@ -16,24 +16,20 @@ a { color: #fff; text-decoration: none; }
   text-align: center;
 }
 
-/* Center the search bar itself */
-.search-container {
-  width: 100%;
-  text-align: center;   /* ensures container is centered */
-  margin: 10px 0 20px 0; /* spacing above and below */
-}
+
 
 #search {
-  display: inline-block; /* allows margin auto to work properly */
-  margin: 0 auto;        /* centers the search bar itself */
-  width: 300px;           /* fixed width */
-  max-width: 90%;         /* responsive on mobile */
+  display: inline-block;
+  margin: 0 0 0 100px; /* slightly more to the right */
+  width: 300px;
+  max-width: 90%;
   padding: 12px;
   border-radius: 10px;
   border: 1px solid #0b0101;
   background: #3a3a3a;
   color: #fff;
 }
+
 
 
 /* Main layout */
