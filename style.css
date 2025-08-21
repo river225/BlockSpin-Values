@@ -249,26 +249,19 @@ a { color: #fff; text-decoration: none; }
 
 
 
-/* 📱 Mobile override → pin texts at bottom, no duplicates */
+/* 📱 Mobile adjustments */
 @media (max-width: 600px) {
-  #floating-text,
-  #floating-text-left {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    z-index: 1000;
-    background: #2c2c2c; /* match site background */
-    padding: 8px 0;
+  /* Move buttons up */
+  .bottom-buttons {
+    bottom: 70px; /* was 20px → now higher to leave room */
   }
 
+  /* Adjust floating texts lower */
   #floating-text-left {
-    left: 0;
-    bottom: 35px; /* stack above green text */
+    bottom: 50px; /* sits above green text */
   }
 
   #floating-text {
-    right: 0;
-    bottom: 5px; /* stay pinned at very bottom */
+    bottom: 20px; /* pinned just above screen edge */
   }
 }
