@@ -245,3 +245,68 @@ a { color: #fff; text-decoration: none; }
    -1.5px -1.5px 0 #000;
 }
 
+
+
+
+
+/* Default (desktop + iPad) → floating */
+#floating-text {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  color: rgb(26, 216, 26);
+  font-weight: bold;
+  z-index: 1000;
+  text-shadow: 
+    1.5px 1.5px 0 #000,
+   -1.5px 1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+   -1.5px -1.5px 0 #000;
+}
+
+#floating-text-left {
+  position: fixed;
+  bottom: 6px;
+  left: 10px;
+  color: white;
+  font-weight: 500;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  z-index: 1000;
+  text-align: left;
+  text-shadow: 
+    1px 1px 0 #000,
+   -1px 1px 0 #000,
+    1px -1px 0 #000,
+   -1px -1px 0 #000;
+}
+
+#floating-text-left .discord-line {
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-top: 3px;
+  text-shadow: 
+    1px 1px 0 #000,
+   -1px 1px 0 #000,
+    1px -1px 0 #000,
+   -1px -1px 0 #000;
+}
+
+/* 📱 Mobile override → pin them as footer */
+@media (max-width: 600px) {
+  #floating-text,
+  #floating-text-left {
+    position: static; /* no floating */
+    text-align: center;
+  }
+
+  .bottom-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: #2c2c2c; /* matches site bg */
+    margin-top: 20px;
+  }
+}
