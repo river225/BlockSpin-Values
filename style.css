@@ -195,13 +195,8 @@ a { color: #fff; text-decoration: none; }
 
 
 
-/* ============================
-   TEXT OUTLINES (1.5px black)
-   ============================ */
-
-/* Site Bio + Section names */
-.bio,
-.section-label {
+/* Site Bio text */
+.site-header p {
   text-shadow: 
     1.5px 1.5px 0 #000,
    -1.5px 1.5px 0 #000,
@@ -209,7 +204,16 @@ a { color: #fff; text-decoration: none; }
    -1.5px -1.5px 0 #000;
 }
 
-/* Floating green text (bottom right) */
+/* Section navigation button names */
+.sections-nav button {
+  text-shadow: 
+    1.5px 1.5px 0 #000,
+   -1.5px 1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+   -1.5px -1.5px 0 #000;
+}
+
+/* Green text at bottom right */
 #floating-text {
   text-shadow: 
     1.5px 1.5px 0 #000,
@@ -218,10 +222,11 @@ a { color: #fff; text-decoration: none; }
    -1.5px -1.5px 0 #000;
 }
 
-/* Tax calculator (labels + explanation only) */
-.tax-calculator label,
-.tax-explanation,
-.tax-calculator #taxResult {
+/* Tax calculator text (excluding search inputs) */
+.tax-calculator h2,
+.tax-calculator #taxResult,
+.tax-calculator .tax-explanation,
+.tax-calculator label {
   text-shadow: 
     1.5px 1.5px 0 #000,
    -1.5px 1.5px 0 #000,
@@ -229,19 +234,10 @@ a { color: #fff; text-decoration: none; }
    -1.5px -1.5px 0 #000;
 }
 
-/* Exclude tax calculator input text */
-.tax-calculator input {
-  text-shadow: none !important;
-}
-
-/* Item cards (names + value labels + spreadsheet values) */
-.card-info .item-name,
-.card-info .average-value,
-.card-info .ranged-value,
-.card-info .after-tax-value,
-.card-info .average-value-number,
-.card-info .ranged-value-number,
-.card-info .after-tax-number {
+/* Card text outlines */
+.card-info h3, /* Item Name */
+.card-info .badge, /* Average Value label */
+.card-info div:not(.discord-line):not(.demand):not(.demand-number) { /* Ranged, After Tax values */
   text-shadow: 
     1.5px 1.5px 0 #000,
    -1.5px 1.5px 0 #000,
@@ -249,13 +245,3 @@ a { color: #fff; text-decoration: none; }
    -1.5px -1.5px 0 #000;
 }
 
-/* Exclude demand + demand numbers */
-.card-info .demand,
-.card-info .demand-number {
-  text-shadow: none !important;
-}
-
-/* Exclude search bar text */
-#search {
-  text-shadow: none !important;
-}
