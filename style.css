@@ -104,3 +104,158 @@ a { color: #fff; text-decoration: none; }
    -1px -1px 0 #000;
 }
 
+
+
+/* Entire header text */
+.blockspin-header {
+  font-size: 4rem;
+  font-weight: bold;
+  text-align: center;
+  color: white; /* Block + Values */
+  text-shadow:
+    4px 0 0 #000,
+   -4px 0 0 #000,
+    0 4px 0 #000,
+    0 -4px 0 #000,
+    2px 2px 0 #000,
+   -2px 2px 0 #000,
+    2px -2px 0 #000,
+   -2px -2px 0 #000,
+    0 0 6px #fff,
+    0 0 12px #fff,
+    0 0 18px #ccc;
+}
+
+/* Spin word with smoother/faster pulse + moderate flicker */
+.blockspin-header .spin-word {
+  color: #ff1a1a;
+  text-shadow:
+    4px 0 0 #000,
+   -4px 0 0 #000,
+    0 4px 0 #000,
+    0 -4px 0 #000,
+    2px 2px 0 #000,
+   -2px 2px 0 #000,
+    2px -2px 0 #000,
+   -2px -2px 0 #000,
+    0 0 10px #ff1a1a,
+    0 0 20px #ff3333,
+    0 0 30px #ff4d4d,
+    0 0 40px #ff6666,
+    0 0 55px #ff8080;
+  animation: redNeonPulse 4s ease-in-out infinite alternate,
+             redFlicker 10s infinite; /* faster pulse + more frequent flicker */
+}
+
+/* Pulse (breathing effect) */
+@keyframes redNeonPulse {
+  0% {
+    color: #e60000;
+    text-shadow:
+      4px 0 0 #000,
+     -4px 0 0 #000,
+      0 4px 0 #000,
+      0 -4px 0 #000,
+      2px 2px 0 #000,
+     -2px 2px 0 #000,
+      2px -2px 0 #000,
+     -2px -2px 0 #000,
+      0 0 8px #ff1a1a,
+      0 0 14px #ff3333,
+      0 0 20px #ff4d4d;
+  }
+  100% {
+    color: #ff1a1a;
+    text-shadow:
+      4px 0 0 #000,
+     -4px 0 0 #000,
+      0 4px 0 #000,
+      0 -4px 0 #000,
+      2px 2px 0 #000,
+     -2px 2px 0 #000,
+      2px -2px 0 #000,
+     -2px -2px 0 #000,
+      0 0 12px #ff3333,
+      0 0 22px #ff4d4d,
+      0 0 34px #ff6666,
+      0 0 46px #ff8080;
+  }
+}
+
+/* Flicker (occasional) */
+@keyframes redFlicker {
+  0%, 92%, 100% { opacity: 1; }
+  93% { opacity: 0.7; }
+  95% { opacity: 0.3; }
+  97% { opacity: 0.9; }
+  98% { opacity: 0.6; }
+  99% { opacity: 1; }
+}
+
+
+
+
+/* ============================
+   TEXT OUTLINES (1.5px black)
+   ============================ */
+
+/* Site Bio + Section names */
+.bio,
+.section-label {
+  text-shadow: 
+    1.5px 1.5px 0 #000,
+   -1.5px 1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+   -1.5px -1.5px 0 #000;
+}
+
+/* Floating green text (bottom right) */
+#floating-text {
+  text-shadow: 
+    1.5px 1.5px 0 #000,
+   -1.5px 1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+   -1.5px -1.5px 0 #000;
+}
+
+/* Tax calculator (labels + explanation only) */
+.tax-calculator label,
+.tax-explanation,
+.tax-calculator #taxResult {
+  text-shadow: 
+    1.5px 1.5px 0 #000,
+   -1.5px 1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+   -1.5px -1.5px 0 #000;
+}
+
+/* Exclude tax calculator input text */
+.tax-calculator input {
+  text-shadow: none !important;
+}
+
+/* Item cards (names + value labels + spreadsheet values) */
+.card-info .item-name,
+.card-info .average-value,
+.card-info .ranged-value,
+.card-info .after-tax-value,
+.card-info .average-value-number,
+.card-info .ranged-value-number,
+.card-info .after-tax-number {
+  text-shadow: 
+    1.5px 1.5px 0 #000,
+   -1.5px 1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+   -1.5px -1.5px 0 #000;
+}
+
+/* Exclude demand + demand numbers */
+.card-info .demand,
+.card-info .demand-number {
+  text-shadow: none !important;
+}
+
+/* Exclude search bar text */
+#search {
+  text-shadow: none !important;
+}
