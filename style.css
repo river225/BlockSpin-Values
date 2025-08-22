@@ -1,6 +1,6 @@
 /* Base */
 * { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #2c2c2c; color: #fff; }
+html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #1c1c1c; color: #fff; }
 a { color: #fff; text-decoration: none; }
 
 /* Header */
@@ -16,8 +16,6 @@ a { color: #fff; text-decoration: none; }
   text-align: center;
 }
 
-
-
 #search {
   display: inline-block;
   margin: 0 0 0 100px; /* slightly more to the right */
@@ -30,16 +28,33 @@ a { color: #fff; text-decoration: none; }
   color: #fff;
 }
 
+/* === Main layout changes start === */
+.main-container {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 20px;
+    align-items: stretch; /* NEW: makes nav stretch to match sections height */
+}
 
+.sections-nav {
+    width: 200px;
+    padding: 8px;
+    border-right: 2px solid #4a4a4a; /* vertical line */
+    /* REMOVED: position: sticky; top: 16px; align-self: flex-start; */
+}
 
-/* Main layout */
-.main-container { display: flex; max-width: 1400px; margin: 0 auto; gap: 20px; }
-.sections-nav { width: 200px; padding: 8px; border-right: 1px solid #4a4a4a; position: sticky; top: 16px; align-self: flex-start; }
+/* KEEP these button styles exactly as they are */
 .sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #4a4a4a; border: 1px solid #100101; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
 .sections-nav button.active { background: #232324; }
 
-/* Sections area */
-.sections { flex: 1; display: flex; flex-direction: column; gap: 24px; }
+.sections {
+    flex: 3; /* UPDATED from flex:1 */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+/* === Main layout changes end === */
 
 /* Cards container */
 .cards { 
@@ -99,12 +114,50 @@ a { color: #fff; text-decoration: none; }
   display: none !important; 
 }
 
+.tax-calculator { 
+  width: 240px; 
+  padding: 16px; 
+  background: #1f2a33; /* dark slate/charcoal background for contrast */ 
+  border: 1px solid #33cce6; /* softer cyan border */ 
+  border-radius: 12px; 
+  position: sticky; 
+  top: 16px; 
+  height: fit-content; 
+} 
 
-/* Tax calculator */
-.tax-calculator { width: 240px; padding: 16px; background: #203457; border: 1px solid #080000; border-radius: 12px; position: sticky; top: 16px; height: fit-content; }
-.tax-calculator input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #0c0101; background: #2e2e2e; color: #fff; }
-.tax-calculator #taxResult { font-weight: bold; margin-bottom: 8px; }
-.tax-explanation { font-size: 0.85rem; opacity: 0.8; }
+.tax-calculator h2, 
+.tax-calculator #taxResult, 
+.tax-calculator .tax-explanation, 
+.tax-calculator label { 
+  color: #33cce6; /* softer cyan text */ 
+  text-shadow: none; 
+} 
+
+.tax-calculator input { 
+  width: 100%; 
+  padding: 8px; 
+  margin-bottom: 8px; 
+  border-radius: 6px; 
+  border: 1px solid #444; 
+  background: #2a3945; /* slightly lighter than calc background */ 
+  color: #fff; 
+}
+
+
+/* Dollar sign and number color */
+#taxResult .calc-amount {
+  color: #ffde59; /* yellow number */
+  font-weight: bold;
+}
+
+#taxResult .calc-amount::before {
+  content: "$";
+  color: #00ff7f; /* green dollar sign */
+  margin-right: 3px;
+}
+
+
+
 
 /* Section spacing */
 .section { margin-bottom: 40px; }
@@ -117,200 +170,22 @@ a { color: #fff; text-decoration: none; }
   .card img { width: 100%; height: auto; }
   .card-info { text-align: center; }
 }
-/* your existing styles... */
 
-#floating-text {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  color: rgb(26, 216, 26);
-  font-weight: bold;
-  z-index: 1000;
-}
-/* Black outline for card labels only */
-.card-info label, 
-.card-info .section-label, 
-.tax-calculator label {
-  text-shadow: 
-    2px 2px 0 #000,
-   -2px 2px 0 #000,
-    2px -2px 0 #000,
-   -2px -2px 0 #000;
-}
+/* Floating texts, header, neon effects, outlines etc. remain untouched */
+#floating-text { position: fixed; bottom: 10px; right: 10px; color: rgb(26, 216, 26); font-weight: bold; z-index: 1000; }
+.card-info label, .card-info .section-label, .tax-calculator label { text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000; }
+#floating-text-left { position: fixed; bottom: 6px; left: 10px; color: white; font-weight: 500; font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 0.85rem; line-height: 1.25; z-index: 1000; text-align: left; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000; }
+#floating-text-left .discord-line { font-weight: bold; font-size: 0.9rem; margin-top: 3px; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000; }
 
-#floating-text-left {
-  position: fixed;
-  bottom: 6px;   /* stays aligned with green text */
-  left: 10px;
-  color: white;
-  font-weight: 500;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 0.85rem;   
-  line-height: 1.25;    
-  z-index: 1000;
-  text-align: left;
+/* Entire header text and animations remain untouched */
+.blockspin-header { font-size: 4rem; font-weight: bold; text-align: center; color: white; text-shadow: 4px 0 0 #000, -4px 0 0 #000, 0 4px 0 #000, 0 -4px 0 #000, 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 0 6px #fff, 0 0 12px #fff, 0 0 18px #ccc; }
+.blockspin-header .spin-word { color: #ff1a1a; text-shadow: 4px 0 0 #000, -4px 0 0 #000, 0 4px 0 #000, 0 -4px 0 #000, 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 0 10px #ff1a1a, 0 0 20px #ff3333, 0 0 30px #ff4d4d, 0 0 40px #ff6666, 0 0 55px #ff8080; animation: redNeonPulse 4s ease-in-out infinite alternate, redFlicker 10s infinite; }
+@keyframes redNeonPulse { 0% { color: #e60000; text-shadow: 4px 0 0 #000, -4px 0 0 #000, 0 4px 0 #000, 0 -4px 0 #000, 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 0 8px #ff1a1a, 0 0 14px #ff3333, 0 0 20px #ff4d4d; } 100% { color: #ff1a1a; text-shadow: 4px 0 0 #000, -4px 0 0 #000, 0 4px 0 #000, 0 -4px 0 #000, 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 0 12px #ff3333, 0 0 22px #ff4d4d, 0 0 34px #ff6666, 0 0 46px #ff8080; } }
+@keyframes redFlicker { 0%, 92%, 100% { opacity: 1; } 93% { opacity: 0.7; } 95% { opacity: 0.3; } 97% { opacity: 0.9; } 98% { opacity: 0.6; } 99% { opacity: 1; } }
 
-  /* Black outline */
-  text-shadow: 
-    1px 1px 0 #000,
-   -1px 1px 0 #000,
-    1px -1px 0 #000,
-   -1px -1px 0 #000;
-}
-
-#floating-text-left .discord-line {
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-top: 3px;
-
-  /* keep the black outline too */
-  text-shadow: 
-    1px 1px 0 #000,
-   -1px 1px 0 #000,
-    1px -1px 0 #000,
-   -1px -1px 0 #000;
-}
-
-
-
-/* Entire header text */
-.blockspin-header {
-  font-size: 4rem;
-  font-weight: bold;
-  text-align: center;
-  color: white; /* Block + Values */
-  text-shadow:
-    4px 0 0 #000,
-   -4px 0 0 #000,
-    0 4px 0 #000,
-    0 -4px 0 #000,
-    2px 2px 0 #000,
-   -2px 2px 0 #000,
-    2px -2px 0 #000,
-   -2px -2px 0 #000,
-    0 0 6px #fff,
-    0 0 12px #fff,
-    0 0 18px #ccc;
-}
-
-/* Spin word with smoother/faster pulse + moderate flicker */
-.blockspin-header .spin-word {
-  color: #ff1a1a;
-  text-shadow:
-    4px 0 0 #000,
-   -4px 0 0 #000,
-    0 4px 0 #000,
-    0 -4px 0 #000,
-    2px 2px 0 #000,
-   -2px 2px 0 #000,
-    2px -2px 0 #000,
-   -2px -2px 0 #000,
-    0 0 10px #ff1a1a,
-    0 0 20px #ff3333,
-    0 0 30px #ff4d4d,
-    0 0 40px #ff6666,
-    0 0 55px #ff8080;
-  animation: redNeonPulse 4s ease-in-out infinite alternate,
-             redFlicker 10s infinite; /* faster pulse + more frequent flicker */
-}
-
-/* Pulse (breathing effect) */
-@keyframes redNeonPulse {
-  0% {
-    color: #e60000;
-    text-shadow:
-      4px 0 0 #000,
-     -4px 0 0 #000,
-      0 4px 0 #000,
-      0 -4px 0 #000,
-      2px 2px 0 #000,
-     -2px 2px 0 #000,
-      2px -2px 0 #000,
-     -2px -2px 0 #000,
-      0 0 8px #ff1a1a,
-      0 0 14px #ff3333,
-      0 0 20px #ff4d4d;
-  }
-  100% {
-    color: #ff1a1a;
-    text-shadow:
-      4px 0 0 #000,
-     -4px 0 0 #000,
-      0 4px 0 #000,
-      0 -4px 0 #000,
-      2px 2px 0 #000,
-     -2px 2px 0 #000,
-      2px -2px 0 #000,
-     -2px -2px 0 #000,
-      0 0 12px #ff3333,
-      0 0 22px #ff4d4d,
-      0 0 34px #ff6666,
-      0 0 46px #ff8080;
-  }
-}
-
-/* Flicker (occasional) */
-@keyframes redFlicker {
-  0%, 92%, 100% { opacity: 1; }
-  93% { opacity: 0.7; }
-  95% { opacity: 0.3; }
-  97% { opacity: 0.9; }
-  98% { opacity: 0.6; }
-  99% { opacity: 1; }
-}
-
-
-
-
-/* Site Bio text */
-.site-header p {
-  text-shadow: 
-    1.5px 1.5px 0 #000,
-   -1.5px 1.5px 0 #000,
-    1.5px -1.5px 0 #000,
-   -1.5px -1.5px 0 #000;
-}
-
-/* Section navigation button names */
-.sections-nav button {
-  text-shadow: 
-    1.5px 1.5px 0 #000,
-   -1.5px 1.5px 0 #000,
-    1.5px -1.5px 0 #000,
-   -1.5px -1.5px 0 #000;
-}
-
-/* Green text at bottom right */
-#floating-text {
-  text-shadow: 
-    1.5px 1.5px 0 #000,
-   -1.5px 1.5px 0 #000,
-    1.5px -1.5px 0 #000,
-   -1.5px -1.5px 0 #000;
-}
-
-/* Tax calculator text (excluding search inputs) */
-.tax-calculator h2,
-.tax-calculator #taxResult,
-.tax-calculator .tax-explanation,
-.tax-calculator label {
-  text-shadow: 
-    1.5px 1.5px 0 #000,
-   -1.5px 1.5px 0 #000,
-    1.5px -1.5px 0 #000,
-   -1.5px -1.5px 0 #000;
-}
-
-/* Card text outlines */
-.card-info h3, /* Item Name */
-.card-info .badge, /* Average Value label */
-.card-info div:not(.discord-line):not(.demand):not(.demand-number) { /* Ranged, After Tax values */
-  text-shadow: 
-    1.5px 1.5px 0 #000,
-   -1.5px 1.5px 0 #000,
-    1.5px -1.5px 0 #000,
-   -1.5px -1.5px 0 #000;
-}
-
-
-
+/* Site Bio text and all remaining effects unchanged */
+.site-header p { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
+.sections-nav button { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
+#floating-text { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
+.tax-calculator h2, .tax-calculator #taxResult, .tax-calculator .tax-explanation, .tax-calculator label { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1px 0 #000; }
+.card-info h3, .card-info .badge, .card-info div:not(.discord-line):not(.demand):not(.demand-number) { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }

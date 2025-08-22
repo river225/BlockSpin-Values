@@ -123,7 +123,8 @@ function initTaxCalculator() {
   taxInput.addEventListener("input", () => {
     const val = parseFloat(taxInput.value) || 0;
     const withdraw = Math.round(val / 0.72);
-    taxResult.textContent = `Amount to withdraw: ${withdraw}`;
+   taxResult.innerHTML = `Amount to withdraw: <span class="calc-amount">${withdraw}</span>`;
+
   });
 }
 
