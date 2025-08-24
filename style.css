@@ -224,3 +224,30 @@ a { color: #fff; text-decoration: none; }
     display: none !important;
   }
 }
+
+/* === MOBILE ONLY: Center search bar and calculator === */
+@media (max-width: 767px) {
+  /* Center the search bar container */
+  .search-container {
+    display: flex !important;
+    justify-content: center !important;
+    margin: 20px auto !important;
+    width: 100%;
+  }
+
+  /* Make the search input neat */
+  .search-container input {
+    width: 90% !important;
+    max-width: 320px !important;
+    text-align: center !important;
+  }
+
+  /* Center the calculator */
+  .tax-calculator {
+    margin: 20px auto !important;
+    max-width: 320px !important;
+    text-align: center !important;
+    display: block !important;
+    float: none !important;
+  }
+}
