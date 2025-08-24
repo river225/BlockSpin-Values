@@ -189,3 +189,38 @@ a { color: #fff; text-decoration: none; }
 #floating-text { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
 .tax-calculator h2, .tax-calculator #taxResult, .tax-calculator .tax-explanation, .tax-calculator label { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1px 0 #000; }
 .card-info h3, .card-info .badge, .card-info div:not(.discord-line):not(.demand):not(.demand-number) { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
+
+
+/* === MOBILE ONLY: Center search bar and calculator === */
+@media (max-width: 767px) {
+  /* Center search bar */
+  .search-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+  }
+
+  .search-container input {
+    width: 90%;          /* fits nicely on phone */
+    max-width: 300px;    /* prevent oversized on large phones */
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  /* Center tax calculator */
+  .tax-calculator {
+    margin: 20px auto;
+    max-width: 300px;
+    text-align: center;
+    display: block;
+  }
+}
+
+/* === MOBILE ONLY: Hide floating green & white texts === */
+@media (max-width: 767px) {
+  #floating-text,
+  #floating-text-left {
+    display: none !important;
+  }
+}
