@@ -157,8 +157,6 @@ a { color: #fff; text-decoration: none; }
 }
 
 
-
-
 /* Section spacing */
 .section { margin-bottom: 40px; }
 
@@ -187,67 +185,42 @@ a { color: #fff; text-decoration: none; }
 .site-header p { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
 .sections-nav button { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
 #floating-text { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
-.tax-calculator h2, .tax-calculator #taxResult, .tax-calculator .tax-explanation, .tax-calculator label { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1px 0 #000; }
+.tax-calculator h2, .tax-calculator #taxResult, .tax-calculator .tax-explanation, .tax-calculator label { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
 .card-info h3, .card-info .badge, .card-info div:not(.discord-line):not(.demand):not(.demand-number) { text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000; }
 
-
-/* === MOBILE ONLY: Center search bar and calculator === */
+/* === MOBILE ONLY: Center search bar, calculator, and hide floating texts === */
 @media (max-width: 767px) {
   /* Center search bar */
   .search-container {
-    display: flex;
-    justify-content: center;
-    margin: 20px auto;
-  }
-
-  .search-container input {
-    width: 90%;          /* fits nicely on phone */
-    max-width: 300px;    /* prevent oversized on large phones */
-    text-align: center;
-    padding: 10px;
-    border-radius: 8px;
-  }
-
-  /* Center tax calculator */
-  .tax-calculator {
-    margin: 20px auto;
-    max-width: 300px;
-    text-align: center;
-    display: block;
-  }
-}
-
-/* === MOBILE ONLY: Hide floating green & white texts === */
-@media (max-width: 767px) {
-  #floating-text,
-  #floating-text-left {
-    display: none !important;
-  }
-}
-
-/* === MOBILE ONLY: Center search bar and calculator === */
-@media (max-width: 767px) {
-  /* Center the search bar container */
-  .search-container {
     display: flex !important;
     justify-content: center !important;
+    align-items: center !important;
     margin: 20px auto !important;
-    width: 100%;
+    width: 100% !important;
   }
 
-  /* Make the search input neat */
   .search-container input {
     width: 90% !important;
     max-width: 320px !important;
     text-align: center !important;
+    margin: 0 auto !important;
+    display: block !important;
   }
 
-  /* Center the calculator */
+  /* Center calculator */
   .tax-calculator {
+    display: block !important;
     margin: 20px auto !important;
     max-width: 320px !important;
     text-align: center !important;
-    display: block !important;
     float: none !important;
+    position: relative !important; /* override sticky */
+    top: auto !important;
+  }
+
+  /* Hide floating green & white texts */
+  #floating-text,
+  #floating-text-left {
+    display: none !important;
   }
 }
