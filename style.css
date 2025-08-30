@@ -1,6 +1,13 @@
 /* Base */
 * { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #1c1c1c; color: #fff; }
+html, body { 
+  height: 100%; 
+  margin: 0; 
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+  background: #1c1c1c; 
+  color: #fff;
+  position: relative; /* THIS IS THE KEY FIX - makes absolute positioning work relative to document */
+}
 a { color: #fff; text-decoration: none; }
 
 /* Header */
@@ -48,6 +55,22 @@ a { color: #fff; text-decoration: none; }
 .sections-nav button { display: block; width: 100%; padding: 8px; margin-bottom: 8px; background: #4a4a4a; border: 1px solid #100101; border-radius: 6px; cursor: pointer; color: #fff; text-align: left; }
 .sections-nav button.active { background: #232324; }
 
+/* NEW: Extras navigation styling */
+.nav-gap {
+  height: 0px;
+}
+
+.nav-extras-header {
+  color: #33cce6;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+  padding: 8px 0;
+  border-bottom: 1px solid #33cce6;
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+}
+
 .sections {
     flex: 3; /* UPDATED from flex:1 */
     display: flex;
@@ -61,6 +84,8 @@ a { color: #fff; text-decoration: none; }
   display: flex; 
   flex-wrap: wrap; 
   gap: 16px; 
+  width: 100%; /* ADD THIS LINE */
+  overflow: hidden; /* ADD THIS LINE */
 }
 
 /* Card */
@@ -110,6 +135,92 @@ a { color: #fff; text-decoration: none; }
   margin-bottom: 4px; 
 }
 
+/* NEW: Crew Logo Card Styling - SMALLER SIZE */
+.crew-logo-card {
+  flex-direction: column;
+  text-align: center;
+  justify-content: flex-start;
+  max-width: calc(33.33% - 16px); /* CHANGED: from 50% to 33.33% - fits 3 per row */
+  overflow: hidden;
+  padding: 8px; /* ADDED: smaller padding */
+}
+
+.crew-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px; /* CHANGED: from 12px to 8px - smaller gap */
+}
+
+.crew-logo-card h3 {
+  margin: 0;
+  font-size: 0.9rem; /* CHANGED: from 1.1rem to 0.9rem - smaller text */
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+}
+
+.crew-logo-card img {
+  width: 100px; /* CHANGED: from 150px to 100px - smaller images */
+  height: 100px; /* CHANGED: from 150px to 100px - smaller images */
+  object-fit: contain;
+  border-radius: 6px; /* CHANGED: from 8px to 6px - smaller border radius */
+  background: #2e2e2e;
+}
+
+.crew-id {
+  color: #ffde59;
+  font-weight: bold;
+  font-size: 0.85rem; /* CHANGED: from 1rem to 0.85rem - smaller text */
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+}
+
+/* Crew ID container with copy button */
+.crew-id-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.copy-btn {
+  background: #33cce6;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #000;
+  transition: background-color 0.3s ease;
+  min-width: 30px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-btn:hover {
+  background: #29b3cc;
+  transform: scale(1.05);
+}
+
+.copy-btn:active {
+  transform: scale(0.95);
+}
+
+.crew-header {
+  color: #33cce6;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 30px 0 20px 0;
+  padding: 10px 0;
+  border-bottom: 2px solid #33cce6;
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+  width: 100%; /* ADD THIS LINE */
+  box-sizing: border-box; /* ADD THIS LINE */
+}
+
 .hidden { 
   display: none !important; 
 }
@@ -143,7 +254,6 @@ a { color: #fff; text-decoration: none; }
   color: #fff; 
 }
 
-
 /* Dollar sign and number color */
 #taxResult .calc-amount {
   color: #ffde59; /* yellow number */
@@ -156,9 +266,12 @@ a { color: #fff; text-decoration: none; }
   margin-right: 3px;
 }
 
-
 /* Section spacing */
-.section { margin-bottom: 40px; }
+.section { 
+  margin-bottom: 40px; 
+  overflow: hidden; /* ADD THIS LINE */
+  position: relative; /* ADD THIS LINE */
+}
 
 /* Responsive */
 @media (max-width: 900px) {
@@ -167,6 +280,7 @@ a { color: #fff; text-decoration: none; }
   .card { flex-direction: column; width: 100%; }
   .card img { width: 100%; height: auto; }
   .card-info { text-align: center; }
+  .crew-logo-card { width: 100%; }
 }
 
 /* Floating texts, header, neon effects, outlines etc. remain untouched */
@@ -223,4 +337,92 @@ a { color: #fff; text-decoration: none; }
   #floating-text-left {
     display: none !important;
   }
+
+    /* Mobile-only: Much smaller ID text and copy button */
+  .crew-id {
+    font-size: 0.6rem !important; /* Even smaller on mobile */
+  }
+  
+  .copy-btn {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+    min-width: 20px;
+    height: 16px;
+  }
+  
+  .crew-id-container {
+  flex-direction: column !important; /* Stack vertically instead of horizontally */
+  align-items: center !important;    /* Center both elements */
+  justify-content: center !important; /* Center the container content */
+  gap: 6px !important;               /* Space between ID and button */
+  margin-top: 4px !important;        /* Less margin */
+}
+
+.crew-id {
+  text-align: center !important;     /* Center the ID text */
+}
+
+.copy-btn {
+  align-self: center !important;     /* Ensure button stays centered */
+}
+}
+
+/* Hide banners on mobile + tablets */
+@media (max-width: 1024px) {
+  #section-banner {
+    display: none !important;
+  }
+}
+
+html, body {
+  overflow-x: hidden !important;
+}
+
+/* === FIXED Section Banner (absolute positioning relative to document) === */
+#section-banner {
+  position: absolute !important;  /* FIXED: Changed from fixed to absolute */
+  z-index: 999;           
+  pointer-events: none;   
+}
+
+#banner-img {
+  position: absolute;     
+  display: block;         
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  opacity: 0;             
+  transform: scale(0.95); 
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#banner-img.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Hide banners on mobile + tablets */
+@media (max-width: 1024px) {
+  #section-banner {
+    display: none !important;
+  }
+}
+
+/* Hide vertical scrollbar but allow scrolling */
+html, body {
+  overflow-x: hidden !important;  /* prevent horizontal scroll */
+  overflow-y: scroll;             /* allow vertical scrolling */
+}
+
+/* Hide vertical scrollbar for Chrome, Edge, Safari */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Hide vertical scrollbar for Firefox */
+html, body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }

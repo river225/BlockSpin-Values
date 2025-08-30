@@ -82,32 +82,48 @@
     top: 10px; 
     height: fit-content; 
 } 
+
+/* Banner container */
+#section-banner {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 20px auto;
+    text-align: center;
+}
+#section-banner img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: none; /* hidden until section is selected */
+}
 </style> 
 </head> 
 <body> 
 
+    <div id="section-banner">
+  <img id="banner-img" src="" alt="Banner">
+</div>
+
+
 <!-- Header --> 
 <header class="site-header"> 
-
 <h1 class="blockspin-header">
   Block<span class="spin-word">Spin</span> Values
 </h1>
 
-
-
-    <!---- <h1>
-<span class="block-word">Block</span><span class="spin-word">Spin</span> Values
-</h1> -->
-
-
 <p>A Blockspin Community Driven Value List — Maintained by our top trader Value List Team in our discord server and built by river.</p> 
-<p><em>You can suggest value changes or website changes in our discord ! we are currently hiring people good at BlockSpin Values, join discord for more information. © 2025 river. All rights reserved. Unofficial site. VERSION 4.7.5 </em></p> 
+<p><em>You can suggest Value changes, Website ideas and Crew logo ideas in our discord server. If approved, the changes are placed here! © 2025 river. All rights reserved. Unofficial site. VERSION 4.7.5 </em></p> 
 </header> 
 
 <!-- Search bar --> 
 <div class="search-container"> 
 <input id="search" type="text" placeholder="Search items…" aria-label="Search items" /> 
 </div> 
+
+<!-- Banner container -->
+<div id="section-banner">
+    <a id="banner-link" href="#"><img id="banner-img" src="" alt="Section Banner"></a>
+</div>
 
 <div class="main-container"> 
 
@@ -121,15 +137,11 @@
     <aside class="tax-calculator"> 
         <h2>Tax Calculator</h2> 
         <input type="number" id="taxInput" placeholder="Amount..." /> 
-  <div id="taxResult">
-  Amount to withdraw: <span class="calc-amount">0</span>
-</div>
-
+        <div id="taxResult">
+            Amount to withdraw: <span class="calc-amount">0</span>
+        </div>
         <p class="tax-explanation">Enter the amount you want the other person to get. The calculator tells you how much to withdraw to cover taxes. Same rules apply for trades above 100k, you just respawn multiple times.</p> 
     </aside> 
-
-
-<!--- <div id="taxResult">Amount to withdraw: 0</div> -->
 
 </div>
 
@@ -140,12 +152,11 @@
 </div> 
 
 <script src="script.js"></script> 
-<!-- your existing content -->
- 
+
 <div id="floating-text">Use Referral Code 1563R2 For $500 In Game!</div>
 
 <div id="floating-text-left">
-  <div>Want to suggest value changes or trade your items?</div>
+  <div>Want to suggest Value changes or Crew logos for this site?</div>
   <div class="discord-line">Join our Discord!</div>
 </div>
 
