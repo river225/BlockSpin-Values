@@ -108,19 +108,27 @@ function createScammerCard(item) {
   const evidence = safe(item["Evidence"]);
   const submittedDate = safe(item["Submitted Date"]);
 
+  // Handle Roblox name - check if it's a URL
+  let robloxNameHtml;
+  if (robloxName.includes('http')) {
+    robloxNameHtml = `<a href="${robloxName}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`;
+  } else {
+    robloxNameHtml = robloxName;
+  }
+
   // Handle evidence links
   const evidenceLinks = evidence.split(",").map(link => link.trim()).filter(link => link.length > 0);
   let evidenceHtml = "";
   if (evidenceLinks.length > 0) {
     evidenceHtml = evidenceLinks.map((link, index) => 
-      `<a href="${link}" target="_blank" rel="noopener">Evidence ${index + 1}</a>`
+      `<a href="${link}" target="_blank" rel="noopener" class="scammer-link">Evidence ${index + 1}</a>`
     ).join(" | ");
   }
 
   return `
     <div class="card scammer-card" data-name="${escapeAttr(robloxName)}">
       <div class="card-info">
-        <h3>Roblox Name: ${robloxName}</h3>
+        <h3>Roblox Name: ${robloxNameHtml}</h3>
         <div>Discord: ${discordUser}</div>
         <div>Reason: ${reason}</div>
         ${evidenceHtml ? `<div>Evidence: ${evidenceHtml}</div>` : ""}

@@ -221,15 +221,15 @@ a { color: #fff; text-decoration: none; }
   box-sizing: border-box; /* ADD THIS LINE */
 }
 
-/* Scammer Card Styling - matches other cards */
+/* Scammer Card Styling - matches other cards with red outline */
 .scammer-card {
   background: #4a4a4a; /* Same as other cards */
+  border: 1px solid #cc4444; /* Red outline instead of default border */
 }
 
 .scammer-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3); /* Red glow on hover */
-  background: linear-gradient(135deg, #4a4a4a 0%, #5a2a2a 100%); /* Red fade */
+  transform: translateY(-10px); /* Same hover effect as other cards */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6); /* Same shadow as other cards */
 }
 
 .scammer-warning {
@@ -242,6 +242,18 @@ a { color: #fff; text-decoration: none; }
 /* Remove scammer icon */
 .scammer-icon {
   display: none;
+}
+
+/* Scammer card links styling */
+.scammer-link {
+  color: #4da6ff !important;
+  text-decoration: underline !important;
+  font-size: 0.9rem;
+}
+
+.scammer-link:hover {
+  color: #66b3ff !important;
+  text-decoration: underline !important;
 }
 
 .hidden { 
