@@ -119,13 +119,12 @@ function createScammerCard(item) {
 
   return `
     <div class="card scammer-card" data-name="${escapeAttr(robloxName)}">
-      <div class="scammer-icon">⚠️</div>
       <div class="card-info">
-        <h3 class="scammer-name">${robloxName}</h3>
-        <div class="scammer-discord">Discord: ${discordUser}</div>
-        <div class="scammer-reason">Reason: ${reason}</div>
-        ${evidenceHtml ? `<div class="scammer-evidence">Evidence: ${evidenceHtml}</div>` : ""}
-        <div class="scammer-date">Reported: ${submittedDate}</div>
+        <h3>Roblox Name: ${robloxName}</h3>
+        <div>Discord: ${discordUser}</div>
+        <div>Reason: ${reason}</div>
+        ${evidenceHtml ? `<div>Evidence: ${evidenceHtml}</div>` : ""}
+        <div>Reported: ${submittedDate}</div>
       </div>
     </div>
   `;
