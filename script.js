@@ -2,13 +2,14 @@
 const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
 const SECTION_NAMES = [
   "Uncommon",
-  "Rare",
+  "Rare", 
   "Epic",
   "Legendary",
   "Omega",
   "Misc",
   "Vehicles",
-  "Crew Logos"
+  "Crew Logos",
+  "Scammer List"
 ];
 
 const SECTION_BANNERS = {
@@ -19,9 +20,9 @@ const SECTION_BANNERS = {
   "Omega":    { url: "https://i.imgur.com/LT1i1kR.png", width: "140px", top: "234px", left: "56%" },
   "Misc":     { url: "https://i.imgur.com/0WvIuZo.png", width: "200px", top: "235px", left: "53%" },
   "Vehicles": { url: "https://i.imgur.com/UGdzYtH.png", width: "218px", top: "227px", left: "54%" },
-   "Crew Logos": { url: "", width: "200px", top: "225px", left: "53%" }
+  "Crew Logos": { url: "", width: "200px", top: "225px", left: "53%" },
+  "Scammer List": { url: "", width: "200px", top: "225px", left: "53%" }
 };
-
 
 // === FETCH HELPERS ===
 async function fetchSheet(sheetName) {
@@ -43,7 +44,7 @@ async function fetchSheet(sheetName) {
       return obj;
     });
 
-    return items.filter(x => String(x["Name"] || x["Header"] || "").trim().length > 0);
+    return items.filter(x => String(x["Name"] || x["Header"] || x["Roblox Name"] || "").trim().length > 0);
   } catch (err) {
     console.error(`Failed to fetch sheet: ${sheetName}`, err);
     return [];
@@ -100,11 +101,43 @@ function createCrewLogoCard(item) {
   `;
 }
 
+function createScammerCard(item) {
+  const robloxName = safe(item["Roblox Name"]);
+  const discordUser = safe(item["Discord User"]);
+  const reason = safe(item["Reason"]);
+  const evidence = safe(item["Evidence"]);
+  const submittedDate = safe(item["Submitted Date"]);
+
+  // Handle evidence links
+  const evidenceLinks = evidence.split(",").map(link => link.trim()).filter(link => link.length > 0);
+  let evidenceHtml = "";
+  if (evidenceLinks.length > 0) {
+    evidenceHtml = evidenceLinks.map((link, index) => 
+      `<a href="${link}" target="_blank" rel="noopener">Evidence ${index + 1}</a>`
+    ).join(" | ");
+  }
+
+  return `
+    <div class="card scammer-card" data-name="${escapeAttr(robloxName)}">
+      <div class="scammer-icon">⚠️</div>
+      <div class="card-info">
+        <h3 class="scammer-name">${robloxName}</h3>
+        <div class="scammer-discord">Discord: ${discordUser}</div>
+        <div class="scammer-reason">Reason: ${reason}</div>
+        ${evidenceHtml ? `<div class="scammer-evidence">Evidence: ${evidenceHtml}</div>` : ""}
+        <div class="scammer-date">Reported: ${submittedDate}</div>
+      </div>
+    </div>
+  `;
+}
+
 function renderSection(title, items) {
   if (!items || items.length === 0) return;
 
   if (title === "Crew Logos") {
     renderCrewLogosSection(items);
+  } else if (title === "Scammer List") {
+    renderScammerSection(items);
   } else {
     const html = `
       <section class="section" id="${slugify(title)}">
@@ -119,7 +152,6 @@ function renderSection(title, items) {
 }
 
 function renderCrewLogosSection(items) {
-  // Group items by header
   const grouped = {};
   
   items.forEach(item => {
@@ -146,6 +178,19 @@ function renderCrewLogosSection(items) {
   });
   
   html += `</section>`;
+  document.getElementById("sections").insertAdjacentHTML("beforeend", html);
+}
+
+function renderScammerSection(items) {
+  let html = `
+    <section class="section" id="${slugify("Scammer List")}">
+      <h2>Scammer List</h2>
+      <p class="scammer-warning">⚠️ WARNING: These users have been reported for scamming. Trade with extreme caution!</p>
+      <div class="cards">
+        ${items.map(createScammerCard).join("")}
+      </div>
+    </section>
+  `;
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
 }
 
@@ -185,31 +230,25 @@ function showSection(name) {
     b.classList.toggle("active", b.textContent === name);
   });
 
-  // Banner logic with fade (no banner for Crew Logos)
+  // Banner logic
   const bannerImg = document.getElementById("banner-img");
-  const bannerContainer = bannerImg.parentElement; // #section-banner
+  const bannerContainer = bannerImg.parentElement;
   const banner = SECTION_BANNERS[name];
 
   if (banner && banner.url) {
-    // Remove show class to start fade out
     bannerImg.classList.remove("show");
-
-    // Wait for the CSS transition to finish before changing src
     setTimeout(() => {
       bannerImg.src = banner.url;
       bannerImg.style.display = "block";
-
-      // Apply custom styles
       bannerImg.style.maxWidth = banner.width || "190px";
       bannerContainer.style.top = banner.top || "228px";
       bannerContainer.style.left = banner.left || "50%";
       bannerContainer.style.transform = "translateX(-50%)";
-       bannerContainer.style.position = "absolute";
-      // Trigger fade in
+      bannerContainer.style.position = "absolute";
       requestAnimationFrame(() => {
         bannerImg.classList.add("show");
       });
-    }, 300); // matches CSS transition duration
+    }, 300);
   } else {
     bannerImg.style.display = "none";
   }
@@ -245,7 +284,6 @@ function initTaxCalculator() {
 // === COPY TO CLIPBOARD ===
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
-    // Show success feedback
     const btn = event.target;
     const originalText = btn.textContent;
     btn.textContent = '✓';
@@ -255,7 +293,6 @@ function copyToClipboard(text) {
       btn.style.backgroundColor = '';
     }, 1500);
   }).catch(() => {
-    // Fallback for older browsers
     const textarea = document.createElement('textarea');
     textarea.value = text;
     document.body.appendChild(textarea);
@@ -263,7 +300,6 @@ function copyToClipboard(text) {
     document.execCommand('copy');
     document.body.removeChild(textarea);
     
-    // Show success feedback
     const btn = event.target;
     const originalText = btn.textContent;
     btn.textContent = '✓';
@@ -286,13 +322,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   initSearch();
   initTaxCalculator();
 
-
   for (const sec of SECTION_NAMES) {
     const items = await fetchSheet(sec);
     renderSection(sec, items);
   }
 
-    // Show first section by default
   if (SECTION_NAMES.length > 0) showSection(SECTION_NAMES[0]);
-
 });
