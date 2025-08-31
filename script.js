@@ -108,10 +108,11 @@ function createScammerCard(item) {
   const evidence = safe(item["Evidence"]);
   const submittedDate = safe(item["Submitted Date"]);
 
-  // Handle Roblox name - check if it's a URL
+  // Handle Roblox name - check if it contains a URL but preserve other text
   let robloxNameHtml;
   if (robloxName.includes('http')) {
-    robloxNameHtml = `<a href="${robloxName}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`;
+    // Replace URLs with "User Profile" links while keeping other text
+    robloxNameHtml = robloxName.replace(/https?:\/\/\S+/g, '<a href="$&" target="_blank" rel="noopener" class="scammer-link">User Profile</a>');
   } else {
     robloxNameHtml = robloxName;
   }
