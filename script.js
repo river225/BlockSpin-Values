@@ -19,9 +19,9 @@ const SECTION_BANNERS = {
   "Legendary":{ url: "https://i.imgur.com/mdjOAS1.png", width: "217px", top: "227px", left: "53%" },
   "Omega":    { url: "https://i.imgur.com/LT1i1kR.png", width: "140px", top: "234px", left: "56%" },
   "Misc":     { url: "https://i.imgur.com/0WvIuZo.png", width: "200px", top: "235px", left: "53%" },
-  "Vehicles": { url: "https://i.imgur.com/UGdzYtH.png", width: "218px", top: "227px", left: "54%" },
-  "Crew Logos": { url: "", width: "200px", top: "225px", left: "53%" },
-  "Scammer List": { url: "", width: "200px", top: "225px", left: "53%" }
+  "Vehicles": { url: "https://i.imgur.com/UGdzYtH.png", width: "218px", top: "228px", left: "54%" },
+  "Crew Logos": { url: "https://i.imgur.com/SoIuFWy.png", width: "162px", top: "228px", left: "54%" },
+  "Scammer List": { url: "https://i.imgur.com/bQeLrpx.png", width: "140px", top: "243px", left: "56%" }
 };
 
 // === FETCH HELPERS ===
@@ -200,7 +200,7 @@ function renderScammerSection(items) {
   let html = `
     <section class="section" id="${slugify("Scammer List")}">
       <h2>Scammer List</h2>
-      <p class="scammer-warning">⚠️ WARNING: These clowns have been reported in our discord server for scamming. please Trade with extreme caution! Report scammers in our discord server to have them placed here!</p>
+      <p class="scammer-warning">⚠️ WARNING: These clowns have been reported in our discord server for scamming. Please trade with extreme caution! Report scammers in our discord server to have them placed here!</p>
       <div class="cards">
         ${items.map(createScammerCard).join("")}
       </div>
