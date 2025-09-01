@@ -460,3 +460,9 @@ body::-webkit-scrollbar {
 html, body {
   scrollbar-width: none;
 }
+
+.scammer-field {
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #666;
+}

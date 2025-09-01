@@ -109,20 +109,20 @@ function createScammerCard(item) {
   const submittedDate = safe(item["Submitted Date"]);
 
   // Handle Roblox name - check if it contains a URL and extract both parts
-let robloxNameHtml;
-if (robloxName.includes('http')) {
-  // Extract the URL and the text before it
-  const urlMatch = robloxName.match(/(.*?)(https?:\/\/\S+)/);
-  if (urlMatch) {
-    const textPart = urlMatch[1].trim();
-    const urlPart = urlMatch[2];
-    robloxNameHtml = `${textPart} <a href="${urlPart}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`;
+  let robloxNameHtml;
+  if (robloxName.includes('http')) {
+    // Extract the URL and the text before it
+    const urlMatch = robloxName.match(/(.*?)(https?:\/\/\S+)/);
+    if (urlMatch) {
+      const textPart = urlMatch[1].trim();
+      const urlPart = urlMatch[2];
+      robloxNameHtml = `${textPart} <a href="${urlPart}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`;
+    } else {
+      robloxNameHtml = robloxName;
+    }
   } else {
     robloxNameHtml = robloxName;
   }
-} else {
-  robloxNameHtml = robloxName;
-}
 
   // Handle evidence links
   const evidenceLinks = evidence.split(",").map(link => link.trim()).filter(link => link.length > 0);
@@ -136,16 +136,15 @@ if (robloxName.includes('http')) {
   return `
     <div class="card scammer-card" data-name="${escapeAttr(robloxName)}">
       <div class="card-info">
-        <h3>Roblox Name: ${robloxNameHtml}</h3>
-        <div>Discord: ${discordUser}</div>
-        <div>Reason: ${reason}</div>
-        ${evidenceHtml ? `<div>Evidence: ${evidenceHtml}</div>` : ""}
+        <div class="scammer-field"><strong>Roblox Name:</strong> ${robloxNameHtml}</div>
+        <div class="scammer-field"><strong>Discord:</strong> ${discordUser}</div>
+        <div class="scammer-field"><strong>Reason:</strong> ${reason}</div>
+        ${evidenceHtml ? `<div class="scammer-field"><strong>Evidence:</strong> ${evidenceHtml}</div>` : ""}
         <div>Reported: ${submittedDate}</div>
       </div>
     </div>
   `;
 }
-
 function renderSection(title, items) {
   if (!items || items.length === 0) return;
 
