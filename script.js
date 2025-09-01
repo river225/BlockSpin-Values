@@ -200,7 +200,7 @@ function renderScammerSection(items) {
   let html = `
     <section class="section" id="${slugify("Scammer List")}">
       <h2>Scammer List</h2>
-      <p class="scammer-warning">⚠️ WARNING: These clowns have been reported in our discord server for scamming. please Trade with extreme caution! Report scammers in our discord server to have them placed here!.</p>
+      <p class="scammer-warning">⚠️ WARNING: These clowns have been reported in our discord server for scamming. please Trade with extreme caution! Report scammers in our discord server to have them placed here!</p>
       <div class="cards">
         ${items.map(createScammerCard).join("")}
       </div>
