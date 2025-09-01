@@ -108,13 +108,21 @@ function createScammerCard(item) {
   const evidence = safe(item["Evidence"]);
   const submittedDate = safe(item["Submitted Date"]);
 
-  // Handle Roblox name - check if it's a URL
-  let robloxNameHtml;
-  if (robloxName.includes('http')) {
-    robloxNameHtml = `<a href="${robloxName}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`;
+  // Handle Roblox name - check if it contains a URL and extract both parts
+let robloxNameHtml;
+if (robloxName.includes('http')) {
+  // Extract the URL and the text before it
+  const urlMatch = robloxName.match(/(.*?)(https?:\/\/\S+)/);
+  if (urlMatch) {
+    const textPart = urlMatch[1].trim();
+    const urlPart = urlMatch[2];
+    robloxNameHtml = `${textPart} <a href="${urlPart}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`;
   } else {
     robloxNameHtml = robloxName;
   }
+} else {
+  robloxNameHtml = robloxName;
+}
 
   // Handle evidence links
   const evidenceLinks = evidence.split(",").map(link => link.trim()).filter(link => link.length > 0);
