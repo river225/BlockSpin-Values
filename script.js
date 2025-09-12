@@ -105,6 +105,7 @@ function createScammerCard(item) {
   const robloxName = safe(item["Roblox Name"]);
   const discordUser = safe(item["Discord User"]);
   const reason = safe(item["Reason"]);
+const reasonWithLinks = reason.replace(/https?:\/\/\S+/g, match => `<a href="${match}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`);
   const evidence = safe(item["Evidence"]);
   const submittedDate = safe(item["Submitted Date"]);
 
@@ -138,7 +139,7 @@ function createScammerCard(item) {
       <div class="card-info">
         <div class="scammer-field"><strong>Roblox Name:</strong> ${robloxNameHtml}</div>
         <div class="scammer-field"><strong>Discord:</strong> ${discordUser}</div>
-        <div class="scammer-field"><strong>Reason:</strong> ${reason}</div>
+        <div class="scammer-field"><strong>Reason:</strong> ${reasonWithLinks}</div>
         ${evidenceHtml ? `<div class="scammer-field"><strong>Evidence:</strong> ${evidenceHtml}</div>` : ""}
         <div>Reported: ${submittedDate}</div>
       </div>
