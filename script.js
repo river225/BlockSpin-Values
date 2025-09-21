@@ -39,7 +39,7 @@ async function fetchSheet(sheetName) {
       const obj = {};
       cols.forEach((label, i) => {
         const cell = r.c?.[i];
-        
+        obj[label] = cell ? (cell.f ?? cell.v ?? "") : "";
       });
       return obj;
     });
@@ -105,18 +105,24 @@ function createScammerCard(item) {
   const robloxName = safe(item["Roblox Name"]);
   const discordUser = safe(item["Discord User"]);
   const reason = safe(item["Reason"]);
-  const reasonWithLinks = reason.replace(/https?:\/\/\S+/g, match => `<a href="${match}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`);
+const reasonWithLinks = reason.replace(/https?:\/\/\S+/g, match => `<a href="${match}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`);
   const evidence = safe(item["Evidence"]);
   const submittedDate = safe(item["Submitted Date"]);
 
-  // FIXED: Handle Roblox name with multiple links exactly like Discord bot
-  let robloxNameHtml = robloxName;
-  const robloxUrls = robloxName.match(/https?:\/\/\S+/g);
-  if (robloxUrls) {
-    robloxUrls.forEach((url, index) => {
-      const linkText = index === 0 ? 'User Profile' : `User Profile ${index + 1}`;
-      robloxNameHtml = robloxNameHtml.replace(url, `<a href="${url}" target="_blank" rel="noopener" class="scammer-link">${linkText}</a>`);
-    });
+  // Handle Roblox name - check if it contains a URL and extract both parts
+  let robloxNameHtml;
+  if (robloxName.includes('http')) {
+    // Extract the URL and the text before it
+    const urlMatch = robloxName.match(/(.*?)(https?:\/\/\S+)/);
+    if (urlMatch) {
+      const textPart = urlMatch[1].trim();
+      const urlPart = urlMatch[2];
+      robloxNameHtml = `${textPart} <a href="${urlPart}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`;
+    } else {
+      robloxNameHtml = robloxName;
+    }
+  } else {
+    robloxNameHtml = robloxName;
   }
 
   // Handle evidence links
@@ -135,12 +141,11 @@ function createScammerCard(item) {
         <div class="scammer-field"><strong>Discord:</strong> ${discordUser}</div>
         <div class="scammer-field"><strong>Reason:</strong> ${reasonWithLinks}</div>
         ${evidenceHtml ? `<div class="scammer-field"><strong>Evidence:</strong> ${evidenceHtml}</div>` : ""}
-        <div>Submitted Date: ${submittedDate}</div>
+        <div>Reported: ${submittedDate}</div>
       </div>
     </div>
   `;
 }
-
 function renderSection(title, items) {
   if (!items || items.length === 0) return;
 
