@@ -39,7 +39,7 @@ async function fetchSheet(sheetName) {
       const obj = {};
       cols.forEach((label, i) => {
         const cell = r.c?.[i];
-        obj[label] = cell ? (cell.f ?? cell.v ?? "") : "";
+        obj[label] = cell ? (cell.f ?? cell.fv ?? cell.v ?? "") : "";
       });
       return obj;
     });
