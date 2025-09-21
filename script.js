@@ -28,7 +28,7 @@ const SECTION_BANNERS = {
 async function fetchSheet(sheetName) {
   try {
     const base = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq`;
-    const url = `${base}?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
+    const url = `${base}?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1&tq=`;
     const res = await fetch(url);
     const text = await res.text();
     const json = JSON.parse(text.substring(47, text.length - 2));
