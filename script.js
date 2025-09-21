@@ -128,7 +128,7 @@ const reasonWithLinks = reason.replace(/https?:\/\/\S+/g, match => `<a href="${m
         <div class="scammer-field"><strong>Discord:</strong> ${discordUser}</div>
         <div class="scammer-field"><strong>Reason:</strong> ${reasonWithLinks}</div>
         ${evidenceHtml ? `<div class="scammer-field"><strong>Evidence:</strong> ${evidenceHtml}</div>` : ""}
-        <div>Reported: ${item["Submitted Date"] || "No date"}</div>
+                <div>Reported: ${item["Submitted Date"] || item["Date Submitted"] || item["submitted date"] || item["Date"] || item["Timestamp"] || item["Created"] || item["Submit Date"] || Object.values(item).find(val => val && val.toString().includes('2025')) || "No date found"}</div>
       </div>
     </div>
   `;
