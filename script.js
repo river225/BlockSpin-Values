@@ -135,7 +135,7 @@ function createScammerCard(item) {
         <div class="scammer-field"><strong>Discord:</strong> ${discordUser}</div>
         <div class="scammer-field"><strong>Reason:</strong> ${reasonWithLinks}</div>
         ${evidenceHtml ? `<div class="scammer-field"><strong>Evidence:</strong> ${evidenceHtml}</div>` : ""}
-        <div>Reported: ${submittedDate}</div>
+        <div>Submitted Date: ${submittedDate}</div>
       </div>
     </div>
   `;
