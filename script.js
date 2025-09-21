@@ -39,7 +39,7 @@ async function fetchSheet(sheetName) {
       const obj = {};
       cols.forEach((label, i) => {
         const cell = r.c?.[i];
-        obj[label] = cell ? (cell.f ?? cell.fv ?? cell.v ?? "") : "";
+        
       });
       return obj;
     });
@@ -135,7 +135,7 @@ function createScammerCard(item) {
         <div class="scammer-field"><strong>Discord:</strong> ${discordUser}</div>
         <div class="scammer-field"><strong>Reason:</strong> ${reasonWithLinks}</div>
         ${evidenceHtml ? `<div class="scammer-field"><strong>Evidence:</strong> ${evidenceHtml}</div>` : ""}
-     <div>DEBUG: [${submittedDate}] - ALL DATA: ${JSON.stringify(item)}</div>
+        <div>Submitted Date: ${submittedDate}</div>
       </div>
     </div>
   `;
