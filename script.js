@@ -107,7 +107,7 @@ function createScammerCard(item) {
   const reason = safe(item["Reason"]);
 const reasonWithLinks = reason.replace(/https?:\/\/\S+/g, match => `<a href="${match}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`);
   const evidence = safe(item["Evidence"]);
-  const submittedDate = item["Submitted Date"] || item["Submitted Date"] || "";
+  const submittedDate = item["Date"] || item["Submitted Date"] || "";
 
     // Handle Roblox name - detect and replace multiple URLs with "User Profile" links
   const robloxNameWithLinks = robloxName.replace(/https?:\/\/\S+/g, match => `<a href="${match}" target="_blank" rel="noopener" class="scammer-link">User Profile</a>`);
