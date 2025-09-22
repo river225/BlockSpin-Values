@@ -128,7 +128,7 @@ const reasonWithLinks = reason.replace(/https?:\/\/\S+/g, match => `<a href="${m
         <div class="scammer-field"><strong>Discord:</strong> ${discordUser}</div>
         <div class="scammer-field"><strong>Reason:</strong> ${reasonWithLinks}</div>
         ${evidenceHtml ? `<div class="scammer-field"><strong>Evidence:</strong> ${evidenceHtml}</div>` : ""}
-                <div>Reported: ${item["Submitted Date"] || item["Timestamp"] || Object.values(item).find(val => val && val.toString().match(/\d{1,2}\/\d{1,2}\/\d{4}/)) || "Date format issue"}</div>
+               <div>Reported: ${submittedDate}</div>
       </div>
     </div>
   `;
