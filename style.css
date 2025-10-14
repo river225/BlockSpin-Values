@@ -1,3 +1,67 @@
+/* FORCE REMOVE ALL SCROLLBARS */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+* {
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* Internet Explorer 10+ */
+}
+
+html {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+body {
+  overflow-x: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Force hide on any container */
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  background: transparent !important;
+}
+
+*::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+/* Fix scrollbar issues */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Fix scrollbar issues */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+}
+
 /* Base */
 * { box-sizing: border-box; }
 html, body { 
@@ -413,9 +477,9 @@ html, body {
   overflow-x: hidden !important;
 }
 
-/* === FIXED Section Banner (absolute positioning relative to document) === */
+/* === BANNER FADE TRANSITION - ADDED === */
 #section-banner {
-  position: absolute !important;  /* FIXED: Changed from fixed to absolute */
+  position: absolute !important;  
   z-index: 999;           
   pointer-events: none;   
 }
@@ -423,46 +487,383 @@ html, body {
 #banner-img {
   position: absolute;     
   display: block;         
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  opacity: 0;             
-  transform: scale(0.95); 
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 #banner-img.show {
   opacity: 1;
-  transform: scale(1);
+  transition: opacity 0.3s ease;
 }
 
-/* Hide banners on mobile + tablets */
-@media (max-width: 1024px) {
-  #section-banner {
-    display: none !important;
-  }
+/* Map controls styling */
+.map-controls-panel {
+  width: 240px;
+  padding: 16px;
+  background: #1f2a33;
+  border: 1px solid #33cce6;
+  border-radius: 12px;
+  position: sticky;
+  top: 16px;
+  height: fit-content;
 }
 
-/* Hide vertical scrollbar but allow scrolling */
-html, body {
-  overflow-x: hidden !important;  /* prevent horizontal scroll */
-  overflow-y: scroll;             /* allow vertical scrolling */
+.map-controls-panel h2 {
+  color: #33cce6;
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+  margin-top: 0;
 }
 
-/* Hide vertical scrollbar for Chrome, Edge, Safari */
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
-
-/* Hide vertical scrollbar for Firefox */
-html, body {
-  scrollbar-width: none;
-}
-
-.scammer-field {
-  padding-bottom: 8px;
+.map-control-btn {
+  display: block;
+  width: 100%;
+  padding: 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid #666;
+  background: #4a4a4a;
+  border: 1px solid #100101;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  text-align: left;
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
 }
+
+.map-control-btn.active {
+  background: #232324;
+}
+
+.map-control-btn:hover {
+  background: #5a5a5a;
+}
+
+/* Map container styling */
+.map-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.map-image-container {
+  position: relative;
+  width: 100%;
+}
+
+#base-map {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+#map-overlays {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.map-image-overlay {
+  pointer-events: all;
+  border-radius: 4px;
+}
+
+/* Map detail modal */
+.map-detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.modal-content img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.modal-back-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #33cce6;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-back-btn:hover {
+  background: #29b3cc;
+}
+
+.map-info-text {
+  text-align: center;
+  color: #33cce6;
+  margin-bottom: 20px;
+  font-style: italic;
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+}
+
+
+
+
+
+
+
+
+
+
+/* Map overlay hover effect - icons get bigger */
+.map-image-overlay {
+  transition: transform 0.2s ease;
+}
+
+.map-image-overlay:hover {
+  transform: translate(-50%, -50%) scale(1.2) !important;
+}
+
+/* Fix modal back button position - bottom right */
+.modal-back-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  top: auto !important;
+  left: auto !important;
+  background: #33cce6;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+
+
+/* Map controls styling - PURE DARK + CYAN */
+.map-controls-panel {
+  width: 240px;
+  padding: 16px;
+  background: linear-gradient(135deg, #1c1c1c 0%, #2a2a2a 50%, #3a3a3a 100%);
+  border: 2px solid #33cce6;
+  border-radius: 15px;
+  position: sticky;
+  top: 16px;
+  height: fit-content;
+  box-shadow: 0 8px 25px rgba(51, 204, 230, 0.2);
+}
+
+.map-controls-panel h2 {
+  color: #33cce6;
+  text-shadow: 0 0 8px #33cce6, 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+  margin-top: 0;
+  text-align: center;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+.map-control-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #4a4a4a 0%, #5a5a5a 50%, #6a6a6a 100%);
+  border: 2px solid #555;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  text-align: center;
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.map-control-btn:hover {
+  background: linear-gradient(135deg, #5a5a5a 0%, #6a6a6a 50%, #7a7a7a 100%);
+  border-color: #33cce6;
+  color: #33cce6;
+  text-shadow: 0 0 5px #33cce6, 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(51, 204, 230, 0.3);
+}
+
+.map-control-btn.active {
+  background: linear-gradient(135deg, #33cce6 0%, #29b3cc 50%, #1f9fb8 100%);
+  border-color: #33cce6;
+  color: #000;
+  text-shadow: none;
+  box-shadow: 0 6px 20px rgba(51, 204, 230, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.map-control-btn.active:hover {
+  background: linear-gradient(135deg, #33cce6 0%, #29b3cc 50%, #1f9fb8 100%);
+  border-color: #33cce6;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(51, 204, 230, 0.6), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Map overlay hover effect - icons get bigger */
+.map-image-overlay {
+  transition: transform 0.2s ease;
+}
+
+.map-image-overlay:hover {
+  transform: translate(-50%, -50%) scale(1.2) !important;
+}
+
+/* Enhanced modal with larger images */
+.map-detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 85%;
+  max-height: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content img {
+  width: auto;
+  height: auto;
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Back button positioned bottom-right - UNCHANGED */
+.modal-back-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  top: auto !important;
+  left: auto !important;
+  background: #33cce6;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10001;
+}
+
+.modal-back-btn:hover {
+  background: #29b3cc;
+}
+
+/* Durability control styling - COMPACT */
+.durability-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding-left: 10px;
+}
+
+.durability-control label {
+  font-weight: bold;
+  color: #33cce6;
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+.durability-input {
+  width: 50px;
+  padding: 3px 5px;
+  border-radius: 4px;
+  border: 2px solid #33cce6;
+  background: #2a3945;
+  color: #fff;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: bold;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.durability-input::-webkit-outer-spin-button,
+.durability-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.durability-max {
+  color: #33cce6;
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin: 0 3px;
+}
+
+.durability-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.durability-arrows button {
+  width: 20px;
+  height: 16px;
+  padding: 0;
+  background: #33cce6;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #000;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: bold;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.durability-arrows button:hover {
+  background: #29b3cc;
+}
+
+.durability-arrows button:active {
+  background: #1e8a9c;
+}
+
+.durability-input-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
