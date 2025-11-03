@@ -478,7 +478,11 @@ function renderScammerSection(items) {
   let html = `
     <section class="section" id="${slugify("Scammer List")}">
       <h2>Scammer List</h2>
-      <p class="scammer-warning">⚠️ WARNING: These clowns have been reported in our discord server for scamming. Please trade with extreme caution! Report scammers in our discord server to have them placed here!</p>
+      <p class="scammer-warning"> Notice:After careful consideration, we’ve decided to remove the Scammer List from both our website and Discord server.
+
+We understand this decision may come as a surprise or even be seen as controversial. However, since the game itself does not officially ban scammers, maintaining our own list often extends beyond our intended purpose and has led to complications.
+
+We recognize that some may worry this change removes one of the few deterrents against scammers. While we understand those concerns, we strongly encourage everyone to use our verified Middleman Service in our discord server to ensure safe and secure trades.</p>
       <div class="cards">
         ${items.map(createScammerCard).join("")}
       </div>
