@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .about-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 40px;
+    background: #141d28;
+    border: 3px solid #000000;
+    border-radius: 12px;
+    position: relative;
+}
+
+.back-btn-top {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background: #33cce6;
+    color: #000;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.back-btn-top:hover {
+    background: #5bc5de;
+}
+
+.about-header {
+    font-size: 4rem;
+    color: #33cce6;
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+    text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+}
+
+.mission-section {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.mission-section p {
+    font-size: 1.2rem;
+    color: #fff;
+    line-height: 1.9;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.founder-section {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.founder-label {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #33cce6;
+    margin-bottom: 20px;
+    margin-top: 40px;
+    text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+}
+
+.founder-label:first-child {
+    margin-top: 0;
+}
+
+.founder-info {
+    font-size: 2rem;
+    color: #fff;
+    line-height: 2;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: #33cce6;
+    text-align: center;
+    margin-bottom: 40px;
+    text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+}
+
+.teams-container {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 50px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+}
+
+.team-card {
+    flex: 1;
+    max-width: 420px;
+    border-radius: 8px;
+    padding: 30px;
+    border: 3px solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+.team-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.team-card h3 {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+    padding: 18px 20px;
+    position: relative;
+}
+
+/* Value List Team - Green with hexagon cut corners and circle accents */
+.team-card.value-team {
+    background: linear-gradient(135deg, #1a2e1a 0%, #1f2a38 50%, #1a2e1a 100%);
+    border-color: #6bc76b;
+}
+
+.team-card.value-team::before {
+    background: radial-gradient(circle at top right, #6bc76b, transparent 70%),
+                radial-gradient(circle at bottom left, #6bc76b, transparent 70%);
+}
+
+.team-card.value-team h3 {
+    color: #6bc76b;
+    border: 2px solid #6bc76b;
+    border-radius: 0px;
+    clip-path: polygon(
+        0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px,
+        100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px)
+    );
+}
+
+.team-card.value-team h3::before,
+.team-card.value-team h3::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #6bc76b;
+    border-radius: 50%;
+}
+
+.team-card.value-team h3::before {
+    top: 4px;
+    left: 4px;
+}
+
+.team-card.value-team h3::after {
+    bottom: 4px;
+    right: 4px;
+}
+
+.team-card.value-team .team-divider {
+    background: #6bc76b;
+}
+
+.team-card.value-team .team-label {
+    color: #6bc76b;
+}
+
+.team-card.value-team .team-members a {
+    color: #6bc76b;
+}
+
+.team-card.value-team .team-members {
+    color: #6bc76b;
+}
+
+/* Website Testing Team - Orange with notched corners */
+.team-card.testing-team {
+    background: linear-gradient(135deg, #2e2318 0%, #1f2a38 50%, #2e2318 100%);
+    border-color: #ff9944;
+}
+
+.team-card.testing-team::before {
+    background: radial-gradient(circle at top right, #ff9944, transparent 70%),
+                radial-gradient(circle at bottom left, #ff9944, transparent 70%);
+}
+
+.team-card.testing-team h3 {
+    color: #ff9944;
+    border: 2px solid #ff9944;
+    border-radius: 0px;
+    clip-path: polygon(
+        12px 0%, calc(100% - 12px) 0%, 
+        100% 12px, 100% calc(100% - 12px), 
+        calc(100% - 12px) 100%, 12px 100%, 
+        0% calc(100% - 12px), 0% 12px
+    );
+}
+
+.team-card.testing-team h3::before,
+.team-card.testing-team h3::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #ff9944;
+    transform: rotate(45deg);
+}
+
+.team-card.testing-team h3::before {
+    top: 3px;
+    left: 3px;
+}
+
+.team-card.testing-team h3::after {
+    bottom: 3px;
+    right: 3px;
+}
+
+.team-card.testing-team .team-divider {
+    background: #ff9944;
+}
+
+.team-card.testing-team .team-label {
+    color: #ff9944;
+}
+
+.team-card.testing-team .team-members a {
+    color: #ff9944;
+}
+
+.team-card.testing-team .team-members {
+    color: #ff9944;
+}
+
+.team-description {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), -1px -1px 2px rgba(0, 0, 0, 0.8);
+    padding: 0 10px;
+}
+
+.team-divider {
+    height: 2px;
+    margin: 25px 0;
+    border-radius: 2px;
+}
+
+.team-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 0 #000;
+    text-align: center;
+}
+
+.team-members {
+    font-size: 1.05rem;
+    line-height: 2;
+    margin-bottom: 25px;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.team-members div {
+    text-align: center;
+    padding: 5px;
+}
+
+.team-members a {
+    text-decoration: none;
+}
+
+.team-members a:hover {
+    text-decoration: underline;
+}
+
+.contact-section {
+    padding: 30px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.contact-section h2 {
+    font-size: 2rem;
+    color: #33cce6;
+    margin-bottom: 20px;
+    text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+}
+
+.contact-section p {
+    font-size: 1.1rem;
+    color: #fff;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.contact-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background: #5865f2;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.contact-btn:hover {
+    background: #4752c4;
+}
+
+.back-btn {
+    display: inline-block;
+    margin: 30px auto;
+    padding: 12px 30px;
+    background: #33cce6;
+    color: #000;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.back-btn:hover {
+    background: #5bc5de;
+}
+
+/* Mobile responsive fixes */
+@media screen and (max-width: 430px) {
+    .about-container {
+        padding: 20px;
+        margin: 20px auto;
+    }
+    
+    .back-btn-top {
+        top: 10px;
+        left: 10px;
+        font-size: 0.8rem;
+        padding: 8px 15px;
+    }
+    
+    .about-header {
+        font-size: 2.5rem;
+        margin-top: 50px;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+    }
+    
+    .teams-container {
+        flex-direction: column;
+        gap: 30px;
+        max-width: 100%;
+    }
+    
+    .team-card {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .team-card h3 {
+        font-size: 1.5rem;
+        padding: 15px;
+    }
+    
+    .team-description {
+        font-size: 1rem;
+    }
+    
+    .team-members {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        font-size: 1rem;
+    }
+    
+    .founder-info {
+        font-size: 1.5rem;
+    }
+    
+    .mission-section p {
+        font-size: 1.1rem;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <nav class="top-navbar">
+  <div class="nav-container-full">
+    <div class="nav-left">
+      <img src="https://i.ibb.co/twmgLx3X/Chat-GPT-Image-Nov-8-2025-05-25-11-AM.png" alt="BlockSpin Values Logo" class="nav-logo-img">
+      <span class="nav-title">Block<span style="color: #ff1a1a;">Spin</span> <span style="color: #33cce6;">Values</span></span>
+      <span class="nav-separator">|</span>
+      <a href="x-trading-guide.html">Trading Guide</a>
+      <span class="nav-separator">|</span>
+      <a href="x-about.html">About Us</a>
+      <span class="nav-separator">|</span>
+      <a href="x-faq.html">FAQ</a>
+    </div>
+    
+    <div class="nav-right">
+      <a href="https://discord.gg/QbapryYUUx" target="_blank" class="nav-discord">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+        </svg>
+      </a>
+      <a href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" target="_blank" class="nav-tiktok">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74a2.89 2.89 0 0 1 2.31-4.64a2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+    <div class="about-container">
+        <a href="index.html" class="back-btn-top">← Back</a>
+        
+        <h1 class="about-header">About Us</h1>
+        
+        <!-- Mission Section (No Header) -->
+        <div class="mission-section">
+            <p>Our goal is to provide the BlockSpin community with the most accurate, up-to-date trading values and resources. We're dedicated to creating a safe trading environment by maintaining transparency and empowering traders with the knowledge and tools they need to succeed.</p>
+        </div>
+        
+        <!-- Founder & Developer Section -->
+        <div class="founder-section">
+            <div class="founder-label">Website Founder and Developer:</div>
+            <div class="founder-info">River</div>
+            
+            <div class="founder-label">Optimisation Technician:</div>
+            <div class="founder-info">Daphnèe</div>
+        </div>
+        
+        <h2 class="section-title">Check out our websites dedicated Teams!</h2>
+        
+        <div class="teams-container">
+            <!-- Value List Team -->
+            <div class="team-card value-team">
+                <h3>Value List Team</h3>
+                <p class="team-description">Responsible for maintaining accurate and up-to-date values for all BlockSpin items through daily market research and trading analysis.</p>
+                
+                <div class="team-divider"></div>
+                
+                <div class="team-label">Manager:</div>
+                <div class="team-members" style="display: block;">
+                    
+                   
+                    <a href="https://www.roblox.com/users/5597065792/profile" target="_blank">Dynasty</a>
+            
+                </div>
+                
+                <div class="team-divider"></div>
+                
+                <div class="team-label">Team Members:</div>
+                <div class="team-members">
+                <div><a href="https://www.roblox.com/users/1299154302/profile" target="_blank">Ghoul</a></div>
+                <div><a href="https://www.roblox.com/users/2644094525/profile" target="_blank">K1L4</a></div>
+                <div><a href="https://www.roblox.com/users/446656603/profile" target="_blank">King Midas</a></div>
+                <div><a href="https://www.roblox.com/users/4766567543/profile" target="_blank">Mujig</a></div>
+                <div><a href="https://www.roblox.com/users/5420319351/profile" target="_blank">Ntx</a></div>
+
+                </div>
+            </div>
+            
+            <!-- Website Testing Team -->
+            <div class="team-card testing-team">
+                <h3>Website Testing Team</h3>
+                <p class="team-description">Tests and suggests new features, reports bugs, and ensures the website runs smoothly for all users with continuous quality assurance.</p>
+                
+                <div class="team-divider"></div>
+                
+                <div class="team-label">Manager:</div>
+                <div class="team-members" style="display: block;">
+                    Daphnèe
+                    <!-- To make clickable, replace above line with:
+                    <a href="https://www.roblox.com/users/USERID/profile" target="_blank">Daphnèe</a>
+                    -->
+                </div>
+                
+                <div class="team-divider"></div>
+                
+                <div class="team-label">Team Members:</div>
+                <div class="team-members">
+                    <div><a href="https://www.roblox.com/users/1632651270/profile" target="_blank">Hardships</a></div>
+                    <div><a href="https://www.roblox.com/users/3115743659/profile" target="_blank">Hntr</a></div>
+                    <div><a href="https://www.roblox.com/users/3364073582/profile" target="_blank">K1L4</a></div>
+                    <div><a href="https://www.roblox.com/users/1848756084/profile" target="_blank">Star</a></div>
+                    <div><a href="https://www.roblox.com/users/417471047/profile" target="_blank">spideyyy</a></div>
+                    <!-- Add more members as needed, wrap in <a> tag to make clickable -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2>Contact Us</h2>
+            <p>Have questions, suggestions, or want to join our team? Reach out to us on Discord!</p>
+            <a href="https://discord.gg/QbapryYUUx" class="contact-btn" target="_blank">Join Our Discord</a>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="index.html" class="back-btn">← Back to Home</a>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+  <div class="footer-content">
+    <p>© 2025 BlockSpin Values</p>
+    <div class="footer-links">
+      <a href="z-contact.html">Contact River</a>
+      <span>•</span>
+      <a href="z-terms.html">Terms of Service</a>
+      <span>•</span>
+      <a href="z-privacy.html">Privacy Policy</a>
+      <span>•</span>
+    
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

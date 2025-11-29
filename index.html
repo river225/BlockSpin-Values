@@ -1,6 +1,18 @@
 <!DOCTYPE html> 
 <html lang="en"> 
 <head> 
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T25993BCC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-0T25993BCC');
+</script>
+
+
+
 <meta charset="UTF-8" /> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
 <title>BlockSpin Values</title>
@@ -11,6 +23,7 @@
 <meta property="og:description" content="A Blockspin Community Driven Value List — Maintained by our top trader Value List Team in our discord server and built by river.">
 <link rel="stylesheet" href="style.css" />
 <style> 
+
 /* Floating buttons at the bottom */ 
 .bottom-buttons { 
     position: fixed; 
@@ -51,20 +64,26 @@
 
 /* Search bar */ 
 .search-container { 
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%; 
     display: flex; 
     justify-content: center; 
-    margin: 10px 0 20px 0; 
+    align-items: center;
+    z-index: 100;
 } 
-.search-container input { 
-    width: 300px; 
-    padding: 10px; 
-    font-size: 1rem; 
-    border-radius: 8px; 
-    border: 1px solid #ccc; 
+#search { 
+    width: 400px; 
+    max-width: 90%;
+    padding: 12px; 
+    border-radius: 10px; 
+    background: #141d28;
+border: 2px solid #000000;
+    color: #fff;
     text-align: left; 
-} 
-
+}
 /* Main layout */ 
 .main-container { 
     display: flex; 
@@ -78,45 +97,77 @@
     flex: 3; 
 } 
 
-/* Tax calculator */ 
-.tax-calculator { 
-    flex: 1; 
-    padding: 15px; 
-    max-width: 250px; 
-    position: sticky; 
-    top: 10px; 
-    height: fit-content; 
-} 
 
-/* Banner container */
-#section-banner {
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto 20px auto;
-    text-align: center;
-}
-#section-banner img {
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-    display: none; /* hidden until section is selected */
-}
 </style> 
 </head> 
 <body> 
 
-<div id="section-banner">
-  <img id="banner-img" src="" alt="Banner">
+  
+</style> 
+</head> 
+<body> 
+
+<!-- Mobile Top Links -->
+<div class="mobile-top-links">
+  <a href="x-trading-guide.html">Trading Guide</a>
+  <span>|</span>
+  <a href="x-about.html">About Us</a>
+  <span>|</span>
+  <a href="x-faq.html">FAQ</a>
 </div>
 
-<!-- Header --> 
-<header class="site-header"> 
-<h1 class="blockspin-header">
-  Block<span class="spin-word">Spin</span> Values
-</h1>
+<!-- Hamburger Menu Button -->
+<button class="hamburger-menu" id="hamburger-btn">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
 
-<p>A Blockspin Value List — Maintained by our top trader Value List Team in our discord server and founded by river.</p> 
-<p><em>You can suggest Value changes, Website ideas and Crew logo ideas in our discord server. If approved, the changes are placed here! © 2025 river. All rights reserved. Unofficial Site. Version 2.2.5 </em></p> 
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" id="mobile-menu"></div>
+
+<nav class="top-navbar">
+  <div class="nav-container-full">
+    <div class="nav-left">
+      <img src="https://i.ibb.co/twmgLx3X/Chat-GPT-Image-Nov-8-2025-05-25-11-AM.png" alt="BlockSpin Values Logo" class="nav-logo-img">
+      <span class="nav-title">Block<span style="color: #ff1a1a;">Spin</span> <span style="color: #33cce6;">Values</span></span>
+      <span class="nav-separator">|</span>
+      <a href="x-trading-guide.html">Trading Guide</a>
+      <span class="nav-separator">|</span>
+      <a href="x-about.html">About Us</a>
+      <span class="nav-separator">|</span>
+      <a href="x-faq.html">FAQ</a>
+    </div>
+    
+    <div class="nav-right">
+      <a href="https://discord.gg/QbapryYUUx" target="_blank" class="nav-discord">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.29a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.197.373.29a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+        </svg>
+      </a>
+      <a href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" target="_blank" class="nav-tiktok">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74a2.89 2.89 0 0 1 2.31-4.64a2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+<div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, #16202c 0%, #1f2d3d 50%, #16202c 100%); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+  <div style="text-align: center; width: 400px; max-width: 90%;">
+    <h2 style="color: #33cce6; font-size: 2rem; margin-bottom: 30px;">Loading BlockSpin Values...</h2>
+    <div style="width: 100%; height: 8px; background: #1a2532; border-radius: 10px; overflow: hidden; border: 2px solid #33cce6;">
+      <div id="progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #33cce6, #5bc5de); transition: width 0.3s ease;"></div>
+    </div>
+    <p id="progress-text" style="color: #33cce6; margin-top: 15px; font-size: 0.9rem;">0%</p>
+  </div>
+</div>
+
+
+
+ 
 </header> 
 
 <!-- Search bar --> 
@@ -130,34 +181,184 @@
     <nav class="sections-nav" id="sections-nav"></nav> 
 
     <!-- Main content area --> 
-    <main id="sections" class="sections"></main> 
+    <main id="sections" class="sections">
+     <section id="home" style="display: block;">
+  
+  <!-- New Clean Home Page -->
+  <div class="home-page-clean">
+    
+    <div class="home-content-main">
+    
+    <!-- Welcome Header -->
+    <div class="welcome-header">
+      <h1>Welcome to BlockSpin Values</h1>
+      <p class="subtitle">Your trusted source for BlockSpin trading values</p>
+      <p class="founder-credit">Founded and maintained by <a href="#" onclick="openRiverLinks(event)" style="color: #33cce6; text-decoration: underline;">river</a></p>
+    </div>
+
+    <!-- Social Buttons -->
+    <div class="social-buttons-home">
+      <a href="https://discord.gg/QbapryYUUx" class="social-btn discord-btn" target="_blank">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.29a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.197.373.29a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+        </svg>
+        Join Our Trading Discord
+      </a>
+      <a href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" class="social-btn tiktok-btn" target="_blank">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74a2.89 2.89 0 0 1 2.31-4.64a2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+        </svg>
+        Check Out Rivers TikTok
+      </a>
+    </div>
+
+    <!-- Divider -->
+    <div class="home-divider"></div>
+
+    <!-- What is BlockSpin Values Section -->
+    <div class="what-is-section">
+      <h2>What is BlockSpin Values?</h2>
+      <p>BlockSpin Values is the trusted value list for all items in the Roblox game BlockSpin. Our dedicated team of top traders keeps values updated daily to help you make fair trades and avoid scams. Whether you're looking for weapon values, checking crew logos, or calculating taxes, we've got everything you need to trade with confidence.</p>
+    </div>
+
+    <!-- Divider -->
+    <div class="home-divider"></div>
+
+    <!-- Two Column Section -->
+    <div class="home-two-columns">
+      
+      <!-- Announcements -->
+      <div class="home-column">
+        <h2>📢 Announcements</h2>
+        <div class="announcement-list">
+          <div class="announcement-item-clean">
+            <p class="announcement-date">Nov 15, 2025</p>
+            <p class="announcement-text">Our latest website update is now live!
+We’ve launched a complete site redesign, and items will now display both their repair prices and pawn values across all durability levels. This update is designed to give you clearer, more detailed information and an overall better user experience.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Donators -->
+      <div class="home-column">
+        <h2>💰 Top Donators</h2>
+        <p class="donator-subtitle">Thank you to our generous supporters! Join our Discord to support!</p>
+        <div class="donator-list-clean" id="donator-list">
+          <div class="donator-loading">Loading donators...</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div> <!-- Close home-content-main -->
+
+<!-- Quick Stats Box - Add this where you want it on the home page -->
+<aside class="quick-stats-box">
+  <h2>📊 Quick Stats</h2>
+  
+  <div class="stat-item">
+    <div class="stat-icon">👥</div>
+    <div class="stat-content">
+      <div class="stat-label">Discord Members</div>
+      <div class="stat-value" id="discord-count">Loading...</div>
+    </div>
+  </div>
+
+  <div class="stat-item">
+    <div class="stat-icon">👀</div>
+    <div class="stat-content">
+      <div class="stat-label">Website Visits</div>
+      <div class="stat-value" id="visit-count">0</div>
+    </div>
+  </div>
+
+  <div class="stat-item">
+    <div class="stat-icon">📦</div>
+    <div class="stat-content">
+      <div class="stat-label">Total Items</div>
+      <div class="stat-value" id="total-items">0</div>
+    </div>
+  </div>
+
+  <div class="stat-item">
+    <div class="stat-icon">🔄</div>
+    <div class="stat-content">
+      <div class="stat-label">Last Updated</div>
+      <div class="stat-value" id="last-updated">Today</div>
+    </div>
+  </div>
+</aside>
+
+</div> <!-- Close home-page-clean -->
+
+</section>
+
+
+ </section>
+    </main> 
+
+
 
     <!-- Tax calculator --> 
     <aside class="tax-calculator"> 
+          
         <h2>Tax Calculator</h2> 
-        <input type="number" id="taxInput" placeholder="Amount..." /> 
-        <div id="taxResult">
-            Amount to withdraw: <span class="calc-amount">0</span>
+        
+        <div class="tax-result">
+    <h3>Amount to withdraw:</h3>
+    <div class="amount">$<span id="tax-amount">0</span></div>
+</div>
+
+<input 
+    type="number" 
+    id="taxInput" 
+    placeholder="Enter amount..."
+/>
+        <div class="instructions">
+            Enter the amount you want the other person to get. The calculator tells you how much to withdraw to cover taxes. <strong>Same rules apply for trades above 100k, you just respawn multiple times.</strong>
         </div>
-        <p class="tax-explanation">Enter the amount you want the other person to get. The calculator tells you how much to withdraw to cover taxes. Same rules apply for trades above 100k, you just respawn multiple times.</p> 
-    </aside> 
+    </aside>
 
 </div>
 
-<!-- Floating buttons at the bottom --> 
-<div class="bottom-buttons"> 
-<a class="btn discord-btn" href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener">Join Our Trading Discord</a>
-<a class="btn tiktok-btn" href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" target="_blank" rel="noopener">Check Out Rivers TikTok</a> 
-</div> 
 
 <script src="script.js"></script> 
 
-<div id="floating-text">Use Referral Code 1563R2 For $500 In Game!</div>
 
-<div id="floating-text-left">
-  <div>Want to suggest Value changes or Crew logos for this site?</div>
-  <div class="discord-line">Join our Discord!</div>
-</div>
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-content">
+    <p>© 2025 BlockSpin Values</p>
+    <div class="footer-links">
+      <a href="z-contact.html">Contact Us</a>
+<span>•</span>
+<a href="z-terms.html">Terms of Service</a>
+<span>•</span>
+<a href="z-privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
 
+
+</body>
+<!-- Mobile Tax Calculator (Mobile Only - Fixed Position) -->
+<button class="mobile-calc-arrow" id="mobile-calc-arrow">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+  </svg>
+</button>
+
+<aside class="mobile-tax-calc" id="mobile-tax-calc">
+  <button class="mobile-calc-close" id="mobile-calc-close">×</button>
+  <h2>Tax Calculator</h2>
+  <div class="tax-result">
+    <h3>Amount to withdraw:</h3>
+    <div class="amount">$<span id="mobile-tax-amount">0</span></div>
+  </div>
+  <input type="number" id="mobile-tax-input" placeholder="Enter amount..." />
+  <div class="instructions">
+    Enter the amount you want the other person to get. The calculator tells you how much to withdraw to cover taxes. <strong>Same rules apply for trades above 100k, you just respawn multiple times.</strong>
+  </div>
+</aside>
 </body> 
 </html>

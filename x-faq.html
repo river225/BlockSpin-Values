@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .faq-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 40px;
+            background: #141d28;
+            border: 3px solid #000000;
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .back-btn-top {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: #33cce6;
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .back-btn-top:hover {
+            background: #5bc5de;
+        }
+        
+        .faq-header {
+            font-size: 4rem;
+            color: #33cce6;
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 20px;
+            text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+        }
+        
+        .faq-intro {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+        
+        .faq-item {
+            background: #1f2a38;
+            border: 2px solid #33cce6;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            border-color: #5bc5de;
+        }
+        
+        .faq-question {
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        
+        .faq-question h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #33cce6;
+            font-weight: 600;
+        }
+        
+        .faq-icon {
+            font-size: 1.5rem;
+            color: #33cce6;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s ease;
+            padding: 0 25px;
+            opacity: 0;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 800px;
+            padding: 0 25px 20px 25px;
+            opacity: 1;
+        }
+        
+        .faq-answer p {
+            margin: 0;
+            color: #fff;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin: 30px auto;
+            padding: 12px 30px;
+            background: #33cce6;
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .back-btn:hover {
+            background: #5bc5de;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-navbar">
+  <div class="nav-container-full">
+    <div class="nav-left">
+      <img src="https://i.ibb.co/twmgLx3X/Chat-GPT-Image-Nov-8-2025-05-25-11-AM.png" alt="BlockSpin Values Logo" class="nav-logo-img">
+      <span class="nav-title">Block<span style="color: #ff1a1a;">Spin</span> <span style="color: #33cce6;">Values</span></span>
+      <span class="nav-separator">|</span>
+      <a href="x-trading-guide.html">Trading Guide</a>
+      <span class="nav-separator">|</span>
+      <a href="x-about.html">About Us</a>
+      <span class="nav-separator">|</span>
+      <a href="x-faq.html">FAQ</a>
+    </div>
+    
+    <div class="nav-right">
+      <a href="https://discord.gg/QbapryYUUx" target="_blank" class="nav-discord">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+        </svg>
+      </a>
+      <a href="https://www.tiktok.com/@river1_0_?_t=ZN-8yzOC1THAus&_r=1" target="_blank" class="nav-tiktok">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74a2.89 2.89 0 0 1 2.31-4.64a2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+    <div class="faq-container">
+        <a href="index.html" class="back-btn-top">← Back</a>
+        
+        <h1 class="faq-header">FAQ</h1>
+        <p class="faq-intro">Have questions? We've got answers! Click on any question below to expand.</p>
+        
+        <!-- FAQ Items -->
+        <div class="faq-item">
+            <div class="faq-question">
+                <h3>How often are item values updated?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>We aim to constantly update our values based on market trends and in-game changes such as new content that can affect a items value.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <h3>Are the values accurate for trading?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Yes, Our value list team is always working hard to ensure they are providing the best item values for you!</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <h3>How can I suggest a value change?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>To suggest changes to values, Join our Discord server and locate the 'Value Suggestions' channel in our Website Portal Category.</p>
+            </div>
+        </div>
+        
+         <div class="faq-item">
+            <div class="faq-question">
+                <h3>Who maintains this website?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>This website was founded and maintained by river, a BlockSpin QA Tester and Content Creator.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <h3>What does "Demand" mean?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>An items demand refers to how sought after the item is, this is a important factor of items as it can help determine if you will be able to easily sell something. Demand can also add to a items value.</p>
+            </div>
+        </div>
+
+         <div class="faq-item">
+            <div class="faq-question">
+                <h3>What does "Average Value" mean?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Average Value refers to the typical and standard pricing for a item.</p>
+            </div>
+        </div>
+    
+          <div class="faq-item">
+            <div class="faq-question">
+                <h3>What does "Ranged Value" mean?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Often placing a Average Value can be difficult for a item as different players sell & buy it for different pricing. Thus Ranged Value tries to cover more ground and is an extra depth to Average Value.</p>
+            </div>
+        </div>
+
+         <div class="faq-item">
+            <div class="faq-question">
+                <h3>What does "After Tax Value" mean?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>After Tax Value refers to the additional amount of cash you need to give someone to cover the game's tax. Each time a player drops money, the game takes a small cut as tax.</p>
+            </div>
+        </div>
+
+         <div class="faq-item">
+            <div class="faq-question">
+                <h3>How do I use the Tax Calculator?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Simply enter the amount of cash you want the other person to receive. The Tax Calculator automatically adds the extra amount lost to the game's tax and shows you the total you need to give, ensuring they receive the exact amount you intended.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <h3>What is the Trade Checker and how do I use it?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>INCOMPLETE</p>
+            </div>
+        </div>
+
+         <div class="faq-item">
+            <div class="faq-question">
+                <h3>How much tax does BlockSpin take on trades?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Upon death, 72% of your cash is dropped, 8% is taken by the game and 20% is kept and will be on your character upon respawn.</p>
+            </div>
+        </div>
+
+    
+
+         <div class="faq-item">
+            <div class="faq-question">
+                <h3>How do I add my crew logo to the website?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>To suggest your own crew logo for the website, please locate the 'Value Suggestions' channel, Within this channel a tag to suggest crew logos is also offered.</p>
+            </div>
+        </div>
+
+     
+    
+        <!-- Add more FAQ items as needed -->
+        
+        <div style="text-align: center;">
+            <a href="index.html" class="back-btn">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // FAQ Accordion functionality 
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                // Just toggle current item 
+                item.classList.toggle('active');
+            });
+        });
+    </script>
+
+    <footer class="site-footer">
+  <div class="footer-content">
+    <p>© 2025 BlockSpin Values</p>
+    <div class="footer-links">
+      <a href="z-contact.html">Contact River</a>
+      <span>•</span>
+      <a href="z-terms.html">Terms of Service</a>
+      <span>•</span>
+      <a href="z-privacy.html">Privacy Policy</a>
+      <span>•</span>
+     
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
