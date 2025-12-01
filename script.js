@@ -916,8 +916,8 @@ function createRichestPlayersSection(data) {
       <input 
         type="text" 
         class="richest-search" 
+        id="richest-search-input"
         placeholder="🔍 Search players by name..."
-        oninput="filterRichestPlayers(this.value)"
       />
     </div>
   `;
@@ -1314,6 +1314,16 @@ function renderScammerSection(items) {
     </section>
   `;
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
+  
+  // Add event listener after HTML is inserted
+  setTimeout(() => {
+    const searchInput = document.getElementById('richest-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', function(e) {
+        filterRichestPlayers(e.target.value);
+      });
+    }
+  }, 100);
 }
 
 //  BLOCKSPIN MAP FUNCTIONS START
