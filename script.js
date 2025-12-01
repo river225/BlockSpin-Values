@@ -954,8 +954,12 @@ function filterRichestPlayers(query) {
   const searchTerm = query.toLowerCase().trim();
   const cards = document.querySelectorAll('.richest-card');
   
+  console.log('Searching for:', searchTerm);
+  console.log('Found cards:', cards.length);
+  
   cards.forEach(card => {
-    const playerName = card.dataset.playerName.toLowerCase();
+    const playerName = (card.dataset.playerName || '').toLowerCase();
+    console.log('Checking player:', playerName, 'Match:', playerName.includes(searchTerm));
     if (playerName.includes(searchTerm)) {
       card.style.display = 'flex';
       card.style.visibility = 'visible';
