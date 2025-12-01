@@ -958,10 +958,25 @@ function filterRichestPlayers(query) {
     const playerName = card.dataset.playerName.toLowerCase();
     if (playerName.includes(searchTerm)) {
       card.style.display = 'flex';
+      card.style.visibility = 'visible';
+      card.style.opacity = '1';
     } else {
       card.style.display = 'none';
+      card.style.visibility = 'hidden';
+      card.style.opacity = '0';
     }
   });
+  
+  // Force re-render on mobile
+  if (window.innerWidth <= 430) {
+    const container = document.querySelector('.richest-container');
+    if (container) {
+      container.style.display = 'none';
+      setTimeout(() => {
+        container.style.display = 'flex';
+      }, 10);
+    }
+  }
 }
 // RICHEST PLAYERS SECTION END 
 
