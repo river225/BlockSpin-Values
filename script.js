@@ -910,14 +910,14 @@ function createRichestPlayersSection(data) {
 
   const intro = `
     <div class="richest-players-header">
-      <h2>Top 1000 Richest Players in BlockSpin</h2>
-      <p class="richest-intro">This list is the Offical BlockSpin leaderboard showing the wealthiest players in the game, Ranked by the total value of their in-game assets. Rankings go to #1000. This leaderboard updates hourly. Note this section is in BETA, the player record formation may appear weird, we are working on fixes.</p>
+      <h2>Top 1,000 Richest Players in BlockSpin</h2>
+      <p class="richest-intro">This list is the Offical BlockSpin leaderboard showing the wealthiest players in the game, Ranked by the total value of their in-game assets. Rankings go to #1000. This leaderboard updates hourly. Note this section is in BETA, issues may occure.</p>
       
       <input 
         type="text" 
         class="richest-search" 
         id="richest-search-input"
-        placeholder="🔍 Search players by name..."
+        placeholder="🔍 Search players by username..."
       />
     </div>
   `;
