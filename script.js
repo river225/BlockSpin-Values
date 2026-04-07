@@ -1,5 +1,5 @@
 // CONFIG — Test site: use test spreadsheet. For live site, use: 1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs
-const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
+const SPREADSHEET_ID = "1rhptMcfWB2I-x3i9TNMwePcDD9SWWwGsaLwELqxCKzo";
 const SECTION_NAMES = [
   "Home",
   "Common / Uncommon",
@@ -32,9 +32,21 @@ function bsvAdSenseInsHtml(adSlot) {
 const BSV_AD_THREE_PLACEHOLDER = bsvAdSenseInsHtml("6782577562");
 const BSV_AD_FOUR_PLACEHOLDER = bsvAdSenseInsHtml("4197814232");
 
+/** AdSense skips or fails fills for slots inside display:none; only push when the host <section> is visible. */
+function bsvAdSenseSectionVisible(ins) {
+  var sec = ins.closest("section");
+  if (!sec) return true;
+  return sec.style.display !== "none";
+}
+
 function bsvActivateAdSenseSlots() {
   try {
+    /* Undo mistaken marks from older builds that pushed while sections were still hidden */
+    document.querySelectorAll("ins.adsbygoogle[data-bsv-pushed]").forEach(function (ins) {
+      if (!bsvAdSenseSectionVisible(ins)) ins.removeAttribute("data-bsv-pushed");
+    });
     document.querySelectorAll("ins.adsbygoogle:not([data-bsv-pushed])").forEach(function (ins) {
+      if (!bsvAdSenseSectionVisible(ins)) return;
       ins.setAttribute("data-bsv-pushed", "1");
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     });
@@ -747,6 +759,7 @@ function showSection(name) {
   });
 
   syncItemSectionSearchPlacement(name);
+  bsvActivateAdSenseSlots();
 }
 
 // SEARCH 
@@ -1137,7 +1150,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   showSection(initialSection);
-  bsvActivateAdSenseSlots();
   loadTopDonators();
   loadValueChanges();
   fetchDiscordMemberCount();
