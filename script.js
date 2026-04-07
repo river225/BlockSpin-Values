@@ -1,5 +1,5 @@
 // CONFIG — Test site: use test spreadsheet. For live site, use: 1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs
-const SPREADSHEET_ID = "1rhptMcfWB2I-x3i9TNMwePcDD9SWWwGsaLwELqxCKzo";
+const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
 const SECTION_NAMES = [
   "Home",
   "Common / Uncommon",
