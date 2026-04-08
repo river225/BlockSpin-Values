@@ -1,5 +1,5 @@
 // CONFIG — Test site: use test spreadsheet. For live site, use: 1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs
-const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
+const SPREADSHEET_ID = "1rhptMcfWB2I-x3i9TNMwePcDD9SWWwGsaLwELqxCKzo";
 const SECTION_NAMES = [
   "Home",
   "Common / Uncommon",
@@ -32,11 +32,14 @@ function bsvAdSenseInsHtml(adSlot) {
 const BSV_AD_THREE_PLACEHOLDER = bsvAdSenseInsHtml("6782577562");
 const BSV_AD_FOUR_PLACEHOLDER = bsvAdSenseInsHtml("4197814232");
 
-/** AdSense skips or fails fills for slots inside display:none; only push when the host <section> is visible. */
+/** AdSense skips fills for hidden slots; use computed style so we match real visibility after tab change. */
 function bsvAdSenseSectionVisible(ins) {
   var sec = ins.closest("section");
   if (!sec) return true;
-  return sec.style.display !== "none";
+  if (sec.style.display === "none") return false;
+  var cs = window.getComputedStyle(sec);
+  if (cs.display === "none" || cs.visibility === "hidden") return false;
+  return true;
 }
 
 function bsvActivateAdSenseSlots() {
@@ -53,6 +56,25 @@ function bsvActivateAdSenseSlots() {
   } catch (e) {
     /* ignore */
   }
+}
+
+var _bsvAdSenseScheduleTimer = null;
+/** Section ads often race layout after show/hide; extra passes are idempotent (data-bsv-pushed). */
+function bsvScheduleAdSenseActivation() {
+  bsvActivateAdSenseSlots();
+  if (typeof requestAnimationFrame === "function") {
+    requestAnimationFrame(function () {
+      bsvActivateAdSenseSlots();
+      requestAnimationFrame(function () {
+        bsvActivateAdSenseSlots();
+      });
+    });
+  }
+  clearTimeout(_bsvAdSenseScheduleTimer);
+  _bsvAdSenseScheduleTimer = setTimeout(function () {
+    _bsvAdSenseScheduleTimer = null;
+    bsvActivateAdSenseSlots();
+  }, 400);
 }
 
 // Tax calculator: 40k drop → 29,091 received (confirmed). Above 40k (e.g. 41,250) still gives 29,091. MAX 40K PER DROP.
@@ -759,7 +781,7 @@ function showSection(name) {
   });
 
   syncItemSectionSearchPlacement(name);
-  bsvActivateAdSenseSlots();
+  bsvScheduleAdSenseActivation();
 }
 
 // SEARCH 
