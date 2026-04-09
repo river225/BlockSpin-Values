@@ -875,7 +875,6 @@ function buildTaxBreakdownHtml(want, breakdown) {
     ' in game you drop ' +
     formatDollar(breakdown.totalWithdraw) +
     '. Steps:</span><br>' +
-    '<span class="tax-warning-line">Do not reset with more than 40,000 cash</span><br>' +
     breakdown.lines.map(function(line) { return line + '<br>'; }).join('');
 }
 
