@@ -33,6 +33,42 @@ function bsvAdSenseInsHtml(adSlot) {
 const BSV_AD_THREE_PLACEHOLDER = bsvAdSenseInsHtml("6782577562");
 const BSV_AD_FOUR_PLACEHOLDER = bsvAdSenseInsHtml("4197814232");
 
+// GA4 analytics (set your real Measurement ID to enable tracking)
+const GA_MEASUREMENT_ID = "G-0T25993BCC";
+
+function initAnalytics() {
+  if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
+  if (typeof window.gtag === "function") return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function() { window.dataLayer.push(arguments); };
+  window.gtag("js", new Date());
+  window.gtag("config", GA_MEASUREMENT_ID);
+
+  var gaScript = document.createElement("script");
+  gaScript.async = true;
+  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA_MEASUREMENT_ID);
+  document.head.appendChild(gaScript);
+}
+
+function trackEvent(name, params) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", name, params || {});
+}
+
+function setupDiscordClickTracking() {
+  if (document.documentElement.dataset.discordTrackingInit === "1") return;
+  document.documentElement.dataset.discordTrackingInit = "1";
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest('a[href*="discord.gg"], a[href*="discord.com/invite"]');
+    if (!link) return;
+    trackEvent("discord_click", {
+      link_url: link.href,
+      link_text: (link.textContent || "").trim().slice(0, 80),
+      page_path: window.location.pathname
+    });
+  });
+}
+
 /** AdSense skips fills for hidden slots; use computed style so we match real visibility after tab change. */
 function bsvAdSenseSectionVisible(ins) {
   var sec = ins.closest("section");
@@ -783,6 +819,7 @@ function showSection(name) {
 
   syncItemSectionSearchPlacement(name);
   bsvScheduleAdSenseActivation();
+  trackEvent("view_section", { section_name: name });
 }
 
 // SEARCH 
@@ -838,6 +875,7 @@ function buildTaxBreakdownHtml(want, breakdown) {
     ' in game you drop ' +
     formatDollar(breakdown.totalWithdraw) +
     '. Steps:</span><br>' +
+    '<span class="tax-warning-line">Do not reset with more than 40,000 cash</span><br>' +
     breakdown.lines.map(function(line) { return line + '<br>'; }).join('');
 }
 
@@ -1111,6 +1149,8 @@ function slugify(str) {
 // INIT - PARALLEL LOADING FOR SPEED 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log('DOM loaded, initializing...');
+  initAnalytics();
+  setupDiscordClickTracking();
 
   // Safety timeout - force hide loading screen after 15 seconds
   setTimeout(() => {

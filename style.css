@@ -3845,12 +3845,18 @@ body.mobile-panel-open .hamburger-menu {
 .tax-breakdown {
   font-size: 0.8rem;
   line-height: 1.4;
-  margin-top: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #000;
   color: rgba(255,255,255,0.9);
 }
 .tax-how-label {
   color: #33cce6;
   font-weight: 600;
+}
+.tax-warning-line {
+  color: #ff4d4d;
+  font-weight: 700;
 }
 .tax-reminders {
   font-size: 0.75rem;
