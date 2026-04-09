@@ -835,9 +835,9 @@ function formatDollar(amount) {
 function buildTaxBreakdownHtml(want, breakdown) {
   return '<span class="tax-how-label">To drop ' +
     formatDollar(want) +
-    ' you need to drop ' +
+    ' in game you drop ' +
     formatDollar(breakdown.totalWithdraw) +
-    '. Heres how to do it!</span><br>' +
+    '. Steps:</span><br>' +
     breakdown.lines.map(function(line) { return line + '<br>'; }).join('');
 }
 

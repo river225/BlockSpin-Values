@@ -568,7 +568,7 @@ a { color: #fff; text-decoration: none; }
   border: 2px solid #33cce6;
   border-radius: 8px;
   padding: 10px 12px;
-  font-size: 0.95rem;
+  font-size: 0.86rem;
   color: white;
   transition: all 0.3s ease;
   margin-bottom: 12px;
@@ -576,6 +576,7 @@ a { color: #fff; text-decoration: none; }
 
 .tax-calculator input::placeholder {
   color: rgba(255, 255, 255, 0.5);
+  font-size: 0.95em;
 }
 
 .tax-calculator input:focus {
@@ -625,7 +626,7 @@ a { color: #fff; text-decoration: none; }
   max-width: 100%;
   display: block;
   overflow-wrap: anywhere;
-  word-break: break-all;
+  word-break: normal;
 }
 
 .tax-after-label {
@@ -634,6 +635,8 @@ a { color: #fff; text-decoration: none; }
   font-weight: 500;
   opacity: 0.8;
   margin-left: 6px;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 
@@ -3756,7 +3759,7 @@ body.mobile-panel-open .hamburger-menu {
     border: 2px solid #33cce6;
     border-radius: 8px;
     padding: 8px 10px;
-    font-size: 0.88rem;
+    font-size: 0.8rem;
     color: white;
     transition: all 0.3s ease;
     margin-bottom: 12px;
@@ -3765,6 +3768,7 @@ body.mobile-panel-open .hamburger-menu {
 
   .mobile-tax-calc input::placeholder {
     color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95em;
   }
 
   .mobile-tax-calc input:focus {
