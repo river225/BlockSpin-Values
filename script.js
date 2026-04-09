@@ -1,4 +1,5 @@
-// CONFIG 
+// CONFIG — blockspinvalues.com (BSV OFFICIAL): production value-list spreadsheet only.
+// Local/test copy: use a different SPREADSHEET_ID in your dev project — do not overwrite this with the test ID.
 const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
 const SECTION_NAMES = [
   "Home",
@@ -827,6 +828,19 @@ function getTaxBreakdown(amountWant) {
   return { totalWithdraw, lines, singleDrop: false };
 }
 
+function formatDollar(amount) {
+  return '$' + (Math.round(Number(amount) || 0)).toLocaleString();
+}
+
+function buildTaxBreakdownHtml(want, breakdown) {
+  return '<span class="tax-how-label">To drop ' +
+    formatDollar(want) +
+    ' you need to drop ' +
+    formatDollar(breakdown.totalWithdraw) +
+    '. Heres how to do it!</span><br>' +
+    breakdown.lines.map(function(line) { return line + '<br>'; }).join('');
+}
+
 // TAX CALCULATOR (40k max per drop, multi-drop breakdown)
 function initTaxCalculator() {
   const taxInput = document.getElementById("taxInput");
@@ -842,14 +856,13 @@ function initTaxCalculator() {
     const raw = taxInput.value.replace(/[^\d]/g, '');
     const want = parseInt(raw, 10) || 0;
     const b = getTaxBreakdown(want);
-    taxAmount.textContent = b.totalWithdraw.toLocaleString();
+    taxAmount.innerHTML = b.totalWithdraw.toLocaleString() + ' <span class="tax-after-label">After Tax</span>';
     if (taxBreakdown) {
       if (b.totalWithdraw <= 0) {
         taxBreakdown.innerHTML = '';
         return;
       }
-      taxBreakdown.innerHTML = '<span class="tax-how-label">How to drop this much:</span><br>' +
-        b.lines.map(function(line) { return line + '<br>'; }).join('');
+      taxBreakdown.innerHTML = buildTaxBreakdownHtml(want, b);
     }
   }
 
@@ -1471,14 +1484,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateMobileTax() {
       const want = parseInt((input.value || '').replace(/[^\d]/g, ''), 10) || 0;
       const b = getTaxBreakdown(want);
-      amount.textContent = b.totalWithdraw.toLocaleString();
+      amount.innerHTML = b.totalWithdraw.toLocaleString() + ' <span class="tax-after-label">After Tax</span>';
       if (breakdownEl) {
         if (b.totalWithdraw <= 0) {
           breakdownEl.innerHTML = '';
           return;
         }
-        breakdownEl.innerHTML = '<span class="tax-how-label">How to drop this much:</span><br>' +
-          b.lines.map(function(line) { return line + '<br>'; }).join('');
+        breakdownEl.innerHTML = buildTaxBreakdownHtml(want, b);
       }
     }
     input.addEventListener('input', updateMobileTax);

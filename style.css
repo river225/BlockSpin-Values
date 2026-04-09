@@ -628,6 +628,14 @@ a { color: #fff; text-decoration: none; }
   word-break: break-all;
 }
 
+.tax-after-label {
+  color: #81e681;
+  font-size: 0.72em;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-left: 6px;
+}
+
 
 /* Section spacing */
 .section { 
