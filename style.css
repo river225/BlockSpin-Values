@@ -1,7 +1,3 @@
-/* ============================================================
-   DESKTOP STYLES
-   ============================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
 
 /* Hide all scrollbars */
@@ -83,19 +79,15 @@ a { color: #fff; text-decoration: none; }
 
 
 
-/* Main layout changes start */
 .main-container {
     display: flex;
-    max-width: 1800px;  /* Increased from 1600px */
+    max-width: 1800px;
     margin: 0 auto;
     margin-top: 36px;
     gap: 20px;
     align-items: flex-start;
-    padding: 0 20px 40px 20px; /* single source (was duplicated in index.html inline) */
+    padding: 0 20px 40px 20px;
 }
-/* Sidebar: share row space 1 : 3 with main after fixed-width asides. Do not set a fixed width here —
-   a fixed width + flex:1 in index inline used to fight each other and made pages diverge. */
-/* Left column: rarity section buttons + value-suggestion link (desktop only; whole column hidden ≤1024px) */
 .sections-sidebar {
     flex: 1 1 0%;
     min-width: 0;
@@ -140,7 +132,6 @@ a { color: #fff; text-decoration: none; }
     flex-direction: column;
     gap: 24px;
 }
-/* Search bar: out of flow so it doesn't push section content down */
 .search-container {
     position: absolute;
     top: -2px;
@@ -162,8 +153,6 @@ a { color: #fff; text-decoration: none; }
 #search::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
-/*  Main layout changes end  */
-
 /* Cards container */
 .cards { 
   display: flex; 
@@ -463,7 +452,6 @@ a { color: #fff; text-decoration: none; }
   opacity: 0;
 }
 
-/* Home: don’t sticky the sidebar — avoids Value Changes / Middleman block shifting with scroll + async list height */
 @media screen and (min-width: 431px) {
   body.is-home .tax-sidebar-column {
     position: static;
@@ -486,7 +474,6 @@ a { color: #fff; text-decoration: none; }
   transition: none !important;
 }
 
-/* Tax calculator badge + tooltip (anchored to card top-left, not the zero-height wrapper) */
 .tax-calculator .tax-badge-wrapper {
   position: static;
   height: 0;
@@ -1053,7 +1040,6 @@ a { color: #fff; text-decoration: none; }
 }
 
 
-/* Polish section navigation buttons */
 #sections-nav button {
   font-size: 1.2rem;
   font-weight: 600;
@@ -1070,7 +1056,6 @@ a { color: #fff; text-decoration: none; }
   position: relative;
 }
 
-/* Add shine effect to active buttons */
 #sections-nav button.active::before {
   content: '';
   position: absolute;
@@ -1719,7 +1704,6 @@ a { color: #fff; text-decoration: none; }
 
 
 
-/* RICHEST PLAYERS STYLES */
 .richest-players-section {
   position: relative;
 }
@@ -1941,8 +1925,6 @@ a { color: #fff; text-decoration: none; }
   opacity: 0.7;
   text-decoration: underline;
 }
-
-/* RICHEST PLAYERS STYLES END */
 
 /* Base richest card */
 

@@ -1,5 +1,3 @@
-// CONFIG — blockspinvalues.com (BSV OFFICIAL): production value-list spreadsheet only.
-// Local/test copy: use a different SPREADSHEET_ID in your dev project — do not overwrite this with the test ID.
 const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
 const SECTION_NAMES = [
   "Home",
@@ -11,12 +9,10 @@ const SECTION_NAMES = [
   "Misc",
   "Vehicles",
   
-  // EXTRAS
   "💰 Richest Players",
   "Crew Logos"
 ];
 
-// AdSense (same publisher as index.html) — slots rendered via insertAdjacentHTML; activated by bsvActivateAdSenseSlots()
 const BSV_ADSENSE_CLIENT = "ca-pub-5741402692612033";
 
 function bsvAdSenseInsHtml(adSlot) {
@@ -33,7 +29,6 @@ function bsvAdSenseInsHtml(adSlot) {
 const BSV_AD_THREE_PLACEHOLDER = bsvAdSenseInsHtml("6782577562");
 const BSV_AD_FOUR_PLACEHOLDER = bsvAdSenseInsHtml("4197814232");
 
-// GA4 analytics (set your real Measurement ID to enable tracking)
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
 
 function initAnalytics() {
@@ -69,7 +64,6 @@ function setupDiscordClickTracking() {
   });
 }
 
-/** AdSense skips fills for hidden slots; use computed style so we match real visibility after tab change. */
 function bsvAdSenseSectionVisible(ins) {
   var sec = ins.closest("section");
   if (!sec) return true;
@@ -81,7 +75,6 @@ function bsvAdSenseSectionVisible(ins) {
 
 function bsvActivateAdSenseSlots() {
   try {
-    /* Undo mistaken marks from older builds that pushed while sections were still hidden */
     document.querySelectorAll("ins.adsbygoogle[data-bsv-pushed]").forEach(function (ins) {
       if (!bsvAdSenseSectionVisible(ins)) ins.removeAttribute("data-bsv-pushed");
     });
@@ -90,13 +83,10 @@ function bsvActivateAdSenseSlots() {
       ins.setAttribute("data-bsv-pushed", "1");
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     });
-  } catch (e) {
-    /* ignore */
-  }
+  } catch (e) {}
 }
 
 var _bsvAdSenseScheduleTimer = null;
-/** Section ads often race layout after show/hide; extra passes are idempotent (data-bsv-pushed). */
 function bsvScheduleAdSenseActivation() {
   bsvActivateAdSenseSlots();
   if (typeof requestAnimationFrame === "function") {
@@ -114,15 +104,11 @@ function bsvScheduleAdSenseActivation() {
   }, 400);
 }
 
-// Tax calculator: 40k drop → 29,091 received (confirmed). Above 40k (e.g. 41,250) still gives 29,091. MAX 40K PER DROP.
 const TAX_RECEIVE_RATIO = 29091 / 40000;
 const TAX_MAX_DROP = 40000;
 const TAX_RECEIVE_PER_40K = 29091;
 
-// RICHEST PLAYERS SECTION START
-
 function formatNetWorth(value) {
-  // Remove dollar signs, commas, and any other non-numeric characters except decimal point
   const cleanValue = String(value).replace(/[$,]/g, '');
   const num = parseFloat(cleanValue);
   
@@ -137,13 +123,13 @@ function formatNetWorth(value) {
 }
 
 function getRankColor(rank) {
-  if (rank === 1) return '#FFD700';        // 🥇 Gold
-  if (rank === 2) return '#C0C0C0';        // 🥈 Silver
-  if (rank === 3) return '#CD7F32';        // 🥉 Bronze
-  if (rank >= 4 && rank <= 25) return '#8B5CF6';   // 🟣 Purple (4-25)
-  if (rank >= 26 && rank <= 100) return '#EC4899'; // 💖 Pink (26-100)
-  if (rank >= 101 && rank <= 500) return '#48BB78'; // 🟢 Green (101-500)
-  return '#A0A0A0'; // ⚪ Gray (501-1000)
+  if (rank === 1) return '#FFD700';
+  if (rank === 2) return '#C0C0C0';
+  if (rank === 3) return '#CD7F32';
+  if (rank >= 4 && rank <= 25) return '#8B5CF6';
+  if (rank >= 26 && rank <= 100) return '#EC4899';
+  if (rank >= 101 && rank <= 500) return '#48BB78';
+  return '#A0A0A0';
 }
 
 function getRankSize(rank) {
@@ -181,7 +167,6 @@ function createRichestPlayersSection(data) {
     const level = player['Level'] || 'N/A';
     const rankClass = ("" + rank).length >= 3 ? "rank-long" : "";
     
-    // Create Roblox search URL
     const robloxSearchUrl = `https://www.roblox.com/search/users?keyword=${encodeURIComponent(playerName)}`;
 
     return `
@@ -215,9 +200,7 @@ function filterRichestPlayers(query) {
     }
   });
 }
-// RICHEST PLAYERS SECTION END 
 
-// === FETCH HELPERS ===
 async function fetchSheet(sheetName) {
   try {
     const base = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq`;
@@ -237,8 +220,6 @@ async function fetchSheet(sheetName) {
       return obj;
     });
 
-    // For most sheets we filter out blank rows using the Name/Header-style columns.
-    // For "Website Configs" (value changes) we want ALL rows and will filter separately.
     if (sheetName === "Website Configs") {
       return items;
     }
@@ -258,7 +239,6 @@ async function fetchSheet(sheetName) {
   }
 }
 
-// Special fetch for Richest Players from different spreadsheet
 async function fetchRichestPlayers() {
   try {
     const RICHEST_SPREADSHEET_ID = "1nfWrJcFkVCZ-Yr0mWmCCjQoQgUD3_-W2Qsy4XD4NT3k";
@@ -279,7 +259,6 @@ async function fetchRichestPlayers() {
       return obj;
     });
 
-    // Filter out empty rows and return rows 2-1000 (index 1-999)
     const validItems = items.filter(x => String(x["Roblox Username"] || "").trim().length > 0);
     return validItems;
   } catch (err) {
@@ -298,8 +277,6 @@ function createCard(item) {
   const internalValue = safe(item["Internal Value"]);
   const giveawayFlag = safe(item["Giveaway"]);
 
-
-  // Simple image tag (no broken overlay handling)
   let imgTag = "";
   if (img) {
     imgTag = `<img src="${img}" alt="${name}" onerror="this.style.display='none'">`;
@@ -307,7 +284,6 @@ function createCard(item) {
 
   let durabilityHTML = '';
   
-  // Check if "Durability Invisible" is set to "Yes"
   const durabilityInvisible = safe(item["Durability Invisible"]);
   const invisibleStyle = (durabilityInvisible && durabilityInvisible.toLowerCase() === 'yes') ? 'style="opacity: 0;"' : '';
   
@@ -336,31 +312,25 @@ function createCard(item) {
     
   }
 
-  // Calculate exact repair price (numeric; format later in template)
 let repairPrice = 0;
 if (durability && durability.includes('/') && internalValue) {
   const [currentDurability, maxDurability] = durability.split('/').map(v => parseInt(v) || 0);
   const missingDurability = maxDurability - currentDurability;
 
-  // Convert internal value (handles "$" and "k")
   const internalVal = parseFloat(internalValue.replace(/[$,k]/gi, '')) *
                       (internalValue.toLowerCase().includes('k') ? 1000 : 1);
 
-  // Use tested divisor (1.43) for accuracy
   const rawRepair = missingDurability * (internalVal / maxDurability / 1.43);
   repairPrice = Math.round(rawRepair);
 }
 
-  // Calculate exact pawn amount (money formatted)
 let pawnAmount = 0;
 if (durability && durability.includes('/') && internalValue) {
   const [currentDurability, maxDurability] = durability.split('/').map(v => parseInt(v) || 0);
 
-  // Convert internal value (handles "$" and "k")
   const internalVal = parseFloat(internalValue.replace(/[$,k]/gi, '')) *
                       (internalValue.toLowerCase().includes('k') ? 1000 : 1);
 
-  // Pawn formula: (internalValue * 0.3) - ((maxDurability - currentDurability) * ((internalValue * 0.3) / maxDurability / 1.43))
   const baseValue = internalVal * 0.3;
   const missingDurability = maxDurability - currentDurability;
   const deduction = missingDurability * ((internalVal * 0.3) / maxDurability / 1.43);
@@ -368,7 +338,6 @@ if (durability && durability.includes('/') && internalValue) {
   const rawPawn = baseValue - deduction;
   pawnAmount = Math.round(rawPawn);
 
-  // Format as money
   pawnAmount = `$${pawnAmount.toLocaleString()}`;
 }
   
@@ -403,7 +372,6 @@ if (durability && durability.includes('/') && internalValue) {
   `;
 }
 
-// Global giveaway modal (created once on demand)
 function ensureGiveawayModal() {
   if (document.getElementById('giveaway-modal')) return;
   const modal = document.createElement('div');
@@ -455,10 +423,8 @@ function createScammerCard(item) {
   const evidence = safe(item["Evidence"]);
   const submittedDate = item["Date"] || item["Submitted Date"] || "";
 
-  // Handle Roblox name - check if it contains a URL and extract both parts
   let robloxNameHtml;
   if (robloxName.includes('http')) {
-    // Extract the URL and the text before it
     const urlMatch = robloxName.match(/(.*?)(https?:\/\/\S+)/);
     if (urlMatch) {
       const textPart = urlMatch[1].trim();
@@ -471,7 +437,6 @@ function createScammerCard(item) {
     robloxNameHtml = robloxName;
   }
 
-  // Handle evidence links
   const evidenceLinks = evidence.split(",").map(link => link.trim()).filter(link => link.length > 0);
   let evidenceHtml = "";
   if (evidenceLinks.length > 0) {
@@ -494,19 +459,16 @@ function createScammerCard(item) {
 }
 
 function renderSection(title, items) {
-  // Always render BlockSpin Map even if no items
   if (title === "BlockSpin Map") {
     renderBlockSpinMapSection();
     return;
   }
 
-  // Always render Home section even if no items
   if (title === "Home") {
     const html = `
       <section class="section" id="${slugify(title)}">
         <h2>${title}</h2>
         <div class="home-content">
-          <!-- Add your home page content here -->
         </div>
       </section>
     `;
@@ -663,7 +625,6 @@ function renderScammerSection(items) {
   `;
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
   
-  // Add event listeners after HTML is inserted
   setTimeout(() => {
     const searchInput = document.getElementById('richest-search-input');
     if (searchInput) {
@@ -682,13 +643,11 @@ function renderScammerSection(items) {
   }, 100);
 }
 
-// SECTION NAVIGATION 
 function initSectionsNav() {
   const nav = document.getElementById("sections-nav");
   if (!nav) return;
 
   SECTION_NAMES.forEach((name, index) => {
-    // Add gap and "Extras" header before first Extra
     if (name === "💰 Richest Players") {
       const gap = document.createElement("div");
       gap.className = "nav-gap";
@@ -707,7 +666,6 @@ function initSectionsNav() {
   });
 }
 
-/** ≤1024px (phones + iPads): put search under the section title; wider: keep search before #home */
 function syncItemSectionSearchPlacement(name) {
   const sectionsEl = document.getElementById("sections");
   const searchContainer = document.querySelector(".search-container");
@@ -755,11 +713,9 @@ function syncItemSectionSearchPlacement(name) {
   }
 }
 
-//  BANNER LOGIC FROM MAIN SITE
 function showSection(name) {
   console.log(`Showing section: ${name}`);
   
-    // Reset durability when switching sections
   document.querySelectorAll('.durability-input').forEach(input => {
     const card = input.closest('.card');
     const maxDurability = card.dataset.maxDurability;
@@ -767,7 +723,6 @@ function showSection(name) {
     updateCardValues(input);
   });
   
-   // Tax sidebar slot: show Value Changes on Home, Tax Calculator elsewhere
   const taxSidebarColumn = document.getElementById('tax-sidebar-column');
   const homeValueChanges = document.getElementById('home-value-changes');
   const taxCalc = taxSidebarColumn ? taxSidebarColumn.querySelector('.tax-calculator') : null;
@@ -795,7 +750,6 @@ function showSection(name) {
   }
 
     
-  // Hide/show search bar based on section
   const searchContainer = document.querySelector('.search-container');
   if (searchContainer) {
     const hiddenSearchSections = ['Home', 'Crew Logos', 'Crate Game', '💰 Richest Players'];
@@ -806,13 +760,11 @@ function showSection(name) {
     }
   }
   
-  // Show/hide sections
   SECTION_NAMES.forEach(sec => {
     const el = document.getElementById(slugify(sec));
     if (el) el.style.display = sec === name ? "block" : "none";
   });
 
-  // Highlight active nav button
   document.querySelectorAll("#sections-nav button").forEach(b => {
     b.classList.toggle("active", b.textContent === name);
   });
@@ -822,7 +774,6 @@ function showSection(name) {
   trackEvent("view_section", { section_name: name });
 }
 
-// SEARCH 
 function initSearch() {
   const input = document.getElementById("search");
   if (!input) return;
@@ -878,7 +829,6 @@ function buildTaxBreakdownHtml(want, breakdown) {
     breakdown.lines.map(function(line) { return line + '<br>'; }).join('');
 }
 
-// TAX CALCULATOR (40k max per drop, multi-drop breakdown)
 function initTaxCalculator() {
   const taxInput = document.getElementById("taxInput");
   const taxAmount = document.getElementById("tax-amount");
@@ -924,7 +874,6 @@ function initTaxCalculator() {
   update();
 }
 
-// COPY TO CLIPBOARD
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     const btn = event.target;
@@ -954,11 +903,9 @@ function copyToClipboard(text) {
   });
 }
 
-// DURABILITY FUNCTIONS 
 let durabilityInterval = null;
 let durabilityTimeout = null;
 
-// Prevent typing numbers higher than max
 function enforceMaxDurability(input) {
   const card = input.closest('.card');
   const maxDurability = parseInt(card.dataset.maxDurability);
@@ -974,7 +921,7 @@ function enforceMaxDurability(input) {
 }
 
 function adjustDurability(btn, direction, evt) {
-  if (evt) evt.preventDefault(); // Prevent both touch and mouse events firing
+  if (evt) evt.preventDefault();
   
   const card = btn.closest('.card');
   const input = card.querySelector('.durability-input');
@@ -1014,7 +961,7 @@ function stopDurabilityAdjust() {
 
 function updateCardValues(input) {
   const card = input.closest('.card');
-  const currentDurability = parseInt(input.value) || 0; // Fixed: Default to 0 if empty
+  const currentDurability = parseInt(input.value) || 0;
   const maxDurability = parseInt(card.dataset.maxDurability);
   
   const durabilityPercent = currentDurability / maxDurability;
@@ -1025,7 +972,6 @@ function updateCardValues(input) {
   card.querySelector('.avg-value').textContent = calculateDurabilityValue(originalAvg, durabilityPercent);
   card.querySelector('.ranged-value').textContent = calculateDurabilityValue(originalRanged, durabilityPercent);
   
-  // Update repair price
   const internalValue = card.dataset.internalValue;
   const repairValueElement = card.querySelector('.repair-value');
   
@@ -1033,22 +979,20 @@ function updateCardValues(input) {
     const missingDurability = maxDurability - currentDurability;
     const internalVal = parseFloat(internalValue.replace(/[$,k]/gi, '')) * (internalValue.toLowerCase().includes('k') ? 1000 : 1);
     const repairPrice = Math.round(missingDurability * (internalVal / maxDurability / 1.43));
-    repairValueElement.textContent = '$' + (isNaN(repairPrice) ? 0 : repairPrice).toLocaleString(); // Fixed: Shows $0 instead of NaN
+    repairValueElement.textContent = '$' + (isNaN(repairPrice) ? 0 : repairPrice).toLocaleString();
   }
   
-  // Update pawn amount
   const pawnValueElement = card.querySelector('.pawn-value');
   
   if (pawnValueElement && internalValue) {
     const missingDurability = maxDurability - currentDurability;
     const internalVal = parseFloat(internalValue.replace(/[$,k]/gi, '')) * (internalValue.toLowerCase().includes('k') ? 1000 : 1);
     
-    // Pawn formula
     const baseValue = internalVal * 0.3;
     const deduction = missingDurability * ((internalVal * 0.3) / maxDurability / 1.43);
     const pawnPrice = Math.round(baseValue - deduction);
     
-    pawnValueElement.textContent = '$' + (isNaN(pawnPrice) ? 0 : pawnPrice).toLocaleString(); // Fixed: Shows $0 instead of NaN
+    pawnValueElement.textContent = '$' + (isNaN(pawnPrice) ? 0 : pawnPrice).toLocaleString();
   }
 }
 
@@ -1057,10 +1001,8 @@ function calculateDurabilityValue(originalValue, durabilityPercent) {
     return originalValue || 'N/A';
   }
   
-  // New formula: 20% floor + 80% scaled by durability
   const valueMultiplier = 0.20 + (0.80 * durabilityPercent);
   
-  // Handle range format (works for "Ranged Value")
   if (originalValue.includes(' to ')) {
     const parts = originalValue.split(' to ');
     const low = parseValue(parts[0]) * valueMultiplier;
@@ -1073,7 +1015,6 @@ function calculateDurabilityValue(originalValue, durabilityPercent) {
     }
   }
   
-  // Handle single value
   const value = parseValue(originalValue) * valueMultiplier;
   
   if (!isNaN(value) && value > 0) {
@@ -1087,7 +1028,7 @@ function parseValue(str) {
   if (!str) return 0;
   
   str = str.toString().trim().toLowerCase();
-  str = str.replace(/[$,]/g, ''); // Remove $ and commas
+  str = str.replace(/[$,]/g, '');
   
   if (str.includes('k')) {
     return parseFloat(str.replace('k', '')) * 1000;
@@ -1105,24 +1046,19 @@ function parseValue(str) {
 function formatLikeOriginal(num, original) {
   num = Math.round(num);
   
-  // Check what format the original was in
   const wasK = original.toLowerCase().includes('k');
   const wasM = original.toLowerCase().includes('m');
   const hadCommas = original.includes(',');
   
   if (wasM) {
-    // Original was in millions — round to whole number
     const m = Math.round(num / 1000000);
     return '$' + m + 'm';
   } else if (wasK) {
-    // Original was in thousands — round to whole number
     const k = Math.round(num / 1000);
     return '$' + k + 'k';
   } else if (hadCommas || num >= 1000) {
-    // Original had commas or number is big enough
     return '$' + num.toLocaleString();
   } else {
-    // Simple number
     return '$' + num;
   }
 }
@@ -1131,10 +1067,8 @@ document.addEventListener('mouseup', stopDurabilityAdjust);
 document.addEventListener('touchend', stopDurabilityAdjust);
 document.addEventListener('touchcancel', stopDurabilityAdjust);
 
-// HELPERS 
 function safe(str) { return str ?? ""; }
 function escapeAttr(str) { return (str+"").replace(/"/g, "&quot;"); }
-/** Google Sheet tab name when it differs from the sidebar label */
 function getSheetNameForSection(displayName) {
   if (displayName === "Common / Uncommon") return "Uncommon";
   return displayName;
@@ -1145,13 +1079,11 @@ function slugify(str) {
   return str.toLowerCase().replace(/\s+/g, "-");
 }
 
-// INIT - PARALLEL LOADING FOR SPEED 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log('DOM loaded, initializing...');
   initAnalytics();
   setupDiscordClickTracking();
 
-  // Safety timeout - force hide loading screen after 15 seconds
   setTimeout(() => {
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen && loadingScreen.style.display !== 'none') {
@@ -1176,19 +1108,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const totalSections = SECTION_NAMES.length;
   let loadedSections = 0;
 
-  // Fetch all sections at once (parallel)
   const fetchPromises = SECTION_NAMES.map(async (sec) => {
    
     console.log(`Fetching data for: ${sec}`);
     
     let items;
     try {
-      // Use NEW spreadsheet for Richest Players, OLD spreadsheet for everything else
       if (sec === "💰 Richest Players") {
-        items = await fetchRichestPlayers(); // NEW spreadsheet
+        items = await fetchRichestPlayers();
         console.log(`Got ${items.length} items for ${sec} from NEW spreadsheet`);
       } else {
-        items = await fetchSheet(getSheetNameForSection(sec)); // OLD spreadsheet (sheet tab may differ from nav label)
+        items = await fetchSheet(getSheetNameForSection(sec));
         console.log(`Got ${items.length} items for ${sec} from OLD spreadsheet`);
       }
     } catch (error) {
@@ -1204,16 +1134,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return { section: sec, items };
   });
 
-  // Wait for all to finish
   const results = await Promise.all(fetchPromises);
 
-  // Render in order
   results.forEach(({ section, items }) => {
     renderSection(section, items);
   });
 
-  // Decide which section to show first.
-  // If URL has a hash like #sec=Legendary, honor that; otherwise default to Home.
   let initialSection = "Home";
   if (window.location.hash && window.location.hash.startsWith('#sec=')) {
     let requested = decodeURIComponent(window.location.hash.substring(5));
@@ -1247,7 +1173,6 @@ window.addEventListener("resize", function () {
   }, 120);
 });
 
-// Giveaway card click handling
 document.addEventListener('click', function(e) {
   const trigger = e.target.closest('.card-giveaway-trigger');
   if (!trigger) return;
