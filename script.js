@@ -515,7 +515,12 @@ function renderSection(title, items) {
             <p class="legendary-banner-members"><span class="discord-member-count">—</span> members</p>
           </div>
         </div>
-        ${BSV_AD_THREE_PLACEHOLDER}
+        <div class="epic-shark-promo">
+          <a href="https://attackshark.com/?ref=RIVER" target="_blank" rel="noopener noreferrer sponsored" class="epic-shark-promo-link">
+            <p class="epic-shark-promo-text">CLICK HERE TO GET THE BEST GAMING MICE!</p>
+            <img src="https://i.ibb.co/0pM24HZ9/ph-11134207-7rasi-m9tr2cfmioxw1c.jpg" alt="Attack Shark gaming mice" class="epic-shark-promo-img" loading="lazy" />
+          </a>
+        </div>
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);

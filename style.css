@@ -846,6 +846,43 @@ a { color: #fff; text-decoration: none; }
   background: linear-gradient(145deg, #fff 0%, #f5f0ff 25%, #ebe0ff 55%, #e0d0ff 100%);
   color: #1a0a4a;
 }
+
+#epic .epic-shark-promo {
+  margin-top: 28px;
+  text-align: center;
+}
+#epic .epic-shark-promo-link {
+  display: inline-block;
+  max-width: 560px;
+  text-decoration: none;
+  color: inherit;
+  border: 3px solid #000;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #141d28;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#epic .epic-shark-promo-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+#epic .epic-shark-promo-text {
+  margin: 0;
+  padding: 16px 14px 12px;
+  font-weight: 800;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  letter-spacing: 0.04em;
+  color: #33cce6;
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+  line-height: 1.3;
+}
+#epic .epic-shark-promo-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+
 @keyframes giveaway-banner-shine {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
