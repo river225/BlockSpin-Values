@@ -1359,7 +1359,16 @@ function setupMobileHamburgerMenu() {
   if (sectionsNav) {
     var navClone = sectionsNav.cloneNode(true);
     mobileMenu.appendChild(navClone);
-    // cloneNode does not copy JS listeners; wire cloned buttons manually
+    var drawerPromo = document.createElement('div');
+    drawerPromo.className = 'mobile-menu-drawer-promo';
+    drawerPromo.innerHTML =
+      '<p class="mobile-menu-sponsored-label">Sponsored</p>' +
+      '<div class="mobile-menu-shark-promo">' +
+      '<a href="https://attackshark.com/?ref=RIVER" target="_blank" rel="noopener noreferrer sponsored" class="mobile-menu-shark-promo-link">' +
+      '<p class="mobile-menu-shark-promo-text">CLICK HERE TO GET THE BEST GAMING MICE!</p>' +
+      '<img src="https://i.ibb.co/0pM24HZ9/ph-11134207-7rasi-m9tr2cfmioxw1c.jpg" alt="Attack Shark gaming mice" class="mobile-menu-shark-promo-img" loading="lazy" />' +
+      '</a></div>';
+    mobileMenu.appendChild(drawerPromo);
     navClone.querySelectorAll('button').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var sectionName = (btn.textContent || '').trim();
@@ -1374,6 +1383,10 @@ function setupMobileHamburgerMenu() {
     });
     mobileMenu.addEventListener('click', function(e) {
       if (e.target.tagName === 'BUTTON') {
+        hamburgerBtn.classList.remove('active');
+        mobileMenu.classList.remove('active');
+      }
+      if (e.target.closest && e.target.closest('.mobile-menu-drawer-promo a')) {
         hamburgerBtn.classList.remove('active');
         mobileMenu.classList.remove('active');
       }
@@ -1401,7 +1414,6 @@ function setupMobileHamburgerMenu() {
   });
 }
 document.addEventListener('DOMContentLoaded', setupMobileHamburgerMenu);
-
 
 // MOBILE TAX CALCULATOR
 
