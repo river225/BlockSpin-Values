@@ -1035,12 +1035,16 @@ function parseValue(str) {
   str = str.toString().trim().toLowerCase();
   str = str.replace(/[$,]/g, '');
   
+  if (/\bmillion\b/.test(str)) {
+    return parseFloat(str.replace(/[^0-9.]/g, '')) * 1000000;
+  }
+  
   if (str.includes('k')) {
-    return parseFloat(str.replace('k', '')) * 1000;
+    return parseFloat(str.replace(/k/g, '')) * 1000;
   }
   
   if (str.includes('m')) {
-    return parseFloat(str.replace('m', '')) * 1000000;
+    return parseFloat(str.replace(/m/g, '')) * 1000000;
   }
   
   return parseFloat(str.replace(/[^0-9.]/g, '')) || 0;
@@ -1051,8 +1055,10 @@ function parseValue(str) {
 function formatLikeOriginal(num, original) {
   num = Math.round(num);
   
-  const wasK = original.toLowerCase().includes('k');
-  const wasM = original.toLowerCase().includes('m');
+  const lower = original.toLowerCase();
+  // "1 Million" contains "m" but must not use abbreviated $Xm styling
+  const wasK = lower.includes('k') && !/\bthousand\b/.test(lower);
+  const wasM = lower.includes('m') && !/\bmillion\b/.test(lower);
   const hadCommas = original.includes(',');
   
   if (wasM) {

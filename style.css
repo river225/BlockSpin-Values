@@ -892,42 +892,24 @@ a { color: #fff; text-decoration: none; }
   vertical-align: top;
 }
 
-/* Home: bottom ad + Attack Shark — desktop: grouped on the right; narrow: stacked centered */
+/* Home: bottom AdSense, then Attack Shark — stacked, centered (desktop + mobile) */
 .home-bottom-promo-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, min(100%, 440px));
-  gap: clamp(16px, 3vw, 36px);
-  align-items: start;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(16px, 3vw, 22px);
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 clamp(10px, 2.5vw, 20px);
   box-sizing: border-box;
 }
-.home-bottom-promo-row__spacer {
-  min-height: 1px;
-}
-.home-bottom-promo-attach {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  justify-self: end;
-}
-.home-bottom-promo-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(16px, 3vw, 22px);
-  width: 100%;
-  max-width: 440px;
-}
-.home-bottom-promo-column .bsv-adsense-unit--home-bottom {
+.home-bottom-promo-row .bsv-adsense-unit--home-bottom {
   margin-left: auto;
   margin-right: auto;
   margin-top: 0;
   width: 100%;
-  max-width: min(400px, 100%);
+  max-width: min(728px, 100%);
 }
 #home .home-shark-promo {
   width: 100%;
@@ -967,22 +949,6 @@ a { color: #fff; text-decoration: none; }
   vertical-align: top;
 }
 
-@media screen and (max-width: 900px) {
-  .home-bottom-promo-row {
-    grid-template-columns: 1fr;
-    justify-items: center;
-  }
-  .home-bottom-promo-row__spacer {
-    display: none;
-  }
-  .home-bottom-promo-attach {
-    justify-self: center;
-    justify-content: center;
-  }
-  .home-bottom-promo-column {
-    max-width: min(520px, 100%);
-  }
-}
 
 @keyframes giveaway-banner-shine {
   0%, 100% { background-position: 0% 50%; }
