@@ -8,28 +8,14 @@ const SECTION_NAMES = [
   "Omega",
   "Misc",
   "Vehicles",
+  "Accessories (Untradable)",
   
   "💰 Richest Players",
   "Crew Logos"
 ];
 
-const BSV_ADSENSE_CLIENT = "ca-pub-5741402692612033";
-
-function bsvAdSenseInsHtml(adSlot) {
-  return (
-    '<div class="bsv-adsense-unit bsv-adsense-unit--section" aria-label="Advertisement">' +
-    '<ins class="adsbygoogle" style="display:block" data-ad-client="' +
-    BSV_ADSENSE_CLIENT +
-    '" data-ad-slot="' +
-    adSlot +
-    '" data-ad-format="auto" data-full-width-responsive="true"></ins></div>'
-  );
-}
-
-const BSV_AD_THREE_PLACEHOLDER = bsvAdSenseInsHtml("6782577562");
-const BSV_AD_FOUR_PLACEHOLDER = bsvAdSenseInsHtml("4197814232");
-
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
+const ACCESSORIES_SECTION_NAME = "Accessories (Untradable)";
 
 function initAnalytics() {
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
@@ -62,46 +48,6 @@ function setupDiscordClickTracking() {
       page_path: window.location.pathname
     });
   });
-}
-
-function bsvAdSenseSectionVisible(ins) {
-  var sec = ins.closest("section");
-  if (!sec) return true;
-  if (sec.style.display === "none") return false;
-  var cs = window.getComputedStyle(sec);
-  if (cs.display === "none" || cs.visibility === "hidden") return false;
-  return true;
-}
-
-function bsvActivateAdSenseSlots() {
-  try {
-    document.querySelectorAll("ins.adsbygoogle[data-bsv-pushed]").forEach(function (ins) {
-      if (!bsvAdSenseSectionVisible(ins)) ins.removeAttribute("data-bsv-pushed");
-    });
-    document.querySelectorAll("ins.adsbygoogle:not([data-bsv-pushed])").forEach(function (ins) {
-      if (!bsvAdSenseSectionVisible(ins)) return;
-      ins.setAttribute("data-bsv-pushed", "1");
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    });
-  } catch (e) {}
-}
-
-var _bsvAdSenseScheduleTimer = null;
-function bsvScheduleAdSenseActivation() {
-  bsvActivateAdSenseSlots();
-  if (typeof requestAnimationFrame === "function") {
-    requestAnimationFrame(function () {
-      bsvActivateAdSenseSlots();
-      requestAnimationFrame(function () {
-        bsvActivateAdSenseSlots();
-      });
-    });
-  }
-  clearTimeout(_bsvAdSenseScheduleTimer);
-  _bsvAdSenseScheduleTimer = setTimeout(function () {
-    _bsvAdSenseScheduleTimer = null;
-    bsvActivateAdSenseSlots();
-  }, 400);
 }
 
 const TAX_RECEIVE_RATIO = 29091 / 40000;
@@ -149,7 +95,6 @@ function createRichestPlayersSection(data) {
     <div class="richest-players-header">
       <h2>Top 1,000 Richest Players in BlockSpin</h2>
       <p class="richest-intro">The Official BlockSpin leaderboard showing the wealthiest players ranked by the total value of their in-game assets. Rankings go to #1000 and update hourly. To appear, verify yourself in the official BlockSpin Discord server.</p>
-      ${BSV_AD_FOUR_PLACEHOLDER}
       <input 
         type="text" 
         class="richest-search" 
@@ -211,12 +156,21 @@ async function fetchSheet(sheetName) {
 
     const cols = json.table.cols.map(c => c.label?.trim() || "");
     const rows = json.table.rows || [];
+    const internalColIdx = cols.findIndex(l =>
+      normalizeHeaderKey(l).includes("internalvalue")
+    );
+
     const items = rows.map(r => {
       const obj = {};
       cols.forEach((label, i) => {
         const cell = r.c?.[i];
-        obj[label] = cell ? (cell.f ?? cell.v ?? "") : "";
+        obj[label] = getCellDisplayValue(cell);
       });
+      if (internalColIdx >= 0) {
+        obj["Internal Value"] = coerceInternalCell(r.c?.[internalColIdx]);
+      }
+      obj.__rowValues = (r.c || []).map(getCellDisplayValue);
+      obj.__colLabels = cols.slice();
       return obj;
     });
 
@@ -254,8 +208,10 @@ async function fetchRichestPlayers() {
       const obj = {};
       cols.forEach((label, i) => {
         const cell = r.c?.[i];
-        obj[label] = cell ? (cell.f ?? cell.v ?? "") : "";
+        obj[label] = getCellDisplayValue(cell);
       });
+      obj.__rowValues = (r.c || []).map(getCellDisplayValue);
+      obj.__colLabels = cols.slice();
       return obj;
     });
 
@@ -274,7 +230,18 @@ function createCard(item) {
   const avg = safe(item["Average Value"]);
   const ranged = safe(item["Ranged Value"]);
   const durability = safe(item["Durability"]);
-  const internalValue = safe(item["Internal Value"]);
+  const internalRaw = String(getInternalValueFromItem(item) ?? "").trim();
+  const internalNum = parseInternalValue(internalRaw);
+  const hasInternalValue =
+    Number.isFinite(internalNum) && internalNum > 0;
+  const internalValueForAttr = hasInternalValue
+    ? String(internalNum)
+    : internalRaw;
+  const networthDisplay = hasInternalValue
+    ? "$" + Math.round(internalNum).toLocaleString("en-US")
+    : internalRaw !== ""
+      ? internalRaw
+      : "N/A";
   const giveawayFlag = safe(item["Giveaway"]);
 
   let imgTag = "";
@@ -285,7 +252,12 @@ function createCard(item) {
   let durabilityHTML = '';
   
   const durabilityInvisible = safe(item["Durability Invisible"]);
-  const invisibleStyle = (durabilityInvisible && durabilityInvisible.toLowerCase() === 'yes') ? 'style="opacity: 0;"' : '';
+  const durabilityInvisibleNormalized = String(durabilityInvisible).trim().toLowerCase();
+  const isDurabilityInvisible =
+    /^(yes|true|1|ticked|checked|on|y)$/i.test(durabilityInvisibleNormalized);
+  const invisibleStyle = isDurabilityInvisible ? 'style="opacity: 0;"' : '';
+  const showPawn = durability && durability.includes('/') && hasInternalValue;
+  const showRepair = showPawn && !isDurabilityInvisible;
   
   if (durability && durability.includes('/')) {
     const maxDurability = durability.split('/')[1] || "100";
@@ -313,23 +285,19 @@ function createCard(item) {
   }
 
 let repairPrice = 0;
-if (durability && durability.includes('/') && internalValue) {
+if (showPawn) {
   const [currentDurability, maxDurability] = durability.split('/').map(v => parseInt(v) || 0);
   const missingDurability = maxDurability - currentDurability;
-
-  const internalVal = parseFloat(internalValue.replace(/[$,k]/gi, '')) *
-                      (internalValue.toLowerCase().includes('k') ? 1000 : 1);
+  const internalVal = internalNum;
 
   const rawRepair = missingDurability * (internalVal / maxDurability / 1.43);
   repairPrice = Math.round(rawRepair);
 }
 
 let pawnAmount = 0;
-if (durability && durability.includes('/') && internalValue) {
+if (showPawn) {
   const [currentDurability, maxDurability] = durability.split('/').map(v => parseInt(v) || 0);
-
-  const internalVal = parseFloat(internalValue.replace(/[$,k]/gi, '')) *
-                      (internalValue.toLowerCase().includes('k') ? 1000 : 1);
+  const internalVal = internalNum;
 
   const baseValue = internalVal * 0.3;
   const missingDurability = maxDurability - currentDurability;
@@ -348,7 +316,7 @@ if (durability && durability.includes('/') && internalValue) {
          data-avg="${escapeAttr(avg)}" 
          data-ranged="${escapeAttr(ranged)}" 
          data-max-durability="${durability ? durability.split('/')[1] : '100'}"
-         data-internal-value="${escapeAttr(internalValue)}">
+         data-internal-value="${escapeAttr(internalValueForAttr)}">
       <div class="card-left">
         ${imgTag}
         ${durabilityHTML}
@@ -358,12 +326,16 @@ if (durability && durability.includes('/') && internalValue) {
         ${demand ? `<span class="badge">Demand: ${demand}</span>` : ""}
         <div class="card-avg">Average Value: <span class="avg-value">${avg}</span></div>
         <div class="card-ranged">Ranged Value: <span class="ranged-value">${ranged}</span></div>
-        ${durability && internalValue ? `<div class="card-pawn">Pawn Amount: <span class="pawn-value">${pawnAmount}</span></div>` : ''}
-        ${durability && internalValue ? `
-          <div class="card-repair">
-            Repair Price: <span class="repair-value">$${repairPrice.toLocaleString()}</span>
-          </div>
-        ` : ''}
+        <div class="card-value-separator"></div>
+        <div class="card-secondary-values">
+          <div class="card-networth">Networth Value: <span class="networth-value">${escapeHtml(String(networthDisplay))}</span></div>
+          ${showPawn ? `<div class="card-pawn">Pawn Amount: <span class="pawn-value">${pawnAmount}</span></div>` : ''}
+          ${showRepair ? `
+            <div class="card-repair">
+              Repair Price: <span class="repair-value">$${repairPrice.toLocaleString()}</span>
+            </div>
+          ` : ''}
+        </div>
       </div>
       ${hasGiveaway ? `
         <button class="card-giveaway-trigger" type="button" aria-label="This item has an active giveaway" data-item-name="${escapeAttr(name)}"></button>
@@ -458,6 +430,48 @@ function createScammerCard(item) {
   `;
 }
 
+function createAccessoryCard(item) {
+  const name = safe(item["Name"]);
+  const img = safe(item["Image URL"] || item["Image"]);
+  const rarity = safe(item["Rarity"]);
+  const networthValue = safe(item["Networth Value"]);
+  const crate = safe(item["Crate"]);
+  const networthNum = parseInternalValue(networthValue);
+  const networthDisplay = networthNum > 0
+    ? "$" + Math.round(networthNum).toLocaleString("en-US")
+    : "N/A";
+  const pawnDisplay = networthNum > 0
+    ? "$" + Math.round(networthNum * 0.3).toLocaleString("en-US")
+    : "N/A";
+  const rarityNorm = String(rarity || "").trim().toLowerCase();
+  const rarityClass =
+    rarityNorm === "omega" ? "rarity-omega" :
+    rarityNorm === "legendary" ? "rarity-legendary" :
+    rarityNorm === "epic" ? "rarity-epic" :
+    rarityNorm === "rare" ? "rarity-rare" :
+    rarityNorm === "uncommon" ? "rarity-uncommon" :
+    rarityNorm === "common" ? "rarity-common" :
+    "rarity-default";
+  const imgTag = img
+    ? `<img src="${img}" alt="${name}" onerror="this.style.display='none'">`
+    : "";
+
+  return `
+    <div class="card accessory-item-card" data-name="${escapeAttr(name)}">
+      <div class="card-left">
+        ${imgTag}
+      </div>
+      <div class="card-info">
+        <h3>${escapeHtml(name)}</h3>
+        ${rarity ? `<span class="badge accessory-rarity-badge ${rarityClass}">${escapeHtml(rarity)}</span>` : ""}
+        <div class="card-networth"><span class="accessory-label">Networth Value:</span> <span class="networth-value">${escapeHtml(networthDisplay)}</span></div>
+        <div class="card-pawn"><span class="accessory-label">Pawn Value:</span> <span class="pawn-value">${escapeHtml(pawnDisplay)}</span></div>
+        <div class="card-ranged"><span class="accessory-label">Crate:</span> <span>${escapeHtml(crate || "N/A")}</span></div>
+      </div>
+    </div>
+  `;
+}
+
 function renderSection(title, items) {
   if (title === "BlockSpin Map") {
     renderBlockSpinMapSection();
@@ -481,6 +495,8 @@ function renderSection(title, items) {
     renderRichestPlayersSection(items);
   } else if (title === "Crew Logos") {
     renderCrewLogosSection(items);
+  } else if (title === "Accessories (Untradable)") {
+    renderAccessoriesSection(items);
   } else if (title === "Legendary") {
     renderLegendarySectionWithBanner(items);
   } else if (title === "Omega") {
@@ -497,7 +513,6 @@ function renderSection(title, items) {
             <p class="legendary-banner-members"><span class="discord-member-count">—</span> members</p>
           </div>
         </div>
-        ${BSV_AD_THREE_PLACEHOLDER}
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -531,7 +546,6 @@ function renderSection(title, items) {
         <div class="cards">
           ${items.map(createCard).join("")}
         </div>
-        ${BSV_AD_THREE_PLACEHOLDER}
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -553,7 +567,6 @@ function renderLegendarySectionWithBanner(items) {
           <p class="legendary-banner-members"><span class="discord-member-count">—</span> members</p>
         </div>
       </div>
-      ${BSV_AD_THREE_PLACEHOLDER}
     </section>
   `;
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -598,8 +611,133 @@ function renderCrewLogosSection(items) {
     }
   });
   
-  html += BSV_AD_FOUR_PLACEHOLDER + `</section>`;
+  html += `</section>`;
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
+}
+
+function renderAccessoriesSection(items) {
+  const miniToBig = {};
+
+  // Pass 1: build mini-header -> big-header map from any row that defines both.
+  items.forEach(item => {
+    const big = safe(item["Big Header"]).trim();
+    const mini = safe(item["Mini Header"]).trim();
+    if (big && mini) miniToBig[mini] = big;
+  });
+
+  const structure = {};
+
+  function ensureGroup(bigHeader, miniHeader) {
+    const big = bigHeader || "Uncategorized";
+    const mini = miniHeader || "General";
+    if (!structure[big]) structure[big] = {};
+    if (!structure[big][mini]) structure[big][mini] = [];
+  }
+
+  // Pass 2: add explicit mini-header rows to structure even without items.
+  items.forEach(item => {
+    const big = safe(item["Big Header"]).trim();
+    const mini = safe(item["Mini Header"]).trim();
+    const hasName = safe(item["Name"]).trim() !== "";
+    if (big && mini && !hasName) ensureGroup(big, mini);
+  });
+
+  // Pass 3: place item cards by mini-header, then inferred big-header.
+  items.forEach(item => {
+    const name = safe(item["Name"]).trim();
+    if (!name) return;
+
+    const mini = safe(item["Mini Header"]).trim() || "General";
+    const explicitBig = safe(item["Big Header"]).trim();
+    const big = explicitBig || miniToBig[mini] || "Uncategorized";
+    ensureGroup(big, mini);
+    structure[big][mini].push(item);
+  });
+
+  let html = `<section class="section accessories-section" id="${slugify(ACCESSORIES_SECTION_NAME)}"><h2>${ACCESSORIES_SECTION_NAME}</h2>`;
+  const navData = [];
+  let bigCounter = 0;
+  let miniCounter = 0;
+
+  Object.keys(structure).forEach(bigHeader => {
+    const bigAnchor = `acc-big-${bigCounter++}`;
+    html += `<div class="accessories-big-header" id="${bigAnchor}">${escapeHtml(bigHeader)}</div>`;
+    const miniGroups = structure[bigHeader];
+    const miniEntries = [];
+    Object.keys(miniGroups).forEach(miniHeader => {
+      const miniAnchor = `acc-mini-${miniCounter++}`;
+      html += `
+        <div class="accessories-mini-header" id="${miniAnchor}">${escapeHtml(miniHeader)}</div>
+        <div class="cards">
+          ${miniGroups[miniHeader].map(createAccessoryCard).join("")}
+        </div>
+      `;
+      miniEntries.push({ title: miniHeader, anchor: miniAnchor });
+    });
+    navData.push({ title: bigHeader, anchor: bigAnchor, minis: miniEntries });
+  });
+
+  html += `</section>`;
+  document.getElementById("sections").insertAdjacentHTML("beforeend", html);
+  renderAccessoriesFastNav(navData);
+}
+
+function renderAccessoriesFastNav(navData) {
+  const sidebar = document.getElementById("tax-sidebar-column");
+  if (!sidebar) return;
+
+  let box = document.getElementById("accessories-fast-nav");
+  if (!box) {
+    box = document.createElement("aside");
+    box.id = "accessories-fast-nav";
+    box.style.display = "none";
+    box.style.background = "#141d28";
+    box.style.border = "1px solid #2f3f52";
+    box.style.borderRadius = "12px";
+    box.style.boxShadow = "0 6px 18px rgba(0, 0, 0, 0.28)";
+    box.style.padding = "8px 9px";
+    box.style.marginTop = "0";
+    box.style.marginBottom = "10px";
+    box.style.maxHeight = "none";
+    box.style.overflowY = "visible";
+    box.style.position = "sticky";
+    box.style.top = "12px";
+    sidebar.insertBefore(box, sidebar.firstChild);
+  }
+
+  const rows = [];
+  rows.push('<h2 style="margin:0 0 7px 0; color:#dbeafe; font-size:0.9rem; text-align:center; font-weight:700;">Fast Navigation</h2>');
+
+  navData.forEach(group => {
+    rows.push(
+      `<button type="button" data-target="${escapeAttr(group.anchor)}" style="display:block;width:100%;text-align:left;background:transparent;border:none;color:#e5efff;font-weight:700;padding:5px 4px;cursor:pointer;border-radius:0;margin-bottom:2px;font-size:0.79rem;">${escapeHtml(group.title)}</button>`
+    );
+    (group.minis || []).forEach(mini => {
+      rows.push(
+        `<button type="button" data-target="${escapeAttr(mini.anchor)}" style="display:block;width:100%;text-align:left;background:transparent;border:none;color:#9ec3dd;padding:4px 4px 4px 14px;cursor:pointer;border-radius:0;margin:0 0 1px 0;font-size:0.74rem;">${escapeHtml(mini.title)}</button>`
+      );
+    });
+  });
+
+  rows.push('<div style="height:6px"></div>');
+  rows.push('<button type="button" id="acc-fast-nav-top" style="width:100%;padding:6px 8px;background:#203047;color:#cfe6ff;border:1px solid #355274;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.75rem;">Back to Top</button>');
+  box.innerHTML = rows.join("");
+
+  box.querySelectorAll("button[data-target]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetId = btn.getAttribute("data-target");
+      const el = targetId ? document.getElementById(targetId) : null;
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  const topBtn = document.getElementById("acc-fast-nav-top");
+  if (topBtn) {
+    topBtn.addEventListener("click", () => {
+      const sec = document.getElementById(slugify(ACCESSORIES_SECTION_NAME));
+      if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 }
 
 
@@ -676,7 +814,7 @@ function syncItemSectionSearchPlacement(name) {
   const searchContainer = document.querySelector(".search-container");
   if (!sectionsEl || !searchContainer) return;
 
-  const hiddenSearchSections = ["Home", "Crew Logos", "Crate Game", "💰 Richest Players"];
+  const hiddenSearchSections = ["Home", "Crew Logos", "Crate Game", "💰 Richest Players", "Accessories (Untradable)"];
 
   function restoreSearchBeforeHome() {
     const homeSec = document.getElementById("home");
@@ -731,7 +869,13 @@ function showSection(name) {
   const taxSidebarColumn = document.getElementById('tax-sidebar-column');
   const homeValueChanges = document.getElementById('home-value-changes');
   const taxCalc = taxSidebarColumn ? taxSidebarColumn.querySelector('.tax-calculator') : null;
+  const middlemanPromo = taxSidebarColumn ? taxSidebarColumn.querySelector('.discord-mm-promo--sidebar') : null;
+  const accessoriesFastNav = document.getElementById('accessories-fast-nav');
   const hiddenSections = ['Crew Logos', 'Crate Game', '💰 Richest Players'];
+  // Keep sidebar layout space, but make tax/middleman boxes invisible + non-interactive for this section.
+  const ghostSidebarSections = [ACCESSORIES_SECTION_NAME];
+  const shouldGhostSidebarBoxes = ghostSidebarSections.includes(name);
+  const isAccessoriesSection = name === ACCESSORIES_SECTION_NAME;
   const isHome = name === 'Home';
   document.body.classList.toggle('is-home', isHome);
   if (taxSidebarColumn) {
@@ -746,7 +890,41 @@ function showSection(name) {
     }
   }
   if (taxCalc) {
-    taxCalc.style.display = isHome ? 'none' : 'block';
+    if (shouldGhostSidebarBoxes) {
+      taxCalc.style.display = 'block';
+      taxCalc.style.visibility = 'hidden';
+      taxCalc.style.opacity = '0';
+      taxCalc.style.pointerEvents = 'none';
+    } else {
+      taxCalc.style.display = isHome ? 'none' : 'block';
+      taxCalc.style.visibility = 'visible';
+      taxCalc.style.opacity = '1';
+      taxCalc.style.pointerEvents = 'auto';
+    }
+  }
+  if (middlemanPromo) {
+    if (shouldGhostSidebarBoxes) {
+      middlemanPromo.style.visibility = 'hidden';
+      middlemanPromo.style.opacity = '0';
+      middlemanPromo.style.pointerEvents = 'none';
+    } else {
+      middlemanPromo.style.visibility = 'visible';
+      middlemanPromo.style.opacity = '1';
+      middlemanPromo.style.pointerEvents = 'auto';
+    }
+  }
+  if (accessoriesFastNav) {
+    if (isAccessoriesSection) {
+      accessoriesFastNav.style.display = 'block';
+      accessoriesFastNav.style.visibility = 'visible';
+      accessoriesFastNav.style.opacity = '1';
+      accessoriesFastNav.style.pointerEvents = 'auto';
+    } else {
+      accessoriesFastNav.style.display = 'none';
+      accessoriesFastNav.style.visibility = 'hidden';
+      accessoriesFastNav.style.opacity = '0';
+      accessoriesFastNav.style.pointerEvents = 'none';
+    }
   }
   if (homeValueChanges) {
     homeValueChanges.style.visibility = isHome ? 'visible' : 'hidden';
@@ -757,7 +935,7 @@ function showSection(name) {
     
   const searchContainer = document.querySelector('.search-container');
   if (searchContainer) {
-    const hiddenSearchSections = ['Home', 'Crew Logos', 'Crate Game', '💰 Richest Players'];
+    const hiddenSearchSections = ['Home', 'Crew Logos', 'Crate Game', '💰 Richest Players', 'Accessories (Untradable)'];
     if (hiddenSearchSections.includes(name)) {
       searchContainer.style.cssText = 'visibility: hidden; height: 0; margin: 0; overflow: hidden;';
     } else {
@@ -775,7 +953,6 @@ function showSection(name) {
   });
 
   syncItemSectionSearchPlacement(name);
-  bsvScheduleAdSenseActivation();
   trackEvent("view_section", { section_name: name });
 }
 
@@ -982,7 +1159,7 @@ function updateCardValues(input) {
   
   if (repairValueElement && internalValue) {
     const missingDurability = maxDurability - currentDurability;
-    const internalVal = parseFloat(internalValue.replace(/[$,k]/gi, '')) * (internalValue.toLowerCase().includes('k') ? 1000 : 1);
+    const internalVal = parseInternalValue(internalValue);
     const repairPrice = Math.round(missingDurability * (internalVal / maxDurability / 1.43));
     repairValueElement.textContent = '$' + (isNaN(repairPrice) ? 0 : repairPrice).toLocaleString();
   }
@@ -991,7 +1168,7 @@ function updateCardValues(input) {
   
   if (pawnValueElement && internalValue) {
     const missingDurability = maxDurability - currentDurability;
-    const internalVal = parseFloat(internalValue.replace(/[$,k]/gi, '')) * (internalValue.toLowerCase().includes('k') ? 1000 : 1);
+    const internalVal = parseInternalValue(internalValue);
     
     const baseValue = internalVal * 0.3;
     const deduction = missingDurability * ((internalVal * 0.3) / maxDurability / 1.43);
@@ -1079,9 +1256,104 @@ document.addEventListener('touchend', stopDurabilityAdjust);
 document.addEventListener('touchcancel', stopDurabilityAdjust);
 
 function safe(str) { return str ?? ""; }
-function escapeAttr(str) { return (str+"").replace(/"/g, "&quot;"); }
+function escapeAttr(str) {
+  return (str + "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+function escapeHtml(str) {
+  return (str + "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+function parseInternalValue(value) {
+  const raw = String(value || "").trim().toLowerCase();
+  if (!raw) return 0;
+  const numeric = raw.replace(/[^0-9.]/g, "");
+  if (!numeric) return 0;
+  let n = parseFloat(numeric);
+  if (!isFinite(n)) return 0;
+  if (/\bbillion\b/.test(raw) || raw.includes("b")) n *= 1e9;
+  else if (/\bmillion\b/.test(raw) || raw.includes("m")) n *= 1e6;
+  else if (/\bthousand\b/.test(raw) || raw.includes("k")) n *= 1e3;
+  return n;
+}
+function normalizeHeaderKey(s) {
+  return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+function getInternalValueFromItem(item) {
+  if (!item || typeof item !== "object") return "";
+  const direct = item["Internal Value"];
+  if (direct !== undefined && direct !== null && String(direct).trim() !== "") return direct;
+
+  const preferredKeys = ["internalvalue", "networthvalue", "internal", "networth"];
+  for (const key of Object.keys(item)) {
+    const norm = normalizeHeaderKey(key);
+    if (!norm) continue;
+    if (preferredKeys.includes(norm) || norm.includes("internalvalue") || norm.includes("networthvalue")) {
+      const v = item[key];
+      if (v !== undefined && v !== null && String(v).trim() !== "") return v;
+    }
+  }
+
+  // Fallback: recover by sheet column position when labels are inconsistent.
+  const rowValues = Array.isArray(item.__rowValues) ? item.__rowValues : [];
+  const colLabels = Array.isArray(item.__colLabels) ? item.__colLabels : [];
+  if (rowValues.length) {
+    let internalIdx = -1;
+    for (let i = 0; i < colLabels.length; i++) {
+      if (normalizeHeaderKey(colLabels[i]).includes("internalvalue")) {
+        internalIdx = i;
+        break;
+      }
+    }
+    if (internalIdx >= 0 && internalIdx < rowValues.length) {
+      const byHeaderIndex = rowValues[internalIdx];
+      if (byHeaderIndex !== undefined && byHeaderIndex !== null && String(byHeaderIndex).trim() !== "") {
+        return byHeaderIndex;
+      }
+    }
+    // Known schema fallback: Name, Image URL, Demand, Average, Ranged, Quantum, Durability, Internal, Durability Invisible
+    if (rowValues.length >= 8) {
+      const byKnownIndex = rowValues[7];
+      if (byKnownIndex !== undefined && byKnownIndex !== null && String(byKnownIndex).trim() !== "") {
+        return byKnownIndex;
+      }
+    }
+  }
+  return "";
+}
+/** Prefer numeric cell.v from Sheets (reliable); else formatted f; else string v. */
+function coerceInternalCell(cell) {
+  if (!cell) return "";
+  if (typeof cell.v === "number" && Number.isFinite(cell.v)) {
+    return String(cell.v);
+  }
+  if (cell.v !== null && cell.v !== undefined) {
+    const vs = String(cell.v).trim();
+    if (vs !== "") return vs;
+  }
+  if (cell.f !== undefined && cell.f !== null && String(cell.f).trim() !== "") {
+    return String(cell.f);
+  }
+  return "";
+}
+function getCellDisplayValue(cell) {
+  if (!cell) return "";
+  if (cell.f !== undefined && cell.f !== null && String(cell.f).trim() !== "") {
+    return cell.f;
+  }
+  if (cell.v !== undefined && cell.v !== null) {
+    return cell.v;
+  }
+  return "";
+}
 function getSheetNameForSection(displayName) {
   if (displayName === "Common / Uncommon") return "Uncommon";
+  if (displayName === "Accessories (Untradable)") return "Accessories";
   return displayName;
 }
 
@@ -1114,7 +1386,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   initSectionsNav();
   initSearch();
   initTaxCalculator();
-  bsvActivateAdSenseSlots();
 
   const totalSections = SECTION_NAMES.length;
   let loadedSections = 0;
@@ -1435,6 +1706,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileTaxContent = document.getElementById('mobile-tax-content');
     const mobileRecentChanges = document.getElementById('mobile-recent-changes');
     const mobilePromo = calc.querySelector('.discord-mm-promo--mobile-panel');
+    const accessoriesSectionId = slugify(ACCESSORIES_SECTION_NAME);
+    const originalMobileTaxContentHtml = mobileTaxContent ? mobileTaxContent.innerHTML : '';
     
     if (!arrow || !calc || !closeBtn || !input || !amount) {
       return;
@@ -1458,7 +1731,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
     
-    const calcSections = ['home', 'uncommon', 'rare', 'epic', 'legendary', 'omega', 'vehicle', 'misc'];
+    const calcSections = ['home', 'uncommon', 'rare', 'epic', 'legendary', 'omega', 'vehicles', 'misc', 'accessories-(untradable)'];
     
     arrow.addEventListener('click', openCalc);
     closeBtn.addEventListener('click', closeCalc);
@@ -1483,6 +1756,65 @@ document.addEventListener('DOMContentLoaded', function() {
     input.addEventListener('input', updateMobileTax);
     updateMobileTax();
 
+    function renderMobileAccessoriesFastNav() {
+      if (!mobileTaxContent) return;
+      const section = document.getElementById(accessoriesSectionId);
+      if (!section) return;
+
+      const bigHeaders = Array.from(section.querySelectorAll('.accessories-big-header'));
+      const miniHeaders = Array.from(section.querySelectorAll('.accessories-mini-header'));
+
+      if (bigHeaders.length === 0 && miniHeaders.length === 0) return;
+
+      const rows = [];
+      rows.push('<h2 style="margin:0 0 8px 0; color:#dbeafe; font-size:0.95rem; text-align:center; font-weight:700;">Fast Navigation</h2>');
+
+      bigHeaders.forEach(function(el) {
+        const id = el.id || '';
+        const title = escapeHtml((el.textContent || '').trim());
+        if (!id || !title) return;
+        rows.push(`<button type="button" data-target="${escapeAttr(id)}" style="display:block;width:100%;text-align:left;background:transparent;border:none;color:#e5efff;font-weight:700;padding:6px 4px;cursor:pointer;border-radius:0;margin-bottom:2px;font-size:0.82rem;">${title}</button>`);
+      });
+
+      miniHeaders.forEach(function(el) {
+        const id = el.id || '';
+        const title = escapeHtml((el.textContent || '').trim());
+        if (!id || !title) return;
+        rows.push(`<button type="button" data-target="${escapeAttr(id)}" style="display:block;width:100%;text-align:left;background:transparent;border:none;color:#9ec3dd;padding:5px 4px 5px 14px;cursor:pointer;border-radius:0;margin:0 0 1px 0;font-size:0.76rem;">${title}</button>`);
+      });
+
+      rows.push('<div style="height:8px"></div>');
+      rows.push('<button type="button" id="mobile-acc-fast-nav-top" style="width:100%;padding:7px 9px;background:#203047;color:#cfe6ff;border:1px solid #355274;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.78rem;">Back to Top</button>');
+
+      mobileTaxContent.innerHTML = rows.join('');
+
+      mobileTaxContent.querySelectorAll('button[data-target]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const targetId = btn.getAttribute('data-target');
+          const target = targetId ? document.getElementById(targetId) : null;
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          closeCalc();
+        });
+      });
+
+      const topBtn = document.getElementById('mobile-acc-fast-nav-top');
+      if (topBtn) {
+        topBtn.addEventListener('click', function() {
+          const sec = document.getElementById(accessoriesSectionId);
+          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          closeCalc();
+        });
+      }
+    }
+
+    function restoreMobileTaxContent() {
+      if (!mobileTaxContent) return;
+      if (mobileTaxContent.dataset.navMode === 'accessories') {
+        mobileTaxContent.innerHTML = originalMobileTaxContentHtml;
+        mobileTaxContent.dataset.navMode = '';
+      }
+    }
+
     // Show/hide arrow based on active section
     function updateArrowVisibility() {
       const sections = document.querySelectorAll('.sections > section');
@@ -1496,9 +1828,22 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       const isHome = activeSection === 'home';
-      if (mobileTaxContent) mobileTaxContent.style.display = isHome ? 'none' : 'block';
-      if (mobileRecentChanges) mobileRecentChanges.style.display = isHome ? 'block' : 'none';
-      if (mobilePromo) mobilePromo.style.display = isHome ? 'none' : 'block';
+      const isAccessories = activeSection === accessoriesSectionId;
+
+      if (isAccessories) {
+        renderMobileAccessoriesFastNav();
+        if (mobileTaxContent) {
+          mobileTaxContent.dataset.navMode = 'accessories';
+          mobileTaxContent.style.display = 'block';
+        }
+        if (mobileRecentChanges) mobileRecentChanges.style.display = 'none';
+        if (mobilePromo) mobilePromo.style.display = 'none';
+      } else {
+        restoreMobileTaxContent();
+        if (mobileTaxContent) mobileTaxContent.style.display = isHome ? 'none' : 'block';
+        if (mobileRecentChanges) mobileRecentChanges.style.display = isHome ? 'block' : 'none';
+        if (mobilePromo) mobilePromo.style.display = isHome ? 'none' : 'block';
+      }
 
       if (calcSections.includes(activeSection)) {
         arrow.style.display = 'flex';

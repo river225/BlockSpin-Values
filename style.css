@@ -288,7 +288,7 @@ a { color: #fff; text-decoration: none; }
 }
 
 /* Value text styling */
-.card-avg, .card-ranged, .card-pawn, .card-repair {
+.card-avg, .card-ranged, .card-networth, .card-pawn, .card-repair {
   font-size: 1.05rem;
   font-weight: 700;
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
@@ -315,10 +315,29 @@ a { color: #fff; text-decoration: none; }
 
 /* Pawn Amount (inline in card-info) */
 .card-pawn .pawn-value {
-  color: #5ec7c2;
+  color: #ff9944;
   font-weight: 700;
   font-size: 1.2rem;
   text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+}
+
+.card-networth .networth-value {
+  color: #5bc5de;
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+}
+
+.card-value-separator {
+  height: 2px;
+  width: 100%;
+  margin: 8px 0 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.32), rgba(123,224,246,1), rgba(255,255,255,0.32));
+}
+
+.card-secondary-values {
+  margin-top: 4px;
 }
 
 .sections-nav-suggest {
@@ -429,6 +448,89 @@ a { color: #fff; text-decoration: none; }
   text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
   width: 100%; 
   box-sizing: border-box; 
+}
+
+/* Accessories (Untradable) section */
+.accessories-section {
+  width: 100%;
+}
+
+.accessories-big-header {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #7ee7ff;
+  margin: 26px 0 12px;
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+}
+
+.accessories-mini-header {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #e7f6ff;
+  margin: 14px 0 12px;
+  text-shadow: 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px -1.5px 0 #000;
+}
+
+.accessories-section .cards {
+  margin-bottom: 12px;
+}
+
+.accessory-item-card .card-info h3 {
+  text-align: left;
+}
+
+.accessory-item-card .card-left {
+  align-items: center;
+}
+
+.accessory-item-card .card-left::after {
+  display: none;
+}
+
+.accessory-item-card .card-ranged span,
+.accessory-item-card .card-networth span,
+.accessory-item-card .card-pawn span {
+  font-size: 1.2rem;
+}
+
+.accessory-item-card .accessory-label {
+  color: #fff;
+}
+
+.accessory-item-card .accessory-rarity-badge {
+  text-transform: none;
+  min-width: 110px;
+  text-align: center;
+}
+
+.accessory-item-card .accessory-rarity-badge.rarity-omega {
+  background: linear-gradient(135deg, #8b251f 0%, #c0392b 25%, #e74c3c 50%, #ff6b6b 75%, #ff8080 100%);
+}
+
+.accessory-item-card .accessory-rarity-badge.rarity-legendary {
+  background: linear-gradient(135deg, #9b7e0a 0%, #d6a910 25%, #f5c312 50%, #ffdb4d 75%, #ffed70 100%);
+}
+
+.accessory-item-card .accessory-rarity-badge.rarity-epic {
+  background: linear-gradient(135deg, #4d3670 0%, #6a4c9e 25%, #8e63ce 50%, #b388ff 75%, #c9a3ff 100%);
+}
+
+.accessory-item-card .accessory-rarity-badge.rarity-rare {
+  background: linear-gradient(135deg, #1e4d7a 0%, #2d6db5 25%, #4a90e2 50%, #73b3f5 75%, #8fc3ff 100%);
+}
+
+.accessory-item-card .accessory-rarity-badge.rarity-uncommon {
+  background: linear-gradient(135deg, #2c6b2f 0%, #388e3c 25%, #4caf50 50%, #6fd66f 75%, #81e681 100%);
+}
+
+.accessory-item-card .accessory-rarity-badge.rarity-common {
+  background: linear-gradient(135deg, #3a4657 0%, #556274 25%, #6c7b8f 50%, #98a5b8 75%, #c3ccda 100%);
+}
+
+.accessory-item-card .accessory-rarity-badge.rarity-default {
+  background: linear-gradient(135deg, #2f3f55 0%, #455a75 50%, #5f7591 100%);
 }
 
 .hidden { 
@@ -892,7 +994,7 @@ a { color: #fff; text-decoration: none; }
   vertical-align: top;
 }
 
-/* Home: bottom AdSense, then Attack Shark — stacked, centered (desktop + mobile) */
+/* Home: bottom promo row, stacked and centered (desktop + mobile) */
 .home-bottom-promo-row {
   display: flex;
   flex-direction: column;
@@ -903,13 +1005,6 @@ a { color: #fff; text-decoration: none; }
   margin: 0 auto;
   padding: 0 clamp(10px, 2.5vw, 20px);
   box-sizing: border-box;
-}
-.home-bottom-promo-row .bsv-adsense-unit--home-bottom {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 0;
-  width: 100%;
-  max-width: min(728px, 100%);
 }
 #home .home-shark-promo {
   width: 100%;
@@ -1150,13 +1245,16 @@ a { color: #fff; text-decoration: none; }
   letter-spacing: 0.5px;
   padding: 14px 20px;
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Color-coded active button states */
 #sections-nav button.active {
   border-color: currentColor;
-  box-shadow: 0 0 20px currentColor, inset 0 1px 0 rgba(255,255,255,0.2);
-  transform: translateX(5px);
+  box-shadow: 0 0 14px currentColor, inset 0 1px 0 rgba(255,255,255,0.2);
+  transform: none;
   position: relative;
 }
 
@@ -1220,15 +1318,21 @@ a { color: #fff; text-decoration: none; }
   color: white;
 }
 
+/* Accessories (Untradable) */
+#sections-nav button:nth-child(9).active {
+  background: linear-gradient(135deg, #3f2f72 0%, #59429b 25%, #765bc2 50%, #9a7ae0 75%, #b39af0 100%);
+  color: white;
+}
+
 /* Richest Players (first Extra) */
-#sections-nav button:nth-child(11).active {
+#sections-nav button:nth-child(12).active {
   background: linear-gradient(135deg, #9b7e0a 0%, #d6a910 25%, #f5c312 50%, #ffdb4d 75%, #ffed70 100%);
   color: white;
   position: relative;
   overflow: hidden;
 }
 
-#sections-nav button:nth-child(11).active::after {
+#sections-nav button:nth-child(12).active::after {
   content: '';
   position: absolute;
   top: -50%;
@@ -1247,7 +1351,7 @@ a { color: #fff; text-decoration: none; }
 
 
 /* Crew Logos - Soft Cyan REVERSED gradient */
-#sections-nav button:nth-child(12).active {
+#sections-nav button:nth-child(13).active {
   background: linear-gradient(135deg, #1a5560 0%, #2d7a8a 25%, #3a9fb0 50%, #5bc5de 75%, #6dd5f0 100%);
   color: white;
 }
@@ -2327,7 +2431,7 @@ a { color: #fff; text-decoration: none; }
 .repair-value {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #ff9944;
+  color: #d55b5b;
   text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 2px 0 0 #000, -2px 0 0 #000;
 }
 
@@ -2876,56 +2980,6 @@ body {
   max-width: 600px;
 }
 
-/* Live AdSense units (main site) */
-.bsv-adsense-unit {
-  max-width: 728px;
-  width: 100%;
-  min-height: 90px;
-  margin: 8px auto 28px;
-  box-sizing: border-box;
-  text-align: center;
-}
-.bsv-adsense-unit--home-bottom {
-  margin-top: 12px;
-  margin-bottom: 0;
-}
-
-.bsv-adsense-unit--section {
-  margin-top: 28px;
-  margin-bottom: 12px;
-}
-
-/* Reserved ad area (home, above announcements / top donators) — placeholder until main site */
-.ad-slot-placeholder {
-  max-width: 728px;
-  width: 100%;
-  min-height: 90px;
-  margin: 8px auto 28px;
-  box-sizing: border-box;
-  border: 2px dashed rgba(51, 204, 230, 0.35);
-  border-radius: 10px;
-  background: rgba(15, 23, 42, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.ad-slot-placeholder-label {
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.9);
-  user-select: none;
-}
-.ad-slot-placeholder--home-bottom {
-  margin-top: 12px;
-  margin-bottom: 0;
-}
-/* Bottom of rarity / item sections (JS-rendered) */
-.ad-slot-placeholder--section {
-  margin-top: 28px;
-  margin-bottom: 12px;
-}
-
 /* What is BlockSpin Values Section */
 .what-is-section {
   max-width: 800px;
@@ -3316,6 +3370,32 @@ body.mobile-panel-open .hamburger-menu {
     display: none !important;
   }
 
+  /* Accessories mobile: slightly smaller cards */
+  .accessories-section .card.accessory-item-card {
+    gap: 10px;
+    padding: 9px;
+  }
+
+  .accessories-section .accessory-item-card .card-left {
+    min-width: 110px;
+    padding: 6px;
+  }
+
+  .accessories-section .accessory-item-card .card-left img {
+    width: 84px;
+    height: 84px;
+  }
+
+  .accessories-section .accessory-item-card .card-info h3 {
+    font-size: 1rem;
+  }
+
+  .accessories-section .accessory-item-card .card-networth,
+  .accessories-section .accessory-item-card .card-pawn,
+  .accessories-section .accessory-item-card .card-ranged {
+    font-size: 0.86rem;
+  }
+
   .sections {
     width: 100%;
   }
@@ -3361,11 +3441,11 @@ body.mobile-panel-open .hamburger-menu {
 
   .card-avg,
   .card-ranged,
+  .card-networth,
   .card-pawn,
   .card-repair {
     font-size: 0.98rem;
   }
-
 
   .crew-logo-card {
     max-width: calc(50% - 10px);
