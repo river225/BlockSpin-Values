@@ -8,14 +8,14 @@ const SECTION_NAMES = [
   "Omega",
   "Misc",
   "Vehicles",
-  "Accessories (Untradable)",
+  "Untradable Items",
   
   "💰 Richest Players",
   "Crew Logos"
 ];
 
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
-const ACCESSORIES_SECTION_NAME = "Accessories (Untradable)";
+const ACCESSORIES_SECTION_NAME = "Untradable Items";
 
 function initAnalytics() {
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
@@ -495,7 +495,7 @@ function renderSection(title, items) {
     renderRichestPlayersSection(items);
   } else if (title === "Crew Logos") {
     renderCrewLogosSection(items);
-  } else if (title === "Accessories (Untradable)") {
+  } else if (title === ACCESSORIES_SECTION_NAME) {
     renderAccessoriesSection(items);
   } else if (title === "Legendary") {
     renderLegendarySectionWithBanner(items);
@@ -814,7 +814,7 @@ function syncItemSectionSearchPlacement(name) {
   const searchContainer = document.querySelector(".search-container");
   if (!sectionsEl || !searchContainer) return;
 
-  const hiddenSearchSections = ["Home", "Crew Logos", "Crate Game", "💰 Richest Players", "Accessories (Untradable)"];
+  const hiddenSearchSections = ["Home", "Crew Logos", "Crate Game", "💰 Richest Players", ACCESSORIES_SECTION_NAME];
 
   function restoreSearchBeforeHome() {
     const homeSec = document.getElementById("home");
@@ -935,7 +935,7 @@ function showSection(name) {
     
   const searchContainer = document.querySelector('.search-container');
   if (searchContainer) {
-    const hiddenSearchSections = ['Home', 'Crew Logos', 'Crate Game', '💰 Richest Players', 'Accessories (Untradable)'];
+    const hiddenSearchSections = ['Home', 'Crew Logos', 'Crate Game', '💰 Richest Players', ACCESSORIES_SECTION_NAME];
     if (hiddenSearchSections.includes(name)) {
       searchContainer.style.cssText = 'visibility: hidden; height: 0; margin: 0; overflow: hidden;';
     } else {
@@ -1353,7 +1353,7 @@ function getCellDisplayValue(cell) {
 }
 function getSheetNameForSection(displayName) {
   if (displayName === "Common / Uncommon") return "Uncommon";
-  if (displayName === "Accessories (Untradable)") return "Accessories";
+  if (displayName === ACCESSORIES_SECTION_NAME) return "Accessories";
   return displayName;
 }
 
@@ -1731,7 +1731,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
     
-    const calcSections = ['home', 'uncommon', 'rare', 'epic', 'legendary', 'omega', 'vehicles', 'misc', 'accessories-(untradable)'];
+    const calcSections = ['home', 'uncommon', 'rare', 'epic', 'legendary', 'omega', 'vehicles', 'misc', slugify(ACCESSORIES_SECTION_NAME)];
     
     arrow.addEventListener('click', openCalc);
     closeBtn.addEventListener('click', closeCalc);
