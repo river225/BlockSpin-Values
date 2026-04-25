@@ -486,7 +486,7 @@ a { color: #fff; text-decoration: none; }
 }
 
 .accessory-item-card .card-left::after {
-  display: none;
+  display: block;
 }
 
 .accessory-item-card .card-ranged span,
