@@ -230,7 +230,7 @@ function createCard(item) {
   const avg = safe(item["Average Value"]);
   const ranged = safe(item["Ranged Value"]);
   const sectionName = String(item.__sheet || "").trim().toLowerCase();
-  const isMiscSection = sectionName === "misc";
+  const isMiscSection = sectionName.includes("misc");
   const durability = safe(item["Durability"]);
   const internalRawDirect = String(item["Internal Value"] || "").trim();
   const internalRaw = String(getInternalValueFromItem(item) ?? "").trim();
@@ -261,7 +261,7 @@ function createCard(item) {
   const invisibleStyle = isDurabilityInvisible ? 'style="opacity: 0;"' : '';
   const showPawn = !isMiscSection && durability && durability.includes('/') && hasInternalValue;
   const showRepair = showPawn && !isDurabilityInvisible;
-  const showNetworth = !isMiscSection || internalRawDirect !== "";
+  const showNetworth = !isMiscSection || (internalRawDirect !== "" && internalRawDirect !== "-");
   
   if (durability && durability.includes('/')) {
     const maxDurability = durability.split('/')[1] || "100";
