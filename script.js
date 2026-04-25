@@ -229,6 +229,7 @@ function createCard(item) {
   const demand = safe(item["Demand"]);
   const avg = safe(item["Average Value"]);
   const ranged = safe(item["Ranged Value"]);
+  const sectionName = String(item.__sheet || "").trim().toLowerCase();
   const durability = safe(item["Durability"]);
   const internalRaw = String(getInternalValueFromItem(item) ?? "").trim();
   const internalNum = parseInternalValue(internalRaw);
@@ -258,6 +259,7 @@ function createCard(item) {
   const invisibleStyle = isDurabilityInvisible ? 'style="opacity: 0;"' : '';
   const showPawn = durability && durability.includes('/') && hasInternalValue;
   const showRepair = showPawn && !isDurabilityInvisible;
+  const showNetworth = !(sectionName === "misc" && internalRaw === "");
   
   if (durability && durability.includes('/')) {
     const maxDurability = durability.split('/')[1] || "100";
@@ -328,7 +330,7 @@ if (showPawn) {
         <div class="card-ranged">Ranged Value: <span class="ranged-value">${ranged}</span></div>
         <div class="card-value-separator"></div>
         <div class="card-secondary-values">
-          <div class="card-networth">Networth Value: <span class="networth-value">${escapeHtml(String(networthDisplay))}</span></div>
+          ${showNetworth ? `<div class="card-networth">Networth Value: <span class="networth-value">${escapeHtml(String(networthDisplay))}</span></div>` : ""}
           ${showPawn ? `<div class="card-pawn">Pawn Amount: <span class="pawn-value">${pawnAmount}</span></div>` : ''}
           ${showRepair ? `
             <div class="card-repair">
