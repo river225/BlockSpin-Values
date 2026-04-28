@@ -1719,6 +1719,7 @@ a { color: #fff; text-decoration: none; }
   padding: 30px 20px;
   margin-top: 60px;
   text-align: center;
+  position: relative;
 }
 
 .footer-content p {
@@ -1756,7 +1757,12 @@ a { color: #fff; text-decoration: none; }
 
 .footer-boosters {
   width: min(1200px, calc(100% - 30px));
-  margin: 34px auto 14px auto;
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  margin: 0;
+  z-index: 3;
 }
 
 .footer-boosters-title {
@@ -1767,6 +1773,7 @@ a { color: #fff; text-decoration: none; }
   text-transform: uppercase;
   letter-spacing: 0.08em;
   text-shadow: 0 0 10px rgba(255, 93, 214, 0.35);
+  text-align: center;
 }
 
 .footer-boosters-viewport {
