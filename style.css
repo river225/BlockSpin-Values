@@ -1824,10 +1824,6 @@ a { color: #fff; text-decoration: none; }
 }
 
 @media (max-width: 768px) {
-  .footer-boosters {
-    display: none !important;
-  }
-
   .footer-boosters-viewport {
     max-width: 100%;
   }
