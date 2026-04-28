@@ -16,6 +16,7 @@ const SECTION_NAMES = [
 
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
 const ACCESSORIES_SECTION_NAME = "Untradable Items";
+const BOOSTERS_API_URL = "https://bsv-bot-production.up.railway.app/api/boosters";
 
 function initAnalytics() {
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
@@ -587,6 +588,41 @@ function fetchDiscordMemberCount() {
       }
     })
     .catch(function () {});
+}
+
+function createFooterBoosterCard(booster) {
+  const name = escapeHtml(String(booster?.name || "Unknown"));
+  const avatarUrl = escapeAttr(String(booster?.avatarUrl || ""));
+  return `
+    <article class="footer-booster-card" aria-label="${name}">
+      <img src="${avatarUrl}" alt="${name}" loading="lazy" decoding="async" />
+      <span>${name}</span>
+    </article>
+  `;
+}
+
+async function loadFooterBoosters() {
+  const footer = document.getElementById("footer-boosters");
+  const track = document.getElementById("footer-boosters-track");
+  if (!footer || !track) return;
+
+  if (!BOOSTERS_API_URL || BOOSTERS_API_URL.includes("YOUR-RAILWAY-URL")) {
+    return;
+  }
+
+  try {
+    const res = await fetch(BOOSTERS_API_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Boosters endpoint failed: ${res.status}`);
+    const data = await res.json();
+    const boosters = Array.isArray(data?.boosters) ? data.boosters : [];
+    if (boosters.length === 0) return;
+
+    const cardsHtml = boosters.map(createFooterBoosterCard).join("");
+    track.innerHTML = cardsHtml + cardsHtml;
+    footer.hidden = false;
+  } catch (err) {
+    console.error("Failed to load footer boosters:", err);
+  }
 }
 
 function renderCrewLogosSection(items) {
@@ -1439,6 +1475,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadTopDonators();
   loadValueChanges();
   fetchDiscordMemberCount();
+  loadFooterBoosters();
 
   sectionsContainer.classList.add("loaded");
   
