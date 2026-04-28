@@ -17,6 +17,13 @@ const SECTION_NAMES = [
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
 const ACCESSORIES_SECTION_NAME = "Untradable Items";
 const BOOSTERS_API_URL = "https://bsv-bot-production.up.railway.app/api/boosters";
+const GIVEAWAY_CONFIG_SPREADSHEET_ID = "1hjj8Pd21KOhI9bjUz4-UupADhJzksATcVDJfo186GFk";
+const GIVEAWAYS_SHEET_NAME = "Giveaways";
+const BANNERS_SHEET_NAME = "banner";
+const TRUE_REGEX = /^(yes|true|1|on|y)$/i;
+const FALSE_REGEX = /^(no|false|0|off|n)$/i;
+const giveawayItems = new Set();
+const bannerVisibility = { anaconda: false, firework: false };
 
 function initAnalytics() {
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
@@ -224,6 +231,104 @@ async function fetchRichestPlayers() {
   }
 }
 
+async function fetchExternalSheet(spreadsheetId, sheetName) {
+  try {
+    const base = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq`;
+    const url = `${base}?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(47, text.length - 2));
+    const cols = json.table.cols.map((c) => c.label?.trim() || "");
+    const rows = json.table.rows || [];
+    return rows.map((r) => {
+      const obj = {};
+      cols.forEach((label, i) => {
+        obj[label] = getCellDisplayValue(r.c?.[i]);
+      });
+      return obj;
+    });
+  } catch (err) {
+    console.error(`Failed to fetch external sheet: ${sheetName}`, err);
+    return [];
+  }
+}
+
+function parseBooleanCell(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return null;
+  if (TRUE_REGEX.test(raw)) return true;
+  if (FALSE_REGEX.test(raw)) return false;
+  return null;
+}
+
+function normalizeItemName(name) {
+  return String(name || "").trim().toLowerCase();
+}
+
+function extractCellValueByIncludes(row, keyword) {
+  const keys = Object.keys(row || {});
+  for (const key of keys) {
+    if (key.toLowerCase().includes(keyword)) return row[key];
+  }
+  return "";
+}
+
+function applyExternalBannerVisibility() {
+  var anacondaEl = document.getElementById("omega-anaconda-banner");
+  var fireworkEl = document.getElementById("epic-firework-banner");
+  if (anacondaEl) anacondaEl.style.display = bannerVisibility.anaconda ? "flex" : "none";
+  if (fireworkEl) fireworkEl.style.display = bannerVisibility.firework ? "flex" : "none";
+}
+
+async function loadExternalGiveawayConfig() {
+  giveawayItems.clear();
+  bannerVisibility.anaconda = false;
+  bannerVisibility.firework = false;
+
+  const [giveawayRows, bannerRows] = await Promise.all([
+    fetchExternalSheet(GIVEAWAY_CONFIG_SPREADSHEET_ID, GIVEAWAYS_SHEET_NAME),
+    fetchExternalSheet(GIVEAWAY_CONFIG_SPREADSHEET_ID, BANNERS_SHEET_NAME)
+  ]);
+
+  giveawayRows.forEach((row) => {
+    const item = String(row.Item || row.item || extractCellValueByIncludes(row, "item") || "").trim();
+    const giveawayValue = row.Giveaway || row.giveaway || extractCellValueByIncludes(row, "giveaway");
+    if (!item) return;
+    if (parseBooleanCell(giveawayValue) === true) {
+      giveawayItems.add(normalizeItemName(item));
+    }
+  });
+
+  bannerRows.forEach((row) => {
+    Object.keys(row || {}).forEach((key) => {
+      const keyLower = String(key || "").toLowerCase();
+      const valueParsed = parseBooleanCell(row[key]);
+      if (valueParsed === null) return;
+      if (keyLower.includes("anaconda")) bannerVisibility.anaconda = valueParsed;
+      if (keyLower.includes("firework")) bannerVisibility.firework = valueParsed;
+    });
+
+    const rawName = String(
+      row.Name ||
+      row.name ||
+      row.Item ||
+      row.item ||
+      row.Title ||
+      row.title ||
+      extractCellValueByIncludes(row, "giveaway")
+    ).trim();
+    if (!rawName) return;
+    const lowerName = rawName.toLowerCase();
+    const rawValue = row.Enabled || row.enabled || row.Value || row.value || row.Show || row.show || extractCellValueByIncludes(row, "show");
+    const parsed = parseBooleanCell(rawValue);
+    if (parsed === null) return;
+    if (lowerName.includes("anaconda")) bannerVisibility.anaconda = parsed;
+    if (lowerName.includes("firework")) bannerVisibility.firework = parsed;
+  });
+
+  applyExternalBannerVisibility();
+}
+
 function createCard(item) {
   const name = safe(item["Name"]);
   const img = safe(item["Image URL"]);
@@ -246,7 +351,6 @@ function createCard(item) {
     : internalRaw !== ""
       ? internalRaw
       : "N/A";
-  const giveawayFlag = safe(item["Giveaway"]);
 
   let imgTag = "";
   if (img) {
@@ -314,7 +418,7 @@ if (showPawn) {
   pawnAmount = `$${pawnAmount.toLocaleString()}`;
 }
   
-  const hasGiveaway = giveawayFlag && giveawayFlag.toString().trim().toLowerCase() === 'yes';
+  const hasGiveaway = giveawayItems.has(normalizeItemName(name));
   
   return `
     <div class="card" data-name="${escapeAttr(name)}" 
@@ -564,13 +668,6 @@ function renderLegendarySectionWithBanner(items) {
       <h2>Legendary</h2>
       <div class="cards">
         ${items.map(createCard).join("")}
-      </div>
-      <div class="legendary-banner">
-        <p class="legendary-banner-text">We <strong>giveaway</strong> a <strong>Legendary gun</strong> in our Discord server every day!</p>
-        <div class="legendary-banner-right">
-          <a href="https://discord.gg/scgqMpPAC6" target="_blank" rel="noopener" class="legendary-banner-btn">Join our Discord server</a>
-          <p class="legendary-banner-members"><span class="discord-member-count">—</span> members</p>
-        </div>
       </div>
     </section>
   `;
@@ -1426,6 +1523,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initSectionsNav();
   initSearch();
   initTaxCalculator();
+  await loadExternalGiveawayConfig();
 
   const totalSections = SECTION_NAMES.length;
   let loadedSections = 0;
@@ -1461,6 +1559,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   results.forEach(({ section, items }) => {
     renderSection(section, items);
   });
+  applyExternalBannerVisibility();
 
   let initialSection = "Home";
   if (window.location.hash && window.location.hash.startsWith('#sec=')) {
@@ -1587,33 +1686,6 @@ async function loadTopDonators() {
   }
 }
 
-// Show/hide Epic/Omega giveaway banners from Website Configs.
-// Your sheet: row 1 = column headers "Anaconda GW" and "Firework GW", row 2 = "Yes" under each to show that banner.
-// Using "GW" avoids clashing with item names like Anaconda/Firework in other sheets.
-function applyBannerConfig(rows) {
-  if (!rows || !rows.length) return;
-  var showAnaconda = false;
-  var showFirework = false;
-  var first = rows[0];
-  if (first && ("Anaconda GW" in first || "Firework GW" in first)) {
-    var anacondaVal = (first["Anaconda GW"] || "").toString().trim().toLowerCase();
-    var fireworkVal = (first["Firework GW"] || "").toString().trim().toLowerCase();
-    showAnaconda = /^(yes|1|true|on)$/.test(anacondaVal);
-    showFirework = /^(yes|1|true|on)$/.test(fireworkVal);
-  } else {
-    rows.forEach(function (r) {
-      var name = (r.Title || r.Name || '').toString().trim();
-      var show = (r.Show || r.Enabled || '').toString().trim().toLowerCase();
-      if (name === "Anaconda GW") showAnaconda = /^(yes|1|true|on)$/.test(show);
-      if (name === "Firework GW") showFirework = /^(yes|1|true|on)$/.test(show);
-    });
-  }
-  var anacondaEl = document.getElementById('omega-anaconda-banner');
-  var fireworkEl = document.getElementById('epic-firework-banner');
-  if (anacondaEl) anacondaEl.style.display = showAnaconda ? 'flex' : 'none';
-  if (fireworkEl) fireworkEl.style.display = showFirework ? 'flex' : 'none';
-}
-
 // Fetch and display recent value changes from spreadsheet (sheet: "Website Configs", columns: Title, Date, Text, Color)
 async function loadValueChanges() {
   var listEl = document.getElementById('value-changes-list');
@@ -1629,7 +1701,6 @@ async function loadValueChanges() {
       setValueChangesHtml('<div class="value-changes-loading">No value changes yet.</div>');
       return;
     }
-    applyBannerConfig(rows);
     var filtered = rows.filter(function (r) {
       var name = (r.Title || r.Name || '').toString().trim();
       if (name === "Anaconda GW" || name === "Firework GW") return false;
