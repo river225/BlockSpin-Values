@@ -1760,20 +1760,22 @@ a { color: #fff; text-decoration: none; }
 
 .footer-boosters-title {
   margin: 0 0 10px 0;
-  color: #dbeafe;
+  color: #ffd8f1;
   font-size: 0.92rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  text-shadow: 0 0 10px rgba(255, 93, 214, 0.35);
 }
 
 .footer-boosters-viewport {
   max-width: 760px;
   margin: 0 auto;
   overflow: hidden;
-  border: 1px solid #273142;
+  border: 1px solid rgba(255, 93, 214, 0.55);
   border-radius: 12px;
-  background: linear-gradient(180deg, #101826 0%, #0d131d 100%);
+  background: linear-gradient(135deg, rgba(255, 93, 214, 0.18) 0%, rgba(255, 156, 191, 0.12) 100%), #120d16;
+  box-shadow: 0 8px 22px rgba(255, 93, 214, 0.18);
 }
 
 .footer-boosters-track {
@@ -1791,9 +1793,9 @@ a { color: #fff; text-decoration: none; }
   gap: 8px;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(97, 128, 165, 0.45);
-  background: rgba(13, 22, 34, 0.92);
-  color: #d6e8ff;
+  border: 1px solid rgba(255, 156, 191, 0.7);
+  background: linear-gradient(120deg, rgba(255, 93, 214, 0.24) 0%, rgba(255, 156, 191, 0.2) 100%), rgba(30, 15, 28, 0.9);
+  color: #ffe9f7;
   white-space: nowrap;
   font-size: 0.84rem;
   font-weight: 600;
@@ -1804,7 +1806,8 @@ a { color: #fff; text-decoration: none; }
   height: 26px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid rgba(147, 197, 253, 0.5);
+  border: 1px solid rgba(255, 156, 191, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 93, 214, 0.18);
 }
 
 @keyframes footerBoostersMarquee {
