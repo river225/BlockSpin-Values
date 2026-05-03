@@ -124,6 +124,23 @@
             margin: 0 auto;
             justify-items: center;
         }
+        /* Lead / head rows: centre the subsection title and card(s) (grid would pin a single card to column 1) */
+        .about-subsection--lead h4 {
+            text-align: center;
+        }
+        #about-value-list-leads.about-team-members-grid,
+        #about-middleman-leads.about-team-members-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 14px 12px;
+        }
+        #about-value-list-leads .about-team-member-name,
+        #about-middleman-leads .about-team-member-name {
+            width: 100%;
+            text-align: center;
+        }
         .about-team-member-card {
             display: flex;
             flex-direction: column;
@@ -394,7 +411,7 @@
 
         <div class="about-section about-team-block">
             <h3 class="about-team-heading about-team-heading--green">Value List Team</h3>
-            <div class="about-subsection">
+            <div class="about-subsection about-subsection--lead">
                 <h4>Value List Lead</h4>
                 <div id="about-value-list-leads" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
             </div>
@@ -409,7 +426,7 @@
 
         <div class="about-section about-team-block">
             <h3 class="about-team-heading about-team-heading--purple">Middleman Team</h3>
-            <div class="about-subsection">
+            <div class="about-subsection about-subsection--lead">
                 <h4>Head Middleman</h4>
                 <div id="about-middleman-leads" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
             </div>
