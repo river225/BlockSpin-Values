@@ -2940,6 +2940,7 @@ a { color: #fff; text-decoration: none; }
   height: 60px;
   width: auto;
   object-fit: contain;
+  margin-left: 12px;
 }
 
 .nav-title {
@@ -3795,6 +3796,7 @@ body.mobile-panel-open .hamburger-menu {
   .nav-logo-img {
     height: clamp(40px, 10vw, 52px) !important;
     width: auto !important;
+    margin-left: 10px !important;
   }
 
   .nav-brand {
