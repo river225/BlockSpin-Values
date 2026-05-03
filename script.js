@@ -16,7 +16,9 @@ const SECTION_NAMES = [
 
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
 const ACCESSORIES_SECTION_NAME = "Untradable Items";
-const BOOSTERS_API_URL = "https://bsv-bot-production.up.railway.app/api/boosters";
+const BSV_BOT_PUBLIC_BASE = "https://bsv-bot-production.up.railway.app";
+const BOOSTERS_API_URL = `${BSV_BOT_PUBLIC_BASE}/api/boosters`;
+if (typeof window !== "undefined") window.BSV_BOT_PUBLIC_BASE = BSV_BOT_PUBLIC_BASE;
 const GIVEAWAY_CONFIG_SPREADSHEET_ID = "1hjj8Pd21KOhI9bjUz4-UupADhJzksATcVDJfo186GFk";
 const GIVEAWAYS_SHEET_NAME = "Giveaways";
 const BANNERS_SHEET_NAME = "banner";
@@ -499,6 +501,60 @@ async function loadSectionContentConfig() {
   });
 }
 
+function embedUrlWithScrollAutoplay(embedUrl) {
+  try {
+    const u = new URL(String(embedUrl || "").trim(), "https://example.com");
+    const host = u.hostname.toLowerCase();
+    if (host.includes("youtube.com")) {
+      u.searchParams.set("autoplay", "1");
+      u.searchParams.set("mute", "1");
+      u.searchParams.set("playsinline", "1");
+      u.searchParams.set("rel", "0");
+      return u.toString();
+    }
+    if (host.includes("tiktok.com")) {
+      u.searchParams.set("autoplay", "1");
+      u.searchParams.set("mute", "1");
+      return u.toString();
+    }
+  } catch (_) {}
+  return String(embedUrl || "").trim();
+}
+
+/** Browsers allow autoplay only after user gesture or when muted; reload iframe with autoplay when box scrolls into view. */
+function setupSectionEmbedScrollAutoplay() {
+  const boxes = document.querySelectorAll(".section-content-embed");
+  if (!boxes.length || typeof IntersectionObserver === "undefined") return;
+
+  const obs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const box = entry.target;
+        if (!(box instanceof HTMLElement)) return;
+        if (box.dataset.autoplayDone === "1") return;
+        const iframe = box.querySelector("iframe");
+        if (!(iframe instanceof HTMLIFrameElement)) return;
+        const baseSrc = iframe.dataset.baseSrc || iframe.getAttribute("src") || "";
+        if (!baseSrc) return;
+        box.dataset.autoplayDone = "1";
+        iframe.src = embedUrlWithScrollAutoplay(baseSrc);
+        obs.unobserve(box);
+      });
+    },
+    { threshold: 0.32, rootMargin: "0px 0px -8% 0px" }
+  );
+
+  boxes.forEach((box) => {
+    const iframe = box.querySelector("iframe");
+    if (iframe) {
+      const src = iframe.getAttribute("src") || "";
+      iframe.dataset.baseSrc = src;
+    }
+    obs.observe(box);
+  });
+}
+
 function renderSectionContentEmbeds() {
   CONTENT_SECTIONS.forEach((sectionName) => {
     const embedUrl = sectionContentEmbeds.get(sectionName);
@@ -522,6 +578,7 @@ function renderSectionContentEmbeds() {
       <div class="section-content-embed-frame-wrap ${frameRatioClass}">
         <iframe
           src="${escapeAttr(embedUrl)}"
+          data-base-src="${escapeAttr(embedUrl)}"
           title="${escapeAttr(sectionName)} featured video"
           loading="lazy"
           allowfullscreen
@@ -531,6 +588,7 @@ function renderSectionContentEmbeds() {
     `;
     sectionEl.appendChild(wrapper);
   });
+  setupSectionEmbedScrollAutoplay();
 }
 
 async function loadExternalGiveawayConfig() {

@@ -2913,6 +2913,23 @@ a { color: #fff; text-decoration: none; }
   justify-content: space-between;
 }
 
+/* Desktop: brand + title flush to the left edge of the viewport */
+@media screen and (min-width: 1025px) {
+  .top-navbar {
+    padding-left: 0;
+  }
+
+  .nav-container-full {
+    max-width: none;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 18px;
+    box-sizing: border-box;
+  }
+}
+
 .nav-left {
   display: flex;
   align-items: center;
@@ -3712,7 +3729,11 @@ body.mobile-panel-open .hamburger-menu {
 /* TABLET + PHONE (≤1024px): hamburger nav + mobile tax / value-changes panel (covers iPads) */
 
 @media screen and (max-width: 1024px) {
-  
+  /* Slightly smaller base type so layout feels less cramped on phones/tablets */
+  html {
+    font-size: 93%;
+  }
+
   .tax-sidebar-column {
     display: none !important;
   }
@@ -3728,8 +3749,8 @@ body.mobile-panel-open .hamburger-menu {
 
   .top-navbar .nav-container-full {
     width: 100%;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 8px;
+    padding-right: 8px;
     box-sizing: border-box;
   }
 
@@ -3739,11 +3760,13 @@ body.mobile-panel-open .hamburger-menu {
     flex-wrap: nowrap;
     align-items: center;
     width: 100%;
+    min-width: 0;
   }
 
   .top-navbar .nav-left:has(.nav-brand) > .nav-brand {
     flex: 1;
     min-width: 0;
+    max-width: 100%;
   }
 
   .top-navbar .nav-left > a:not(.nav-brand) {
@@ -3763,20 +3786,34 @@ body.mobile-panel-open .hamburger-menu {
   }
 
   .top-navbar .nav-title {
-    font-size: 1.85rem;
+    font-size: clamp(1.05rem, 4.2vw, 1.65rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  /* In-flow strip under fixed header (not position:fixed): top-right, gap below header */
+  .nav-logo-img {
+    height: clamp(40px, 10vw, 52px) !important;
+    width: auto !important;
+  }
+
+  .nav-brand {
+    gap: clamp(6px, 2vw, 12px) !important;
+  }
+
+  /* In-flow strip: horizontal pills so About/FAQ don’t stack under the title */
   .mobile-subnav {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
     gap: 8px;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
     margin: 0;
-    padding: 10px 12px 12px;
+    padding: 8px 8px 10px;
     background: transparent;
   }
 
@@ -3786,7 +3823,7 @@ body.mobile-panel-open .hamburger-menu {
     background: #1a2332;
     border: 1px solid rgba(51, 204, 230, 0.5);
     border-radius: 999px;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
     line-height: 1.15;
     color: #fff;
@@ -3794,7 +3831,7 @@ body.mobile-panel-open .hamburger-menu {
     text-shadow: none;
     text-align: center;
     white-space: nowrap;
-    max-width: min(100%, 280px);
+    flex: 0 0 auto;
     box-sizing: border-box;
   }
 
