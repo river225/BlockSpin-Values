@@ -470,10 +470,12 @@
       })
       .join("");
   }
-  var base =
-    (typeof window !== "undefined" && window.BSV_BOT_PUBLIC_BASE) ||
-    "https://bsv-bot-production.up.railway.app";
-  fetch(base + "/api/about-team", { cache: "no-store" })
+  var aboutTeamUrl =
+    typeof window !== "undefined" && typeof window.bsvBotApiUrl === "function"
+      ? window.bsvBotApiUrl("/api/about-team")
+      : ((typeof window !== "undefined" && window.BSV_BOT_PUBLIC_BASE) ||
+          "https://bsv-bot-production.up.railway.app") + "/api/about-team";
+  fetch(aboutTeamUrl, { cache: "no-store" })
     .then(function (r) {
       return r.json().then(function (data) {
         if (!r.ok) {

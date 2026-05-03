@@ -16,9 +16,38 @@ const SECTION_NAMES = [
 
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
 const ACCESSORIES_SECTION_NAME = "Untradable Items";
-const BSV_BOT_PUBLIC_BASE = "https://bsv-bot-production.up.railway.app";
+
+const BSV_BOT_PUBLIC_BASE_DEFAULT = "https://bsv-bot-production.up.railway.app";
+
+function normalizeApiBase(url) {
+  return String(url || "")
+    .trim()
+    .replace(/\/+$/, "");
+}
+
+function resolveBsvBotPublicBase() {
+  const fallback = normalizeApiBase(BSV_BOT_PUBLIC_BASE_DEFAULT);
+  if (typeof window === "undefined") return fallback;
+  const fromWindow = window.__BSV_BOT_PUBLIC_BASE__;
+  if (fromWindow && String(fromWindow).trim()) return normalizeApiBase(fromWindow);
+  if (typeof document !== "undefined" && document.querySelector) {
+    const meta = document.querySelector('meta[name="bsv-bot-api-base"]');
+    const content = meta && meta.getAttribute("content");
+    if (content && String(content).trim()) return normalizeApiBase(content);
+  }
+  return fallback;
+}
+
+const BSV_BOT_PUBLIC_BASE = resolveBsvBotPublicBase();
 const BOOSTERS_API_URL = `${BSV_BOT_PUBLIC_BASE}/api/boosters`;
-if (typeof window !== "undefined") window.BSV_BOT_PUBLIC_BASE = BSV_BOT_PUBLIC_BASE;
+
+if (typeof window !== "undefined") {
+  window.BSV_BOT_PUBLIC_BASE = BSV_BOT_PUBLIC_BASE;
+  window.bsvBotApiUrl = function (path) {
+    const p = String(path || "").trim().replace(/^\/+/, "");
+    return p ? `${BSV_BOT_PUBLIC_BASE}/${p}` : BSV_BOT_PUBLIC_BASE;
+  };
+}
 const GIVEAWAY_CONFIG_SPREADSHEET_ID = "1hjj8Pd21KOhI9bjUz4-UupADhJzksATcVDJfo186GFk";
 const GIVEAWAYS_SHEET_NAME = "Giveaways";
 const BANNERS_SHEET_NAME = "banner";
