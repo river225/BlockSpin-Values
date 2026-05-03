@@ -475,8 +475,13 @@
     "https://bsv-bot-production.up.railway.app";
   fetch(base + "/api/about-team", { cache: "no-store" })
     .then(function (r) {
-      if (!r.ok) throw new Error("bad status");
-      return r.json();
+      return r.json().then(function (data) {
+        if (!r.ok) {
+          console.error("about-team API error", r.status, data);
+          throw new Error((data && data.error) || "HTTP " + r.status);
+        }
+        return data;
+      });
     })
     .then(function (data) {
       renderGrid(document.getElementById("about-value-list-leads"), data.valueListLeads);
@@ -484,14 +489,18 @@
       renderGrid(document.getElementById("about-middleman-leads"), data.middlemanLeads);
       renderGrid(document.getElementById("about-middleman-team"), data.middlemanTeam);
     })
-    .catch(function () {
+    .catch(function (err) {
+      console.error("about-team fetch failed:", err);
       ["about-value-list-leads", "about-value-list-team", "about-middleman-leads", "about-middleman-team"].forEach(
         function (id) {
           var el = document.getElementById(id);
           if (!el) return;
           el.classList.remove("about-team-members-grid--loading");
           el.classList.add("about-team-members-grid--error");
-          el.textContent = "Could not load team from Discord. Try again later.";
+          el.textContent =
+            "Could not load team from Discord. Deploy the latest bot, open " +
+            base +
+            "/api/about-team in your browser (should show JSON), then hard-refresh this page.";
         }
       );
     });
