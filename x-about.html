@@ -497,10 +497,7 @@
           if (!el) return;
           el.classList.remove("about-team-members-grid--loading");
           el.classList.add("about-team-members-grid--error");
-          el.textContent =
-            "Could not load team from Discord. Deploy the latest bot, open " +
-            base +
-            "/api/about-team in your browser (should show JSON), then hard-refresh this page.";
+          el.textContent = "Team list is temporarily unavailable. Please try again later.";
         }
       );
     });
