@@ -339,6 +339,30 @@ function normalizeContentSectionName(name) {
   return "";
 }
 
+/** Short column headers: Video C, Video R, … Video V (letter = first letter of section). */
+function sectionFromVideoColumnHeader(header) {
+  const compact = String(header || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "");
+  const m = compact.match(/^video([crelomv])$/);
+  if (!m) return "";
+  const byLetter = {
+    c: "Common / Uncommon",
+    r: "Rare",
+    e: "Epic",
+    l: "Legendary",
+    o: "Omega",
+    m: "Misc",
+    v: "Vehicles"
+  };
+  return byLetter[m[1]] || "";
+}
+
+function resolveContentSectionLabel(label) {
+  return sectionFromVideoColumnHeader(label) || normalizeContentSectionName(label);
+}
+
 function extractVideoEmbedUrl(url) {
   const raw = String(url || "").trim();
   if (!raw) return "";
@@ -398,7 +422,7 @@ async function loadSectionContentConfig() {
   const grouped = new Map();
 
   function pushEmbed(sectionName, rawUrl) {
-    const normalizedSection = normalizeContentSectionName(sectionName);
+    const normalizedSection = resolveContentSectionLabel(sectionName);
     if (!normalizedSection) return;
     const embedUrl = extractVideoEmbedUrl(rawUrl);
     if (!embedUrl) return;
@@ -406,60 +430,62 @@ async function loadSectionContentConfig() {
     grouped.get(normalizedSection).push(embedUrl);
   }
 
-  // Format A support: headers like Section + Link (existing behavior).
-  rows.forEach((row) => {
-    const fields = extractSectionContentFields(row);
-    if (!fields.section || !fields.link) return;
-    pushEmbed(fields.section, fields.link);
-  });
-
-  // Format B support: section name rows, with links listed beneath.
-  let activeSection = "";
-  rows.forEach((row) => {
-    const cells = Object.values(row || {})
-      .map((v) => String(v || "").trim())
-      .filter(Boolean);
-    if (!cells.length) return;
-
-    const detectedSection = cells
-      .map((v) => normalizeContentSectionName(v))
-      .find(Boolean) || "";
-
-    const rawUrls = cells.filter((v) => /^https?:\/\//i.test(v));
-
-    if (detectedSection) {
-      activeSection = detectedSection;
-      if (rawUrls.length) {
-        rawUrls.forEach((url) => pushEmbed(activeSection, url));
-      }
-      return;
-    }
-
-    if (activeSection && rawUrls.length) {
-      rawUrls.forEach((url) => pushEmbed(activeSection, url));
-    }
-  });
-
-  // Format C support: row 1 has section headers across columns,
-  // rows below contain links under each section column.
+  // Format C (horizontal): Google GViz with headers=1 puts spreadsheet row 1 into **column keys**,
+  // not into rows[0]. rows[] are data rows only — each object is keyed by section names.
+  let usedColumnLayout = false;
   if (rows.length > 0) {
-    const headerRow = rows[0] || {};
+    const columnKeys = Object.keys(rows[0] || {});
     const sectionByColumnKey = new Map();
-
-    Object.keys(headerRow).forEach((colKey) => {
-      const normalizedSection = normalizeContentSectionName(headerRow[colKey]);
-      if (normalizedSection) sectionByColumnKey.set(colKey, normalizedSection);
+    columnKeys.forEach((colKey) => {
+      const normalized = resolveContentSectionLabel(colKey);
+      if (normalized) sectionByColumnKey.set(colKey, normalized);
     });
-
     if (sectionByColumnKey.size > 0) {
-      rows.slice(1).forEach((row) => {
+      usedColumnLayout = true;
+      rows.forEach((row) => {
         sectionByColumnKey.forEach((sectionName, colKey) => {
           const cellValue = String((row && row[colKey]) || "").trim();
-          if (!cellValue) return;
+          if (!cellValue || !/^https?:\/\//i.test(cellValue)) return;
           pushEmbed(sectionName, cellValue);
         });
       });
     }
+  }
+
+  if (!usedColumnLayout) {
+    // Format A support: headers like Section + Link (existing behavior).
+    rows.forEach((row) => {
+      const fields = extractSectionContentFields(row);
+      if (!fields.section || !fields.link) return;
+      pushEmbed(fields.section, fields.link);
+    });
+
+    // Format B support: section name rows, with links listed beneath.
+    let activeSection = "";
+    rows.forEach((row) => {
+      const cells = Object.values(row || {})
+        .map((v) => String(v || "").trim())
+        .filter(Boolean);
+      if (!cells.length) return;
+
+      const detectedSection = cells
+        .map((v) => resolveContentSectionLabel(v))
+        .find(Boolean) || "";
+
+      const rawUrls = cells.filter((v) => /^https?:\/\//i.test(v));
+
+      if (detectedSection) {
+        activeSection = detectedSection;
+        if (rawUrls.length) {
+          rawUrls.forEach((url) => pushEmbed(activeSection, url));
+        }
+        return;
+      }
+
+      if (activeSection && rawUrls.length) {
+        rawUrls.forEach((url) => pushEmbed(activeSection, url));
+      }
+    });
   }
 
   grouped.forEach((links, section) => {
