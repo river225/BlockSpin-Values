@@ -994,6 +994,37 @@ a { color: #fff; text-decoration: none; }
   vertical-align: top;
 }
 
+.section-content-embed {
+  margin: 22px auto 8px auto;
+  width: min(860px, 100%);
+  background: rgba(11, 17, 26, 0.92);
+  border: 1px solid #2c3b4f;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.section-content-embed-title {
+  margin: 0 0 10px 0;
+  color: #dbeafe;
+  font-size: 0.95rem;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.section-content-embed-frame-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.section-content-embed-frame-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 /* Home: bottom promo row, stacked and centered (desktop + mobile) */
 .home-bottom-promo-row {
   display: flex;

@@ -20,10 +20,21 @@ const BOOSTERS_API_URL = "https://bsv-bot-production.up.railway.app/api/boosters
 const GIVEAWAY_CONFIG_SPREADSHEET_ID = "1hjj8Pd21KOhI9bjUz4-UupADhJzksATcVDJfo186GFk";
 const GIVEAWAYS_SHEET_NAME = "Giveaways";
 const BANNERS_SHEET_NAME = "banner";
+const CONTENT_SHEET_NAME = "content";
 const TRUE_REGEX = /^(yes|true|1|on|y)$/i;
 const FALSE_REGEX = /^(no|false|0|off|n)$/i;
 const giveawayItems = new Set();
 const bannerVisibility = { anaconda: false, firework: false };
+const sectionContentEmbeds = new Map();
+const CONTENT_SECTIONS = [
+  "Common / Uncommon",
+  "Rare",
+  "Epic",
+  "Legendary",
+  "Omega",
+  "Misc",
+  "Vehicles"
+];
 
 function initAnalytics() {
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
@@ -273,11 +284,217 @@ function extractCellValueByIncludes(row, keyword) {
   return "";
 }
 
+function rowHasKeyword(row, keyword) {
+  const needle = String(keyword || "").toLowerCase();
+  if (!needle) return false;
+  const keys = Object.keys(row || {});
+  for (const key of keys) {
+    const keyLower = String(key || "").toLowerCase();
+    const valueLower = String(row[key] || "").toLowerCase();
+    if (keyLower.includes(needle) || valueLower.includes(needle)) return true;
+  }
+  return false;
+}
+
+function parseBannerDecisionForKeyword(row, keyword) {
+  const keys = Object.keys(row || {});
+  const keywordLower = String(keyword || "").toLowerCase();
+  if (!keywordLower) return null;
+
+  // If a yes/no is directly under a keyword-like header (e.g. "Firework Launcher Giveawat")
+  for (const key of keys) {
+    const keyLower = String(key || "").toLowerCase();
+    if (!keyLower.includes(keywordLower)) continue;
+    const parsed = parseBooleanCell(row[key]);
+    if (parsed !== null) return parsed;
+  }
+
+  // If keyword appears in a value cell and yes/no is in another cell on the same row.
+  if (rowHasKeyword(row, keywordLower)) {
+    for (const key of keys) {
+      const parsed = parseBooleanCell(row[key]);
+      if (parsed !== null) return parsed;
+    }
+  }
+  return null;
+}
+
 function applyExternalBannerVisibility() {
   var anacondaEl = document.getElementById("omega-anaconda-banner");
   var fireworkEl = document.getElementById("epic-firework-banner");
   if (anacondaEl) anacondaEl.style.display = bannerVisibility.anaconda ? "flex" : "none";
   if (fireworkEl) fireworkEl.style.display = bannerVisibility.firework ? "flex" : "none";
+}
+
+function normalizeContentSectionName(name) {
+  const raw = String(name || "").trim().toLowerCase();
+  if (!raw) return "";
+  if (raw.includes("uncommon") || raw === "common") return "Common / Uncommon";
+  if (raw.includes("rare")) return "Rare";
+  if (raw.includes("epic")) return "Epic";
+  if (raw.includes("legendary")) return "Legendary";
+  if (raw.includes("omega")) return "Omega";
+  if (raw.includes("misc")) return "Misc";
+  if (raw.includes("vehicle")) return "Vehicles";
+  return "";
+}
+
+function extractVideoEmbedUrl(url) {
+  const raw = String(url || "").trim();
+  if (!raw) return "";
+  let parsed;
+  try {
+    parsed = new URL(raw);
+  } catch (_) {
+    return "";
+  }
+  const host = parsed.hostname.toLowerCase();
+  if (host.includes("youtube.com")) {
+    const videoId = parsed.searchParams.get("v");
+    if (videoId) return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`;
+    const parts = parsed.pathname.split("/").filter(Boolean);
+    const maybeEmbed = parts[0] === "embed" && parts[1] ? parts[1] : "";
+    if (maybeEmbed) return `https://www.youtube.com/embed/${encodeURIComponent(maybeEmbed)}`;
+  }
+  if (host.includes("youtu.be")) {
+    const id = parsed.pathname.split("/").filter(Boolean)[0];
+    if (id) return `https://www.youtube.com/embed/${encodeURIComponent(id)}`;
+  }
+  if (host.includes("tiktok.com")) {
+    const parts = parsed.pathname.split("/").filter(Boolean);
+    const videoIdx = parts.indexOf("video");
+    if (videoIdx >= 0 && parts[videoIdx + 1]) {
+      return `https://www.tiktok.com/embed/v2/${encodeURIComponent(parts[videoIdx + 1])}`;
+    }
+  }
+  return "";
+}
+
+function extractSectionContentFields(row) {
+  const sectionValue =
+    row.Section ||
+    row.section ||
+    row["Section Name"] ||
+    row["section name"] ||
+    extractCellValueByIncludes(row, "section");
+  const linkValue =
+    row.Link ||
+    row.link ||
+    row.URL ||
+    row.url ||
+    row.Video ||
+    row.video ||
+    extractCellValueByIncludes(row, "http");
+
+  return {
+    section: String(sectionValue || "").trim(),
+    link: String(linkValue || "").trim()
+  };
+}
+
+async function loadSectionContentConfig() {
+  sectionContentEmbeds.clear();
+  const rows = await fetchExternalSheet(GIVEAWAY_CONFIG_SPREADSHEET_ID, CONTENT_SHEET_NAME);
+  const grouped = new Map();
+
+  function pushEmbed(sectionName, rawUrl) {
+    const normalizedSection = normalizeContentSectionName(sectionName);
+    if (!normalizedSection) return;
+    const embedUrl = extractVideoEmbedUrl(rawUrl);
+    if (!embedUrl) return;
+    if (!grouped.has(normalizedSection)) grouped.set(normalizedSection, []);
+    grouped.get(normalizedSection).push(embedUrl);
+  }
+
+  // Format A support: headers like Section + Link (existing behavior).
+  rows.forEach((row) => {
+    const fields = extractSectionContentFields(row);
+    if (!fields.section || !fields.link) return;
+    pushEmbed(fields.section, fields.link);
+  });
+
+  // Format B support: section name rows, with links listed beneath.
+  let activeSection = "";
+  rows.forEach((row) => {
+    const cells = Object.values(row || {})
+      .map((v) => String(v || "").trim())
+      .filter(Boolean);
+    if (!cells.length) return;
+
+    const detectedSection = cells
+      .map((v) => normalizeContentSectionName(v))
+      .find(Boolean) || "";
+
+    const rawUrls = cells.filter((v) => /^https?:\/\//i.test(v));
+
+    if (detectedSection) {
+      activeSection = detectedSection;
+      if (rawUrls.length) {
+        rawUrls.forEach((url) => pushEmbed(activeSection, url));
+      }
+      return;
+    }
+
+    if (activeSection && rawUrls.length) {
+      rawUrls.forEach((url) => pushEmbed(activeSection, url));
+    }
+  });
+
+  // Format C support: row 1 has section headers across columns,
+  // rows below contain links under each section column.
+  if (rows.length > 0) {
+    const headerRow = rows[0] || {};
+    const sectionByColumnKey = new Map();
+
+    Object.keys(headerRow).forEach((colKey) => {
+      const normalizedSection = normalizeContentSectionName(headerRow[colKey]);
+      if (normalizedSection) sectionByColumnKey.set(colKey, normalizedSection);
+    });
+
+    if (sectionByColumnKey.size > 0) {
+      rows.slice(1).forEach((row) => {
+        sectionByColumnKey.forEach((sectionName, colKey) => {
+          const cellValue = String((row && row[colKey]) || "").trim();
+          if (!cellValue) return;
+          pushEmbed(sectionName, cellValue);
+        });
+      });
+    }
+  }
+
+  grouped.forEach((links, section) => {
+    if (!links.length) return;
+    const selected = links[Math.floor(Math.random() * links.length)];
+    sectionContentEmbeds.set(section, selected);
+  });
+}
+
+function renderSectionContentEmbeds() {
+  CONTENT_SECTIONS.forEach((sectionName) => {
+    const embedUrl = sectionContentEmbeds.get(sectionName);
+    if (!embedUrl) return;
+    const sectionEl = document.getElementById(slugify(sectionName));
+    if (!sectionEl) return;
+
+    const existing = sectionEl.querySelector(".section-content-embed");
+    if (existing) existing.remove();
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "section-content-embed";
+    wrapper.innerHTML = `
+      <h3 class="section-content-embed-title">Featured Content</h3>
+      <div class="section-content-embed-frame-wrap">
+        <iframe
+          src="${escapeAttr(embedUrl)}"
+          title="${escapeAttr(sectionName)} featured video"
+          loading="lazy"
+          allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
+        </iframe>
+      </div>
+    `;
+    sectionEl.appendChild(wrapper);
+  });
 }
 
 async function loadExternalGiveawayConfig() {
@@ -324,6 +541,14 @@ async function loadExternalGiveawayConfig() {
     if (parsed === null) return;
     if (lowerName.includes("anaconda")) bannerVisibility.anaconda = parsed;
     if (lowerName.includes("firework")) bannerVisibility.firework = parsed;
+  });
+
+  // Fallback parser: supports typos/alternate layouts like "Giveawat"/different columns.
+  bannerRows.forEach((row) => {
+    const fireworkDecision = parseBannerDecisionForKeyword(row, "firework");
+    if (fireworkDecision !== null) bannerVisibility.firework = fireworkDecision;
+    const anacondaDecision = parseBannerDecisionForKeyword(row, "anaconda");
+    if (anacondaDecision !== null) bannerVisibility.anaconda = anacondaDecision;
   });
 
   applyExternalBannerVisibility();
@@ -638,12 +863,6 @@ function renderSection(title, items) {
             <a href="https://discord.gg/8AUjJu9jnr" target="_blank" rel="noopener" class="legendary-banner-btn">Join our Discord server</a>
             <p class="legendary-banner-members"><span class="discord-member-count">—</span> members</p>
           </div>
-        </div>
-        <div class="epic-shark-promo">
-          <a href="https://attackshark.com/?ref=RIVER" target="_blank" rel="noopener noreferrer sponsored" class="epic-shark-promo-link">
-            <p class="epic-shark-promo-text">CLICK HERE TO GET THE BEST GAMING MICE!</p>
-            <img src="https://i.ibb.co/0pM24HZ9/ph-11134207-7rasi-m9tr2cfmioxw1c.jpg" alt="Attack Shark gaming mice" class="epic-shark-promo-img" loading="lazy" />
-          </a>
         </div>
       </section>
     `;
@@ -1524,6 +1743,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initSearch();
   initTaxCalculator();
   await loadExternalGiveawayConfig();
+  await loadSectionContentConfig();
 
   const totalSections = SECTION_NAMES.length;
   let loadedSections = 0;
@@ -1560,6 +1780,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderSection(section, items);
   });
   applyExternalBannerVisibility();
+  renderSectionContentEmbeds();
 
   let initialSection = "Home";
   if (window.location.hash && window.location.hash.startsWith('#sec=')) {
