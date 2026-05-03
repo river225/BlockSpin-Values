@@ -115,43 +115,61 @@
             padding: 0;
             text-align: center;
         }
-        html .about-container #middleman-members-list {
+        .about-team-members-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            grid-auto-rows: auto;
+            grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+            gap: 14px 12px;
             max-width: 720px;
             width: 100%;
-            gap: 8px 14px;
-            align-items: start;
+            margin: 0 auto;
             justify-items: center;
-            margin-left: auto;
-            margin-right: auto;
         }
-        html .about-container #middleman-members-list li {
+        .about-team-member-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 10px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
             width: 100%;
-            max-width: 100%;
-            font-size: 0.92rem;
-            padding: 4px 0;
+            max-width: 160px;
+            box-sizing: border-box;
+        }
+        .about-team-member-card img {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+        }
+        .about-team-member-card .about-team-member-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            text-align: center;
+            line-height: 1.25;
+            word-break: break-word;
+            text-shadow: 1px 1px 0 #000;
+        }
+        .about-team-members-grid--loading,
+        .about-team-members-grid--error {
+            display: block;
+            text-align: center;
+            padding: 16px;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.95rem;
         }
         @media (max-width: 640px) {
-            html .about-container #middleman-members-list {
-                grid-template-columns: 1fr;
-                max-width: 520px;
-            }
-        }
-        @media (min-width: 641px) and (max-width: 900px) {
-            html .about-container #middleman-members-list {
+            .about-team-members-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
-        html .about-container .about-section.about-team-block .about-subsection ul li {
-            text-align: center;
-            padding-left: 0;
-            color: rgba(255, 255, 255, 0.95) !important;
-            text-shadow: 1px 1px 0 #000, -1px 1px 0 rgba(0, 0, 0, 0.85);
-        }
-        html .about-container .about-section.about-team-block .about-subsection ul li::before {
-            content: "• ";
+        @media (min-width: 641px) {
+            .about-team-members-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
         }
         .about-team-blurb {
             margin-top: 22px;
@@ -378,21 +396,11 @@
             <h3 class="about-team-heading about-team-heading--green">Value List Team</h3>
             <div class="about-subsection">
                 <h4>Value List Lead</h4>
-                <ul>
-                    <li>river (_.riverr)</li>
-                    <li>Dynasty (cal7657)</li>
-                </ul>
+                <div id="about-value-list-leads" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
             </div>
             <div class="about-subsection">
                 <h4>Value List Team Members</h4>
-                <ul>
-                
-                    <li>treaxy (treax_y)</li>
-                    <li>Spence (spence_67)</li>
-                    <li>duck (duck_alt21)</li>
-                     <li>Ssl20 (ssl20_rt)</li>
-                      <li>Jake (10kninjavibez)</li>
-                </ul>
+                <div id="about-value-list-team" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
             </div>
             <div class="about-team-blurb about-team-blurb--green">
                 <p>The Value List Team is dedicated to ensuring our website’s values are up to date and maintained!</p>
@@ -402,34 +410,12 @@
         <div class="about-section about-team-block">
             <h3 class="about-team-heading about-team-heading--purple">Middleman Team</h3>
             <div class="about-subsection">
-                <h4>Middleman Lead</h4>
-                <ul>
-                    <li>duck (duck_alt21)</li>
-                </ul>
+                <h4>Head Middleman</h4>
+                <div id="about-middleman-leads" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
             </div>
             <div class="about-subsection">
                 <h4>Middleman Team Members</h4>
-                <ul id="middleman-members-list">
-                    <li>kayxurs (celest_jil)</li>
-                    <li>BxTer727 (bxter727)</li>
-                    <li>Fr06styclipz21 (fr06styclipz21)</li>
-                    <li>Sam (sam_127346)</li>
-                    <li>scribbles (scrxbbles)</li>
-                    <li>Trezzi (trezzi16)</li>
-                    <li>Windy (windyjuu)</li>
-                    <li>Grove (grove.)</li>
-                    <li>Ssl20 (ssl20_rt)</li>
-                    <li>Norm (normakos)</li>
-                    <li>taajmanzoor (jacobc1010)</li>
-                    <li>Jake (10kninjavibez)</li>
-                    <li>Nate (Nathan2216)</li>
-                    <li>Raymond lugnut (spence67)</li>
-                    <li>Skov (voskin)</li>
-                    <li>Baldhead (baldhead9501)</li>
-                    <li>starvolt.</li>
-                    <li>Cortezzz09 (cortezzz09)</li>
-                    <li>SuitMan (suit_man00)</li>
-                </ul>
+                <div id="about-middleman-team" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
             </div>
             <div class="about-team-blurb about-team-blurb--purple">
                 <p>The Middleman team is dedicated to ensuring you never get scammed. While not a website team, they operate within our Discord server and specialise in facilitating safe, secure trades. A Middleman temporarily holds the buyer’s item during a transaction. The seller then delivers their item to the buyer, and once everything is confirmed, the Middleman releases the buyer’s item to the seller. This process ensures that both parties fulfil their side of the trade, preventing scams.</p>
@@ -456,5 +442,60 @@
   </div>
 </footer>
 <script src="script.js"></script>
+<script>
+(function () {
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+  function renderGrid(el, members) {
+    if (!el) return;
+    el.classList.remove("about-team-members-grid--loading", "about-team-members-grid--error");
+    if (!members || !members.length) {
+      el.classList.add("about-team-members-grid--error");
+      el.textContent = "No members listed for this role yet.";
+      return;
+    }
+    el.innerHTML = members
+      .map(function (m) {
+        return (
+          '<article class="about-team-member-card">' +
+          '<img src="' + esc(m.avatarUrl) + '" alt="" width="72" height="72" loading="lazy" decoding="async" />' +
+          '<span class="about-team-member-name">' + esc(m.displayName) + "</span>" +
+          "</article>"
+        );
+      })
+      .join("");
+  }
+  var base =
+    (typeof window !== "undefined" && window.BSV_BOT_PUBLIC_BASE) ||
+    "https://bsv-bot-production.up.railway.app";
+  fetch(base + "/api/about-team", { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) throw new Error("bad status");
+      return r.json();
+    })
+    .then(function (data) {
+      renderGrid(document.getElementById("about-value-list-leads"), data.valueListLeads);
+      renderGrid(document.getElementById("about-value-list-team"), data.valueListTeam);
+      renderGrid(document.getElementById("about-middleman-leads"), data.middlemanLeads);
+      renderGrid(document.getElementById("about-middleman-team"), data.middlemanTeam);
+    })
+    .catch(function () {
+      ["about-value-list-leads", "about-value-list-team", "about-middleman-leads", "about-middleman-team"].forEach(
+        function (id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.classList.remove("about-team-members-grid--loading");
+          el.classList.add("about-team-members-grid--error");
+          el.textContent = "Could not load team from Discord. Try again later.";
+        }
+      );
+    });
+})();
+</script>
 </body>
 </html>
