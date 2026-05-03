@@ -505,11 +505,17 @@ function renderSectionContentEmbeds() {
     const existing = sectionEl.querySelector(".section-content-embed");
     if (existing) existing.remove();
 
+    const isTikTok = /tiktok\.com/i.test(embedUrl);
+    const embedKindClass = isTikTok ? "section-content-embed--tiktok" : "section-content-embed--youtube";
+    const frameRatioClass = isTikTok
+      ? "section-content-embed-frame-wrap--portrait"
+      : "section-content-embed-frame-wrap--landscape";
+
     const wrapper = document.createElement("div");
-    wrapper.className = "section-content-embed";
+    wrapper.className = `section-content-embed ${embedKindClass}`;
     wrapper.innerHTML = `
       <h3 class="section-content-embed-title">You might like this BlockSpin Video!</h3>
-      <div class="section-content-embed-frame-wrap">
+      <div class="section-content-embed-frame-wrap ${frameRatioClass}">
         <iframe
           src="${escapeAttr(embedUrl)}"
           title="${escapeAttr(sectionName)} featured video"

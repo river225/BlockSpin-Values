@@ -1009,6 +1009,15 @@ a { color: #fff; text-decoration: none; }
   overflow: visible;
 }
 
+/* YouTube / landscape: wider card. TikTok / vertical: narrower card so full 9:16 fits on screen */
+.section-content-embed--tiktok {
+  max-width: min(420px, 100%);
+}
+
+.section-content-embed--youtube {
+  max-width: min(560px, 100%);
+}
+
 .section-content-embed::before {
   content: "";
   display: block;
@@ -1030,16 +1039,25 @@ a { color: #fff; text-decoration: none; }
   border-bottom: 1px solid rgba(0, 0, 0, 0.35);
 }
 
-/* 16:9 responsive embed: height = 56.25% of width — full video visible, no internal scroll */
+/* Responsive embed box: iframe fills the box; ratio matches platform */
 .section-content-embed-frame-wrap {
   position: relative;
   width: 100%;
   height: 0;
-  padding-bottom: 56.25%;
   margin: 0;
   background: #000;
   border-radius: 0 0 9px 9px;
   overflow: hidden;
+}
+
+/* YouTube & typical landscape: 16:9 */
+.section-content-embed-frame-wrap--landscape {
+  padding-bottom: 56.25%;
+}
+
+/* TikTok vertical video: 9:16 (was wrongly forced to 16:9, which crops portrait) */
+.section-content-embed-frame-wrap--portrait {
+  padding-bottom: 177.78%;
 }
 
 .section-content-embed-frame-wrap iframe {
@@ -1052,7 +1070,9 @@ a { color: #fff; text-decoration: none; }
 }
 
 @media (max-width: 560px) {
-  .section-content-embed {
+  .section-content-embed,
+  .section-content-embed--tiktok,
+  .section-content-embed--youtube {
     max-width: 100%;
   }
 }
