@@ -488,9 +488,13 @@ async function loadSectionContentConfig() {
     });
   }
 
+  // Each section: every valid link you added (extra rows under a column, or multiple Section/Link rows)
+  // has the same chance to be shown. Pick is uniform and runs again on every full page load / refresh.
   grouped.forEach((links, section) => {
     if (!links.length) return;
-    const selected = links[Math.floor(Math.random() * links.length)];
+    const unique = [...new Set(links)];
+    const pool = unique.length ? unique : links;
+    const selected = pool[Math.floor(Math.random() * pool.length)];
     sectionContentEmbeds.set(section, selected);
   });
 }
