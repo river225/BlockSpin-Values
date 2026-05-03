@@ -997,56 +997,58 @@ a { color: #fff; text-decoration: none; }
 .section-content-embed {
   margin: 22px auto 10px auto;
   width: 100%;
-  max-width: min(520px, 100%);
+  max-width: min(560px, 100%);
   box-sizing: border-box;
-  background: linear-gradient(165deg, rgba(18, 26, 38, 0.98) 0%, rgba(12, 17, 26, 0.99) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(165deg, rgba(14, 20, 30, 0.99) 0%, rgba(8, 12, 18, 1) 100%);
+  border: 1px solid rgba(51, 204, 230, 0.12);
   border-radius: 10px;
   padding: 0;
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.04) inset,
-    0 12px 32px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.35);
+  overflow: visible;
 }
 
 .section-content-embed::before {
   content: "";
   display: block;
   height: 2px;
-  background: linear-gradient(90deg, rgba(51, 204, 230, 0.15) 0%, #33cce6 45%, rgba(51, 204, 230, 0.15) 100%);
-  opacity: 0.9;
+  background: linear-gradient(90deg, rgba(51, 204, 230, 0.2) 0%, #33cce6 50%, rgba(51, 204, 230, 0.2) 100%);
+  border-radius: 10px 10px 0 0;
 }
 
 .section-content-embed-title {
   margin: 0;
-  padding: 10px 14px 8px;
-  color: rgba(230, 238, 248, 0.92);
-  font-size: 0.72rem;
+  padding: 11px 14px 10px;
+  color: rgba(220, 232, 245, 0.95);
+  font-size: clamp(0.78rem, 2.2vw, 0.88rem);
   font-weight: 600;
   text-align: center;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  line-height: 1.35;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
 }
 
+/* 16:9 responsive embed: height = 56.25% of width — full video visible, no internal scroll */
 .section-content-embed-frame-wrap {
   position: relative;
   width: 100%;
-  max-width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
   margin: 0;
-  aspect-ratio: 16 / 9;
-  background: #05080d;
-  border-radius: 0;
+  background: #000;
+  border-radius: 0 0 9px 9px;
   overflow: hidden;
 }
 
 .section-content-embed-frame-wrap iframe {
-  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: 0;
-  vertical-align: top;
 }
 
 @media (max-width: 560px) {

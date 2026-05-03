@@ -508,7 +508,7 @@ function renderSectionContentEmbeds() {
     const wrapper = document.createElement("div");
     wrapper.className = "section-content-embed";
     wrapper.innerHTML = `
-      <h3 class="section-content-embed-title">Featured Content</h3>
+      <h3 class="section-content-embed-title">You might like this BlockSpin Video!</h3>
       <div class="section-content-embed-frame-wrap">
         <iframe
           src="${escapeAttr(embedUrl)}"
