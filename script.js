@@ -100,9 +100,11 @@ function setupDiscordClickTracking() {
   });
 }
 
-const TAX_RECEIVE_RATIO = 29091 / 40000;
-const TAX_MAX_DROP = 40000;
-const TAX_RECEIVE_PER_40K = 29091;
+const TAX_LEGACY_FULL_DROP = 40000;
+const TAX_LEGACY_RECEIVE = 29091;
+const TAX_MAX_DROP = 60000;
+const TAX_RECEIVE_PER_MAX_DROP = Math.floor((TAX_MAX_DROP * TAX_LEGACY_RECEIVE) / TAX_LEGACY_FULL_DROP);
+const TAX_RECEIVE_RATIO = TAX_LEGACY_RECEIVE / TAX_LEGACY_FULL_DROP;
 
 function formatNetWorth(value) {
   const cleanValue = String(value).replace(/[$,]/g, '');
@@ -1451,28 +1453,32 @@ function initSearch() {
 function getTaxBreakdown(amountWant) {
   const want = Math.round(Number(amountWant) || 0);
   if (want <= 0) return { totalWithdraw: 0, lines: [], singleDrop: true };
-  const totalWithdraw = Math.round(want / TAX_RECEIVE_RATIO);
-  if (totalWithdraw <= TAX_MAX_DROP) {
+
+  const oneDropCash = Math.round(want / TAX_RECEIVE_RATIO);
+  if (oneDropCash <= TAX_MAX_DROP) {
     return {
-      totalWithdraw,
-      lines: ['Drop $' + totalWithdraw.toLocaleString()],
+      totalWithdraw: oneDropCash,
+      lines: ["Drop $" + oneDropCash.toLocaleString("en-US")],
       singleDrop: true
     };
   }
-  const full40kCount = Math.floor(totalWithdraw / TAX_MAX_DROP);
-  const receivedFromFull = full40kCount * TAX_RECEIVE_PER_40K;
-  const lastReceive = want - receivedFromFull;
-  const lastWithdraw = Math.round(lastReceive / TAX_RECEIVE_RATIO);
-  const lines = [];
 
-  if (full40kCount === 1 && lastWithdraw > 0) {
-    lines.push('Drop $40,000 once');
-    lines.push('then Drop $' + lastWithdraw.toLocaleString() + '.');
+  const fullMaxDropCount = Math.floor(want / TAX_RECEIVE_PER_MAX_DROP);
+  const receivedFromFull = fullMaxDropCount * TAX_RECEIVE_PER_MAX_DROP;
+  const lastReceive = want - receivedFromFull;
+  const lastWithdraw = lastReceive > 0 ? Math.round(lastReceive / TAX_RECEIVE_RATIO) : 0;
+  const totalWithdraw = fullMaxDropCount * TAX_MAX_DROP + lastWithdraw;
+  const lines = [];
+  const maxDropLabel = "$" + TAX_MAX_DROP.toLocaleString("en-US");
+
+  if (fullMaxDropCount === 1 && lastWithdraw > 0) {
+    lines.push("Drop " + maxDropLabel + " once");
+    lines.push("then Drop $" + lastWithdraw.toLocaleString("en-US") + ".");
   } else if (lastWithdraw > 0) {
-    lines.push('Drop $40,000 ' + full40kCount.toLocaleString() + ' times');
-    lines.push('then Drop $' + lastWithdraw.toLocaleString() + '.');
+    lines.push("Drop " + maxDropLabel + " " + fullMaxDropCount.toLocaleString("en-US") + " times");
+    lines.push("then Drop $" + lastWithdraw.toLocaleString("en-US") + ".");
   } else {
-    lines.push('Drop $40,000 ' + full40kCount.toLocaleString() + ' times.');
+    lines.push("Drop " + maxDropLabel + " " + fullMaxDropCount.toLocaleString("en-US") + " times.");
   }
   return { totalWithdraw, lines, singleDrop: false };
 }
