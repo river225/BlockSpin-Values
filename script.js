@@ -1052,7 +1052,9 @@ function renderVehiclesSectionWithBanner(items) {
         ${items.map(createCard).join("")}
       </div>
       <div class="legendary-banner giveaway-banner--humvee" id="vehicles-humvee-giveaway-banner" style="display: none;">
-        <img src="${escapeAttr(HUMVEE_GIVEAWAY_IMAGE_URL)}" alt="Humvee" class="humvee-banner-image" loading="lazy" decoding="async" />
+        <div class="humvee-banner-media">
+          <img src="${escapeAttr(HUMVEE_GIVEAWAY_IMAGE_URL)}" alt="Humvee" class="humvee-banner-image" loading="lazy" decoding="async" />
+        </div>
         <p class="legendary-banner-text">We’re hosting a <strong>Humvee giveaway</strong> in our Discord server—join now for a chance to win!</p>
         <div class="legendary-banner-right">
           <a href="https://discord.gg/nKKkXyqCsv" target="_blank" rel="noopener" class="legendary-banner-btn">Enter Giveaway</a>
@@ -1082,14 +1084,22 @@ function fetchHumveeGiveawayEntryCount() {
   if (!window.bsvBotApiUrl || typeof window.bsvBotApiUrl !== "function") return;
   const url = window.bsvBotApiUrl(`/api/giveaway-entries/${HUMVEE_GIVEAWAY_MESSAGE_ID}`);
   fetch(url, { cache: "no-store" })
-    .then(function (res) { return res.json(); })
+    .then(function (res) {
+      return res.json().then(function (data) {
+        if (!res.ok) throw new Error((data && data.error) || ("HTTP " + res.status));
+        return data;
+      });
+    })
     .then(function (data) {
       var n = Number(data && data.entries);
       if (!Number.isFinite(n)) return;
       var els = document.querySelectorAll(".humvee-entry-count");
       els.forEach(function (el) { el.textContent = n.toLocaleString("en-US"); });
     })
-    .catch(function () {});
+    .catch(function () {
+      var els = document.querySelectorAll(".humvee-entry-count");
+      els.forEach(function (el) { el.textContent = "0"; });
+    });
 }
 
 function createFooterBoosterCard(booster) {
