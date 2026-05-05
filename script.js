@@ -55,7 +55,7 @@ const CONTENT_SHEET_NAME = "content";
 const TRUE_REGEX = /^(yes|true|1|on|y)$/i;
 const FALSE_REGEX = /^(no|false|0|off|n)$/i;
 const giveawayItems = new Set();
-const bannerVisibility = { anaconda: false, firework: false, legendary: false, humvee: false };
+const bannerVisibility = { anaconda: false, firework: false, legendary: true, humvee: true };
 const HUMVEE_GIVEAWAY_MESSAGE_ID = "1501020140668588123";
 const HUMVEE_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/Fkhg8bTK/Screenshot-2026-05-05-003408-removebg-preview.png";
 const sectionContentEmbeds = new Map();
@@ -632,8 +632,8 @@ async function loadExternalGiveawayConfig() {
   giveawayItems.clear();
   bannerVisibility.anaconda = false;
   bannerVisibility.firework = false;
-  bannerVisibility.legendary = false;
-  bannerVisibility.humvee = false;
+  bannerVisibility.legendary = true;
+  bannerVisibility.humvee = true;
 
   const [giveawayRows, bannerRows] = await Promise.all([
     fetchExternalSheet(GIVEAWAY_CONFIG_SPREADSHEET_ID, GIVEAWAYS_SHEET_NAME),
@@ -1055,9 +1055,9 @@ function renderVehiclesSectionWithBanner(items) {
         <div class="humvee-banner-media">
           <img src="${escapeAttr(HUMVEE_GIVEAWAY_IMAGE_URL)}" alt="Humvee" class="humvee-banner-image" loading="lazy" decoding="async" />
         </div>
-        <p class="legendary-banner-text">We’re hosting a <strong>Humvee giveaway</strong> in our Discord server—join now for a chance to win!</p>
+        <p class="legendary-banner-text humvee-banner-copy"><span class="humvee-banner-headline">We’re hosting a <strong>Humvee giveaway</strong> in our Discord server</span><span class="humvee-banner-sub"> — join now for a chance to win!</span></p>
         <div class="legendary-banner-right">
-          <a href="https://discord.gg/nKKkXyqCsv" target="_blank" rel="noopener" class="legendary-banner-btn">Enter Giveaway</a>
+          <a href="https://discord.gg/nKKkXyqCsv" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo">Enter Giveaway</a>
           <p class="legendary-banner-members"><span class="humvee-entry-count">—</span> entered</p>
         </div>
       </div>

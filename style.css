@@ -974,19 +974,22 @@ a { color: #fff; text-decoration: none; }
   color: #291506;
 }
 
-/* Vehicles - Humvee giveaway banner */
+/* Vehicles - Humvee giveaway banner (compact strip + holo CTA) */
 .legendary-banner.giveaway-banner--humvee {
-  border-color: rgba(214, 175, 255, 0.65);
-  box-shadow: 0 6px 24px rgba(111, 27, 124, 0.42), 0 0 0 1px rgba(255, 120, 170, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  padding: 11px 16px 11px 12px;
+  margin-top: 18px;
+  border-color: rgba(214, 175, 255, 0.55);
+  box-shadow: 0 4px 16px rgba(111, 27, 124, 0.32), 0 0 0 1px rgba(255, 120, 170, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16);
   background: linear-gradient(135deg, #5f1624 0%, #7c1f46 32%, #5e2b8b 68%, #3d175f 100%);
   animation: giveaway-banner-shine 8s ease-in-out infinite;
-  gap: 18px;
+  gap: 12px 14px;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 156px minmax(300px, 1fr) auto;
+  grid-template-columns: 112px minmax(200px, 1fr) auto;
   align-items: center;
   justify-items: stretch;
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+  border-radius: 12px;
 }
 .legendary-banner.giveaway-banner--humvee::after {
   content: "";
@@ -1001,6 +1004,33 @@ a { color: #fff; text-decoration: none; }
   transform: rotate(14deg);
   animation: humvee-banner-sweep 4.2s ease-in-out infinite;
 }
+.legendary-banner.giveaway-banner--humvee .humvee-banner-copy {
+  display: block;
+}
+.legendary-banner.giveaway-banner--humvee .humvee-banner-headline {
+  display: inline;
+  font-size: clamp(0.98rem, 0.95vw + 0.55rem, 1.18rem);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  line-height: 1.22;
+  text-wrap: balance;
+}
+.legendary-banner.giveaway-banner--humvee .humvee-banner-headline strong {
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 0 18px rgba(255, 180, 255, 0.55),
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000;
+}
+.legendary-banner.giveaway-banner--humvee .humvee-banner-sub {
+  display: inline;
+  font-weight: 700;
+  font-size: clamp(0.92rem, 0.85vw + 0.48rem, 1.05rem);
+  opacity: 0.96;
+}
 .legendary-banner.giveaway-banner--humvee .legendary-banner-text {
   white-space: normal;
   margin: 0;
@@ -1008,21 +1038,82 @@ a { color: #fff; text-decoration: none; }
   min-width: 0;
   text-align: left;
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
-  font-size: clamp(1.04rem, 1.2vw + 0.62rem, 1.34rem);
-  font-weight: 900;
-  line-height: 1.2;
+  font-size: clamp(0.96rem, 0.9vw + 0.52rem, 1.12rem);
+  font-weight: 800;
+  line-height: 1.24;
   text-wrap: balance;
 }
-.legendary-banner.giveaway-banner--humvee .legendary-banner-btn {
-  background: linear-gradient(145deg, #fff 0%, #f7eefe 40%, #f0d6ff 100%);
-  color: #3f1457;
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.humvee-banner-btn-holo {
+  padding: 10px 18px;
+  border-radius: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #16071f;
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.94), 0 0 0 2px #7a2cb0, 0 0 0 4px #000, 0 0 18px rgba(180, 80, 255, 0.45), 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: linear-gradient(
+    120deg,
+    #cffafe 0%,
+    #e9d5ff 18%,
+    #fbcfe8 36%,
+    #a5f3fc 54%,
+    #ddd6fe 72%,
+    #fbcfe8 88%,
+    #cffafe 100%
+  );
+  background-size: 280% 280%;
+  animation: humvee-holo-gradient 5.5s ease-in-out infinite;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.85),
+    0 0 14px rgba(236, 72, 153, 0.35),
+    0 0 22px rgba(34, 211, 238, 0.28),
+    0 3px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
 }
-.legendary-banner.giveaway-banner--humvee .legendary-banner-btn:hover {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.96), 0 0 0 2px #7a2cb0, 0 0 0 4px #000, 0 0 24px rgba(196, 93, 255, 0.56), 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 1);
-  background: linear-gradient(145deg, #fff 0%, #f9f0ff 25%, #f3ddff 55%, #eecfff 100%);
-  color: #2f0f41;
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.humvee-banner-btn-holo::before {
+  content: "";
+  position: absolute;
+  inset: -40% -30%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 62%,
+    transparent 100%
+  );
+  transform: translateX(-30%) rotate(12deg);
+  animation: humvee-holo-sheen 3.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.humvee-banner-btn-holo:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: saturate(1.15) brightness(1.05);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.88),
+    0 0 20px rgba(236, 72, 153, 0.45),
+    0 0 28px rgba(34, 211, 238, 0.38),
+    0 6px 16px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  color: #0c0314;
+}
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.humvee-banner-btn-holo:active {
+  transform: translateY(0) scale(1);
+  filter: saturate(1.05) brightness(1);
+}
+@keyframes humvee-holo-gradient {
+  0%, 100% { background-position: 12% 40%; }
+  50% { background-position: 88% 60%; }
+}
+@keyframes humvee-holo-sheen {
+  0%, 12% { transform: translateX(-45%) rotate(12deg); opacity: 0; }
+  28% { opacity: 1; }
+  55% { transform: translateX(55%) rotate(12deg); opacity: 0.85; }
+  100% { transform: translateX(55%) rotate(12deg); opacity: 0; }
 }
 .legendary-banner.giveaway-banner--humvee .legendary-banner-members {
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
@@ -1033,18 +1124,18 @@ a { color: #fff; text-decoration: none; }
   font-variant-numeric: tabular-nums;
 }
 .humvee-banner-media {
-  align-self: stretch;
+  align-self: center;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
-  min-width: 140px;
+  min-width: 100px;
 }
 .humvee-banner-image {
-  width: 150px;
+  width: 108px;
   max-width: 100%;
   height: auto;
   pointer-events: none;
-  transform: translate(-2px, -4px);
+  transform: translate(0, -1px);
 }
 @media screen and (max-width: 860px) {
   .legendary-banner.giveaway-banner--humvee {
@@ -1059,11 +1150,14 @@ a { color: #fff; text-decoration: none; }
     grid-area: actions;
     justify-content: center;
   }
-  .legendary-banner.giveaway-banner--humvee .legendary-banner-text {
-    font-size: clamp(1rem, 2.1vw, 1.2rem);
+  .legendary-banner.giveaway-banner--humvee .humvee-banner-headline {
+    font-size: clamp(0.95rem, 2vw, 1.08rem);
+  }
+  .legendary-banner.giveaway-banner--humvee .humvee-banner-sub {
+    font-size: clamp(0.88rem, 1.8vw, 0.98rem);
   }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-image {
-    width: 126px;
+    width: 96px;
   }
 }
 @media screen and (max-width: 520px) {
@@ -1082,10 +1176,13 @@ a { color: #fff; text-decoration: none; }
   }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-image {
     transform: none;
-    width: 120px;
+    width: 92px;
   }
   .legendary-banner.giveaway-banner--humvee .legendary-banner-text {
     text-align: center;
+    font-size: 0.96rem;
+  }
+  .legendary-banner.giveaway-banner--humvee .humvee-banner-headline {
     font-size: 1rem;
   }
 }
