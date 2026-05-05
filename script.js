@@ -55,7 +55,7 @@ const CONTENT_SHEET_NAME = "content";
 const TRUE_REGEX = /^(yes|true|1|on|y)$/i;
 const FALSE_REGEX = /^(no|false|0|off|n)$/i;
 const giveawayItems = new Set();
-const bannerVisibility = { anaconda: false, firework: false, legendary: false, humvee: true };
+const bannerVisibility = { anaconda: false, firework: false, legendary: false, humvee: false };
 const HUMVEE_GIVEAWAY_MESSAGE_ID = "1501020140668588123";
 const HUMVEE_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/Fkhg8bTK/Screenshot-2026-05-05-003408-removebg-preview.png";
 const sectionContentEmbeds = new Map();
@@ -633,7 +633,7 @@ async function loadExternalGiveawayConfig() {
   bannerVisibility.anaconda = false;
   bannerVisibility.firework = false;
   bannerVisibility.legendary = false;
-  bannerVisibility.humvee = true;
+  bannerVisibility.humvee = false;
 
   const [giveawayRows, bannerRows] = await Promise.all([
     fetchExternalSheet(GIVEAWAY_CONFIG_SPREADSHEET_ID, GIVEAWAYS_SHEET_NAME),
