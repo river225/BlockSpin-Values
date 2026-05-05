@@ -976,17 +976,30 @@ a { color: #fff; text-decoration: none; }
 
 /* Vehicles - Humvee giveaway banner */
 .legendary-banner.giveaway-banner--humvee {
-  border-color: rgba(154, 124, 82, 0.55);
-  box-shadow: 0 4px 20px rgba(76, 60, 36, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(214, 175, 255, 0.65);
+  box-shadow: 0 6px 24px rgba(111, 27, 124, 0.42), 0 0 0 1px rgba(255, 120, 170, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   background: linear-gradient(135deg, #5f1624 0%, #7c1f46 32%, #5e2b8b 68%, #3d175f 100%);
   animation: giveaway-banner-shine 8s ease-in-out infinite;
-  gap: 14px;
+  gap: 18px;
   overflow: hidden;
   display: grid;
-  grid-template-columns: auto minmax(260px, 1fr) auto;
+  grid-template-columns: 156px minmax(300px, 1fr) auto;
   align-items: center;
   justify-items: stretch;
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+}
+.legendary-banner.giveaway-banner--humvee::after {
+  content: "";
+  position: absolute;
+  top: -35%;
+  left: -45%;
+  width: 34%;
+  height: 170%;
+  pointer-events: none;
+  border-radius: 18px;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.34) 45%, rgba(255, 255, 255, 0.06) 72%, rgba(255, 255, 255, 0) 100%);
+  transform: rotate(14deg);
+  animation: humvee-banner-sweep 4.2s ease-in-out infinite;
 }
 .legendary-banner.giveaway-banner--humvee .legendary-banner-text {
   white-space: normal;
@@ -995,19 +1008,19 @@ a { color: #fff; text-decoration: none; }
   min-width: 0;
   text-align: left;
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
-  font-size: clamp(0.92rem, 0.8vw + 0.78rem, 1.1rem);
-  font-weight: 800;
-  line-height: 1.25;
+  font-size: clamp(1.04rem, 1.2vw + 0.62rem, 1.34rem);
+  font-weight: 900;
+  line-height: 1.2;
   text-wrap: balance;
 }
 .legendary-banner.giveaway-banner--humvee .legendary-banner-btn {
   background: linear-gradient(145deg, #fff 0%, #f7eefe 40%, #f0d6ff 100%);
   color: #3f1457;
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 2px #672086, 0 0 0 4px #000, 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.94), 0 0 0 2px #7a2cb0, 0 0 0 4px #000, 0 0 18px rgba(180, 80, 255, 0.45), 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 .legendary-banner.giveaway-banner--humvee .legendary-banner-btn:hover {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.95), 0 0 0 2px #672086, 0 0 0 4px #000, 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.96), 0 0 0 2px #7a2cb0, 0 0 0 4px #000, 0 0 24px rgba(196, 93, 255, 0.56), 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 1);
   background: linear-gradient(145deg, #fff 0%, #f9f0ff 25%, #f3ddff 55%, #eecfff 100%);
   color: #2f0f41;
 }
@@ -1024,14 +1037,14 @@ a { color: #fff; text-decoration: none; }
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  min-width: 90px;
+  min-width: 140px;
 }
 .humvee-banner-image {
-  width: 88px;
+  width: 150px;
   max-width: 100%;
   height: auto;
   pointer-events: none;
-  transform: translate(-8px, -6px);
+  transform: translate(-2px, -4px);
 }
 @media screen and (max-width: 860px) {
   .legendary-banner.giveaway-banner--humvee {
@@ -1045,6 +1058,12 @@ a { color: #fff; text-decoration: none; }
   .legendary-banner.giveaway-banner--humvee .legendary-banner-right {
     grid-area: actions;
     justify-content: center;
+  }
+  .legendary-banner.giveaway-banner--humvee .legendary-banner-text {
+    font-size: clamp(1rem, 2.1vw, 1.2rem);
+  }
+  .legendary-banner.giveaway-banner--humvee .humvee-banner-image {
+    width: 126px;
   }
 }
 @media screen and (max-width: 520px) {
@@ -1063,11 +1082,19 @@ a { color: #fff; text-decoration: none; }
   }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-image {
     transform: none;
-    width: 96px;
+    width: 120px;
   }
   .legendary-banner.giveaway-banner--humvee .legendary-banner-text {
     text-align: center;
+    font-size: 1rem;
   }
+}
+
+@keyframes humvee-banner-sweep {
+  0% { left: -48%; opacity: 0; }
+  12% { opacity: 1; }
+  42% { left: 118%; opacity: 0.95; }
+  100% { left: 118%; opacity: 0; }
 }
 
 #epic .epic-shark-promo {
