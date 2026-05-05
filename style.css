@@ -949,6 +949,73 @@ a { color: #fff; text-decoration: none; }
   color: #1a0a4a;
 }
 
+/* Legendary – daily giveaway banner */
+.legendary-banner.giveaway-banner--gold {
+  border-color: rgba(234, 179, 8, 0.55);
+  box-shadow: 0 4px 20px rgba(180, 120, 20, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #6b4a0a 0%, #a16207 22%, #ca8a04 50%, #a16207 78%, #713f12 100%);
+  animation: giveaway-banner-shine 8s ease-in-out infinite;
+  gap: 20px 10px;
+}
+.legendary-banner.giveaway-banner--gold .legendary-banner-text {
+  white-space: normal;
+  flex: 0 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+.legendary-banner.giveaway-banner--gold .legendary-banner-btn {
+  background: linear-gradient(145deg, #fff 0%, #fffbeb 30%, #fef3c7 60%, #fde68a 100%);
+  color: #422006;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 2px #a16207, 0 0 0 4px #000, 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.legendary-banner.giveaway-banner--gold .legendary-banner-btn:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.95), 0 0 0 2px #a16207, 0 0 0 4px #000, 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 1);
+  background: linear-gradient(145deg, #fff 0%, #fffbeb 25%, #fef9c3 55%, #fef3c7 100%);
+  color: #291506;
+}
+
+/* Vehicles - Humvee giveaway banner */
+.legendary-banner.giveaway-banner--humvee {
+  position: relative;
+  border-color: rgba(154, 124, 82, 0.55);
+  box-shadow: 0 4px 20px rgba(76, 60, 36, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, #3a3023 0%, #55442f 25%, #725d3f 50%, #55442f 75%, #33291d 100%);
+  animation: giveaway-banner-shine 8s ease-in-out infinite;
+  gap: 20px 10px;
+  overflow: hidden;
+}
+.legendary-banner.giveaway-banner--humvee .legendary-banner-text {
+  white-space: normal;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn {
+  background: linear-gradient(145deg, #fff 0%, #f8efe2 35%, #e8d7bf 65%, #d9b88f 100%);
+  color: #2f2012;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 2px #6b5538, 0 0 0 4px #000, 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.95), 0 0 0 2px #6b5538, 0 0 0 4px #000, 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 1);
+  background: linear-gradient(145deg, #fff 0%, #fbf3e8 25%, #f3e3cb 55%, #e8d7bf 100%);
+  color: #1f1208;
+}
+.humvee-banner-image {
+  position: absolute;
+  left: 4px;
+  top: -10px;
+  width: 130px;
+  max-width: 28%;
+  height: auto;
+  pointer-events: none;
+  z-index: 1;
+}
+#vehicles .giveaway-banner--humvee .legendary-banner-text,
+#vehicles .giveaway-banner--humvee .legendary-banner-right {
+  position: relative;
+  z-index: 2;
+}
+
 #epic .epic-shark-promo {
   margin-top: clamp(16px, 4vw, 28px);
   text-align: center;

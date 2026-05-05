@@ -55,7 +55,9 @@ const CONTENT_SHEET_NAME = "content";
 const TRUE_REGEX = /^(yes|true|1|on|y)$/i;
 const FALSE_REGEX = /^(no|false|0|off|n)$/i;
 const giveawayItems = new Set();
-const bannerVisibility = { anaconda: false, firework: false };
+const bannerVisibility = { anaconda: false, firework: false, legendary: false, humvee: true };
+const HUMVEE_GIVEAWAY_MESSAGE_ID = "1501020140668588123";
+const HUMVEE_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/Fkhg8bTK/Screenshot-2026-05-05-003408-removebg-preview.png";
 const sectionContentEmbeds = new Map();
 const CONTENT_SECTIONS = [
   "Common / Uncommon",
@@ -355,8 +357,12 @@ function parseBannerDecisionForKeyword(row, keyword) {
 function applyExternalBannerVisibility() {
   var anacondaEl = document.getElementById("omega-anaconda-banner");
   var fireworkEl = document.getElementById("epic-firework-banner");
+  var legendaryEl = document.getElementById("legendary-daily-giveaway-banner");
+  var humveeEl = document.getElementById("vehicles-humvee-giveaway-banner");
   if (anacondaEl) anacondaEl.style.display = bannerVisibility.anaconda ? "flex" : "none";
   if (fireworkEl) fireworkEl.style.display = bannerVisibility.firework ? "flex" : "none";
+  if (legendaryEl) legendaryEl.style.display = bannerVisibility.legendary ? "flex" : "none";
+  if (humveeEl) humveeEl.style.display = bannerVisibility.humvee ? "flex" : "none";
 }
 
 function normalizeContentSectionName(name) {
@@ -626,6 +632,8 @@ async function loadExternalGiveawayConfig() {
   giveawayItems.clear();
   bannerVisibility.anaconda = false;
   bannerVisibility.firework = false;
+  bannerVisibility.legendary = false;
+  bannerVisibility.humvee = true;
 
   const [giveawayRows, bannerRows] = await Promise.all([
     fetchExternalSheet(GIVEAWAY_CONFIG_SPREADSHEET_ID, GIVEAWAYS_SHEET_NAME),
@@ -648,6 +656,8 @@ async function loadExternalGiveawayConfig() {
       if (valueParsed === null) return;
       if (keyLower.includes("anaconda")) bannerVisibility.anaconda = valueParsed;
       if (keyLower.includes("firework")) bannerVisibility.firework = valueParsed;
+      if (keyLower.includes("legendary")) bannerVisibility.legendary = valueParsed;
+      if (keyLower.includes("humvee")) bannerVisibility.humvee = valueParsed;
     });
 
     const rawName = String(
@@ -666,6 +676,8 @@ async function loadExternalGiveawayConfig() {
     if (parsed === null) return;
     if (lowerName.includes("anaconda")) bannerVisibility.anaconda = parsed;
     if (lowerName.includes("firework")) bannerVisibility.firework = parsed;
+    if (lowerName.includes("legendary")) bannerVisibility.legendary = parsed;
+    if (lowerName.includes("humvee")) bannerVisibility.humvee = parsed;
   });
 
   // Fallback parser: supports typos/alternate layouts like "Giveawat"/different columns.
@@ -674,6 +686,10 @@ async function loadExternalGiveawayConfig() {
     if (fireworkDecision !== null) bannerVisibility.firework = fireworkDecision;
     const anacondaDecision = parseBannerDecisionForKeyword(row, "anaconda");
     if (anacondaDecision !== null) bannerVisibility.anaconda = anacondaDecision;
+    const legendaryDecision = parseBannerDecisionForKeyword(row, "legendary");
+    if (legendaryDecision !== null) bannerVisibility.legendary = legendaryDecision;
+    const humveeDecision = parseBannerDecisionForKeyword(row, "humvee");
+    if (humveeDecision !== null) bannerVisibility.humvee = humveeDecision;
   });
 
   applyExternalBannerVisibility();
@@ -958,6 +974,8 @@ function renderSection(title, items) {
     renderAccessoriesSection(items);
   } else if (title === "Legendary") {
     renderLegendarySectionWithBanner(items);
+  } else if (title === "Vehicles") {
+    renderVehiclesSectionWithBanner(items);
   } else if (title === "Omega") {
     const html = `
       <section class="section" id="${slugify("Omega")}">
@@ -1013,9 +1031,38 @@ function renderLegendarySectionWithBanner(items) {
       <div class="cards">
         ${items.map(createCard).join("")}
       </div>
+      <div class="legendary-banner giveaway-banner--gold" id="legendary-daily-giveaway-banner" style="display: none;">
+        <p class="legendary-banner-text">We do <strong>daily legendary gun giveaways</strong>!</p>
+        <div class="legendary-banner-right">
+          <a href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener" class="legendary-banner-btn">Join our Discord server</a>
+          <p class="legendary-banner-members"><span class="discord-member-count">—</span> members</p>
+        </div>
+      </div>
     </section>
   `;
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
+  applyExternalBannerVisibility();
+}
+
+function renderVehiclesSectionWithBanner(items) {
+  const html = `
+    <section class="section" id="${slugify("Vehicles")}">
+      <h2>Vehicles</h2>
+      <div class="cards">
+        ${items.map(createCard).join("")}
+      </div>
+      <div class="legendary-banner giveaway-banner--humvee" id="vehicles-humvee-giveaway-banner" style="display: none;">
+        <img src="${escapeAttr(HUMVEE_GIVEAWAY_IMAGE_URL)}" alt="Humvee" class="humvee-banner-image" loading="lazy" decoding="async" />
+        <p class="legendary-banner-text">We’re hosting a <strong>Humvee giveaway</strong> in our Discord server—join now for a chance to win!</p>
+        <div class="legendary-banner-right">
+          <a href="https://discord.gg/nKKkXyqCsv" target="_blank" rel="noopener" class="legendary-banner-btn">Enter Giveaway</a>
+          <p class="legendary-banner-members"><span class="humvee-entry-count">—</span> entered</p>
+        </div>
+      </div>
+    </section>
+  `;
+  document.getElementById("sections").insertAdjacentHTML("beforeend", html);
+  applyExternalBannerVisibility();
 }
 
 function fetchDiscordMemberCount() {
@@ -1027,6 +1074,20 @@ function fetchDiscordMemberCount() {
         var els = document.querySelectorAll(".discord-member-count");
         els.forEach(function (el) { el.textContent = n.toLocaleString(); });
       }
+    })
+    .catch(function () {});
+}
+
+function fetchHumveeGiveawayEntryCount() {
+  if (!window.bsvBotApiUrl || typeof window.bsvBotApiUrl !== "function") return;
+  const url = window.bsvBotApiUrl(`/api/giveaway-entries/${HUMVEE_GIVEAWAY_MESSAGE_ID}`);
+  fetch(url, { cache: "no-store" })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      var n = Number(data && data.entries);
+      if (!Number.isFinite(n)) return;
+      var els = document.querySelectorAll(".humvee-entry-count");
+      els.forEach(function (el) { el.textContent = n.toLocaleString("en-US"); });
     })
     .catch(function () {});
 }
@@ -1924,6 +1985,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadTopDonators();
   loadValueChanges();
   fetchDiscordMemberCount();
+  fetchHumveeGiveawayEntryCount();
   loadFooterBoosters();
 
   sectionsContainer.classList.add("loaded");
