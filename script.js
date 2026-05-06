@@ -1098,7 +1098,7 @@ function fetchHumveeGiveawayEntryCount() {
     })
     .catch(function () {
       var els = document.querySelectorAll(".humvee-entry-count");
-      els.forEach(function (el) { el.textContent = "0"; });
+      els.forEach(function (el) { el.textContent = "—"; });
     });
 }
 
