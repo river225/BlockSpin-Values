@@ -1311,10 +1311,10 @@ a { color: #fff; text-decoration: none; }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-tagline {
     font-size: clamp(0.86rem, 1.8vw + 0.55rem, 1.05rem);
   }
-  .legendary-banner.giveaway-banner--robux .robux-banner-title-display {
+  .legendary-banner.giveaway-banner--robux .humvee-banner-title {
     font-size: clamp(1.75rem, 5vw + 0.75rem, 2.55rem);
   }
-  .legendary-banner.giveaway-banner--robux .robux-banner-tagline-display {
+  .legendary-banner.giveaway-banner--robux .humvee-banner-tagline {
     font-size: clamp(0.86rem, 1.8vw + 0.55rem, 1.05rem);
   }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-image {
@@ -1379,30 +1379,34 @@ a { color: #fff; text-decoration: none; }
   }
 }
 
-/* Gold Robux giveaway strip (layout mirrors Humvee; gold / black premium look) */
+/* Robux giveaway strip — same structure/classes as Humvee; slate + bright gold + cyan (no muddy brown) */
 .legendary-banner.giveaway-banner--robux {
   padding: 7px 14px 7px 10px;
   margin-top: 18px;
-  border-color: rgba(253, 224, 71, 0.65);
+  border-color: rgba(255, 255, 255, 0.5);
   box-shadow:
-    0 0 28px rgba(251, 191, 36, 0.38),
-    0 6px 22px rgba(0, 0, 0, 0.45),
-    inset 0 2px 0 rgba(255, 255, 255, 0.22);
+    0 0 30px rgba(250, 204, 21, 0.42),
+    0 0 48px rgba(34, 211, 238, 0.28),
+    0 6px 20px rgba(15, 23, 42, 0.55),
+    inset 0 2px 0 rgba(255, 255, 255, 0.32);
   background:
-    radial-gradient(ellipse 90% 85% at 15% 25%, rgba(255, 252, 235, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 60% at 88% 72%, rgba(212, 175, 55, 0.45) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 90% at 14% 22%, rgba(255, 255, 255, 0.42) 0%, transparent 48%),
+    radial-gradient(ellipse 85% 75% at 86% 78%, rgba(253, 224, 71, 0.55) 0%, transparent 52%),
     linear-gradient(
-      132deg,
-      #1c1406 0%,
-      #4a3a12 18%,
-      #a16207 40%,
-      #fcd34d 52%,
-      #eab308 62%,
-      #78350f 88%,
-      #1a1205 100%
+      128deg,
+      #0f172a 0%,
+      #1e3a8a 18%,
+      #0369a1 34%,
+      #eab308 48%,
+      #fde047 56%,
+      #38bdf8 72%,
+      #fbbf24 88%,
+      #0ea5e9 100%
     );
-  background-size: 100% 100%, 100% 100%, 320% 320%;
-  animation: giveaway-banner-shine 9s ease-in-out infinite;
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  animation:
+    giveaway-banner-shine 8.5s ease-in-out infinite,
+    robux-party-glow 4.8s ease-in-out infinite;
   gap: 10px 14px;
   overflow: hidden;
   display: grid;
@@ -1411,90 +1415,204 @@ a { color: #fff; text-decoration: none; }
   justify-items: stretch;
   font-family: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
   border-radius: 14px;
-  filter: saturate(1.08);
+  filter: saturate(1.14);
 }
 .legendary-banner.giveaway-banner--robux::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    115deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    transparent 38%,
-    rgba(255, 215, 128, 0.12) 62%,
-    transparent 100%
-  );
+  inset: -70%;
+  background:
+    conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(253, 224, 71, 0.18) 55deg, transparent 110deg, rgba(56, 189, 248, 0.16) 185deg, transparent 235deg, rgba(254, 249, 195, 0.14) 295deg, transparent 360deg),
+    radial-gradient(circle at 20% 35%, rgba(255, 255, 255, 0.85) 0, rgba(255, 255, 255, 0.85) 1px, transparent 2px),
+    radial-gradient(circle at 74% 58%, rgba(255, 250, 220, 0.75) 0, rgba(255, 250, 220, 0.75) 1px, transparent 2px),
+    radial-gradient(circle at 52% 24%, rgba(186, 230, 253, 0.65) 0, rgba(186, 230, 253, 0.65) 1px, transparent 2px),
+    radial-gradient(circle at 42% 80%, rgba(253, 224, 71, 0.55) 0, rgba(253, 224, 71, 0.55) 1px, transparent 2px);
+  background-size: auto, 140px 140px, 175px 165px, 155px 155px, 185px 170px;
+  animation: humvee-party-swirl 17s linear infinite, humvee-confetti-drift 9.5s ease-in-out infinite;
+  transform-origin: 50% 50%;
   pointer-events: none;
   z-index: 0;
+  border-radius: inherit;
+  opacity: 0.92;
 }
 .legendary-banner.giveaway-banner--robux > * {
   position: relative;
   z-index: 2;
 }
-.legendary-banner.giveaway-banner--robux .robux-banner-title-display {
+.legendary-banner.giveaway-banner--robux::after {
+  content: "";
+  position: absolute;
+  top: -38%;
+  left: -48%;
+  width: 38%;
+  height: 175%;
+  pointer-events: none;
+  border-radius: 18px;
+  background: linear-gradient(
+    102deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.62) 42%,
+    rgba(254, 249, 195, 0.38) 58%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(14deg);
+  animation: humvee-banner-sweep 3.8s ease-in-out infinite;
+  z-index: 1;
+}
+/* Typography + stack: match Humvee placement (center column / Bebas + Nunito) */
+.legendary-banner.giveaway-banner--robux .humvee-banner-copy--stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.28rem;
+}
+.legendary-banner.giveaway-banner--robux .humvee-banner-title {
   font-family: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
-  font-size: clamp(2rem, 4vw + 1rem, 3.05rem);
+  font-size: clamp(2rem, 4vw + 1rem, 3.15rem);
   font-weight: 400;
   letter-spacing: 0.07em;
   line-height: 0.98;
   text-align: center;
-  color: #fffef5;
+  color: #fff;
   text-shadow:
-    0 0 22px rgba(253, 224, 71, 0.85),
-    0 0 10px rgba(180, 83, 9, 0.9),
-    2px 2px 0 #2a1f08,
-    -2px 2px 0 #2a1f08,
-    2px -2px 0 #2a1f08,
-    -2px -2px 0 #2a1f08;
+    0 0 26px rgba(253, 224, 71, 0.75),
+    0 0 18px rgba(56, 189, 248, 0.45),
+    2px 2px 0 #000,
+    -2px 2px 0 #000,
+    2px -2px 0 #000,
+    -2px -2px 0 #000;
 }
-.legendary-banner.giveaway-banner--robux .robux-banner-tagline-display {
+.legendary-banner.giveaway-banner--robux .humvee-banner-tagline {
   font-family: "Nunito Sans", "Segoe UI", sans-serif;
-  font-size: clamp(0.92rem, 1.2vw + 0.68rem, 1.15rem);
+  font-size: clamp(0.92rem, 1.2vw + 0.68rem, 1.18rem);
   font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1.25;
   text-align: center;
-  color: #fffbeb;
+  color: #fff;
   max-width: 22rem;
   text-shadow:
-    1px 1px 0 #2a1f08,
-    -1px 1px 0 #2a1f08,
-    1px -1px 0 #2a1f08,
-    -1px -1px 0 #2a1f08;
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000;
 }
-.legendary-banner.giveaway-banner--robux .robux-banner-btn-gold {
+.legendary-banner.giveaway-banner--robux .legendary-banner-text {
+  white-space: normal;
+  margin: 0;
+  align-self: center;
+  min-width: 0;
+}
+.legendary-banner.giveaway-banner--robux .humvee-banner-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: -6px;
+}
+.legendary-banner.giveaway-banner--robux .humvee-banner-entered-note {
+  margin: 0;
+  font-size: clamp(0.78rem, 0.95vw + 0.48rem, 0.92rem);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  max-width: none;
+  color: #fff;
+  text-shadow:
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000;
+}
+/* Holo CTA (same motion as Humvee; gold / champagne / cyan stops) */
+.legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo.robux-banner-btn-holo {
   padding: 10px 18px;
   border-radius: 11px;
   font-weight: 800;
-  letter-spacing: 0.05em;
-  font-family: "Nunito Sans", "Segoe UI", sans-serif;
-  color: #2a1205;
-  text-decoration: none;
-  border: 2px solid #000;
-  background: linear-gradient(165deg, #fffbeb 0%, #fde68a 35%, #eab308 65%, #ca8a04 100%);
+  letter-spacing: 0.06em;
+  color: #0c1220;
+  font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: linear-gradient(
+    120deg,
+    #fefce8 0%,
+    #fde68a 15%,
+    #fef08a 32%,
+    #bae6fd 52%,
+    #fde047 70%,
+    #fef9c3 88%,
+    #fefce8 100%
+  );
+  background-size: 280% 280%;
+  animation: robux-holo-gradient 5.5s ease-in-out infinite;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.75),
-    0 4px 0 #000,
-    0 6px 14px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85);
-  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+    0 0 0 1px rgba(0, 0, 0, 0.82),
+    0 0 16px rgba(250, 204, 21, 0.42),
+    0 0 22px rgba(56, 189, 248, 0.28),
+    0 3px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
 }
-.legendary-banner.giveaway-banner--robux .robux-banner-btn-gold:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.06);
+.legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo.robux-banner-btn-holo::before {
+  content: "";
+  position: absolute;
+  inset: -40% -30%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0.58) 50%,
+    rgba(255, 255, 255, 0) 62%,
+    transparent 100%
+  );
+  transform: translateX(-30%) rotate(12deg);
+  animation: humvee-holo-sheen 3.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+.legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo.robux-banner-btn-holo:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: saturate(1.12) brightness(1.05);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.9),
-    0 5px 0 #000,
-    0 10px 22px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
+    0 0 0 1px rgba(0, 0, 0, 0.88),
+    0 0 22px rgba(250, 204, 21, 0.5),
+    0 0 28px rgba(56, 189, 248, 0.38),
+    0 6px 16px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96);
+  color: #070d18;
 }
-.legendary-banner.giveaway-banner--robux .robux-banner-footnote {
-  color: rgba(255, 251, 235, 0.95);
-  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000;
+.legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo.robux-banner-btn-holo:active {
+  transform: translateY(0) scale(1);
+  filter: saturate(1.05) brightness(1);
 }
-.legendary-banner.giveaway-banner--robux .robux-banner-image {
-  filter: drop-shadow(0 5px 14px rgba(0, 0, 0, 0.55));
+
+@keyframes robux-holo-gradient {
+  0%, 100% { background-position: 14% 42%; }
+  50% { background-position: 86% 58%; }
+}
+
+@keyframes robux-party-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 26px rgba(250, 204, 21, 0.38),
+      0 0 46px rgba(56, 189, 248, 0.22),
+      0 5px 18px rgba(15, 23, 42, 0.45),
+      inset 0 2px 0 rgba(255, 255, 255, 0.32);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(56, 189, 248, 0.42),
+      0 0 52px rgba(253, 224, 71, 0.4),
+      0 8px 24px rgba(15, 23, 42, 0.48),
+      inset 0 2px 0 rgba(255, 255, 255, 0.42);
+  }
 }
 
 @keyframes humvee-banner-sweep {

@@ -1939,16 +1939,16 @@ function buildRobuxGiveawayBannerHtml(bannerId) {
   const href = escapeAttr(ROBUX_GIVEAWAY_DISCORD_URL);
   return `
       <div class="legendary-banner giveaway-banner--robux" id="${id}" style="display: none;">
-        <div class="humvee-banner-media robux-banner-media">
-          <img src="${img}" alt="5,000 Robux" class="humvee-banner-image robux-banner-image" loading="lazy" decoding="async" />
+        <div class="humvee-banner-media">
+          <img src="${img}" alt="5,000 Robux" class="humvee-banner-image" loading="lazy" decoding="async" />
         </div>
         <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
-          <span class="humvee-banner-title robux-banner-title-display">5,000 Robux Giveaway!</span>
-          <span class="humvee-banner-tagline robux-banner-tagline-display">Join our Discord server to enter</span>
+          <span class="humvee-banner-title">5,000 Robux Giveaway!</span>
+          <span class="humvee-banner-tagline">Join our discord server to enter</span>
         </p>
         <div class="legendary-banner-right humvee-banner-actions">
-          <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn robux-banner-btn-gold">Enter Giveaway</a>
-          <p class="legendary-banner-members humvee-banner-entered-note robux-banner-footnote">Giveaway in our Discord server</p>
+          <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo robux-banner-btn-holo">Enter Giveaway</a>
+          <p class="legendary-banner-members humvee-banner-entered-note">Giveaway in our Discord server</p>
         </div>
       </div>`;
 }
