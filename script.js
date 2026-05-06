@@ -56,7 +56,6 @@ const TRUE_REGEX = /^(yes|true|1|on|y)$/i;
 const FALSE_REGEX = /^(no|false|0|off|n)$/i;
 const giveawayItems = new Set();
 const bannerVisibility = { anaconda: false, firework: false, legendary: true, humvee: true };
-const HUMVEE_GIVEAWAY_MESSAGE_ID = "1501020140668588123";
 const HUMVEE_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/Fkhg8bTK/Screenshot-2026-05-05-003408-removebg-preview.png";
 const sectionContentEmbeds = new Map();
 const CONTENT_SECTIONS = [
@@ -359,10 +358,13 @@ function applyExternalBannerVisibility() {
   var fireworkEl = document.getElementById("epic-firework-banner");
   var legendaryEl = document.getElementById("legendary-daily-giveaway-banner");
   var humveeEl = document.getElementById("vehicles-humvee-giveaway-banner");
+  var humveeHomeEl = document.getElementById("home-humvee-giveaway-banner");
+  var humveeOn = bannerVisibility.humvee ? "flex" : "none";
   if (anacondaEl) anacondaEl.style.display = bannerVisibility.anaconda ? "flex" : "none";
   if (fireworkEl) fireworkEl.style.display = bannerVisibility.firework ? "flex" : "none";
   if (legendaryEl) legendaryEl.style.display = bannerVisibility.legendary ? "flex" : "none";
-  if (humveeEl) humveeEl.style.display = bannerVisibility.humvee ? "flex" : "none";
+  if (humveeEl) humveeEl.style.display = humveeOn;
+  if (humveeHomeEl) humveeHomeEl.style.display = humveeOn;
 }
 
 function normalizeContentSectionName(name) {
@@ -1058,7 +1060,7 @@ function renderVehiclesSectionWithBanner(items) {
         <p class="legendary-banner-text humvee-banner-copy"><span class="humvee-banner-headline">We’re hosting a <strong>Humvee giveaway</strong> in our Discord server</span><span class="humvee-banner-sub"> — join now for a chance to win!</span></p>
         <div class="legendary-banner-right">
           <a href="https://discord.gg/nKKkXyqCsv" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo">Enter Giveaway</a>
-          <p class="legendary-banner-members"><span class="humvee-entry-count">—</span> entered</p>
+          <p class="legendary-banner-members humvee-banner-entered-note">300+ People have already entered</p>
         </div>
       </div>
     </section>
@@ -1078,31 +1080,6 @@ function fetchDiscordMemberCount() {
       }
     })
     .catch(function () {});
-}
-
-function fetchHumveeGiveawayEntryCount() {
-  if (!window.bsvBotApiUrl || typeof window.bsvBotApiUrl !== "function") return;
-  const url = window.bsvBotApiUrl(`/api/giveaway-entries/${HUMVEE_GIVEAWAY_MESSAGE_ID}`);
-  fetch(url, { cache: "no-store" })
-    .then(function (res) {
-      return res.json().then(function (data) {
-        if (!res.ok) throw new Error((data && data.error) || ("HTTP " + res.status));
-        return data;
-      });
-    })
-    .then(function (data) {
-      var n = Number(data && data.entries);
-      var els = document.querySelectorAll(".humvee-entry-count");
-      if (!Number.isFinite(n) || n < 1) {
-        els.forEach(function (el) { el.textContent = "—"; });
-        return;
-      }
-      els.forEach(function (el) { el.textContent = n.toLocaleString("en-US"); });
-    })
-    .catch(function () {
-      var els = document.querySelectorAll(".humvee-entry-count");
-      els.forEach(function (el) { el.textContent = "—"; });
-    });
 }
 
 function createFooterBoosterCard(booster) {
@@ -1998,7 +1975,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadTopDonators();
   loadValueChanges();
   fetchDiscordMemberCount();
-  fetchHumveeGiveawayEntryCount();
   loadFooterBoosters();
 
   sectionsContainer.classList.add("loaded");
