@@ -951,9 +951,21 @@ a { color: #fff; text-decoration: none; }
 
 /* Legendary – daily giveaway banner */
 .legendary-banner.giveaway-banner--gold {
-  border-color: rgba(234, 179, 8, 0.55);
-  box-shadow: 0 4px 20px rgba(180, 120, 20, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, #6b4a0a 0%, #a16207 22%, #ca8a04 50%, #a16207 78%, #713f12 100%);
+  border-color: rgba(253, 224, 71, 0.72);
+  box-shadow:
+    0 4px 26px rgba(251, 191, 36, 0.48),
+    0 0 36px rgba(253, 224, 71, 0.22),
+    inset 0 2px 0 rgba(255, 255, 255, 0.28);
+  background: linear-gradient(
+    135deg,
+    #a16207 0%,
+    #ca8a04 18%,
+    #eab308 38%,
+    #fde047 52%,
+    #facc15 68%,
+    #ca8a04 85%,
+    #92400e 100%
+  );
   animation: giveaway-banner-shine 8s ease-in-out infinite;
   gap: 20px 10px;
 }
@@ -1044,9 +1056,9 @@ a { color: #fff; text-decoration: none; }
   transform: translate(-20%, -50%);
   white-space: nowrap;
   font-family: "Nunito Sans", "Segoe UI", sans-serif;
-  font-size: clamp(0.72rem, 1.25vw + 0.45rem, 0.95rem);
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  font-size: clamp(0.48rem, 0.55vw + 0.28rem, 0.58rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.42);
   text-shadow:
@@ -1238,6 +1250,16 @@ a { color: #fff; text-decoration: none; }
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 }
 
+/* Vehicles section only: shift Humvee artwork toward the middle/right */
+#vehicles-humvee-giveaway-banner .humvee-banner-media {
+  justify-content: flex-end;
+  padding-left: 12px;
+  padding-right: 2px;
+}
+#vehicles-humvee-giveaway-banner .humvee-banner-image {
+  transform: translateX(14px);
+}
+
 @keyframes humvee-shoutout-fly {
   0% {
     left: -35%;
@@ -1264,16 +1286,21 @@ a { color: #fff; text-decoration: none; }
   }
 }
 @media screen and (max-width: 860px) {
-  .legendary-banner.giveaway-banner--humvee {
+  .legendary-banner.giveaway-banner--humvee,
+  .legendary-banner.giveaway-banner--robux {
     grid-template-columns: auto 1fr;
     grid-template-areas:
       "media text"
       "actions actions";
   }
-  .legendary-banner.giveaway-banner--humvee .humvee-banner-media { grid-area: media; }
-  .legendary-banner.giveaway-banner--humvee .legendary-banner-text { grid-area: text; }
+  .legendary-banner.giveaway-banner--humvee .humvee-banner-media,
+  .legendary-banner.giveaway-banner--robux .humvee-banner-media { grid-area: media; }
+  .legendary-banner.giveaway-banner--humvee .legendary-banner-text,
+  .legendary-banner.giveaway-banner--robux .legendary-banner-text { grid-area: text; }
   .legendary-banner.giveaway-banner--humvee .legendary-banner-right,
-  .legendary-banner.giveaway-banner--humvee .humvee-banner-actions {
+  .legendary-banner.giveaway-banner--humvee .humvee-banner-actions,
+  .legendary-banner.giveaway-banner--robux .legendary-banner-right,
+  .legendary-banner.giveaway-banner--robux .humvee-banner-actions {
     grid-area: actions;
     justify-content: center;
     margin-top: -4px;
@@ -1284,7 +1311,17 @@ a { color: #fff; text-decoration: none; }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-tagline {
     font-size: clamp(0.86rem, 1.8vw + 0.55rem, 1.05rem);
   }
+  .legendary-banner.giveaway-banner--robux .robux-banner-title-display {
+    font-size: clamp(1.75rem, 5vw + 0.75rem, 2.55rem);
+  }
+  .legendary-banner.giveaway-banner--robux .robux-banner-tagline-display {
+    font-size: clamp(0.86rem, 1.8vw + 0.55rem, 1.05rem);
+  }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-image {
+    width: 118px;
+    max-height: 82px;
+  }
+  .legendary-banner.giveaway-banner--robux .humvee-banner-image {
     width: 118px;
     max-height: 82px;
   }
@@ -1292,9 +1329,17 @@ a { color: #fff; text-decoration: none; }
     white-space: normal;
     max-width: 16rem;
   }
+  .legendary-banner.giveaway-banner--robux .humvee-banner-entered-note {
+    white-space: normal;
+    max-width: 16rem;
+  }
+  #vehicles-humvee-giveaway-banner .humvee-banner-media {
+    justify-content: flex-end;
+  }
 }
 @media screen and (max-width: 520px) {
-  .legendary-banner.giveaway-banner--humvee {
+  .legendary-banner.giveaway-banner--humvee,
+  .legendary-banner.giveaway-banner--robux {
     grid-template-columns: 1fr;
     grid-template-areas:
       "media"
@@ -1304,7 +1349,8 @@ a { color: #fff; text-decoration: none; }
     text-align: center;
     padding: 8px 12px 10px;
   }
-  .legendary-banner.giveaway-banner--humvee .humvee-banner-media {
+  .legendary-banner.giveaway-banner--humvee .humvee-banner-media,
+  .legendary-banner.giveaway-banner--robux .humvee-banner-media {
     justify-content: center;
     align-self: center;
   }
@@ -1313,11 +1359,142 @@ a { color: #fff; text-decoration: none; }
     width: 112px;
     max-height: 76px;
   }
+  .legendary-banner.giveaway-banner--robux .humvee-banner-image {
+    transform: none;
+    width: 112px;
+    max-height: 76px;
+  }
+  #vehicles-humvee-giveaway-banner .humvee-banner-image {
+    transform: translateX(8px);
+  }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-entered-note {
     white-space: normal;
     max-width: 17rem;
     font-size: 0.76rem;
   }
+  .legendary-banner.giveaway-banner--robux .humvee-banner-entered-note {
+    white-space: normal;
+    max-width: 17rem;
+    font-size: 0.76rem;
+  }
+}
+
+/* Gold Robux giveaway strip (layout mirrors Humvee; gold / black premium look) */
+.legendary-banner.giveaway-banner--robux {
+  padding: 7px 14px 7px 10px;
+  margin-top: 18px;
+  border-color: rgba(253, 224, 71, 0.65);
+  box-shadow:
+    0 0 28px rgba(251, 191, 36, 0.38),
+    0 6px 22px rgba(0, 0, 0, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.22);
+  background:
+    radial-gradient(ellipse 90% 85% at 15% 25%, rgba(255, 252, 235, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 60% at 88% 72%, rgba(212, 175, 55, 0.45) 0%, transparent 55%),
+    linear-gradient(
+      132deg,
+      #1c1406 0%,
+      #4a3a12 18%,
+      #a16207 40%,
+      #fcd34d 52%,
+      #eab308 62%,
+      #78350f 88%,
+      #1a1205 100%
+    );
+  background-size: 100% 100%, 100% 100%, 320% 320%;
+  animation: giveaway-banner-shine 9s ease-in-out infinite;
+  gap: 10px 14px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 148px minmax(180px, 1fr) auto;
+  align-items: center;
+  justify-items: stretch;
+  font-family: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  border-radius: 14px;
+  filter: saturate(1.08);
+}
+.legendary-banner.giveaway-banner--robux::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    transparent 38%,
+    rgba(255, 215, 128, 0.12) 62%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+.legendary-banner.giveaway-banner--robux > * {
+  position: relative;
+  z-index: 2;
+}
+.legendary-banner.giveaway-banner--robux .robux-banner-title-display {
+  font-family: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+  font-size: clamp(2rem, 4vw + 1rem, 3.05rem);
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  line-height: 0.98;
+  text-align: center;
+  color: #fffef5;
+  text-shadow:
+    0 0 22px rgba(253, 224, 71, 0.85),
+    0 0 10px rgba(180, 83, 9, 0.9),
+    2px 2px 0 #2a1f08,
+    -2px 2px 0 #2a1f08,
+    2px -2px 0 #2a1f08,
+    -2px -2px 0 #2a1f08;
+}
+.legendary-banner.giveaway-banner--robux .robux-banner-tagline-display {
+  font-family: "Nunito Sans", "Segoe UI", sans-serif;
+  font-size: clamp(0.92rem, 1.2vw + 0.68rem, 1.15rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  text-align: center;
+  color: #fffbeb;
+  max-width: 22rem;
+  text-shadow:
+    1px 1px 0 #2a1f08,
+    -1px 1px 0 #2a1f08,
+    1px -1px 0 #2a1f08,
+    -1px -1px 0 #2a1f08;
+}
+.legendary-banner.giveaway-banner--robux .robux-banner-btn-gold {
+  padding: 10px 18px;
+  border-radius: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-family: "Nunito Sans", "Segoe UI", sans-serif;
+  color: #2a1205;
+  text-decoration: none;
+  border: 2px solid #000;
+  background: linear-gradient(165deg, #fffbeb 0%, #fde68a 35%, #eab308 65%, #ca8a04 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.75),
+    0 4px 0 #000,
+    0 6px 14px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+.legendary-banner.giveaway-banner--robux .robux-banner-btn-gold:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.9),
+    0 5px 0 #000,
+    0 10px 22px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+.legendary-banner.giveaway-banner--robux .robux-banner-footnote {
+  color: rgba(255, 251, 235, 0.95);
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000;
+}
+.legendary-banner.giveaway-banner--robux .robux-banner-image {
+  filter: drop-shadow(0 5px 14px rgba(0, 0, 0, 0.55));
 }
 
 @keyframes humvee-banner-sweep {

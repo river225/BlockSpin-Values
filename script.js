@@ -55,8 +55,14 @@ const CONTENT_SHEET_NAME = "content";
 const TRUE_REGEX = /^(yes|true|1|on|y)$/i;
 const FALSE_REGEX = /^(no|false|0|off|n)$/i;
 const giveawayItems = new Set();
-const bannerVisibility = { anaconda: false, firework: false, legendary: true, humvee: true };
+const bannerVisibility = { anaconda: false, firework: false, legendary: true, humvee: true, robux: true };
 const HUMVEE_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/Fkhg8bTK/Screenshot-2026-05-05-003408-removebg-preview.png";
+const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/PGcDfLJX/Screenshot-2026-05-06-at-02-00-53-removebg-preview.png";
+const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh";
+const HUMVEE_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv";
+
+/** Sections that show the gold Robux giveaway strip (same layout as Humvee). */
+const ROBUX_GIVEAWAY_SECTION_TITLES = new Set(["Common / Uncommon", "Rare", "Epic", "Omega", "Misc"]);
 const sectionContentEmbeds = new Map();
 const CONTENT_SECTIONS = [
   "Common / Uncommon",
@@ -360,11 +366,15 @@ function applyExternalBannerVisibility() {
   var humveeEl = document.getElementById("vehicles-humvee-giveaway-banner");
   var humveeHomeEl = document.getElementById("home-humvee-giveaway-banner");
   var humveeOn = bannerVisibility.humvee ? "flex" : "none";
+  var robuxOn = bannerVisibility.robux ? "flex" : "none";
   if (anacondaEl) anacondaEl.style.display = bannerVisibility.anaconda ? "flex" : "none";
   if (fireworkEl) fireworkEl.style.display = bannerVisibility.firework ? "flex" : "none";
   if (legendaryEl) legendaryEl.style.display = bannerVisibility.legendary ? "flex" : "none";
   if (humveeEl) humveeEl.style.display = humveeOn;
   if (humveeHomeEl) humveeHomeEl.style.display = humveeOn;
+  document.querySelectorAll('[id^="robux-giveaway-banner-"]').forEach(function (node) {
+    node.style.display = robuxOn;
+  });
 }
 
 function normalizeContentSectionName(name) {
@@ -636,6 +646,7 @@ async function loadExternalGiveawayConfig() {
   bannerVisibility.firework = false;
   bannerVisibility.legendary = true;
   bannerVisibility.humvee = true;
+  bannerVisibility.robux = true;
 
   const [giveawayRows, bannerRows] = await Promise.all([
     fetchExternalSheet(GIVEAWAY_CONFIG_SPREADSHEET_ID, GIVEAWAYS_SHEET_NAME),
@@ -660,6 +671,7 @@ async function loadExternalGiveawayConfig() {
       if (keyLower.includes("firework")) bannerVisibility.firework = valueParsed;
       if (keyLower.includes("legendary")) bannerVisibility.legendary = valueParsed;
       if (keyLower.includes("humvee")) bannerVisibility.humvee = valueParsed;
+      if (keyLower.includes("robux")) bannerVisibility.robux = valueParsed;
     });
 
     const rawName = String(
@@ -680,6 +692,7 @@ async function loadExternalGiveawayConfig() {
     if (lowerName.includes("firework")) bannerVisibility.firework = parsed;
     if (lowerName.includes("legendary")) bannerVisibility.legendary = parsed;
     if (lowerName.includes("humvee")) bannerVisibility.humvee = parsed;
+    if (lowerName.includes("robux")) bannerVisibility.robux = parsed;
   });
 
   // Fallback parser: supports typos/alternate layouts like "Giveawat"/different columns.
@@ -692,6 +705,8 @@ async function loadExternalGiveawayConfig() {
     if (legendaryDecision !== null) bannerVisibility.legendary = legendaryDecision;
     const humveeDecision = parseBannerDecisionForKeyword(row, "humvee");
     if (humveeDecision !== null) bannerVisibility.humvee = humveeDecision;
+    const robuxDecision = parseBannerDecisionForKeyword(row, "robux");
+    if (robuxDecision !== null) bannerVisibility.robux = robuxDecision;
   });
 
   applyExternalBannerVisibility();
@@ -992,6 +1007,7 @@ function renderSection(title, items) {
             <p class="legendary-banner-members"><span class="discord-member-count">—</span> members</p>
           </div>
         </div>
+        ${buildRobuxGiveawayBannerHtml("robux-giveaway-banner-" + slugify("Omega"))}
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -1009,16 +1025,22 @@ function renderSection(title, items) {
             <p class="legendary-banner-members"><span class="discord-member-count">—</span> members</p>
           </div>
         </div>
+        ${buildRobuxGiveawayBannerHtml("robux-giveaway-banner-" + slugify("Epic"))}
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
   } else {
+    const robuxTail =
+      ROBUX_GIVEAWAY_SECTION_TITLES.has(title)
+        ? buildRobuxGiveawayBannerHtml("robux-giveaway-banner-" + slugify(title))
+        : "";
     const html = `
       <section class="section" id="${slugify(title)}">
         <h2>${title}</h2>
         <div class="cards">
           ${items.map(createCard).join("")}
         </div>
+        ${robuxTail}
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -1895,7 +1917,7 @@ function buildHumveeGiveawayBannerHtml(bannerId) {
   return `
       <div class="legendary-banner giveaway-banner--humvee" id="${id}" style="display: none;">
         <div class="humvee-banner-shoutout-layer" aria-hidden="true">
-          <span class="humvee-banner-shoutout-floater">Shoutout to Midas for hosting the giveaway</span>
+          <span class="humvee-banner-shoutout-floater">Hosted by Midas</span>
         </div>
         <div class="humvee-banner-media">
           <img src="${img}" alt="Humvee" class="humvee-banner-image" loading="lazy" decoding="async" />
@@ -1905,8 +1927,28 @@ function buildHumveeGiveawayBannerHtml(bannerId) {
           <span class="humvee-banner-tagline">Join our discord server to enter</span>
         </p>
         <div class="legendary-banner-right humvee-banner-actions">
-          <a href="https://discord.gg/nKKkXyqCsv" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo">Enter Giveaway</a>
+          <a href="${escapeAttr(HUMVEE_GIVEAWAY_DISCORD_URL)}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo">Enter Giveaway</a>
           <p class="legendary-banner-members humvee-banner-entered-note">300+ People have already entered</p>
+        </div>
+      </div>`;
+}
+
+function buildRobuxGiveawayBannerHtml(bannerId) {
+  const img = escapeAttr(ROBUX_GIVEAWAY_IMAGE_URL);
+  const id = escapeAttr(bannerId);
+  const href = escapeAttr(ROBUX_GIVEAWAY_DISCORD_URL);
+  return `
+      <div class="legendary-banner giveaway-banner--robux" id="${id}" style="display: none;">
+        <div class="humvee-banner-media robux-banner-media">
+          <img src="${img}" alt="5,000 Robux" class="humvee-banner-image robux-banner-image" loading="lazy" decoding="async" />
+        </div>
+        <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
+          <span class="humvee-banner-title robux-banner-title-display">5,000 Robux Giveaway!</span>
+          <span class="humvee-banner-tagline robux-banner-tagline-display">Join our Discord server to enter</span>
+        </p>
+        <div class="legendary-banner-right humvee-banner-actions">
+          <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn robux-banner-btn-gold">Enter Giveaway</a>
+          <p class="legendary-banner-members humvee-banner-entered-note robux-banner-footnote">Giveaway in our Discord server</p>
         </div>
       </div>`;
 }
