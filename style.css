@@ -1294,7 +1294,12 @@ a { color: #fff; text-decoration: none; }
       "actions actions";
   }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-media,
-  .legendary-banner.giveaway-banner--robux .humvee-banner-media { grid-area: media; }
+  .legendary-banner.giveaway-banner--robux .humvee-banner-media {
+    grid-area: media;
+  }
+  .legendary-banner.giveaway-banner--robux .humvee-banner-media {
+    justify-content: flex-start;
+  }
   .legendary-banner.giveaway-banner--humvee .legendary-banner-text,
   .legendary-banner.giveaway-banner--robux .legendary-banner-text { grid-area: text; }
   .legendary-banner.giveaway-banner--humvee .legendary-banner-right,
@@ -1322,8 +1327,8 @@ a { color: #fff; text-decoration: none; }
     max-height: 82px;
   }
   .legendary-banner.giveaway-banner--robux .humvee-banner-image {
-    width: 118px;
-    max-height: 82px;
+    width: min(168px, 46vw);
+    max-height: 112px;
   }
   .legendary-banner.giveaway-banner--humvee .humvee-banner-entered-note {
     white-space: normal;
@@ -1361,8 +1366,8 @@ a { color: #fff; text-decoration: none; }
   }
   .legendary-banner.giveaway-banner--robux .humvee-banner-image {
     transform: none;
-    width: 112px;
-    max-height: 76px;
+    width: min(152px, 72vw);
+    max-height: 102px;
   }
   #vehicles-humvee-giveaway-banner .humvee-banner-image {
     transform: translateX(8px);
@@ -1379,61 +1384,77 @@ a { color: #fff; text-decoration: none; }
   }
 }
 
-/* Robux giveaway strip — same structure/classes as Humvee; slate + bright gold + cyan (no muddy brown) */
+/* Robux giveaway strip — same structure as Humvee; blue + cyan with violet accents */
 .legendary-banner.giveaway-banner--robux {
-  padding: 7px 14px 7px 10px;
+  padding: 7px 14px 7px 8px;
   margin-top: 18px;
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(191, 219, 254, 0.45);
   box-shadow:
-    0 0 30px rgba(250, 204, 21, 0.42),
-    0 0 48px rgba(34, 211, 238, 0.28),
-    0 6px 20px rgba(15, 23, 42, 0.55),
-    inset 0 2px 0 rgba(255, 255, 255, 0.32);
+    0 0 28px rgba(59, 130, 246, 0.38),
+    0 0 52px rgba(139, 92, 246, 0.22),
+    0 6px 22px rgba(15, 23, 42, 0.58),
+    inset 0 2px 0 rgba(255, 255, 255, 0.28);
   background:
-    radial-gradient(ellipse 100% 90% at 14% 22%, rgba(255, 255, 255, 0.42) 0%, transparent 48%),
-    radial-gradient(ellipse 85% 75% at 86% 78%, rgba(253, 224, 71, 0.55) 0%, transparent 52%),
+    radial-gradient(ellipse 100% 92% at 12% 24%, rgba(255, 255, 255, 0.38) 0%, transparent 46%),
+    radial-gradient(ellipse 78% 70% at 88% 72%, rgba(167, 139, 250, 0.28) 0%, transparent 54%),
     linear-gradient(
-      128deg,
-      #0f172a 0%,
-      #1e3a8a 18%,
-      #0369a1 34%,
-      #eab308 48%,
-      #fde047 56%,
-      #38bdf8 72%,
-      #fbbf24 88%,
-      #0ea5e9 100%
+      122deg,
+      #0b1328 0%,
+      #1e3a8a 16%,
+      #2563eb 32%,
+      #6366f1 46%,
+      #38bdf8 62%,
+      #7c3aed 78%,
+      #0ea5e9 92%,
+      #172554 100%
     );
-  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-size: 100% 100%, 100% 100%, 320% 320%;
   animation:
     giveaway-banner-shine 8.5s ease-in-out infinite,
     robux-party-glow 4.8s ease-in-out infinite;
-  gap: 10px 14px;
+  gap: 10px 12px;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 148px minmax(180px, 1fr) auto;
+  grid-template-columns: minmax(172px, 252px) minmax(180px, 1fr) auto;
   align-items: center;
   justify-items: stretch;
   font-family: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
   border-radius: 14px;
-  filter: saturate(1.14);
+  filter: saturate(1.08);
+}
+.legendary-banner.giveaway-banner--robux .humvee-banner-media {
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 2px;
+  padding-right: 6px;
+  min-width: 0;
+}
+.legendary-banner.giveaway-banner--robux .humvee-banner-image {
+  width: min(228px, 38vw);
+  max-width: 100%;
+  max-height: 128px;
+  height: auto;
+  object-fit: contain;
+  transform: translate(2px, -1px);
+  filter: drop-shadow(0 6px 14px rgba(15, 23, 42, 0.45)) drop-shadow(0 0 20px rgba(56, 189, 248, 0.22));
 }
 .legendary-banner.giveaway-banner--robux::before {
   content: "";
   position: absolute;
   inset: -70%;
   background:
-    conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(253, 224, 71, 0.18) 55deg, transparent 110deg, rgba(56, 189, 248, 0.16) 185deg, transparent 235deg, rgba(254, 249, 195, 0.14) 295deg, transparent 360deg),
-    radial-gradient(circle at 20% 35%, rgba(255, 255, 255, 0.85) 0, rgba(255, 255, 255, 0.85) 1px, transparent 2px),
-    radial-gradient(circle at 74% 58%, rgba(255, 250, 220, 0.75) 0, rgba(255, 250, 220, 0.75) 1px, transparent 2px),
-    radial-gradient(circle at 52% 24%, rgba(186, 230, 253, 0.65) 0, rgba(186, 230, 253, 0.65) 1px, transparent 2px),
-    radial-gradient(circle at 42% 80%, rgba(253, 224, 71, 0.55) 0, rgba(253, 224, 71, 0.55) 1px, transparent 2px);
-  background-size: auto, 140px 140px, 175px 165px, 155px 155px, 185px 170px;
+    conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(129, 140, 248, 0.2) 52deg, transparent 108deg, rgba(56, 189, 248, 0.18) 178deg, transparent 232deg, rgba(167, 139, 250, 0.16) 292deg, transparent 360deg),
+    radial-gradient(circle at 22% 34%, rgba(255, 255, 255, 0.82) 0, rgba(255, 255, 255, 0.82) 1px, transparent 2px),
+    radial-gradient(circle at 72% 56%, rgba(196, 181, 253, 0.72) 0, rgba(196, 181, 253, 0.72) 1px, transparent 2px),
+    radial-gradient(circle at 50% 22%, rgba(165, 243, 252, 0.62) 0, rgba(165, 243, 252, 0.62) 1px, transparent 2px),
+    radial-gradient(circle at 44% 82%, rgba(129, 140, 248, 0.55) 0, rgba(129, 140, 248, 0.55) 1px, transparent 2px);
+  background-size: auto, 138px 138px, 172px 162px, 152px 152px, 182px 168px;
   animation: humvee-party-swirl 17s linear infinite, humvee-confetti-drift 9.5s ease-in-out infinite;
   transform-origin: 50% 50%;
   pointer-events: none;
   z-index: 0;
   border-radius: inherit;
-  opacity: 0.92;
+  opacity: 0.9;
 }
 .legendary-banner.giveaway-banner--robux > * {
   position: relative;
@@ -1451,8 +1472,9 @@ a { color: #fff; text-decoration: none; }
   background: linear-gradient(
     102deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.62) 42%,
-    rgba(254, 249, 195, 0.38) 58%,
+    rgba(255, 255, 255, 0.58) 40%,
+    rgba(196, 181, 253, 0.42) 54%,
+    rgba(165, 243, 252, 0.28) 68%,
     rgba(255, 255, 255, 0) 100%
   );
   transform: rotate(14deg);
@@ -1477,8 +1499,8 @@ a { color: #fff; text-decoration: none; }
   text-align: center;
   color: #fff;
   text-shadow:
-    0 0 26px rgba(253, 224, 71, 0.75),
-    0 0 18px rgba(56, 189, 248, 0.45),
+    0 0 22px rgba(56, 189, 248, 0.65),
+    0 0 20px rgba(167, 139, 250, 0.55),
     2px 2px 0 #000,
     -2px 2px 0 #000,
     2px -2px 0 #000,
@@ -1529,33 +1551,33 @@ a { color: #fff; text-decoration: none; }
     1px -1px 0 #000,
     -1px -1px 0 #000;
 }
-/* Holo CTA (same motion as Humvee; gold / champagne / cyan stops) */
+/* Holo CTA — blue / cyan / violet (no gold) */
 .legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo.robux-banner-btn-holo {
   padding: 10px 18px;
   border-radius: 11px;
   font-weight: 800;
   letter-spacing: 0.06em;
-  color: #0c1220;
+  color: #0c1228;
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(191, 219, 254, 0.55);
   background: linear-gradient(
-    120deg,
-    #fefce8 0%,
-    #fde68a 15%,
-    #fef08a 32%,
-    #bae6fd 52%,
-    #fde047 70%,
-    #fef9c3 88%,
-    #fefce8 100%
+    118deg,
+    #e0e7ff 0%,
+    #bfdbfe 14%,
+    #93c5fd 30%,
+    #a5b4fc 46%,
+    #7dd3fc 62%,
+    #c4b5fd 80%,
+    #dbeafe 100%
   );
   background-size: 280% 280%;
   animation: robux-holo-gradient 5.5s ease-in-out infinite;
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.82),
-    0 0 16px rgba(250, 204, 21, 0.42),
-    0 0 22px rgba(56, 189, 248, 0.28),
+    0 0 0 1px rgba(15, 23, 42, 0.78),
+    0 0 18px rgba(59, 130, 246, 0.38),
+    0 0 26px rgba(139, 92, 246, 0.26),
     0 3px 10px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
   position: relative;
   overflow: hidden;
   z-index: 0;
@@ -1579,13 +1601,13 @@ a { color: #fff; text-decoration: none; }
 }
 .legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo.robux-banner-btn-holo:hover {
   transform: translateY(-2px) scale(1.02);
-  filter: saturate(1.12) brightness(1.05);
+  filter: saturate(1.1) brightness(1.05);
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.88),
-    0 0 22px rgba(250, 204, 21, 0.5),
-    0 0 28px rgba(56, 189, 248, 0.38),
+    0 0 0 1px rgba(15, 23, 42, 0.88),
+    0 0 24px rgba(56, 189, 248, 0.45),
+    0 0 32px rgba(139, 92, 246, 0.32),
     0 6px 16px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96);
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
   color: #070d18;
 }
 .legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo.robux-banner-btn-holo:active {
@@ -1601,17 +1623,17 @@ a { color: #fff; text-decoration: none; }
 @keyframes robux-party-glow {
   0%, 100% {
     box-shadow:
-      0 0 26px rgba(250, 204, 21, 0.38),
-      0 0 46px rgba(56, 189, 248, 0.22),
-      0 5px 18px rgba(15, 23, 42, 0.45),
-      inset 0 2px 0 rgba(255, 255, 255, 0.32);
+      0 0 26px rgba(59, 130, 246, 0.36),
+      0 0 48px rgba(139, 92, 246, 0.2),
+      0 5px 18px rgba(15, 23, 42, 0.48),
+      inset 0 2px 0 rgba(255, 255, 255, 0.28);
   }
   50% {
     box-shadow:
-      0 0 40px rgba(56, 189, 248, 0.42),
-      0 0 52px rgba(253, 224, 71, 0.4),
-      0 8px 24px rgba(15, 23, 42, 0.48),
-      inset 0 2px 0 rgba(255, 255, 255, 0.42);
+      0 0 42px rgba(56, 189, 248, 0.42),
+      0 0 54px rgba(129, 140, 246, 0.34),
+      0 8px 24px rgba(15, 23, 42, 0.5),
+      inset 0 2px 0 rgba(255, 255, 255, 0.38);
   }
 }
 

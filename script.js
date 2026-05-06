@@ -57,11 +57,11 @@ const FALSE_REGEX = /^(no|false|0|off|n)$/i;
 const giveawayItems = new Set();
 const bannerVisibility = { anaconda: false, firework: false, legendary: true, humvee: true, robux: true };
 const HUMVEE_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/Fkhg8bTK/Screenshot-2026-05-05-003408-removebg-preview.png";
-const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/PGcDfLJX/Screenshot-2026-05-06-at-02-00-53-removebg-preview.png";
+const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
 const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh";
 const HUMVEE_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv";
 
-/** Sections that show the gold Robux giveaway strip (same layout as Humvee). */
+/** Sections that show the Robux giveaway strip (same layout as Humvee). */
 const ROBUX_GIVEAWAY_SECTION_TITLES = new Set(["Common / Uncommon", "Rare", "Epic", "Omega", "Misc"]);
 const sectionContentEmbeds = new Map();
 const CONTENT_SECTIONS = [
