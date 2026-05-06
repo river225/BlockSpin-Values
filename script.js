@@ -1092,8 +1092,11 @@ function fetchHumveeGiveawayEntryCount() {
     })
     .then(function (data) {
       var n = Number(data && data.entries);
-      if (!Number.isFinite(n)) return;
       var els = document.querySelectorAll(".humvee-entry-count");
+      if (!Number.isFinite(n) || n < 1) {
+        els.forEach(function (el) { el.textContent = "—"; });
+        return;
+      }
       els.forEach(function (el) { el.textContent = n.toLocaleString("en-US"); });
     })
     .catch(function () {
