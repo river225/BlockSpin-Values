@@ -1053,16 +1053,7 @@ function renderVehiclesSectionWithBanner(items) {
       <div class="cards">
         ${items.map(createCard).join("")}
       </div>
-      <div class="legendary-banner giveaway-banner--humvee" id="vehicles-humvee-giveaway-banner" style="display: none;">
-        <div class="humvee-banner-media">
-          <img src="${escapeAttr(HUMVEE_GIVEAWAY_IMAGE_URL)}" alt="Humvee" class="humvee-banner-image" loading="lazy" decoding="async" />
-        </div>
-        <p class="legendary-banner-text humvee-banner-copy"><span class="humvee-banner-headline">We’re hosting a <strong>Humvee giveaway</strong> in our Discord server</span><span class="humvee-banner-sub"> — join now for a chance to win!</span></p>
-        <div class="legendary-banner-right">
-          <a href="https://discord.gg/nKKkXyqCsv" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo">Enter Giveaway</a>
-          <p class="legendary-banner-members humvee-banner-entered-note">300+ People have already entered</p>
-        </div>
-      </div>
+      ${buildHumveeGiveawayBannerHtml("vehicles-humvee-giveaway-banner")}
     </section>
   `;
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -1898,6 +1889,42 @@ function slugify(str) {
   return str.toLowerCase().replace(/\s+/g, "-");
 }
 
+function buildHumveeGiveawayBannerHtml(bannerId) {
+  const img = escapeAttr(HUMVEE_GIVEAWAY_IMAGE_URL);
+  const id = escapeAttr(bannerId);
+  return `
+      <div class="legendary-banner giveaway-banner--humvee" id="${id}" style="display: none;">
+        <div class="humvee-banner-shoutout-layer" aria-hidden="true">
+          <span class="humvee-banner-shoutout-floater">Shoutout to Midas for hosting the giveaway</span>
+        </div>
+        <div class="humvee-banner-media">
+          <img src="${img}" alt="Humvee" class="humvee-banner-image" loading="lazy" decoding="async" />
+        </div>
+        <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
+          <span class="humvee-banner-title">Humvee Giveaway!</span>
+          <span class="humvee-banner-tagline">Join our discord server to enter</span>
+        </p>
+        <div class="legendary-banner-right humvee-banner-actions">
+          <a href="https://discord.gg/nKKkXyqCsv" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo">Enter Giveaway</a>
+          <p class="legendary-banner-members humvee-banner-entered-note">300+ People have already entered</p>
+        </div>
+      </div>`;
+}
+
+function initHumveeShoutoutAnimations() {
+  if (typeof window !== "undefined" && window.__humveeShoutoutInit) return;
+  if (typeof window !== "undefined") window.__humveeShoutoutInit = true;
+  function kickHumveeShoutouts() {
+    document.querySelectorAll(".humvee-banner-shoutout-floater").forEach(function (el) {
+      el.classList.remove("humvee-shoutout-run");
+      void el.offsetWidth;
+      el.classList.add("humvee-shoutout-run");
+    });
+  }
+  setInterval(kickHumveeShoutouts, 60000);
+  setTimeout(kickHumveeShoutouts, 3500);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   console.log('DOM loaded, initializing...');
   initAnalytics();
@@ -1917,6 +1944,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!sectionsContainer || !progressBar || !progressText) {
     return;
+  }
+
+  var homeHumveeWrap = document.querySelector(".home-humvee-banner-wrap");
+  if (homeHumveeWrap) {
+    homeHumveeWrap.innerHTML = buildHumveeGiveawayBannerHtml("home-humvee-giveaway-banner");
   }
 
   initSectionsNav();
@@ -1960,6 +1992,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderSection(section, items);
   });
   applyExternalBannerVisibility();
+  initHumveeShoutoutAnimations();
   renderSectionContentEmbeds();
 
   let initialSection = "Home";
