@@ -986,32 +986,32 @@ a { color: #fff; text-decoration: none; }
   color: #291506;
 }
 
-/* Vehicles - Humvee giveaway banner (compact strip + holo CTA + party energy) */
+/* Vehicles + value strips — Anaconda giveaway (red theme + confetti) */
 .legendary-banner.giveaway-banner--humvee {
   padding: 7px 14px 7px 10px;
   margin-top: 18px;
-  border-color: rgba(255, 255, 255, 0.55);
+  border-color: rgba(255, 210, 210, 0.55);
   box-shadow:
-    0 0 32px rgba(255, 94, 188, 0.55),
-    0 0 52px rgba(56, 189, 248, 0.38),
-    0 6px 22px rgba(236, 72, 153, 0.42),
-    inset 0 2px 0 rgba(255, 255, 255, 0.35);
+    0 0 32px rgba(220, 53, 69, 0.55),
+    0 0 52px rgba(185, 28, 28, 0.38),
+    0 6px 22px rgba(127, 29, 29, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.28);
   background:
-    radial-gradient(ellipse 100% 90% at 12% 20%, rgba(255, 255, 255, 0.45) 0%, transparent 46%),
-    radial-gradient(ellipse 80% 70% at 88% 75%, rgba(255, 230, 120, 0.5) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 90% at 12% 20%, rgba(255, 255, 255, 0.35) 0%, transparent 46%),
+    radial-gradient(ellipse 80% 70% at 88% 75%, rgba(255, 220, 120, 0.35) 0%, transparent 55%),
     linear-gradient(
       128deg,
-      #ff2d8b 0%,
-      #ff7a3d 20%,
-      #ffe14a 40%,
-      #d946ff 60%,
-      #22d3ee 80%,
-      #ff5c9a 100%
+      #450a0a 0%,
+      #7f1d1d 18%,
+      #b91c1c 36%,
+      #dc2626 52%,
+      #991b1b 72%,
+      #450a0a 100%
     );
   background-size: 100% 100%, 100% 100%, 300% 300%;
   animation:
     giveaway-banner-shine 8.5s ease-in-out infinite,
-    humvee-party-glow 4.5s ease-in-out infinite;
+    anaconda-party-glow 4.5s ease-in-out infinite;
   gap: 10px 14px;
   overflow: hidden;
   display: grid;
@@ -1022,18 +1022,19 @@ a { color: #fff; text-decoration: none; }
   border-radius: 14px;
   filter: saturate(1.12);
 }
-/* Swirling color + confetti specks (replaces default gold stripe ::before) */
-.legendary-banner.giveaway-banner--humvee::before {
+.legendary-banner.giveaway-banner--humvee::before,
+.legendary-banner.giveaway-banner--robux::before {
   content: "";
   position: absolute;
   inset: -70%;
   background:
-    conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255, 255, 255, 0.22) 55deg, transparent 110deg, rgba(255, 210, 255, 0.2) 180deg, transparent 235deg, rgba(160, 240, 255, 0.18) 290deg, transparent 360deg),
-    radial-gradient(circle at 18% 38%, rgba(255, 255, 255, 0.85) 0, rgba(255, 255, 255, 0.85) 1px, transparent 2px),
-    radial-gradient(circle at 72% 62%, rgba(255, 255, 255, 0.65) 0, rgba(255, 255, 255, 0.65) 1px, transparent 2px),
-    radial-gradient(circle at 55% 22%, rgba(255, 255, 160, 0.75) 0, rgba(255, 255, 160, 0.75) 1px, transparent 2px),
-    radial-gradient(circle at 40% 78%, rgba(255, 200, 255, 0.7) 0, rgba(255, 200, 255, 0.7) 1px, transparent 2px);
-  background-size: auto, 140px 140px, 180px 170px, 160px 160px, 190px 175px;
+    conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255, 255, 255, 0.2) 55deg, transparent 110deg, rgba(255, 200, 200, 0.22) 180deg, transparent 235deg, rgba(255, 230, 150, 0.18) 290deg, transparent 360deg),
+    radial-gradient(circle at 18% 38%, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 1px, transparent 2px),
+    radial-gradient(circle at 72% 62%, rgba(255, 220, 220, 0.75) 0, rgba(255, 220, 220, 0.75) 1px, transparent 2px),
+    radial-gradient(circle at 55% 22%, rgba(255, 240, 160, 0.85) 0, rgba(255, 240, 160, 0.85) 1px, transparent 2px),
+    radial-gradient(circle at 40% 78%, rgba(255, 180, 180, 0.8) 0, rgba(255, 180, 180, 0.8) 1px, transparent 2px),
+    radial-gradient(circle at 82% 28%, rgba(255, 255, 255, 0.7) 0, rgba(255, 255, 255, 0.7) 1px, transparent 2px);
+  background-size: auto, 140px 140px, 180px 170px, 160px 160px, 190px 175px, 150px 150px;
   animation: humvee-party-swirl 16s linear infinite, humvee-confetti-drift 9s ease-in-out infinite;
   transform-origin: 50% 50%;
   pointer-events: none;
@@ -1041,7 +1042,8 @@ a { color: #fff; text-decoration: none; }
   border-radius: inherit;
   opacity: 0.95;
 }
-.legendary-banner.giveaway-banner--humvee .humvee-banner-shoutout-layer {
+.legendary-banner.giveaway-banner--humvee .humvee-banner-shoutout-layer,
+.legendary-banner.giveaway-banner--robux .humvee-banner-shoutout-layer {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -1049,32 +1051,46 @@ a { color: #fff; text-decoration: none; }
   pointer-events: none;
   border-radius: inherit;
 }
-.legendary-banner.giveaway-banner--humvee .humvee-banner-shoutout-floater {
+.legendary-banner.giveaway-banner--humvee .humvee-banner-shoutout-floater,
+.legendary-banner.giveaway-banner--robux .humvee-banner-shoutout-floater {
   position: absolute;
   top: 42%;
   left: -30%;
   transform: translate(-20%, -50%);
   white-space: nowrap;
   font-family: "Nunito Sans", "Segoe UI", sans-serif;
-  font-size: clamp(0.48rem, 0.55vw + 0.28rem, 0.58rem);
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-size: clamp(0.52rem, 0.6vw + 0.3rem, 0.68rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 245, 200, 0.55);
   text-shadow:
     0 0 14px rgba(0, 0, 0, 0.65),
-    0 0 22px rgba(255, 105, 180, 0.35);
+    0 0 22px rgba(220, 53, 69, 0.45);
   opacity: 0;
   will-change: transform, opacity, left;
 }
-.legendary-banner.giveaway-banner--humvee .humvee-banner-shoutout-floater.humvee-shoutout-run {
+.legendary-banner.giveaway-banner--humvee .anaconda-floater-delay-1,
+.legendary-banner.giveaway-banner--robux .anaconda-floater-delay-1 {
+  top: 58%;
+  font-size: clamp(0.46rem, 0.52vw + 0.26rem, 0.6rem);
+}
+.legendary-banner.giveaway-banner--humvee .anaconda-floater-delay-2,
+.legendary-banner.giveaway-banner--robux .anaconda-floater-delay-2 {
+  top: 28%;
+  font-size: clamp(0.44rem, 0.5vw + 0.24rem, 0.56rem);
+}
+.legendary-banner.giveaway-banner--humvee .humvee-banner-shoutout-floater.humvee-shoutout-run,
+.legendary-banner.giveaway-banner--robux .humvee-banner-shoutout-floater.humvee-shoutout-run {
   animation: humvee-shoutout-fly 14s linear forwards;
 }
-.legendary-banner.giveaway-banner--humvee > :not(.humvee-banner-shoutout-layer) {
+.legendary-banner.giveaway-banner--humvee > :not(.humvee-banner-shoutout-layer),
+.legendary-banner.giveaway-banner--robux > :not(.humvee-banner-shoutout-layer) {
   position: relative;
   z-index: 2;
 }
-.legendary-banner.giveaway-banner--humvee::after {
+.legendary-banner.giveaway-banner--humvee::after,
+.legendary-banner.giveaway-banner--robux::after {
   content: "";
   position: absolute;
   top: -38%;
@@ -1102,7 +1118,8 @@ a { color: #fff; text-decoration: none; }
   text-align: center;
   gap: 0.28rem;
 }
-.legendary-banner.giveaway-banner--humvee .humvee-banner-title {
+.legendary-banner.giveaway-banner--humvee .humvee-banner-title,
+.legendary-banner.giveaway-banner--robux .humvee-banner-title {
   font-family: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
   font-size: clamp(2rem, 4vw + 1rem, 3.15rem);
   font-weight: 400;
@@ -1111,14 +1128,15 @@ a { color: #fff; text-decoration: none; }
   text-align: center;
   color: #fff;
   text-shadow:
-    0 0 28px rgba(255, 240, 160, 0.65),
-    0 0 18px rgba(255, 105, 180, 0.55),
+    0 0 28px rgba(255, 200, 200, 0.75),
+    0 0 18px rgba(220, 53, 69, 0.65),
     2px 2px 0 #000,
     -2px 2px 0 #000,
     2px -2px 0 #000,
     -2px -2px 0 #000;
 }
-.legendary-banner.giveaway-banner--humvee .humvee-banner-tagline {
+.legendary-banner.giveaway-banner--humvee .humvee-banner-tagline,
+.legendary-banner.giveaway-banner--robux .humvee-banner-tagline {
   font-family: "Nunito Sans", "Segoe UI", sans-serif;
   font-size: clamp(0.92rem, 1.2vw + 0.68rem, 1.18rem);
   font-weight: 700;
@@ -1139,37 +1157,53 @@ a { color: #fff; text-decoration: none; }
   align-self: center;
   min-width: 0;
 }
-.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.humvee-banner-btn-holo {
+.legendary-banner.giveaway-banner--humvee .humvee-banner-ends-soon,
+.legendary-banner.giveaway-banner--robux .humvee-banner-ends-soon {
+  color: #fff3bf;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: anaconda-ends-soon-pulse 1.35s ease-in-out infinite;
+  text-shadow:
+    0 0 16px rgba(255, 220, 100, 0.85),
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000;
+}
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.humvee-banner-btn-holo,
+.legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo,
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.anaconda-banner-btn,
+.legendary-banner.giveaway-banner--robux .legendary-banner-btn.anaconda-banner-btn {
   padding: 10px 18px;
   border-radius: 11px;
   font-weight: 800;
   letter-spacing: 0.06em;
-  color: #16071f;
+  color: #5c1a1a;
   font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   background: linear-gradient(
     120deg,
-    #cffafe 0%,
-    #e9d5ff 18%,
-    #fbcfe8 36%,
-    #a5f3fc 54%,
-    #ddd6fe 72%,
-    #fbcfe8 88%,
-    #cffafe 100%
+    #fff 0%,
+    #ffe8e8 22%,
+    #ffd0d0 45%,
+    #fff5f5 68%,
+    #ffd0d0 100%
   );
-  background-size: 280% 280%;
+  background-size: 220% 220%;
   animation: humvee-holo-gradient 5.5s ease-in-out infinite;
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.85),
-    0 0 14px rgba(236, 72, 153, 0.35),
-    0 0 22px rgba(34, 211, 238, 0.28),
+    0 0 14px rgba(220, 53, 69, 0.45),
+    0 0 22px rgba(185, 28, 28, 0.32),
     0 3px 10px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.85);
   position: relative;
   overflow: hidden;
   z-index: 0;
 }
-.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.humvee-banner-btn-holo::before {
+.legendary-banner.giveaway-banner--humvee .legendary-banner-btn.humvee-banner-btn-holo::before,
+.legendary-banner.giveaway-banner--robux .legendary-banner-btn.humvee-banner-btn-holo::before {
   content: "";
   position: absolute;
   inset: -40% -30%;
@@ -1384,34 +1418,32 @@ a { color: #fff; text-decoration: none; }
   }
 }
 
-/* Robux giveaway strip — same structure as Humvee; blue + cyan with violet accents */
+/* Value-section strips — Anaconda giveaway (red theme, layout overrides) */
 .legendary-banner.giveaway-banner--robux {
   padding: 7px 14px 7px 8px;
   margin-top: 18px;
-  border-color: rgba(191, 219, 254, 0.45);
+  border-color: rgba(255, 210, 210, 0.55);
   box-shadow:
-    0 0 28px rgba(59, 130, 246, 0.38),
-    0 0 52px rgba(139, 92, 246, 0.22),
-    0 6px 22px rgba(15, 23, 42, 0.58),
+    0 0 32px rgba(220, 53, 69, 0.55),
+    0 0 52px rgba(185, 28, 28, 0.38),
+    0 6px 22px rgba(127, 29, 29, 0.45),
     inset 0 2px 0 rgba(255, 255, 255, 0.28);
   background:
-    radial-gradient(ellipse 100% 92% at 12% 24%, rgba(255, 255, 255, 0.38) 0%, transparent 46%),
-    radial-gradient(ellipse 78% 70% at 88% 72%, rgba(167, 139, 250, 0.28) 0%, transparent 54%),
+    radial-gradient(ellipse 100% 90% at 12% 20%, rgba(255, 255, 255, 0.35) 0%, transparent 46%),
+    radial-gradient(ellipse 80% 70% at 88% 75%, rgba(255, 220, 120, 0.35) 0%, transparent 55%),
     linear-gradient(
-      122deg,
-      #0b1328 0%,
-      #1e3a8a 16%,
-      #2563eb 32%,
-      #6366f1 46%,
-      #38bdf8 62%,
-      #7c3aed 78%,
-      #0ea5e9 92%,
-      #172554 100%
+      128deg,
+      #450a0a 0%,
+      #7f1d1d 18%,
+      #b91c1c 36%,
+      #dc2626 52%,
+      #991b1b 72%,
+      #450a0a 100%
     );
-  background-size: 100% 100%, 100% 100%, 320% 320%;
+  background-size: 100% 100%, 100% 100%, 300% 300%;
   animation:
     giveaway-banner-shine 8.5s ease-in-out infinite,
-    robux-party-glow 4.8s ease-in-out infinite;
+    anaconda-party-glow 4.5s ease-in-out infinite;
   gap: 10px 12px;
   overflow: hidden;
   display: grid;
@@ -1436,27 +1468,12 @@ a { color: #fff; text-decoration: none; }
   height: auto;
   object-fit: contain;
   transform: translate(2px, -1px);
-  filter: drop-shadow(0 6px 14px rgba(15, 23, 42, 0.45)) drop-shadow(0 0 20px rgba(56, 189, 248, 0.22));
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 20px rgba(220, 53, 69, 0.35));
 }
-.legendary-banner.giveaway-banner--robux::before {
-  content: "";
-  position: absolute;
-  inset: -70%;
-  background:
-    conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(129, 140, 248, 0.2) 52deg, transparent 108deg, rgba(56, 189, 248, 0.18) 178deg, transparent 232deg, rgba(167, 139, 250, 0.16) 292deg, transparent 360deg),
-    radial-gradient(circle at 22% 34%, rgba(255, 255, 255, 0.82) 0, rgba(255, 255, 255, 0.82) 1px, transparent 2px),
-    radial-gradient(circle at 72% 56%, rgba(196, 181, 253, 0.72) 0, rgba(196, 181, 253, 0.72) 1px, transparent 2px),
-    radial-gradient(circle at 50% 22%, rgba(165, 243, 252, 0.62) 0, rgba(165, 243, 252, 0.62) 1px, transparent 2px),
-    radial-gradient(circle at 44% 82%, rgba(129, 140, 248, 0.55) 0, rgba(129, 140, 248, 0.55) 1px, transparent 2px);
-  background-size: auto, 138px 138px, 172px 162px, 152px 152px, 182px 168px;
-  animation: humvee-party-swirl 17s linear infinite, humvee-confetti-drift 9.5s ease-in-out infinite;
-  transform-origin: 50% 50%;
-  pointer-events: none;
-  z-index: 0;
-  border-radius: inherit;
-  opacity: 0.9;
+.legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-image {
+  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.42)) drop-shadow(0 0 22px rgba(220, 53, 69, 0.4));
 }
-.legendary-banner.giveaway-banner--robux > * {
+.legendary-banner.giveaway-banner--robux > :not(.humvee-banner-shoutout-layer) {
   position: relative;
   z-index: 2;
 }
@@ -1499,8 +1516,8 @@ a { color: #fff; text-decoration: none; }
   text-align: center;
   color: #fff;
   text-shadow:
-    0 0 22px rgba(56, 189, 248, 0.65),
-    0 0 20px rgba(167, 139, 250, 0.55),
+    0 0 28px rgba(255, 200, 200, 0.75),
+    0 0 18px rgba(220, 53, 69, 0.65),
     2px 2px 0 #000,
     -2px 2px 0 #000,
     2px -2px 0 #000,
@@ -1525,6 +1542,11 @@ a { color: #fff; text-decoration: none; }
   white-space: normal;
   margin: 0;
   align-self: center;
+  justify-self: center;
+  width: 100%;
+  max-width: 36rem;
+  text-align: center;
+  padding-inline: 4px;
   min-width: 0;
 }
 .legendary-banner.giveaway-banner--robux .humvee-banner-actions {
@@ -1656,6 +1678,34 @@ a { color: #fff; text-decoration: none; }
   }
   50% {
     background-position: 0 0, 25px -35px, 80px 55px, 15px 70px, -40px 35px;
+  }
+}
+
+@keyframes anaconda-party-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 28px rgba(220, 53, 69, 0.45),
+      0 0 48px rgba(185, 28, 28, 0.28),
+      0 5px 18px rgba(127, 29, 29, 0.35),
+      inset 0 2px 0 rgba(255, 255, 255, 0.28);
+  }
+  50% {
+    box-shadow:
+      0 0 42px rgba(239, 68, 68, 0.55),
+      0 0 56px rgba(255, 200, 100, 0.35),
+      0 8px 26px rgba(153, 27, 27, 0.48),
+      inset 0 2px 0 rgba(255, 255, 255, 0.38);
+  }
+}
+
+@keyframes anaconda-ends-soon-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.12);
   }
 }
 

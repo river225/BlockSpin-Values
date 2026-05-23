@@ -56,10 +56,13 @@ const TRUE_REGEX = /^(yes|true|1|on|y)$/i;
 const FALSE_REGEX = /^(no|false|0|off|n)$/i;
 const giveawayItems = new Set();
 const bannerVisibility = { anaconda: false, firework: false, legendary: true, humvee: true, robux: true };
-const HUMVEE_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/Fkhg8bTK/Screenshot-2026-05-05-003408-removebg-preview.png";
-const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
-const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh";
-const HUMVEE_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv";
+const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/QqD6BSd/j-Sn2mv-Y-1-removebg-preview.png";
+const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv";
+/** @deprecated aliases — humvee/robux strips now show the Anaconda giveaway */
+const HUMVEE_GIVEAWAY_IMAGE_URL = ANACONDA_GIVEAWAY_IMAGE_URL;
+const ROBUX_GIVEAWAY_IMAGE_URL = ANACONDA_GIVEAWAY_IMAGE_URL;
+const ROBUX_GIVEAWAY_DISCORD_URL = ANACONDA_GIVEAWAY_DISCORD_URL;
+const HUMVEE_GIVEAWAY_DISCORD_URL = ANACONDA_GIVEAWAY_DISCORD_URL;
 
 /** Sections that show the Robux giveaway strip (same layout as Humvee). */
 const ROBUX_GIVEAWAY_SECTION_TITLES = new Set(["Common / Uncommon", "Rare", "Epic", "Omega", "Misc"]);
@@ -74,7 +77,15 @@ const CONTENT_SECTIONS = [
   "Vehicles"
 ];
 
+function isBsvTestEnvironment() {
+  if (typeof document === "undefined") return false;
+  if (document.documentElement && document.documentElement.dataset.bsvEnv === "test") return true;
+  const meta = document.querySelector('meta[name="bsv-env"][content="test"]');
+  return Boolean(meta);
+}
+
 function initAnalytics() {
+  if (isBsvTestEnvironment()) return;
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
   if (typeof window.gtag === "function") return;
   window.dataLayer = window.dataLayer || [];
@@ -1915,20 +1926,22 @@ function buildHumveeGiveawayBannerHtml(bannerId) {
   const img = escapeAttr(HUMVEE_GIVEAWAY_IMAGE_URL);
   const id = escapeAttr(bannerId);
   return `
-      <div class="legendary-banner giveaway-banner--humvee" id="${id}" style="display: none;">
-        <div class="humvee-banner-shoutout-layer" aria-hidden="true">
-          <span class="humvee-banner-shoutout-floater">Hosted by Midas</span>
+      <div class="legendary-banner giveaway-banner--humvee giveaway-banner--anaconda-strip" id="${id}" style="display: none;">
+        <div class="humvee-banner-shoutout-layer anaconda-confetti-layer" aria-hidden="true">
+          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater">Ends Soon!!</span>
+          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater anaconda-floater-delay-1">Ends Soon!!</span>
+          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater anaconda-floater-delay-2">Ends Soon!!</span>
         </div>
         <div class="humvee-banner-media">
-          <img src="${img}" alt="Humvee" class="humvee-banner-image" loading="lazy" decoding="async" />
+          <img src="${img}" alt="Anaconda giveaway prize" class="humvee-banner-image" loading="lazy" decoding="async" />
         </div>
         <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
-          <span class="humvee-banner-title">Humvee Giveaway!</span>
-          <span class="humvee-banner-tagline">Join our discord server to enter</span>
+          <span class="humvee-banner-title">Anaconda Giveaway</span>
+          <span class="humvee-banner-tagline humvee-banner-ends-soon">Ends Soon!!</span>
         </p>
         <div class="legendary-banner-right humvee-banner-actions">
-          <a href="${escapeAttr(HUMVEE_GIVEAWAY_DISCORD_URL)}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo">Enter Giveaway</a>
-          <p class="legendary-banner-members humvee-banner-entered-note">300+ People have already entered</p>
+          <a href="${escapeAttr(HUMVEE_GIVEAWAY_DISCORD_URL)}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo anaconda-banner-btn">Enter Giveaway</a>
+          <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
         </div>
       </div>`;
 }
@@ -1938,17 +1951,22 @@ function buildRobuxGiveawayBannerHtml(bannerId) {
   const id = escapeAttr(bannerId);
   const href = escapeAttr(ROBUX_GIVEAWAY_DISCORD_URL);
   return `
-      <div class="legendary-banner giveaway-banner--robux" id="${id}" style="display: none;">
+      <div class="legendary-banner giveaway-banner--robux giveaway-banner--anaconda-strip" id="${id}" style="display: none;">
+        <div class="humvee-banner-shoutout-layer anaconda-confetti-layer" aria-hidden="true">
+          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater">Ends Soon!!</span>
+          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater anaconda-floater-delay-1">Ends Soon!!</span>
+          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater anaconda-floater-delay-2">Ends Soon!!</span>
+        </div>
         <div class="humvee-banner-media">
-          <img src="${img}" alt="5,000 Robux" class="humvee-banner-image" loading="lazy" decoding="async" />
+          <img src="${img}" alt="Anaconda giveaway prize" class="humvee-banner-image" loading="lazy" decoding="async" />
         </div>
         <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
-          <span class="humvee-banner-title">5,000 Robux Giveaway!</span>
-          <span class="humvee-banner-tagline">Join our discord server to enter</span>
+          <span class="humvee-banner-title">Anaconda Giveaway</span>
+          <span class="humvee-banner-tagline humvee-banner-ends-soon">Ends Soon!!</span>
         </p>
         <div class="legendary-banner-right humvee-banner-actions">
-          <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo robux-banner-btn-holo">Enter Giveaway</a>
-          <p class="legendary-banner-members humvee-banner-entered-note">Giveaway in our Discord server</p>
+          <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo anaconda-banner-btn">Enter Giveaway</a>
+          <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
         </div>
       </div>`;
 }
@@ -2224,16 +2242,18 @@ function setupMobileHamburgerMenu() {
   if (sectionsNav) {
     var navClone = sectionsNav.cloneNode(true);
     mobileMenu.appendChild(navClone);
-    var drawerPromo = document.createElement('div');
-    drawerPromo.className = 'mobile-menu-drawer-promo';
-    drawerPromo.innerHTML =
-      '<p class="mobile-menu-sponsored-label">Sponsored</p>' +
-      '<div class="mobile-menu-shark-promo">' +
-      '<a href="https://attackshark.com/?ref=RIVER" target="_blank" rel="noopener noreferrer sponsored" class="mobile-menu-shark-promo-link">' +
-      '<p class="mobile-menu-shark-promo-text">CLICK HERE TO GET THE BEST GAMING MICE!</p>' +
-      '<img src="https://i.ibb.co/0pM24HZ9/ph-11134207-7rasi-m9tr2cfmioxw1c.jpg" alt="Attack Shark gaming mice" class="mobile-menu-shark-promo-img" loading="lazy" />' +
-      '</a></div>';
-    mobileMenu.appendChild(drawerPromo);
+    if (!isBsvTestEnvironment()) {
+      var drawerPromo = document.createElement('div');
+      drawerPromo.className = 'mobile-menu-drawer-promo';
+      drawerPromo.innerHTML =
+        '<p class="mobile-menu-sponsored-label">Sponsored</p>' +
+        '<div class="mobile-menu-shark-promo">' +
+        '<a href="https://attackshark.com/?ref=RIVER" target="_blank" rel="noopener noreferrer sponsored" class="mobile-menu-shark-promo-link">' +
+        '<p class="mobile-menu-shark-promo-text">CLICK HERE TO GET THE BEST GAMING MICE!</p>' +
+        '<img src="https://i.ibb.co/0pM24HZ9/ph-11134207-7rasi-m9tr2cfmioxw1c.jpg" alt="Attack Shark gaming mice" class="mobile-menu-shark-promo-img" loading="lazy" />' +
+        '</a></div>';
+      mobileMenu.appendChild(drawerPromo);
+    }
     navClone.querySelectorAll('button').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var sectionName = (btn.textContent || '').trim();
