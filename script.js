@@ -1922,41 +1922,13 @@ function slugify(str) {
   return str.toLowerCase().replace(/\s+/g, "-");
 }
 
-function buildHumveeGiveawayBannerHtml(bannerId) {
-  const img = escapeAttr(HUMVEE_GIVEAWAY_IMAGE_URL);
+function buildAnacondaStripGiveawayBannerHtml(bannerId, variantClass) {
+  const img = escapeAttr(ANACONDA_GIVEAWAY_IMAGE_URL);
   const id = escapeAttr(bannerId);
+  const href = escapeAttr(ANACONDA_GIVEAWAY_DISCORD_URL);
+  const variant = escapeAttr(variantClass);
   return `
-      <div class="legendary-banner giveaway-banner--humvee giveaway-banner--anaconda-strip" id="${id}" style="display: none;">
-        <div class="humvee-banner-shoutout-layer anaconda-confetti-layer" aria-hidden="true">
-          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater">Ends Soon!!</span>
-          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater anaconda-floater-delay-1">Ends Soon!!</span>
-          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater anaconda-floater-delay-2">Ends Soon!!</span>
-        </div>
-        <div class="humvee-banner-media">
-          <img src="${img}" alt="Anaconda giveaway prize" class="humvee-banner-image" loading="lazy" decoding="async" />
-        </div>
-        <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
-          <span class="humvee-banner-title">Anaconda Giveaway</span>
-          <span class="humvee-banner-tagline humvee-banner-ends-soon">Ends Soon!!</span>
-        </p>
-        <div class="legendary-banner-right humvee-banner-actions">
-          <a href="${escapeAttr(HUMVEE_GIVEAWAY_DISCORD_URL)}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo anaconda-banner-btn">Enter Giveaway</a>
-          <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
-        </div>
-      </div>`;
-}
-
-function buildRobuxGiveawayBannerHtml(bannerId) {
-  const img = escapeAttr(ROBUX_GIVEAWAY_IMAGE_URL);
-  const id = escapeAttr(bannerId);
-  const href = escapeAttr(ROBUX_GIVEAWAY_DISCORD_URL);
-  return `
-      <div class="legendary-banner giveaway-banner--robux giveaway-banner--anaconda-strip" id="${id}" style="display: none;">
-        <div class="humvee-banner-shoutout-layer anaconda-confetti-layer" aria-hidden="true">
-          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater">Ends Soon!!</span>
-          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater anaconda-floater-delay-1">Ends Soon!!</span>
-          <span class="humvee-banner-shoutout-floater anaconda-confetti-floater anaconda-floater-delay-2">Ends Soon!!</span>
-        </div>
+      <div class="legendary-banner ${variant} giveaway-banner--anaconda-strip" id="${id}" style="display: none;">
         <div class="humvee-banner-media">
           <img src="${img}" alt="Anaconda giveaway prize" class="humvee-banner-image" loading="lazy" decoding="async" />
         </div>
@@ -1969,6 +1941,14 @@ function buildRobuxGiveawayBannerHtml(bannerId) {
           <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
         </div>
       </div>`;
+}
+
+function buildHumveeGiveawayBannerHtml(bannerId) {
+  return buildAnacondaStripGiveawayBannerHtml(bannerId, "giveaway-banner--humvee");
+}
+
+function buildRobuxGiveawayBannerHtml(bannerId) {
+  return buildAnacondaStripGiveawayBannerHtml(bannerId, "giveaway-banner--robux");
 }
 
 function initHumveeShoutoutAnimations() {
