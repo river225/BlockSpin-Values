@@ -1929,16 +1929,21 @@ function buildAnacondaStripGiveawayBannerHtml(bannerId, variantClass) {
   const variant = escapeAttr(variantClass);
   return `
       <div class="legendary-banner ${variant} giveaway-banner--anaconda-strip" id="${id}" style="display: none;">
-        <div class="humvee-banner-media">
-          <img src="${img}" alt="Anaconda giveaway prize" class="humvee-banner-image" loading="lazy" decoding="async" />
+        <div class="anaconda-banner-side anaconda-banner-side--left" aria-hidden="true">
+          <img src="${img}" alt="" class="anaconda-banner-side-image" loading="lazy" decoding="async" />
         </div>
-        <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
-          <span class="humvee-banner-title">Anaconda Giveaway</span>
-          <span class="humvee-banner-tagline humvee-banner-ends-soon">Ends Soon!!</span>
-        </p>
-        <div class="legendary-banner-right humvee-banner-actions">
-          <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo anaconda-banner-btn">Enter Giveaway</a>
-          <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
+        <div class="anaconda-banner-center">
+          <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
+            <span class="humvee-banner-title">Anaconda Giveaway</span>
+            <span class="humvee-banner-tagline humvee-banner-ends-soon">Ends Soon!!</span>
+          </p>
+          <div class="legendary-banner-right humvee-banner-actions">
+            <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo anaconda-banner-btn">Enter Giveaway</a>
+            <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
+          </div>
+        </div>
+        <div class="anaconda-banner-side anaconda-banner-side--right" aria-hidden="true">
+          <img src="${img}" alt="" class="anaconda-banner-side-image" loading="lazy" decoding="async" />
         </div>
       </div>`;
 }
