@@ -1929,10 +1929,10 @@ function buildAnacondaStripGiveawayBannerHtml(bannerId, variantClass) {
   const variant = escapeAttr(variantClass);
   return `
       <div class="legendary-banner ${variant} giveaway-banner--anaconda-strip" id="${id}" style="display: none;">
-        <div class="anaconda-banner-side anaconda-banner-side--left" aria-hidden="true">
-          <img src="${img}" alt="" class="anaconda-banner-side-image" loading="lazy" decoding="async" />
+        <div class="anaconda-banner-figure">
+          <img src="${img}" alt="Anaconda giveaway prize" class="anaconda-banner-prize-image" loading="lazy" decoding="async" />
         </div>
-        <div class="anaconda-banner-center">
+        <div class="anaconda-banner-body">
           <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
             <span class="humvee-banner-title">Anaconda Giveaway</span>
             <span class="humvee-banner-tagline humvee-banner-ends-soon">Ends Soon!!</span>
@@ -1941,9 +1941,6 @@ function buildAnacondaStripGiveawayBannerHtml(bannerId, variantClass) {
             <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo anaconda-banner-btn">Enter Giveaway</a>
             <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
           </div>
-        </div>
-        <div class="anaconda-banner-side anaconda-banner-side--right" aria-hidden="true">
-          <img src="${img}" alt="" class="anaconda-banner-side-image" loading="lazy" decoding="async" />
         </div>
       </div>`;
 }

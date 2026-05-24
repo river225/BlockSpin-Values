@@ -1319,11 +1319,8 @@ a { color: #fff; text-decoration: none; }
     opacity: 0 !important;
   }
   .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-image,
-  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side-image {
+  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-prize-image {
     animation: none !important;
-  }
-  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side--right .anaconda-banner-side-image {
-    transform: scaleX(-1) !important;
   }
 }
 @media screen and (max-width: 860px) {
@@ -1478,18 +1475,18 @@ a { color: #fff; text-decoration: none; }
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 20px rgba(220, 53, 69, 0.35));
 }
 .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-image,
-.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side-image {
-  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.42)) drop-shadow(0 0 22px rgba(220, 53, 69, 0.4));
+.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-prize-image {
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 24px rgba(220, 53, 69, 0.45));
 }
 
-/* Anaconda strip — big side images, centered text + CTA */
+/* Anaconda strip — big gun top-left, centered text + CTA to the right */
 .legendary-banner.giveaway-banner--anaconda-strip {
-  grid-template-columns: minmax(110px, 1fr) minmax(220px, 2.2fr) minmax(110px, 1fr) !important;
-  grid-template-areas: "side-left center side-right" !important;
-  justify-items: center;
+  grid-template-columns: minmax(150px, auto) minmax(0, 1fr) !important;
+  grid-template-areas: "figure body" !important;
+  justify-items: stretch;
   align-items: start;
-  padding: 6px 10px 8px !important;
-  gap: 6px 10px !important;
+  padding: 6px 14px 8px 8px !important;
+  gap: 4px 12px !important;
   border: 2px solid rgba(255, 235, 235, 0.78) !important;
   box-shadow:
     0 0 0 1px rgba(255, 120, 120, 0.4),
@@ -1501,42 +1498,34 @@ a { color: #fff; text-decoration: none; }
   filter: saturate(1.18) brightness(1.03);
 }
 .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-shoutout-layer,
-.legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-media {
+.legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-media,
+.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side {
   display: none !important;
 }
-.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side {
+.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-figure {
+  grid-area: figure;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
-  min-width: 0;
-  width: 100%;
-  max-width: 168px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: start;
+  justify-self: start;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
   pointer-events: none;
 }
-.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side--left {
-  grid-area: side-left;
-  justify-self: end;
-}
-.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side--right {
-  grid-area: side-right;
-  justify-self: start;
-}
-.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side-image {
-  width: min(148px, 100%);
+.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-prize-image {
+  width: min(210px, 32vw);
   max-width: 100%;
-  max-height: 108px;
+  max-height: 132px;
   height: auto;
   object-fit: contain;
+  object-position: top left;
   transform: none !important;
   animation: anaconda-prize-bob 2.8s ease-in-out infinite;
 }
-.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side--right .anaconda-banner-side-image {
-  transform: scaleX(-1) !important;
-  animation: anaconda-prize-bob-mirror 2.8s ease-in-out infinite;
-}
-.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-center {
-  grid-area: center;
+.legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-body {
+  grid-area: body;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1544,8 +1533,8 @@ a { color: #fff; text-decoration: none; }
   text-align: center;
   width: 100%;
   min-width: 0;
-  padding-top: 2px;
-  gap: 6px;
+  padding-top: 4px;
+  gap: 8px;
 }
 .legendary-banner.giveaway-banner--anaconda-strip .legendary-banner-text {
   justify-self: center !important;
@@ -1559,7 +1548,7 @@ a { color: #fff; text-decoration: none; }
 .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-copy--stack {
   align-items: center !important;
   justify-content: flex-start !important;
-  gap: 0.35rem !important;
+  gap: 0.4rem !important;
 }
 .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-title {
   font-size: clamp(1.55rem, 2.2vw + 0.65rem, 2.35rem) !important;
@@ -1604,16 +1593,13 @@ a { color: #fff; text-decoration: none; }
 }
 @media screen and (max-width: 860px) {
   .legendary-banner.giveaway-banner--anaconda-strip {
-    grid-template-columns: minmax(72px, 0.85fr) minmax(0, 2fr) minmax(72px, 0.85fr) !important;
-    grid-template-areas: "side-left center side-right" !important;
-    padding: 6px 8px 8px !important;
+    grid-template-columns: minmax(120px, auto) minmax(0, 1fr) !important;
+    padding: 6px 10px 8px 6px !important;
+    gap: 2px 10px !important;
   }
-  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side {
-    max-width: 112px;
-  }
-  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side-image {
-    width: min(104px, 100%);
-    max-height: 82px;
+  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-prize-image {
+    width: min(168px, 36vw);
+    max-height: 108px;
   }
   .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-title {
     font-size: clamp(1.35rem, 3.8vw + 0.55rem, 1.95rem) !important;
@@ -1621,21 +1607,22 @@ a { color: #fff; text-decoration: none; }
 }
 @media screen and (max-width: 520px) {
   .legendary-banner.giveaway-banner--anaconda-strip {
-    grid-template-columns: minmax(56px, 0.75fr) minmax(0, 2.5fr) minmax(56px, 0.75fr) !important;
-    gap: 4px 6px !important;
+    grid-template-columns: minmax(96px, auto) minmax(0, 1fr) !important;
+    gap: 0 8px !important;
   }
-  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side {
-    max-width: 88px;
-  }
-  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-side-image {
-    width: min(80px, 100%);
-    max-height: 68px;
+  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-prize-image {
+    width: min(128px, 38vw);
+    max-height: 88px;
   }
   .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-title {
     font-size: clamp(1.15rem, 5vw + 0.4rem, 1.65rem) !important;
   }
   .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-ends-soon {
     font-size: clamp(0.68rem, 2.2vw + 0.35rem, 0.82rem) !important;
+  }
+  .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-body {
+    padding-top: 2px;
+    gap: 6px;
   }
 }
 .legendary-banner.giveaway-banner--robux > :not(.humvee-banner-shoutout-layer) {
