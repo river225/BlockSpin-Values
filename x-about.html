@@ -129,7 +129,8 @@
             text-align: center;
         }
         #about-value-list-leads.about-team-members-grid,
-        #about-middleman-leads.about-team-members-grid {
+        #about-middleman-leads.about-team-members-grid,
+        #about-senior-middleman.about-team-members-grid {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -137,7 +138,8 @@
             gap: 14px 12px;
         }
         #about-value-list-leads .about-team-member-name,
-        #about-middleman-leads .about-team-member-name {
+        #about-middleman-leads .about-team-member-name,
+        #about-senior-middleman .about-team-member-name {
             width: 100%;
             text-align: center;
         }
@@ -430,8 +432,12 @@
                 <h4>Head Middleman</h4>
                 <div id="about-middleman-leads" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
             </div>
+            <div class="about-subsection about-subsection--lead">
+                <h4>Senior Middleman</h4>
+                <div id="about-senior-middleman" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
+            </div>
             <div class="about-subsection">
-                <h4>Middleman Team Members</h4>
+                <h4>Middleman</h4>
                 <div id="about-middleman-team" class="about-team-members-grid about-team-members-grid--loading">Loading…</div>
             </div>
             <div class="about-team-blurb about-team-blurb--purple">
@@ -506,11 +512,12 @@
       renderGrid(document.getElementById("about-value-list-leads"), data.valueListLeads);
       renderGrid(document.getElementById("about-value-list-team"), data.valueListTeam);
       renderGrid(document.getElementById("about-middleman-leads"), data.middlemanLeads);
+      renderGrid(document.getElementById("about-senior-middleman"), data.seniorMiddleman);
       renderGrid(document.getElementById("about-middleman-team"), data.middlemanTeam);
     })
     .catch(function (err) {
       console.error("about-team fetch failed:", err);
-      ["about-value-list-leads", "about-value-list-team", "about-middleman-leads", "about-middleman-team"].forEach(
+      ["about-value-list-leads", "about-value-list-team", "about-middleman-leads", "about-senior-middleman", "about-middleman-team"].forEach(
         function (id) {
           var el = document.getElementById(id);
           if (!el) return;
