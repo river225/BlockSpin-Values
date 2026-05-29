@@ -1422,32 +1422,32 @@ a { color: #fff; text-decoration: none; }
   }
 }
 
-/* Value-section strips — Anaconda giveaway (red theme, layout overrides) */
+/* Value-section strips — 5K Robux giveaway (blue / purple theme) */
 .legendary-banner.giveaway-banner--robux {
   padding: 7px 14px 7px 8px;
   margin-top: 18px;
-  border-color: rgba(255, 210, 210, 0.55);
+  border-color: rgba(191, 219, 254, 0.55);
   box-shadow:
-    0 0 32px rgba(220, 53, 69, 0.55),
-    0 0 52px rgba(185, 28, 28, 0.38),
-    0 6px 22px rgba(127, 29, 29, 0.45),
+    0 0 32px rgba(59, 130, 246, 0.45),
+    0 0 52px rgba(139, 92, 246, 0.28),
+    0 6px 22px rgba(15, 23, 42, 0.42),
     inset 0 2px 0 rgba(255, 255, 255, 0.28);
   background:
-    radial-gradient(ellipse 100% 90% at 12% 20%, rgba(255, 255, 255, 0.35) 0%, transparent 46%),
-    radial-gradient(ellipse 80% 70% at 88% 75%, rgba(255, 220, 120, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 90% at 12% 20%, rgba(255, 255, 255, 0.32) 0%, transparent 46%),
+    radial-gradient(ellipse 80% 70% at 88% 75%, rgba(167, 139, 250, 0.32) 0%, transparent 55%),
     linear-gradient(
       128deg,
-      #450a0a 0%,
-      #7f1d1d 18%,
-      #b91c1c 36%,
-      #dc2626 52%,
-      #991b1b 72%,
-      #450a0a 100%
+      #0c1228 0%,
+      #1e3a8a 18%,
+      #2563eb 36%,
+      #6366f1 52%,
+      #7c3aed 72%,
+      #0c1228 100%
     );
   background-size: 100% 100%, 100% 100%, 300% 300%;
   animation:
     giveaway-banner-shine 8.5s ease-in-out infinite,
-    anaconda-party-glow 4.5s ease-in-out infinite;
+    robux-party-glow 4.5s ease-in-out infinite;
   gap: 10px 12px;
   overflow: hidden;
   display: grid;
@@ -1472,7 +1472,96 @@ a { color: #fff; text-decoration: none; }
   height: auto;
   object-fit: contain;
   transform: translate(2px, -1px);
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 20px rgba(220, 53, 69, 0.35));
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 20px rgba(96, 165, 250, 0.4));
+}
+
+/* Rotating Anaconda / Robux carousel */
+.giveaway-strip-carousel {
+  margin-top: 18px;
+  width: 100%;
+}
+.home-humvee-banner-wrap .giveaway-strip-carousel {
+  margin-top: 0;
+}
+.giveaway-strip-carousel__viewport {
+  display: grid;
+  position: relative;
+}
+.giveaway-strip-carousel__slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.65s ease, visibility 0.65s ease;
+  pointer-events: none;
+  margin-top: 0 !important;
+}
+.giveaway-strip-carousel__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Robux strip — layout mirrors Anaconda strip */
+.legendary-banner.giveaway-banner--robux-strip {
+  grid-template-columns: minmax(150px, auto) minmax(0, 1fr) !important;
+  grid-template-areas: "figure body" !important;
+  justify-items: stretch;
+  align-items: start;
+  padding: 6px 14px 8px 20px !important;
+  gap: 4px 12px !important;
+  border: 2px solid rgba(191, 219, 254, 0.72) !important;
+  filter: saturate(1.12) brightness(1.02);
+  margin-left: auto;
+  margin-right: 0;
+  width: calc(100% - 18px);
+  max-width: 100%;
+}
+.legendary-banner.giveaway-banner--robux-strip .robux-banner-figure {
+  grid-area: figure;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: start;
+  justify-self: start;
+  margin: 0;
+  padding: 12px 0 0 16px;
+  line-height: 0;
+  pointer-events: none;
+}
+.legendary-banner.giveaway-banner--robux-strip .robux-banner-prize-image {
+  width: min(200px, 30vw);
+  max-width: 100%;
+  max-height: 128px;
+  height: auto;
+  object-fit: contain;
+  object-position: top left;
+  transform: translate(10px, 6px);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 22px rgba(96, 165, 250, 0.45));
+}
+.legendary-banner.giveaway-banner--robux-strip .robux-banner-body {
+  grid-area: body;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  width: 100%;
+  min-width: 0;
+  padding-top: 4px;
+  gap: 8px;
+}
+.legendary-banner.giveaway-banner--robux-strip .humvee-banner-title {
+  color: #eff6ff;
+  text-shadow:
+    0 0 18px rgba(96, 165, 250, 0.55),
+    1px 1px 0 #0c1228,
+    -1px 1px 0 #0c1228,
+    1px -1px 0 #0c1228,
+    -1px -1px 0 #0c1228;
+}
+.legendary-banner.giveaway-banner--robux-strip .humvee-banner-tagline {
+  color: #dbeafe;
 }
 .legendary-banner.giveaway-banner--anaconda-strip .humvee-banner-image,
 .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-prize-image {
@@ -1510,7 +1599,7 @@ a { color: #fff; text-decoration: none; }
   align-self: start;
   justify-self: start;
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 22px;
   line-height: 0;
   pointer-events: none;
 }
@@ -1521,7 +1610,6 @@ a { color: #fff; text-decoration: none; }
   height: auto;
   object-fit: contain;
   object-position: top left;
-  transform: none !important;
   animation: anaconda-prize-bob 2.8s ease-in-out infinite;
 }
 .legendary-banner.giveaway-banner--anaconda-strip .anaconda-banner-body {
@@ -1863,10 +1951,10 @@ a { color: #fff; text-decoration: none; }
 
 @keyframes anaconda-prize-bob {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate(14px, 0);
   }
   50% {
-    transform: translateY(-3px);
+    transform: translate(14px, -3px);
   }
 }
 
