@@ -1939,42 +1939,47 @@ function slugify(str) {
   return str.toLowerCase().replace(/\s+/g, "-");
 }
 
+function buildGiveawayEndsSoonBadgeHtml() {
+  return `<span class="giveaway-ends-soon-badge">Ends Soon!</span>`;
+}
+
 function buildAnacondaStripSlideHtml() {
   var img = escapeAttr(ANACONDA_GIVEAWAY_IMAGE_URL);
   var href = escapeAttr(ANACONDA_GIVEAWAY_DISCORD_URL);
   return `
+        ${buildGiveawayEndsSoonBadgeHtml()}
         <div class="anaconda-banner-figure">
           <img src="${img}" alt="Anaconda giveaway prize" class="anaconda-banner-prize-image" loading="lazy" decoding="async" />
         </div>
         <div class="anaconda-banner-body">
           <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
             <span class="humvee-banner-title">Anaconda Giveaway</span>
-            <span class="humvee-banner-tagline humvee-banner-ends-soon">Ends Soon!!</span>
           </p>
           <div class="legendary-banner-right humvee-banner-actions">
             <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo anaconda-banner-btn">Enter Giveaway</a>
             <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
           </div>
-        </div>`;
+        </div>
+        <div class="giveaway-strip-side-spacer" aria-hidden="true"></div>`;
 }
 
 function buildRobuxStripSlideHtml() {
   var img = escapeAttr(ROBUX_GIVEAWAY_IMAGE_URL);
   var href = escapeAttr(ROBUX_GIVEAWAY_DISCORD_URL);
   return `
+        ${buildGiveawayEndsSoonBadgeHtml()}
         <div class="robux-banner-figure">
           <img src="${img}" alt="5,000 Robux giveaway prize" class="robux-banner-prize-image" loading="lazy" decoding="async" />
         </div>
         <div class="robux-banner-body">
           <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
             <span class="humvee-banner-title">5,000 Robux Giveaway!</span>
-            <span class="humvee-banner-tagline">Join our Discord server to enter</span>
           </p>
           <div class="legendary-banner-right humvee-banner-actions">
             <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo robux-banner-btn-holo">Enter Giveaway</a>
-            <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
           </div>
-        </div>`;
+        </div>
+        <div class="giveaway-strip-side-spacer" aria-hidden="true"></div>`;
 }
 
 function buildRotatingGiveawayCarouselHtml(bannerId) {
