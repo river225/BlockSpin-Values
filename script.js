@@ -61,6 +61,9 @@ const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv";
 const GIVEAWAY_CAROUSEL_INTERVAL_MS = 10000;
 const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
 const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh";
+const BSV_DISCORD_INVITE_URL = "https://discord.gg/QbapryYUUx";
+const DISCORD_JOIN_NUDGE_DELAY_MS = 45000;
+const DISCORD_JOIN_NUDGE_STORAGE_KEY = "bsv-discord-nudge-dismissed";
 
 /** Sections that show the Robux giveaway strip (same layout as Humvee). */
 const ROBUX_GIVEAWAY_SECTION_TITLES = new Set(["Common / Uncommon", "Rare", "Epic", "Omega", "Misc"]);
@@ -114,6 +117,150 @@ function setupDiscordClickTracking() {
       page_path: window.location.pathname
     });
   });
+}
+
+function getDiscordPromoSectionCopy(sectionTitle) {
+  var map = {
+    "Common / Uncommon": { tags: "Values · Middleman · Giveaways" },
+    "Rare": { tags: "Middleman · Values · Giveaways" },
+    "Epic": { tags: "Giveaways · Values · Middleman" },
+    "Legendary": { tags: "Giveaways · Middleman · Values" },
+    "Omega": { tags: "Values · Giveaways · Middleman" },
+    "Misc": { tags: "Middleman · Values · Giveaways" },
+    "Vehicles": { tags: "Giveaways · Values · Middleman" },
+    "Untradable Items": { tags: "Values · Community · Giveaways" }
+  };
+  return map[sectionTitle] || { tags: "Values · Middleman · Giveaways" };
+}
+
+function buildDiscordPromoCardSlotHtml(sectionTitle) {
+  var copy = getDiscordPromoSectionCopy(sectionTitle);
+  return (
+    '<div class="home-discord-promo home-discord-promo--card-slot" role="complementary" aria-label="Join BlockSpin Discord">' +
+      '<div class="home-discord-promo__card-inner">' +
+        '<img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="48" height="48" class="home-discord-promo__card-logo">' +
+        '<p class="home-discord-promo__card-title">Join Our Discord Server</p>' +
+        '<p class="home-discord-promo__card-stat"><span class="discord-member-count">—</span>+ traders</p>' +
+        '<p class="home-discord-promo__card-tags">' + escapeHtml(copy.tags) + '</p>' +
+        '<div class="home-discord-promo__card-actions">' +
+          '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__card-btn home-discord-promo__card-btn--join">Join now</a>' +
+          '<a href="blockspin-discord.html" class="home-discord-promo__card-btn home-discord-promo__card-btn--more">What we offer</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function buildDiscordPromoBannerHtml(inCards) {
+  if (inCards) return buildDiscordPromoCardSlotHtml("");
+  return (
+    '<div class="home-discord-promo" role="complementary" aria-label="Join BlockSpin Discord">' +
+      '<div class="home-discord-promo__shape home-discord-promo__shape--1" aria-hidden="true"></div>' +
+      '<div class="home-discord-promo__shape home-discord-promo__shape--2" aria-hidden="true"></div>' +
+      '<div class="home-discord-promo__shape home-discord-promo__shape--3" aria-hidden="true"></div>' +
+      '<div class="home-discord-promo__inner">' +
+        '<div class="home-discord-promo__head">' +
+          '<img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="52" height="52" class="home-discord-promo__logo">' +
+          '<div>' +
+            '<p class="home-discord-promo__title">Join Our Discord Server</p>' +
+            '<p class="home-discord-promo__hook">Trade smarter. Never get scammed.</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="home-discord-promo__stat">' +
+          '<div class="home-discord-promo__stat-box">' +
+            '<span class="home-discord-promo__stat-num"><span class="discord-member-count">—</span>+</span>' +
+            '<span class="home-discord-promo__stat-label">Traders</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="home-discord-promo__perks">' +
+          '<span class="home-discord-promo__perk"><span class="home-discord-promo__perk-icon" aria-hidden="true">📊</span> Values</span>' +
+          '<span class="home-discord-promo__perk"><span class="home-discord-promo__perk-icon" aria-hidden="true">🛡️</span> Middleman service</span>' +
+          '<span class="home-discord-promo__perk"><span class="home-discord-promo__perk-icon" aria-hidden="true">🎁</span> Giveaways</span>' +
+        '</div>' +
+        '<div class="home-discord-promo__actions">' +
+          '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__btn home-discord-promo__btn--primary">Join now</a>' +
+          '<a href="blockspin-discord.html" class="home-discord-promo__btn home-discord-promo__btn--secondary">What we offer</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function buildCardsHtmlWithDiscordPromo(items, cardBuilder, sectionTitle, minItemsForPromo) {
+  if (!items || !items.length) return "";
+  if (typeof sectionTitle === "number") {
+    minItemsForPromo = sectionTitle;
+    sectionTitle = "";
+  }
+  var buildCard = cardBuilder || createCard;
+  var minItems = minItemsForPromo == null ? 1 : minItemsForPromo;
+  if (items.length < minItems) {
+    return items.map(buildCard).join("");
+  }
+  var insertAt = Math.floor(items.length / 2);
+  var parts = [];
+  for (var i = 0; i < items.length; i++) {
+    if (i === insertAt) parts.push(buildDiscordPromoCardSlotHtml(sectionTitle));
+    parts.push(buildCard(items[i]));
+  }
+  return parts.join("");
+}
+
+function mountHomeDiscordPromo() {
+  var slot = document.getElementById("home-discord-promo-slot");
+  if (slot) slot.outerHTML = buildDiscordPromoBannerHtml(false);
+}
+
+function initDiscordJoinNudge() {
+  if (sessionStorage.getItem(DISCORD_JOIN_NUDGE_STORAGE_KEY) === "1") return;
+  var path = (window.location.pathname || "").toLowerCase();
+  if (path.indexOf("blockspin-discord") !== -1) return;
+
+  setTimeout(function () {
+    if (sessionStorage.getItem(DISCORD_JOIN_NUDGE_STORAGE_KEY) === "1") return;
+    if (document.getElementById("discord-join-nudge")) return;
+
+    var nudge = document.createElement("aside");
+    nudge.id = "discord-join-nudge";
+    nudge.className = "discord-join-nudge";
+    nudge.setAttribute("role", "dialog");
+    nudge.setAttribute("aria-label", "Join BlockSpin Discord");
+    nudge.innerHTML =
+      '<button type="button" class="discord-join-nudge__close" aria-label="Dismiss">&times;</button>' +
+      '<img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="36" height="36" class="discord-join-nudge__icon">' +
+      '<div class="discord-join-nudge__body">' +
+        '<p class="discord-join-nudge__title">Join <span class="discord-member-count">—</span>+ BlockSpin traders</p>' +
+        '<p class="discord-join-nudge__text">Free middleman · live values · giveaways</p>' +
+      '</div>' +
+      '<div class="discord-join-nudge__actions">' +
+        '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="discord-join-nudge__btn discord-join-nudge__btn--join">Join now</a>' +
+        '<a href="blockspin-discord.html" class="discord-join-nudge__btn discord-join-nudge__btn--more">Learn more</a>' +
+      '</div>';
+
+    document.body.appendChild(nudge);
+    requestAnimationFrame(function () {
+      nudge.classList.add("discord-join-nudge--visible");
+    });
+    fetchDiscordMemberCount();
+
+    function dismissNudge() {
+      sessionStorage.setItem(DISCORD_JOIN_NUDGE_STORAGE_KEY, "1");
+      nudge.classList.remove("discord-join-nudge--visible");
+      setTimeout(function () {
+        if (nudge.parentNode) nudge.parentNode.removeChild(nudge);
+      }, 280);
+    }
+
+    nudge.querySelector(".discord-join-nudge__close").addEventListener("click", dismissNudge);
+    nudge.querySelector(".discord-join-nudge__btn--join").addEventListener("click", function () {
+      trackEvent("discord_nudge_join", { page_path: window.location.pathname });
+      dismissNudge();
+    });
+    nudge.querySelector(".discord-join-nudge__btn--more").addEventListener("click", function () {
+      trackEvent("discord_nudge_learn_more", { page_path: window.location.pathname });
+      dismissNudge();
+    });
+  }, DISCORD_JOIN_NUDGE_DELAY_MS);
 }
 
 const TAX_LEGACY_FULL_DROP = 40000;
@@ -1026,7 +1173,7 @@ function renderSection(title, items) {
       <section class="section" id="${slugify("Omega")}">
         <h2>Omega</h2>
         <div class="cards">
-          ${items.map(createCard).join("")}
+          ${buildCardsHtmlWithDiscordPromo(items, createCard, "Omega")}
         </div>
         <div class="legendary-banner giveaway-banner--red" id="omega-anaconda-banner" style="display: none;">
           <p class="legendary-banner-text">Join our <strong>Anaconda giveaway</strong> in our Discord server!</p>
@@ -1044,7 +1191,7 @@ function renderSection(title, items) {
       <section class="section" id="${slugify("Epic")}">
         <h2>Epic</h2>
         <div class="cards">
-          ${items.map(createCard).join("")}
+          ${buildCardsHtmlWithDiscordPromo(items, createCard, "Epic")}
         </div>
         <div class="legendary-banner giveaway-banner--purple" id="epic-firework-banner" style="display: none;">
           <p class="legendary-banner-text">Join our <strong>Firework Launcher giveaway</strong> in our Discord server!</p>
@@ -1066,7 +1213,7 @@ function renderSection(title, items) {
       <section class="section" id="${slugify(title)}">
         <h2>${title}</h2>
         <div class="cards">
-          ${items.map(createCard).join("")}
+          ${buildCardsHtmlWithDiscordPromo(items, createCard, title)}
         </div>
         ${robuxTail}
       </section>
@@ -1081,7 +1228,7 @@ function renderLegendarySectionWithBanner(items) {
     <section class="section" id="${slugify("Legendary")}">
       <h2>Legendary</h2>
       <div class="cards">
-        ${items.map(createCard).join("")}
+        ${buildCardsHtmlWithDiscordPromo(items, createCard, "Legendary")}
       </div>
       <div class="legendary-banner giveaway-banner--gold" id="legendary-daily-giveaway-banner" style="display: none;">
         <p class="legendary-banner-text">We do <strong>daily legendary gun giveaways</strong>!</p>
@@ -1101,7 +1248,7 @@ function renderVehiclesSectionWithBanner(items) {
     <section class="section" id="${slugify("Vehicles")}">
       <h2>Vehicles</h2>
       <div class="cards">
-        ${items.map(createCard).join("")}
+        ${buildCardsHtmlWithDiscordPromo(items, createCard, "Vehicles")}
       </div>
       ${buildHumveeGiveawayBannerHtml("vehicles-humvee-giveaway-banner")}
     </section>
@@ -1242,7 +1389,7 @@ function renderAccessoriesSection(items) {
       html += `
         <div class="accessories-mini-header" id="${miniAnchor}">${escapeHtml(miniHeader)}</div>
         <div class="cards">
-          ${miniGroups[miniHeader].map(createAccessoryCard).join("")}
+          ${buildCardsHtmlWithDiscordPromo(miniGroups[miniHeader], createAccessoryCard, ACCESSORIES_SECTION_NAME, 4)}
         </div>
       `;
       miniEntries.push({ title: miniHeader, anchor: miniAnchor });
@@ -1957,7 +2104,6 @@ function buildAnacondaStripSlideHtml() {
           </p>
           <div class="legendary-banner-right humvee-banner-actions">
             <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo anaconda-banner-btn">Enter Giveaway</a>
-            <p class="legendary-banner-members humvee-banner-entered-note">Join our Discord server to enter</p>
           </div>
         </div>
         <div class="giveaway-strip-side-spacer" aria-hidden="true"></div>`;
@@ -2023,6 +2169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log('DOM loaded, initializing...');
   initAnalytics();
   setupDiscordClickTracking();
+  initDiscordJoinNudge();
 
   setTimeout(() => {
     const loadingScreen = document.getElementById('loading-screen');
@@ -2044,6 +2191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (homeHumveeWrap) {
     homeHumveeWrap.innerHTML = buildHumveeGiveawayBannerHtml("home-humvee-giveaway-banner");
   }
+  mountHomeDiscordPromo();
 
   initSectionsNav();
   initSearch();
