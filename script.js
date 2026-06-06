@@ -65,7 +65,6 @@ const BSV_DISCORD_INVITE_URL = "https://discord.gg/QbapryYUUx";
 const DISCORD_JOIN_NUDGE_DELAY_MS = 45000;
 const DISCORD_JOIN_NUDGE_STORAGE_KEY = "bsv-discord-nudge-dismissed";
 
-/** Sections that show the Robux giveaway strip (same layout as Humvee). */
 const ROBUX_GIVEAWAY_SECTION_TITLES = new Set(["Common / Uncommon", "Rare", "Epic", "Omega", "Misc"]);
 const sectionContentEmbeds = new Map();
 const CONTENT_SECTIONS = [
@@ -136,7 +135,7 @@ function getDiscordPromoSectionCopy(sectionTitle) {
 function buildDiscordPromoCardSlotHtml(sectionTitle) {
   var copy = getDiscordPromoSectionCopy(sectionTitle);
   return (
-    '<div class="home-discord-promo home-discord-promo--card-slot" role="complementary" aria-label="Join BlockSpin Discord">' +
+    '<div class="home-discord-promo home-discord-promo--card-slot">' +
       '<div class="home-discord-promo__card-inner">' +
         '<img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="48" height="48" class="home-discord-promo__card-logo">' +
         '<p class="home-discord-promo__card-title">Join Our Discord Server</p>' +
@@ -154,7 +153,7 @@ function buildDiscordPromoCardSlotHtml(sectionTitle) {
 function buildDiscordPromoBannerHtml(inCards) {
   if (inCards) return buildDiscordPromoCardSlotHtml("");
   return (
-    '<div class="home-discord-promo" role="complementary" aria-label="Join BlockSpin Discord">' +
+    '<div class="home-discord-promo">' +
       '<div class="home-discord-promo__shape home-discord-promo__shape--1" aria-hidden="true"></div>' +
       '<div class="home-discord-promo__shape home-discord-promo__shape--2" aria-hidden="true"></div>' +
       '<div class="home-discord-promo__shape home-discord-promo__shape--3" aria-hidden="true"></div>' +
@@ -223,8 +222,6 @@ function initDiscordJoinNudge() {
     var nudge = document.createElement("aside");
     nudge.id = "discord-join-nudge";
     nudge.className = "discord-join-nudge";
-    nudge.setAttribute("role", "dialog");
-    nudge.setAttribute("aria-label", "Join BlockSpin Discord");
     nudge.innerHTML =
       '<button type="button" class="discord-join-nudge__close" aria-label="Dismiss">&times;</button>' +
       '<img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="36" height="36" class="discord-join-nudge__icon">' +
@@ -565,7 +562,6 @@ function normalizeContentSectionName(name) {
   return "";
 }
 
-/** Short column headers: Video C, Video R, … Video V (letter = first letter of section). */
 function sectionFromVideoColumnHeader(header) {
   const compact = String(header || "")
     .trim()
@@ -714,8 +710,6 @@ async function loadSectionContentConfig() {
     });
   }
 
-  // Each section: every valid link you added (extra rows under a column, or multiple Section/Link rows)
-  // has the same chance to be shown. Pick is uniform and runs again on every full page load / refresh.
   grouped.forEach((links, section) => {
     if (!links.length) return;
     const unique = [...new Set(links)];
@@ -745,7 +739,6 @@ function embedUrlWithScrollAutoplay(embedUrl) {
   return String(embedUrl || "").trim();
 }
 
-/** Browsers allow autoplay only after user gesture or when muted; reload iframe with autoplay when box scrolls into view. */
 function setupSectionEmbedScrollAutoplay() {
   const boxes = document.querySelectorAll(".section-content-embed");
   if (!boxes.length || typeof IntersectionObserver === "undefined") return;
@@ -1338,7 +1331,6 @@ function renderCrewLogosSection(items) {
 function renderAccessoriesSection(items) {
   const miniToBig = {};
 
-  // Pass 1: build mini-header -> big-header map from any row that defines both.
   items.forEach(item => {
     const big = safe(item["Big Header"]).trim();
     const mini = safe(item["Mini Header"]).trim();
@@ -1354,7 +1346,6 @@ function renderAccessoriesSection(items) {
     if (!structure[big][mini]) structure[big][mini] = [];
   }
 
-  // Pass 2: add explicit mini-header rows to structure even without items.
   items.forEach(item => {
     const big = safe(item["Big Header"]).trim();
     const mini = safe(item["Mini Header"]).trim();
@@ -1362,7 +1353,6 @@ function renderAccessoriesSection(items) {
     if (big && mini && !hasName) ensureGroup(big, mini);
   });
 
-  // Pass 3: place item cards by mini-header, then inferred big-header.
   items.forEach(item => {
     const name = safe(item["Name"]).trim();
     if (!name) return;
@@ -1577,8 +1567,6 @@ function syncItemSectionSearchPlacement(name) {
 }
 
 function showSection(name) {
-  console.log(`Showing section: ${name}`);
-  
   document.querySelectorAll('.durability-input').forEach(input => {
     const card = input.closest('.card');
     const maxDurability = card.dataset.maxDurability;
@@ -1741,7 +1729,6 @@ function initTaxCalculator() {
   const taxBreakdown = document.getElementById("tax-breakdown");
 
   if (!taxInput || !taxAmount) {
-    console.log("Tax calculator elements not found");
     return;
   }
 
@@ -1957,7 +1944,6 @@ function formatLikeOriginal(num, original) {
   num = Math.round(num);
   
   const lower = original.toLowerCase();
-  // "1 Million" contains "m" but must not use abbreviated $Xm styling
   const wasK = lower.includes('k') && !/\bthousand\b/.test(lower);
   const wasM = lower.includes('m') && !/\bmillion\b/.test(lower);
   const hadCommas = original.includes(',');
@@ -2050,7 +2036,6 @@ function getInternalValueFromItem(item) {
   }
   return "";
 }
-/** Prefer numeric cell.v from Sheets (reliable); else formatted f; else string v. */
 function coerceInternalCell(cell) {
   if (!cell) return "";
   if (typeof cell.v === "number" && Number.isFinite(cell.v)) {
@@ -2166,7 +2151,6 @@ function initHumveeShoutoutAnimations() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log('DOM loaded, initializing...');
   initAnalytics();
   setupDiscordClickTracking();
   initDiscordJoinNudge();
@@ -2203,17 +2187,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   let loadedSections = 0;
 
   const fetchPromises = SECTION_NAMES.map(async (sec) => {
-   
-    console.log(`Fetching data for: ${sec}`);
-    
     let items;
     try {
       if (sec === "💰 Richest Players") {
         items = await fetchRichestPlayers();
-        console.log(`Got ${items.length} items for ${sec} from NEW spreadsheet`);
       } else {
         items = await fetchSheet(getSheetNameForSection(sec));
-        console.log(`Got ${items.length} items for ${sec} from OLD spreadsheet`);
       }
     } catch (error) {
       console.error(`Failed to load ${sec}:`, error);
@@ -2319,7 +2298,6 @@ function openRiverLinks(e) {
   document.body.appendChild(modal);
 }
 
-// Fetch and display top donators
 async function loadTopDonators() {
   try {
     const donators = await fetchSheet("Top Donate");
@@ -2363,7 +2341,6 @@ async function loadTopDonators() {
   }
 }
 
-// Fetch and display recent value changes from spreadsheet (sheet: "Website Configs", columns: Title, Date, Text, Color)
 async function loadValueChanges() {
   var listEl = document.getElementById('value-changes-list');
   var mobileListEl = document.getElementById('mobile-value-changes-list');
@@ -2483,7 +2460,6 @@ function setupMobileHamburgerMenu() {
 }
 document.addEventListener('DOMContentLoaded', setupMobileHamburgerMenu);
 
-// MOBILE TAX CALCULATOR
 
 document.addEventListener('DOMContentLoaded', function() {
     if (!window.matchMedia("(max-width: 1024px)").matches) return;
@@ -2659,8 +2635,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-/* ========== PINK WEBSITE THEME - theme switcher (remove with theme section in style.css) ========== */
-var THEMES_DISABLED = true; /* Set to false to re-enable theme switcher */
+var THEMES_DISABLED = true;
 
 function applyPinkThemeDividers() {
   if (THEMES_DISABLED) {
@@ -2690,7 +2665,6 @@ function initThemeSwitcher() {
   }
   document.body.classList.remove('themes-disabled');
   var saved = localStorage.getItem('bsv-theme') || 'default';
-  // Apply saved theme: '' for default, or specific theme name (e.g. 'red', 'pink', 'purple')
   if (saved === 'pink' || saved === 'red' || saved === 'purple') {
     document.body.setAttribute('data-theme', saved);
   } else {

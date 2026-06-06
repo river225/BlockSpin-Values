@@ -2180,7 +2180,7 @@ a { color: #fff; text-decoration: none; }
   padding-bottom: 56.25%;
 }
 
-/* TikTok vertical video: 9:16 (was wrongly forced to 16:9, which crops portrait) */
+/* TikTok 9:16 */
 .section-content-embed-frame-wrap--portrait {
   padding-bottom: 177.78%;
 }
@@ -3047,7 +3047,7 @@ a { color: #fff; text-decoration: none; }
   }
 }
 
-/* Discord join promo — home + mid-grid on item sections */
+/* discord promo */
 .home-discord-promo {
   position: relative;
   max-width: 620px;
@@ -3180,7 +3180,7 @@ a { color: #fff; text-decoration: none; }
   min-width: min(100%, 280px);
 }
 
-/* First-visit Discord join nudge */
+/* join nudge */
 .discord-join-nudge {
   position: fixed;
   bottom: 18px;
@@ -3468,7 +3468,7 @@ a { color: #fff; text-decoration: none; }
   }
 }
 
-/* Middleman promo — desktop: under tax calc (matches .tax-sidebar-column width) */
+/* middleman sidebar */
 .discord-mm-promo--sidebar {
   display: block;
   width: 100%;
@@ -3518,7 +3518,7 @@ a { color: #fff; text-decoration: none; }
   text-decoration: underline !important;
 }
 
-/* Middleman promo — inside mobile tax calculator panel (same inner width as panel) */
+/* middleman mobile */
 .discord-mm-promo--mobile-panel {
   display: block;
   width: 100%;
@@ -5875,17 +5875,12 @@ body.mobile-panel-open .hamburger-menu {
   color: #33cce6;
 }
 
-/* ========== PINK WEBSITE THEME START ========== */
-/* Medium red theme, no neon. Same shade structure as original (color counterpart).
-   UNCHANGED: BlockSpin Values header text, Discord/TikTok icons, .avg-value, .ranged-value, .pawn-value, .repair.
-   Item cards + section button outlines = black. Section buttons keep their original inner colors. */
 
 body[data-theme="red"] {
   background: linear-gradient(180deg, #2c1616 0%, #3d1f1f 50%, #2c1616 100%) !important;
   background-attachment: fixed !important;
 }
 
-/* ---- Header: navbar only; do NOT change .nav-title (BlockSpin Values) or .nav-discord / .nav-tiktok ---- */
 body[data-theme="red"] .top-navbar {
   background: linear-gradient(180deg, #1c0b0b 0%, #2b1212 100%) !important;
   border-bottom-color: #000000 !important;
@@ -5897,7 +5892,6 @@ body[data-theme="red"] .nav-left a:hover {
   color: #ffd4d4 !important;
 }
 
-/* ---- Item sections: black outlines; unique color per button (like original) ---- */
 body[data-theme="red"] #sections-nav,
 body[data-theme="red"] .sections-nav,
 body[data-theme="red"] .sections-sidebar {
@@ -5930,7 +5924,6 @@ body[data-theme="red"] #search {
   border-color: #000000 !important;
 }
 
-/* ---- What is BlockSpin Values ---- */
 body[data-theme="red"] .what-is-section {
   background: rgba(224, 138, 138, 0.18) !important;
   border: 2px solid #e08a8a !important;
@@ -5945,7 +5938,6 @@ body[data-theme="red"] .home-page-clean .home-divider {
   background-image: linear-gradient(90deg, transparent, #e08a8a, transparent) !important;
 }
 
-/* ---- Home columns ---- */
 body[data-theme="red"] .home-column {
   background: #2a1515 !important;
   border: 3px solid #e0a090 !important;
@@ -5957,9 +5949,7 @@ body[data-theme="red"] .home-column:first-child h2 {
 body[data-theme="red"] .home-column:last-child h2 {
   color: #e0a090 !important;
 }
-/* Use base value-changes colors in all themes */
 
-/* ---- Item cards ---- */
 body[data-theme="red"] .card {
   background: linear-gradient(135deg, #2c1616 0%, #3a1919 100%) !important;
   border-color: #000000 !important;
@@ -5992,7 +5982,6 @@ body[data-theme="red"] .durability-arrows button:active {
   background: #d07070 !important;
 }
 
-/* ---- Tax calculator ---- */
 body[data-theme="red"] .tax-calculator {
   background: linear-gradient(135deg, #2c1616 0%, #3a1919 50%, #3a1919 100%) !important;
   border-color: #e08a8a !important;
@@ -6042,7 +6031,6 @@ body[data-theme="red"] .tax-reminders-heading {
   color: #f0b0b0 !important;
 }
 
-/* ---- Announcements ---- */
 body[data-theme="red"] .announcement-box-home {
   background: #2a1515 !important;
   border-color: #e0a090 !important;
@@ -6072,7 +6060,6 @@ body[data-theme="red"] .announcement-date {
   color: #e0a090 !important;
 }
 
-/* ---- Top Donators ---- */
 body[data-theme="red"] .donator-box-home {
   background: rgba(42, 21, 21, 0.95) !important;
   border: 2px solid #e0a090 !important;
@@ -6084,7 +6071,6 @@ body[data-theme="red"] .donator-description {
   border-bottom-color: #e08a8a !important;
 }
 
-/* ---- Feature items ---- */
 body[data-theme="red"] .feature-item {
   background: #2c1616 !important;
   border-color: #e08a8a !important;
@@ -6094,7 +6080,6 @@ body[data-theme="red"] .feature-item:hover {
   border-color: #f09090 !important;
 }
 
-/* ---- Crew / copy ---- */
 body[data-theme="red"] .crew-header {
   color: #f0b0b0 !important;
   border-bottom-color: #e08a8a !important;
@@ -6112,7 +6097,6 @@ body[data-theme="red"] .copy-btn:hover {
   background: linear-gradient(135deg, #e08a8a 0%, #f09090 100%) !important;
 }
 
-/* ---- Richest players ---- */
 body[data-theme="red"] .richest-search {
   background: #2c1616 !important;
   border-color: #000000 !important;
@@ -6124,7 +6108,6 @@ body[data-theme="red"] .profile-link {
   color: #f0b0b0 !important;
 }
 
-/* ---- Loading ---- */
 body[data-theme="red"] #loading-screen {
   background: linear-gradient(180deg, #2c1616 0%, #3d1f1f 50%, #2c1616 100%) !important;
 }
@@ -6140,7 +6123,6 @@ body[data-theme="red"] #loading-screen h2 {
   color: #f0b0b0 !important;
 }
 
-/* ---- Legal / contact / about / faq / guide ---- */
 body[data-theme="red"] .legal-page,
 body[data-theme="red"] .contact-page {
   background: linear-gradient(135deg, #2c1616 0%, #3a1919 100%) !important;
@@ -6196,7 +6178,6 @@ body[data-theme="red"] .faq-question h3 {
   color: #f0b0b0 !important;
 }
 
-/* ---- Footer ---- */
 body[data-theme="red"] .site-footer {
   background: linear-gradient(180deg, #1c0b0b 0%, #2b1212 100%) !important;
   border-top-color: #000000 !important;
@@ -6212,7 +6193,6 @@ body[data-theme="red"] .footer-links span {
   color: #e08a8a !important;
 }
 
-/* ---- Info footer section ---- */
 body[data-theme="red"] .info-footer-section {
   border-top-color: rgba(224, 138, 138, 0.45) !important;
 }
@@ -6243,7 +6223,6 @@ body[data-theme="red"] .info-separator {
   color: #e08a8a !important;
 }
 
-/* ---- Mobile ---- */
 @media screen and (max-width: 1024px) {
   body[data-theme="red"] .hamburger-menu {
     background: #2c1616 !important;
@@ -6290,15 +6269,12 @@ body[data-theme="red"] .info-separator {
   }
 }
 
-/* Medium purple theme, no neon. Same shade structure as original (color counterpart).
-   UNCHANGED: BlockSpin Values header text, Discord/TikTok icons, .avg-value, .ranged-value, .pawn-value, .repair. */
 
 body[data-theme="purple"] {
   background: linear-gradient(180deg, #231633 0%, #2f1f40 50%, #231633 100%) !important;
   background-attachment: fixed !important;
 }
 
-/* ---- Header: navbar only; do NOT change .nav-title (BlockSpin Values) or .nav-discord / .nav-tiktok ---- */
 body[data-theme="purple"] .top-navbar {
   background: linear-gradient(180deg, #160d26 0%, #221637 100%) !important;
   border-bottom-color: #000000 !important;
@@ -6310,7 +6286,6 @@ body[data-theme="purple"] .nav-left a:hover {
   color: #e6d9ff !important;
 }
 
-/* ---- Item sections: black outlines; unique color per button (like original) ---- */
 body[data-theme="purple"] #sections-nav,
 body[data-theme="purple"] .sections-nav,
 body[data-theme="purple"] .sections-sidebar {
@@ -6343,7 +6318,6 @@ body[data-theme="purple"] #search {
   border-color: #000000 !important;
 }
 
-/* ---- What is BlockSpin Values ---- */
 body[data-theme="purple"] .what-is-section {
   background: rgba(184, 154, 232, 0.2) !important;
   border: 2px solid #b89ae8 !important;
@@ -6358,7 +6332,6 @@ body[data-theme="purple"] .home-page-clean .home-divider {
   background-image: linear-gradient(90deg, transparent, #b89ae8, transparent) !important;
 }
 
-/* ---- Home columns ---- */
 body[data-theme="purple"] .home-column {
   background: #261835 !important;
   border: 3px solid #b89ae8 !important;
@@ -6368,9 +6341,7 @@ body[data-theme="purple"] .home-column:first-child h2,
 body[data-theme="purple"] .home-column:last-child h2 {
   color: #b89ae8 !important;
 }
-/* (value-changes box uses base colors across themes) */
 
-/* ---- Item cards ---- */
 body[data-theme="purple"] .card {
   background: linear-gradient(135deg, #261835 0%, #301f44 100%) !important;
   border-color: #000000 !important;
@@ -6403,7 +6374,6 @@ body[data-theme="purple"] .durability-arrows button:active {
   background: #9b78f0 !important;
 }
 
-/* ---- Tax calculator ---- */
 body[data-theme="purple"] .tax-calculator {
   background: linear-gradient(135deg, #261835 0%, #301f44 50%, #301f44 100%) !important;
   border-color: #b89ae8 !important;
@@ -6453,7 +6423,6 @@ body[data-theme="purple"] .tax-reminders-heading {
   color: #d3bff5 !important;
 }
 
-/* ---- Announcements ---- */
 body[data-theme="purple"] .announcement-box-home {
   background: #261835 !important;
   border-color: #b89ae8 !important;
@@ -6483,7 +6452,6 @@ body[data-theme="purple"] .announcement-date {
   color: #b89ae8 !important;
 }
 
-/* ---- Top Donators ---- */
 body[data-theme="purple"] .donator-box-home {
   background: rgba(38, 24, 53, 0.95) !important;
   border: 2px solid #b89ae8 !important;
@@ -6495,7 +6463,6 @@ body[data-theme="purple"] .donator-description {
   border-bottom-color: #b89ae8 !important;
 }
 
-/* ---- Feature items ---- */
 body[data-theme="purple"] .feature-item {
   background: #261835 !important;
   border-color: #b89ae8 !important;
@@ -6505,7 +6472,6 @@ body[data-theme="purple"] .feature-item:hover {
   border-color: #c7a4ff !important;
 }
 
-/* ---- Crew / copy ---- */
 body[data-theme="purple"] .crew-header {
   color: #d3bff5 !important;
   border-bottom-color: #b89ae8 !important;
@@ -6523,7 +6489,6 @@ body[data-theme="purple"] .copy-btn:hover {
   background: linear-gradient(135deg, #b89ae8 0%, #c7a4ff 100%) !important;
 }
 
-/* ---- Richest players ---- */
 body[data-theme="purple"] .richest-search {
   background: #261835 !important;
   border-color: #000000 !important;
@@ -6535,7 +6500,6 @@ body[data-theme="purple"] .profile-link {
   color: #d3bff5 !important;
 }
 
-/* ---- Loading ---- */
 body[data-theme="purple"] #loading-screen {
   background: linear-gradient(180deg, #231633 0%, #2f1f40 50%, #231633 100%) !important;
 }
@@ -6551,7 +6515,6 @@ body[data-theme="purple"] #loading-screen h2 {
   color: #d3bff5 !important;
 }
 
-/* ---- Legal / contact / about / faq / guide ---- */
 body[data-theme="purple"] .legal-page,
 body[data-theme="purple"] .contact-page {
   background: linear-gradient(135deg, #261835 0%, #301f44 100%) !important;
@@ -6607,7 +6570,6 @@ body[data-theme="purple"] .faq-question h3 {
   color: #d3bff5 !important;
 }
 
-/* ---- Footer ---- */
 body[data-theme="purple"] .site-footer {
   background: linear-gradient(180deg, #160d26 0%, #221637 100%) !important;
   border-top-color: #000000 !important;
@@ -6623,7 +6585,6 @@ body[data-theme="purple"] .footer-links span {
   color: #b89ae8 !important;
 }
 
-/* ---- Info footer section ---- */
 body[data-theme="purple"] .info-footer-section {
   border-top-color: rgba(184, 154, 232, 0.45) !important;
 }
@@ -6654,16 +6615,12 @@ body[data-theme="purple"] .info-separator {
   color: #b89ae8 !important;
 }
 
-/* Medium pink theme, no neon. Same shade structure as original (color counterpart).
-   UNCHANGED: BlockSpin Values header text, Discord/TikTok icons, .avg-value, .ranged-value, .pawn-value, .repair.
-   Item cards + section button outlines = black. Section buttons have unique per-section colors (like original). */
 
 body[data-theme="pink"] {
   background: linear-gradient(180deg, #4a3540 0%, #5a4050 50%, #4a3540 100%) !important;
   background-attachment: fixed !important;
 }
 
-/* ---- Header: navbar only; do NOT change .nav-title (BlockSpin Values) or .nav-discord / .nav-tiktok ---- */
 body[data-theme="pink"] .top-navbar {
   background: linear-gradient(180deg, #302228 0%, #3d2a35 100%) !important;
   border-bottom-color: #000000 !important;
@@ -6675,7 +6632,6 @@ body[data-theme="pink"] .nav-left a:hover {
   color: #e8c0d0 !important;
 }
 
-/* ---- Item sections: black outlines; unique color per button (like original) ---- */
 body[data-theme="pink"] #sections-nav,
 body[data-theme="pink"] .sections-nav,
 body[data-theme="pink"] .sections-sidebar {
@@ -6695,11 +6651,9 @@ body[data-theme="pink"] #sections-nav button.active,
 body[data-theme="pink"] .sections-nav button.active {
   border-color: #000000 !important;
 }
-/* Cyan line under Home button (divides home section from rest) → pink */
 body[data-theme="pink"] #sections-nav button:first-child::after {
   background: #c898a8 !important;
 }
-/* Keep exact same inner colors as original – do not override active button backgrounds (cyan, green, blue, etc.) */
 body[data-theme="pink"] .nav-extras-header {
   color: #d8b0c0 !important;
   border-bottom-color: #c898a8 !important;
@@ -6710,7 +6664,6 @@ body[data-theme="pink"] #search {
   border-color: #000000 !important;
 }
 
-/* ---- What is BlockSpin Values (counterpart: cyan tint → pink tint) ---- */
 body[data-theme="pink"] .what-is-section {
   background: rgba(200, 150, 170, 0.2) !important;
   border: 2px solid #c898a8 !important;
@@ -6718,7 +6671,6 @@ body[data-theme="pink"] .what-is-section {
 body[data-theme="pink"] .what-is-section h2 {
   color: #d8b0c0 !important;
 }
-/* Home divider: force pink (max specificity so it overrides base cyan) */
 body[data-theme="pink"] .home-divider,
 body[data-theme="pink"] #home .home-divider,
 body[data-theme="pink"] .home-page-clean .home-divider,
@@ -6728,7 +6680,6 @@ body[data-theme="pink"] section#home .home-page-clean .home-content-main .home-d
   background-image: linear-gradient(90deg, transparent, #d0a8b8, transparent) !important;
 }
 
-/* ---- Home columns: rose gold (pink-yellow) for outline + both headers ---- */
 body[data-theme="pink"] .home-column {
   background: #352830 !important;
   border: 3px solid #d0a898 !important;
@@ -6738,9 +6689,7 @@ body[data-theme="pink"] .home-column:first-child h2,
 body[data-theme="pink"] .home-column:last-child h2 {
   color: #d0a898 !important;
 }
-/* (value-changes box uses base colors across themes) */
 
-/* ---- Item cards: black outline ---- */
 body[data-theme="pink"] .card {
   background: linear-gradient(135deg, #3d2a35 0%, #4a3540 100%) !important;
   border-color: #000000 !important;
@@ -6773,7 +6722,6 @@ body[data-theme="pink"] .durability-arrows button:active {
   background: #b88898 !important;
 }
 
-/* ---- Tax calculator (counterpart of cyan theme) ---- */
 body[data-theme="pink"] .tax-calculator {
   background: linear-gradient(135deg, #3d2a35 0%, #4a3540 50%, #4a3540 100%) !important;
   border-color: #c898a8 !important;
@@ -6823,7 +6771,6 @@ body[data-theme="pink"] .tax-reminders-heading {
   color: #d8b0c0 !important;
 }
 
-/* ---- Announcements ---- */
 body[data-theme="pink"] .announcement-box-home {
   background: #352830 !important;
   border-color: #d0a898 !important;
@@ -6855,7 +6802,6 @@ body[data-theme="pink"] .announcement-date {
   color: #d0a898 !important;
 }
 
-/* ---- Top Donators ---- */
 body[data-theme="pink"] .donator-box-home {
   background: rgba(53, 40, 48, 0.95) !important;
   border: 2px solid #d0a898 !important;
@@ -6867,7 +6813,6 @@ body[data-theme="pink"] .donator-description {
   border-bottom-color: #c898a8 !important;
 }
 
-/* ---- Feature items ---- */
 body[data-theme="pink"] .feature-item {
   background: #3d2a35 !important;
   border-color: #c898a8 !important;
@@ -6877,7 +6822,6 @@ body[data-theme="pink"] .feature-item:hover {
   border-color: #d0a8b8 !important;
 }
 
-/* ---- Crew / copy ---- */
 body[data-theme="pink"] .crew-header {
   color: #d8b0c0 !important;
   border-bottom-color: #c898a8 !important;
@@ -6895,7 +6839,6 @@ body[data-theme="pink"] .copy-btn:hover {
   background: linear-gradient(135deg, #c898a8 0%, #d0a8b8 100%) !important;
 }
 
-/* ---- Richest players ---- */
 body[data-theme="pink"] .richest-search {
   background: #3d2a35 !important;
   border-color: #000000 !important;
@@ -6907,7 +6850,6 @@ body[data-theme="pink"] .profile-link {
   color: #d8b0c0 !important;
 }
 
-/* ---- Loading ---- */
 body[data-theme="pink"] #loading-screen {
   background: linear-gradient(180deg, #4a3540 0%, #5a4050 50%, #4a3540 100%) !important;
 }
@@ -6923,7 +6865,6 @@ body[data-theme="pink"] #loading-screen h2 {
   color: #d8b0c0 !important;
 }
 
-/* ---- Legal / contact / about / faq / guide ---- */
 body[data-theme="pink"] .legal-page,
 body[data-theme="pink"] .contact-page {
   background: linear-gradient(135deg, #3d2a35 0%, #4a3540 100%) !important;
@@ -6979,7 +6920,6 @@ body[data-theme="pink"] .faq-question h3 {
   color: #d8b0c0 !important;
 }
 
-/* ---- Footer ---- */
 body[data-theme="pink"] .site-footer {
   background: linear-gradient(180deg, #302228 0%, #3d2a35 100%) !important;
   border-top-color: #000000 !important;
@@ -6995,7 +6935,6 @@ body[data-theme="pink"] .footer-links span {
   color: #b88898 !important;
 }
 
-/* ---- Info footer section ---- */
 body[data-theme="pink"] .info-footer-section {
   border-top-color: rgba(200, 150, 170, 0.45) !important;
 }
@@ -7026,7 +6965,6 @@ body[data-theme="pink"] .info-separator {
   color: #c898a8 !important;
 }
 
-/* ---- Mobile ---- */
 @media screen and (max-width: 1024px) {
   body[data-theme="pink"] .hamburger-menu {
     background: #3d2a35 !important;
@@ -7073,7 +7011,6 @@ body[data-theme="pink"] .info-separator {
   }
 }
 
-/* Force home divider to pink (repeat at end of theme so it wins cascade) */
 body[data-theme="pink"] .home-divider {
   background: linear-gradient(90deg, transparent, #d0a8b8, transparent) !important;
 }
@@ -7117,4 +7054,3 @@ body.themes-disabled .theme-switcher {
 .theme-switcher-btn[data-theme="purple"] {
   background: linear-gradient(135deg, #6a4ad9 0%, #8d6fff 100%);
 }
-/* ========== PINK WEBSITE THEME END ========== */
