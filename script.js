@@ -211,11 +211,13 @@ function mountHomeDiscordPromo() {
 }
 
 function initDiscordJoinNudge() {
+  if (!window.matchMedia("(max-width: 1024px)").matches) return;
   if (sessionStorage.getItem(DISCORD_JOIN_NUDGE_STORAGE_KEY) === "1") return;
   var path = (window.location.pathname || "").toLowerCase();
   if (path.indexOf("blockspin-discord") !== -1) return;
 
   setTimeout(function () {
+    if (!window.matchMedia("(max-width: 1024px)").matches) return;
     if (sessionStorage.getItem(DISCORD_JOIN_NUDGE_STORAGE_KEY) === "1") return;
     if (document.getElementById("discord-join-nudge")) return;
 

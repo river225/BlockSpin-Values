@@ -3180,13 +3180,13 @@ a { color: #fff; text-decoration: none; }
   min-width: min(100%, 280px);
 }
 
-/* join nudge */
+/* join nudge — mobile / tablet only */
 .discord-join-nudge {
   position: fixed;
   bottom: 18px;
   left: 50%;
   z-index: 3500;
-  display: flex;
+  display: none;
   align-items: center;
   gap: 12px;
   width: min(560px, calc(100vw - 24px));
@@ -3199,6 +3199,11 @@ a { color: #fff; text-decoration: none; }
   opacity: 0;
   transition: transform 0.28s ease, opacity 0.28s ease;
   pointer-events: none;
+}
+@media (max-width: 1024px) {
+  .discord-join-nudge {
+    display: flex;
+  }
 }
 .discord-join-nudge--visible {
   transform: translate(-50%, 0);
@@ -4569,6 +4574,94 @@ a { color: #fff; text-decoration: none; }
   transform: scale(1.1);
 }
 
+.nav-login {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid rgba(88, 101, 242, 0.55);
+  border-radius: 50%;
+  background: rgba(88, 101, 242, 0.12);
+  box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.08), 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.nav-login-btn:hover {
+  transform: scale(1.06);
+  border-color: #7289da;
+  background: rgba(88, 101, 242, 0.22);
+  box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.15), 0 6px 18px rgba(88, 101, 242, 0.25);
+}
+
+.nav-login-btn__icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.nav-login-btn--avatar {
+  border-color: rgba(51, 204, 230, 0.6);
+  background: #1a2332;
+  overflow: hidden;
+}
+
+.nav-login-btn__avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.nav-login-user {
+  position: relative;
+}
+
+.nav-login-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 180px;
+  padding: 12px;
+  background: #1a2332;
+  border: 1px solid rgba(51, 204, 230, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  z-index: 1200;
+}
+
+.nav-login-menu__name {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  word-break: break-word;
+}
+
+.nav-login-menu__logout {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 80, 80, 0.45);
+  border-radius: 8px;
+  background: rgba(255, 80, 80, 0.1);
+  color: #ff8a8a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-login-menu__logout:hover {
+  background: rgba(255, 80, 80, 0.2);
+}
+
 /* Adjust body padding to account for fixed navbar */
 body {
   padding-top: 70px;
@@ -5206,6 +5299,11 @@ body.mobile-panel-open .hamburger-menu {
   }
 
   .top-navbar .nav-right {
+    display: flex !important;
+    gap: 0;
+  }
+
+  .top-navbar .theme-switcher {
     display: none !important;
   }
 
@@ -5301,8 +5399,12 @@ body.mobile-panel-open .hamburger-menu {
     display: none !important;
   }
 
-  /* Mobile header cleanup: hide right-side action buttons only */
   .top-navbar .nav-right {
+    display: flex !important;
+    gap: 0;
+  }
+
+  .top-navbar .theme-switcher {
     display: none !important;
   }
 
