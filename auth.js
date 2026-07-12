@@ -1,4 +1,12 @@
 (function () {
+  function removeWrongSiteBanner() {
+    var el = document.getElementById("auth-wrong-site-banner");
+    if (el) el.remove();
+  }
+  removeWrongSiteBanner();
+  document.addEventListener("DOMContentLoaded", removeWrongSiteBanner);
+  window.addEventListener("pageshow", removeWrongSiteBanner);
+
   var AUTH_TOKEN_KEY = "bsv-discord-auth";
   var OAUTH_RETURN_KEY = "bsv-oauth-return-to";
   var logoutTestObserver = null;

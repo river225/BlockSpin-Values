@@ -5456,6 +5456,8 @@ background-attachment: fixed;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+}#auth-wrong-site-banner {
+  display: none !important;
 }.auth-welcome-banner {
   position: fixed;
   bottom: 28px;

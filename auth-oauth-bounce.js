@@ -1,4 +1,10 @@
 (function () {
+  function removeWrongSiteBanner() {
+    var el = document.getElementById("auth-wrong-site-banner");
+    if (el) el.remove();
+  }
+  removeWrongSiteBanner();
+
   var OAUTH_RETURN_KEY = "bsv-oauth-return-to";
   var MAIN_SITE_ORIGINS = {
     "https://blockspinvalues.com": true,
