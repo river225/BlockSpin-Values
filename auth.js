@@ -94,22 +94,6 @@
 
   purgeStaleMainReturnUrl();
 
-  function warnIfLoggedInOnWrongSite() {
-    if (isTestSite()) return;
-    var token = getAuthToken();
-    if (!token) return;
-    var banner = document.getElementById("auth-wrong-site-banner");
-    if (banner) return;
-    banner = document.createElement("div");
-    banner.id = "auth-wrong-site-banner";
-    banner.setAttribute("role", "alert");
-    banner.style.cssText =
-      "position:fixed;top:0;left:0;right:0;z-index:100000;padding:14px 18px;background:#7a1f1f;color:#fff;text-align:center;font:600 0.95rem/1.4 system-ui,sans-serif;border-bottom:2px solid #ff6b6b;";
-    banner.textContent =
-      "You are on the live site, not the dev copy. Open http://localhost:5500 for your latest changes.";
-    document.documentElement.appendChild(banner);
-  }
-
   function parseAuthHash() {
     var hash = window.location.hash || "";
     var justLoggedIn = false;
@@ -308,7 +292,6 @@
     fetchAuthUser().then(function (user) {
       renderNavLogin(user);
       removeLogoutTestButton();
-      warnIfLoggedInOnWrongSite();
       if (justLoggedIn && user) {
         showWelcomeBanner(user.displayName || user.username || "back");
         setTimeout(removeLogoutTestButton, 0);
