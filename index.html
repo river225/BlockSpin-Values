@@ -29,10 +29,14 @@
 <meta property="og:image" content="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
 <meta property="og:title" content="BlockSpin Values">
 <meta property="og:description" content="A Blockspin Community Driven Value List — Maintained by our top trader Value List Team in our discord server and built by river.">
-<link rel="stylesheet" href="style.css?v=20260712-auth-fix2" />
+<link rel="preload" href="style.css?v=20260713-cwv" as="style" />
+<link rel="stylesheet" href="style.css?v=20260713-cwv" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;600;700&amp;family=Nunito+Sans:ital,wght@0,600;0,700;1,600&amp;family=Oswald:wght@500;600;700&amp;family=Poppins:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" /></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;600;700&amp;family=Nunito+Sans:ital,wght@0,600;0,700;1,600&amp;family=Oswald:wght@500;600;700&amp;family=Poppins:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" media="print" onload="this.media='all'" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;600;700&amp;family=Nunito+Sans:ital,wght@0,600;0,700;1,600&amp;family=Oswald:wght@500;600;700&amp;family=Poppins:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" /></noscript>
 <script>
 (function () {
   try {
@@ -55,7 +59,20 @@
 </script>
 <style> 
 
-.bottom-buttons { 
+/* Critical above-the-fold — home hero paints before full CSS */
+.welcome-header { text-align: center; margin-bottom: 10px; }
+.welcome-header h1 {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+  gap: 0.18em; margin: 0 auto 8px; color: #fff; text-align: center;
+  font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+  font-family: 'Paytone One', system-ui, sans-serif;
+  text-shadow: 3px 3px 0 #000, -3px 3px 0 #000;
+}
+.welcome-header .brand-spin { color: #ff1a1a; }
+.welcome-header .subtitle { color: #33cce6; margin: 0 0 8px; }
+.welcome-header .founder-credit { color: #94a3b8; margin: 0; font-size: 0.95rem; }
+
+.bottom-buttons {
     position: fixed; 
     bottom: 20px; 
     left: 50%; 
@@ -131,7 +148,7 @@
 
 <div class="menu-overlay" id="sections-menu-overlay" hidden></div>
 
-<div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(160deg, #1a2740 0%, #0f1724 100%); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+<div id="loading-screen" hidden aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(160deg, #1a2740 0%, #0f1724 100%); display: none; align-items: center; justify-content: center; z-index: 9999;">
   <div style="text-align: center; width: 400px; max-width: 90%;">
     <h2 style="color: #33cce6; font-size: 2rem; margin-bottom: 30px;" data-i18n="loading.title">Loading BlockSpin Values...</h2>
     <div style="width: 100%; height: 8px; background: #1a2532; border-radius: 10px; overflow: hidden; border: 2px solid #33cce6;">
@@ -271,14 +288,14 @@ We’ve launched a complete site redesign, and items will now display both their
 
 </div>
 
-<script src="site-chrome.js?v=20260712-prod-migrate"></script>
-<script src="auth.js?v=20260712-auth-fix2"></script>
-<script src="saved-cards.js?v=20260712-prod-migrate"></script>
-<script src="site-i18n.js?v=20260712-prod-migrate"></script>
-<script src="site-settings.js?v=20260712-prod-migrate"></script>
-<script src="section-config.js?v=20260712-prod-migrate"></script>
-<script src="quest-guide-i18n.js?v=20260712-prod-migrate"></script>
-<script src="script.js?v=20260712-prod-migrate"></script> 
+<script defer src="site-chrome.js?v=20260713-cwv"></script>
+<script defer src="auth.js?v=20260713-cwv"></script>
+<script defer src="saved-cards.js?v=20260713-cwv"></script>
+<script defer src="site-i18n.js?v=20260713-cwv"></script>
+<script defer src="site-settings.js?v=20260713-cwv"></script>
+<script defer src="section-config.js?v=20260713-cwv"></script>
+<script defer src="quest-guide-i18n.js?v=20260713-cwv"></script>
+<script defer src="script.js?v=20260713-cwv"></script> 
 
 
 <div id="bsv-site-footer"></div>

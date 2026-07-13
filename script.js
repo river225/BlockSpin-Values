@@ -3800,45 +3800,80 @@ function initMobileSectionSearch() {
 }
 
 function showSection(name) {
-  console.log(`Showing section: ${name}`);
   _activeSectionName = name;
 
   const cfg = typeof getSectionConfig === "function" ? getSectionConfig(name) : null;
   if (!cfg) return;
 
-  document.querySelectorAll('.durability-input').forEach(input => {
-    const card = input.closest('.card');
+  const isHome = cfg.id === "home";
+
+  document.body.classList.toggle("is-home", isHome);
+
+  getSectionRegistry().forEach(function (sectionCfg) {
+    const el = document.getElementById(sectionCfg.id);
+    if (!el) return;
+    if (sectionCfg.title === name) {
+      if (sectionCfg.id === "richest-players") {
+        el.style.display = "flex";
+        el.style.flexDirection = "column";
+      } else {
+        el.style.display = "block";
+        el.style.flexDirection = "";
+      }
+    } else {
+      el.style.display = "none";
+    }
+  });
+
+  document.querySelectorAll("#sections-nav button").forEach(function (b) {
+    b.classList.toggle("active", b.dataset.section === name);
+  });
+
+  closeSectionsMenu();
+
+  const useMobileSectionSearch =
+    window.matchMedia("(max-width: 900px)").matches && shouldUseMobileSectionSearch(name);
+  setHeaderSearchVisible(useMobileSectionSearch || cfg.search !== "hide");
+  syncHeaderSearchPlacement(name);
+  syncBackToTopVisibility();
+
+  requestAnimationFrame(function () {
+    showSectionDeferred(name, cfg, isHome);
+  });
+}
+
+function showSectionDeferred(name, cfg, isHome) {
+  document.querySelectorAll(".durability-input").forEach(function (input) {
+    const card = input.closest(".card");
+    if (!card) return;
     const maxDurability = card.dataset.maxDurability;
     input.value = maxDurability;
     updateCardValues(input);
   });
 
-  const taxSidebarColumn = document.getElementById('tax-sidebar-column');
-  const homeValueChanges = document.getElementById('home-value-changes');
-  const taxCalc = taxSidebarColumn ? taxSidebarColumn.querySelector('.tax-calculator') : null;
-  const middlemanPromo = taxSidebarColumn ? taxSidebarColumn.querySelector('.discord-mm-promo--sidebar') : null;
+  const taxSidebarColumn = document.getElementById("tax-sidebar-column");
+  const homeValueChanges = document.getElementById("home-value-changes");
+  const taxCalc = taxSidebarColumn ? taxSidebarColumn.querySelector(".tax-calculator") : null;
+  const middlemanPromo = taxSidebarColumn ? taxSidebarColumn.querySelector(".discord-mm-promo--sidebar") : null;
   const accessoriesFastNav = document.getElementById(GUIDE_FAST_NAV_BOX_ID);
-  const isHome = cfg.id === 'home';
-
-  document.body.classList.toggle('is-home', isHome);
 
   if (taxSidebarColumn) {
-    if (isHome || cfg.sidebarColumn === 'hide') {
-      taxSidebarColumn.style.display = 'flex';
-      taxSidebarColumn.style.visibility = 'hidden';
-      taxSidebarColumn.style.opacity = '0';
-      taxSidebarColumn.style.pointerEvents = 'none';
+    if (isHome || cfg.sidebarColumn === "hide") {
+      taxSidebarColumn.style.display = "flex";
+      taxSidebarColumn.style.visibility = "hidden";
+      taxSidebarColumn.style.opacity = "0";
+      taxSidebarColumn.style.pointerEvents = "none";
     } else {
-      taxSidebarColumn.style.visibility = 'visible';
-      taxSidebarColumn.style.opacity = '1';
-      taxSidebarColumn.style.display = 'flex';
-      taxSidebarColumn.style.pointerEvents = 'auto';
+      taxSidebarColumn.style.visibility = "visible";
+      taxSidebarColumn.style.opacity = "1";
+      taxSidebarColumn.style.display = "flex";
+      taxSidebarColumn.style.pointerEvents = "auto";
     }
   }
 
-  if (typeof applyVisibilityMode === 'function') {
-    applyVisibilityMode(taxCalc, cfg.taxCalc, cfg.id === 'home' ? 'none' : 'block');
-    applyVisibilityMode(middlemanPromo, cfg.middlemanPromo, 'block');
+  if (typeof applyVisibilityMode === "function") {
+    applyVisibilityMode(taxCalc, cfg.taxCalc, cfg.id === "home" ? "none" : "block");
+    applyVisibilityMode(middlemanPromo, cfg.middlemanPromo, "block");
   }
 
   if (cfg.accessoriesFastNav) {
@@ -3866,38 +3901,11 @@ function showSection(name) {
   }
 
   if (homeValueChanges) {
-    homeValueChanges.style.visibility = cfg.homeValueChanges ? 'visible' : 'hidden';
-    homeValueChanges.style.opacity = cfg.homeValueChanges ? '1' : '0';
-    homeValueChanges.style.display = cfg.homeValueChanges ? 'block' : 'none';
+    homeValueChanges.style.visibility = cfg.homeValueChanges ? "visible" : "hidden";
+    homeValueChanges.style.opacity = cfg.homeValueChanges ? "1" : "0";
+    homeValueChanges.style.display = cfg.homeValueChanges ? "block" : "none";
   }
 
-  const useMobileSectionSearch = window.matchMedia("(max-width: 900px)").matches &&
-    shouldUseMobileSectionSearch(name);
-  setHeaderSearchVisible(useMobileSectionSearch || cfg.search !== "hide");
-  syncHeaderSearchPlacement(name);
-  syncBackToTopVisibility();
-
-  getSectionRegistry().forEach(function (sectionCfg) {
-    const el = document.getElementById(sectionCfg.id);
-    if (!el) return;
-    if (sectionCfg.title === name) {
-      if (sectionCfg.id === "richest-players") {
-        el.style.display = "flex";
-        el.style.flexDirection = "column";
-      } else {
-        el.style.display = "block";
-        el.style.flexDirection = "";
-      }
-    } else {
-      el.style.display = "none";
-    }
-  });
-
-  document.querySelectorAll("#sections-nav button").forEach(b => {
-    b.classList.toggle("active", b.dataset.section === name);
-  });
-
-  closeSectionsMenu();
   trackEvent("view_section", { section_name: name });
 }
 
@@ -3908,11 +3916,31 @@ function initSearch() {
   const resetBtn = document.getElementById("search-reset");
   if (!input) return;
 
+  let searchFrame = 0;
+
+  function getActiveSearchScope() {
+    const cfg = typeof getSectionConfig === "function" ? getSectionConfig(_activeSectionName) : null;
+    if (cfg && cfg.id) {
+      const sectionEl = document.getElementById(cfg.id);
+      if (sectionEl) return sectionEl;
+    }
+    return document.getElementById("sections") || document;
+  }
+
   function applySearchFilter() {
     const val = input.value.toLowerCase();
-    document.querySelectorAll(".card").forEach(card => {
-      const name = card.dataset.name.toLowerCase();
-      card.classList.toggle("hidden", !name.includes(val));
+    const scope = getActiveSearchScope();
+    scope.querySelectorAll(".card").forEach(function (card) {
+      const name = (card.dataset.name || "").toLowerCase();
+      card.classList.toggle("hidden", val.length > 0 && !name.includes(val));
+    });
+  }
+
+  function scheduleSearchFilter() {
+    if (searchFrame) cancelAnimationFrame(searchFrame);
+    searchFrame = requestAnimationFrame(function () {
+      searchFrame = 0;
+      applySearchFilter();
     });
   }
 
@@ -3921,13 +3949,13 @@ function initSearch() {
     resetBtn.hidden = !input.value;
   }
 
-  input.addEventListener("input", () => {
-    applySearchFilter();
+  input.addEventListener("input", function () {
+    scheduleSearchFilter();
     updateResetVisibility();
   });
 
   if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
+    resetBtn.addEventListener("click", function () {
       input.value = "";
       applySearchFilter();
       updateResetVisibility();
@@ -4380,6 +4408,16 @@ function slugify(str) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log('DOM loaded, initializing...');
+
+  const sectionsContainer = document.getElementById("sections");
+  const loadingScreen = document.getElementById("loading-screen");
+  const progressBar = document.getElementById("progress-bar");
+  const progressText = document.getElementById("progress-text");
+
+  // Paint home hero immediately — don't block LCP on spreadsheet fetches
+  if (sectionsContainer) sectionsContainer.classList.add("loaded");
+  if (loadingScreen) loadingScreen.style.display = "none";
+
   initAnalytics();
   setupDiscordClickTracking();
   initDiscordJoinNudge();
@@ -4392,10 +4430,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }, 15000);
   
-  const sectionsContainer = document.getElementById("sections");
-  const progressBar = document.getElementById("progress-bar");
-  const progressText = document.getElementById("progress-text");
-
   if (!sectionsContainer || !progressBar || !progressText) {
     loadFooterBoosters();
     return;
@@ -4414,8 +4448,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   initMobileSectionSearch();
   initSearch();
   initTaxCalculator();
-  await loadExternalGiveawayConfig();
-  await loadSectionContentConfig();
+  showSection("Home");
+
+  const giveawayPromise = loadExternalGiveawayConfig();
+  const contentPromise = loadSectionContentConfig();
 
   const totalSections = SECTION_NAMES.length;
   let loadedSections = 0;
@@ -4441,20 +4477,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     loadedSections++;
     const progress = Math.round((loadedSections / totalSections) * 100);
-    progressBar.style.width = progress + '%';
-    progressText.textContent = progress + '%';
+    if (progressBar) progressBar.style.width = progress + "%";
+    if (progressText) progressText.textContent = progress + "%";
     
     return { section: sec, items };
   });
 
   const results = await Promise.all(fetchPromises);
 
-  sectionsContainer.classList.add("loaded");
+  await giveawayPromise;
+  await contentPromise;
 
-  results.forEach(function (result) {
-    _renderedSectionCache.push(result);
-    renderSection(result.section, result.items);
-  });
+  for (let i = 0; i < results.length; i++) {
+    _renderedSectionCache.push(results[i]);
+    renderSection(results[i].section, results[i].items);
+    if (i % 2 === 1) {
+      await new Promise(function (resolve) {
+        setTimeout(resolve, 0);
+      });
+    }
+  }
   if (typeof window.bsvRefreshSavedCardButtons === "function") {
     window.bsvRefreshSavedCardButtons();
   }
@@ -4466,11 +4508,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   initGiveawayBannerCarousels();
   initDiscordPromoCardCarousels();
   renderSectionContentEmbeds();
-
-  setTimeout(function () {
-    var loadingScreen = document.getElementById("loading-screen");
-    if (loadingScreen) loadingScreen.style.display = "none";
-  }, 150);
 
   let initialSection = "Home";
   if (window.location.hash && window.location.hash.startsWith('#sec=')) {
