@@ -56,6 +56,9 @@ const FISH_WEIGHT_STEP = 0.1;
 
 const GIVEAWAY_CAROUSEL_INTERVAL_MS = 10000;
 const DISCORD_CARD_CAROUSEL_INTERVAL_MS = 9000;
+const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/QqD6BSd/j-Sn2mv-Y-1-removebg-preview.png";
+const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv";
+const BSV_LOGO_URL = "https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png";
 const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
 const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh";
 const FISHING_GUIDE_FOOTER_IMAGE_URL = "https://i.ibb.co/pvBhZgf5/no-Filter-7-removebg-preview.png";
@@ -161,9 +164,6 @@ function applyStripGiveawayBannerVisibility() {
 }
 
 function initGiveawayBannerCarousels() {
-  if (typeof window !== "undefined" && window.__giveawayCarouselInit) return;
-  if (typeof window !== "undefined") window.__giveawayCarouselInit = true;
-
   document.querySelectorAll(".giveaway-strip-carousel[data-rotate='1']").forEach(function (carousel) {
     if (carousel.dataset.carouselReady === "1") return;
     carousel.dataset.carouselReady = "1";
@@ -180,43 +180,60 @@ function initGiveawayBannerCarousels() {
   });
 }
 
-function buildGiveawayEndsSoonBadgeHtml() {
-  return `<span class="giveaway-ends-soon-badge">Ends Soon!</span>`;
+function buildHomeAnacondaBannerHtml() {
+  var img = escapeAttr(ANACONDA_GIVEAWAY_IMAGE_URL);
+  var href = escapeAttr(ANACONDA_GIVEAWAY_DISCORD_URL);
+  return (
+    '<article class="home-anaconda-banner" role="complementary" aria-label="Anaconda Giveaway">' +
+      '<div class="home-anaconda-banner__haze" aria-hidden="true"></div>' +
+      '<div class="home-anaconda-banner__scan" aria-hidden="true"></div>' +
+      '<div class="home-anaconda-banner__orb home-anaconda-banner__orb--a" aria-hidden="true"></div>' +
+      '<div class="home-anaconda-banner__orb home-anaconda-banner__orb--b" aria-hidden="true"></div>' +
+      '<div class="home-anaconda-banner__sparks" aria-hidden="true">' +
+        '<span></span><span></span><span></span><span></span>' +
+      "</div>" +
+      '<div class="home-anaconda-banner__inner">' +
+        '<span class="home-anaconda-banner__urgency">Ends Very Soon!</span>' +
+        '<div class="home-anaconda-banner__stage">' +
+          '<span class="home-anaconda-banner__ring" aria-hidden="true"></span>' +
+          '<span class="home-anaconda-banner__pedestal" aria-hidden="true"></span>' +
+          '<img src="' + img + '" alt="Anaconda" class="home-anaconda-banner__gun" width="280" height="170" loading="lazy" decoding="async">' +
+        "</div>" +
+        '<div class="home-anaconda-banner__copy">' +
+          '<p class="home-anaconda-banner__eyebrow">Omega Giveaway</p>' +
+          '<h3 class="home-anaconda-banner__title">Anaconda Giveaway</h3>' +
+          '<p class="home-anaconda-banner__hook">Join our discord server to enter!</p>' +
+        "</div>" +
+        '<a href="' + href + '" target="_blank" rel="noopener noreferrer" class="home-anaconda-banner__cta">Enter Now <span aria-hidden="true">→</span></a>' +
+      "</div>" +
+    "</article>"
+  );
 }
 
-function buildRobuxStripSlideHtml() {
-  var img = escapeAttr(ROBUX_GIVEAWAY_IMAGE_URL);
-  var href = escapeAttr(ROBUX_GIVEAWAY_DISCORD_URL);
-  return `
-        ${buildGiveawayEndsSoonBadgeHtml()}
-        <div class="robux-banner-figure">
-          <img src="${img}" alt="5,000 Robux giveaway prize" class="robux-banner-prize-image" loading="lazy" decoding="async" />
-        </div>
-        <div class="robux-banner-body">
-          <p class="legendary-banner-text humvee-banner-copy humvee-banner-copy--stack">
-            <span class="humvee-banner-title">5,000 Robux Giveaway!</span>
-          </p>
-          <div class="legendary-banner-right humvee-banner-actions">
-            <a href="${href}" target="_blank" rel="noopener" class="legendary-banner-btn humvee-banner-btn-holo robux-banner-btn-holo">Enter Giveaway</a>
-          </div>
-        </div>
-        <div class="giveaway-strip-side-spacer" aria-hidden="true"></div>`;
-}
-
-function buildRotatingGiveawayCarouselHtml(bannerId) {
-  var id = escapeAttr(bannerId);
-  return `
-      <div class="giveaway-strip-carousel" id="${id}" data-rotate="1" style="display: none;" aria-live="polite">
-        <div class="giveaway-strip-carousel__viewport">
-          <article class="giveaway-strip-carousel__slide legendary-banner giveaway-banner--robux giveaway-banner--robux-strip is-active" data-slide="robux" aria-hidden="false">
-            ${buildRobuxStripSlideHtml()}
-          </article>
-        </div>
-      </div>`;
+function initHomeHeroBannerCarousel() {
+  document.querySelectorAll(".home-hero-banner-carousel[data-rotate='1']").forEach(function (carousel) {
+    if (carousel.dataset.carouselReady === "1") return;
+    carousel.dataset.carouselReady = "1";
+    var slides = carousel.querySelectorAll(".home-hero-banner-carousel__slide");
+    if (slides.length < 2) return;
+    var idx = 0;
+    setInterval(function () {
+      slides[idx].classList.remove("is-active");
+      slides[idx].setAttribute("aria-hidden", "true");
+      idx = (idx + 1) % slides.length;
+      slides[idx].classList.add("is-active");
+      slides[idx].setAttribute("aria-hidden", "false");
+    }, GIVEAWAY_CAROUSEL_INTERVAL_MS);
+  });
 }
 
 function buildHumveeGiveawayBannerHtml(bannerId) {
   return "";
+}
+
+function mountHomeGiveawayCarousel() {
+  var homeHumveeWrap = document.querySelector(".home-humvee-banner-wrap");
+  if (homeHumveeWrap) homeHumveeWrap.innerHTML = "";
 }
 
 function getDiscordPromoSectionCopy(sectionTitle) {
@@ -445,13 +462,21 @@ function mountHomeDiscordPromo() {
   slot.outerHTML =
     '<div class="home-hero-row">' +
       '<div class="home-hero-row__banner">' +
-        '<div class="home-discord-promo-slot">' +
-          buildDiscordPromoBannerHtml(false) +
+        '<div class="home-hero-banner-carousel" data-rotate="1" aria-live="polite">' +
+          '<div class="home-hero-banner-carousel__viewport">' +
+            '<div class="home-hero-banner-carousel__slide is-active" data-slide="discord" aria-hidden="false">' +
+              buildDiscordPromoBannerHtml(false) +
+            "</div>" +
+            '<div class="home-hero-banner-carousel__slide" data-slide="anaconda" aria-hidden="true">' +
+              buildHomeAnacondaBannerHtml() +
+            "</div>" +
+          "</div>" +
         "</div>" +
       "</div>" +
       '<div class="home-hero-row__stats" id="home-site-stats-slot"></div>' +
     "</div>";
   mountHomeSiteStats();
+  initHomeHeroBannerCarousel();
 }
 
 function mountHomeSiteStats() {
@@ -2951,6 +2976,7 @@ function renderSection(title, items) {
         <div class="cards">
           ${buildCardsHtmlWithDiscordPromo(items, createCard, "Omega")}
         </div>
+        <div class="omega-anaconda-slot">${buildHomeAnacondaBannerHtml()}</div>
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -4437,7 +4463,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   var homeHumveeWrap = document.querySelector(".home-humvee-banner-wrap");
   if (homeHumveeWrap) {
-    homeHumveeWrap.innerHTML = "";
+    mountHomeGiveawayCarousel();
   }
   mountHomeDiscordPromo();
 
