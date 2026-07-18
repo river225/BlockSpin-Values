@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
   <link rel="apple-touch-icon" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
   <title>Privacy Policy - BlockSpin Values</title>
-  <link rel="stylesheet" href="style.css?v=20260704-cinematic-about">
+  <link rel="stylesheet" href="style.css?v=20260718-legal">
 </head>
 <body data-bsv-page="legal">
 
@@ -18,87 +18,132 @@
     
     <h1>Privacy Policy</h1>
     
-    <p class="legal-page__intro">BlockSpin Values ("we," "our," or "us") respects your privacy. This Privacy Policy explains how we handle information when you use our website at https://blockspinvalues.com/</p>
+    <p class="legal-page__intro">BlockSpin Values ("we," "our," or "us") respects your privacy. This Privacy Policy explains how we handle information when you use our website at <a href="https://blockspinvalues.com/">https://blockspinvalues.com/</a> and our Discord bot / community tools connected to that service.</p>
     
     <h2>1. Information We Collect</h2>
-    <p><strong>We do not require accounts</strong> to use the website. We do not ask you to register, and we do not run a login system for general browsing.</p>
-    <p>If you <strong>contact us</strong> by email or through Discord, we receive only what you choose to send (for example an email address or Discord username).</p>
-    <p>We do not collect payment information; the website is free to use.</p>
-    
-    <h2>2. Browser Storage (localStorage)</h2>
-    <p>We store a small amount of data <strong>in your browser on your device</strong> using <strong>localStorage</strong> (not on our servers). Keys include:</p>
+    <p>You can browse most of the website <strong>without creating an account</strong>. Some optional features require Discord login.</p>
+    <p>Depending on how you use our services, we may process:</p>
     <ul>
-      <li><strong><code>bsv-theme</code></strong> — your theme choice (for example default or pink) so it can persist when you return</li>
+      <li><strong>Discord account data</strong> (when you choose to log in): Discord user ID, username, display name / global name, and avatar URL, obtained through Discord OAuth</li>
+      <li><strong>Saved cards</strong>: item identifiers and display metadata you choose to bookmark (for example item name, image URL, section)</li>
+      <li><strong>Contact information</strong> you voluntarily send us (email or Discord username) if you message us</li>
+      <li><strong>Technical / hosting data</strong> such as IP address, browser type, and pages requested, which may appear in hosting or server logs</li>
+      <li><strong>Discord bot operational data</strong> described in Section 6</li>
     </ul>
-    <p>Third-party ad scripts (such as Google AdSense) may set additional storage on your device under their own policies; see Section 3 above.</p>
-    <p>You can clear this data anytime through your browser’s settings (e.g. “clear site data” for this website).</p>
+    <p>We do not collect payment card information. The website is free to use.</p>
     
-    <h2>3. Advertising (Google AdSense)</h2>
+    <h2>2. Discord Login (Optional)</h2>
+    <p>Optional Discord login lets you use features such as <strong>Saved Cards</strong> across devices.</p>
+    <ul>
+      <li>Login is handled through <strong>Discord OAuth</strong>. We do not receive or store your Discord password.</li>
+      <li>After you authorize the app, our backend issues a signed session token and returns it to the website.</li>
+      <li>Your browser stores that session token in <strong>localStorage</strong> under a key such as <code>bsv-discord-auth</code> so you stay signed in.</li>
+      <li>We may also temporarily store a return URL (where to send you after login) in sessionStorage / localStorage or a short-lived cookie during the OAuth flow.</li>
+      <li>You can log out from the website. Clearing site data in your browser also removes the local session token.</li>
+    </ul>
+    <p>Discord’s own processing is governed by <a href="https://discord.com/privacy" target="_blank" rel="noopener">Discord’s Privacy Policy</a>.</p>
+    
+    <h2>3. Saved Cards</h2>
+    <p>Saved Cards lets logged-in users bookmark items from the value list (subject to a maximum, currently 60 cards).</p>
+    <ul>
+      <li><strong>Server storage:</strong> When you are logged in and our API is available, saved cards are stored on our bot backend (hosted with providers such as Railway) in per-user files keyed by Discord user ID.</li>
+      <li><strong>Local fallback:</strong> If the server is unavailable, cards may also be kept temporarily in your browser under keys like <code>bsv-saved-cards-local-{userId}</code> and synced when possible.</li>
+      <li><strong>What is stored:</strong> Discord user ID plus card metadata needed to restore the bookmark (not your Discord password or message history).</li>
+      <li><strong>Use:</strong> Only to show and manage your saved items on the website.</li>
+      <li><strong>Deletion:</strong> Remove cards in the Saved Cards UI, or contact us to request deletion of your saved-card file. Logging out does not automatically wipe server-side saved cards unless you delete them or request account/data deletion.</li>
+    </ul>
+    
+    <h2>4. Browser Storage (localStorage / sessionStorage)</h2>
+    <p>We store a small amount of data <strong>on your device</strong> (not always on our servers). Examples include:</p>
+    <ul>
+      <li><code>bsv-discord-auth</code> — Discord session token (if logged in)</li>
+      <li><code>bsv-oauth-return-to</code> — temporary return URL during Discord login</li>
+      <li><code>bsv-saved-cards-local-*</code> — local saved-card fallback</li>
+      <li><code>bsv-lang</code> — language preference</li>
+      <li><code>bsv-font</code> — font preference</li>
+      <li><code>bsv-theme</code> — theme preference (if enabled)</li>
+      <li><code>bsv-discord-nudge-dismissed</code> — whether you dismissed a Discord join reminder (session)</li>
+    </ul>
+    <p>Third-party ad scripts (such as Google AdSense) may set additional storage under their own policies. You can clear site data anytime in your browser settings.</p>
+    
+    <h2>5. Advertising (Google AdSense)</h2>
     <p>We may display advertisements through <strong>Google AdSense</strong>. Google and its partners may use <strong>cookies, local storage, advertising identifiers, and similar technologies</strong> to show and measure ads and, where allowed, to personalize ads.</p>
-    <p>Google’s use of advertising cookies is described in <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">How Google uses cookies in advertising</a>. For more on how Google handles data, see <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google’s Privacy Policy</a>. You can manage some ad personalization at <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.</p>
-    <p>Where required by law (for example in the EEA or UK), personalized or non-essential advertising cookies may only be used with your consent via a consent mechanism we implement or through your browser — follow applicable prompts on the site or use your device/browser controls.</p>
+    <p>See <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">How Google uses cookies in advertising</a>, <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google’s Privacy Policy</a>, and <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.</p>
     
-    <h2>4. Hosting and Technical Information</h2>
-    <p>The site may be hosted on services such as <strong>GitHub Pages</strong> or comparable hosting. Those providers may automatically log technical information (for example browser type, device type, IP address in server logs, pages requested, and referral URL) for security and operations. We do not directly control those logs; see your host’s privacy documentation.</p>
-    <p>When you use the site, your browser also sends requests to third parties we rely on (for example <strong>Google</strong> for Sheets or ads, <strong>Discord</strong> for invite information). Those services receive standard request data as described in their own policies.</p>
+    <h2>6. Discord Bot and Community Tools</h2>
+    <p>Our Discord application (“BSV Bot”) operates in the BlockSpin Values Discord server and related systems. Depending on the feature, it may process:</p>
+    <ul>
+      <li><strong>Server member / role data:</strong> to assign or remove roles (for example server-tag roles and Middleman Client status roles), check staff permissions, announce boosts, and support website middleman listings</li>
+      <li><strong>Message activity in specific channels:</strong> for example, counting messages in our vouch channel to update client-status roles. For that feature we store <strong>Discord user IDs and numeric message counts</strong>, not a full archive of message text</li>
+      <li><strong>Message content in limited features:</strong> such as reacting to W/F/L keywords in a designated channel, or operating middleman/support ticket flows. Content is read to provide the feature; we do not use message content to train AI/ML models</li>
+      <li><strong>Ticket / support operational records:</strong> as needed to run middleman and support workflows</li>
+    </ul>
+    <p>Bot data is stored on our hosting provider for those features to keep working after restarts. We do not sell this data. Users can limit participation by not using those channels/features, leaving the server, or contacting us / server staff about role or data concerns.</p>
     
-    <h2>5. How Our Features Use Your Device</h2>
-    <p><strong>Tax calculator and item search:</strong> Run in your browser. We do not store your inputs or searches on our servers.</p>
-    <p><strong>Spreadsheet content:</strong> Values and other content are fetched in your browser from public Google Sheets (read-only). Your device contacts Google’s servers to retrieve that data.</p>
-    <p><strong>Discord:</strong> We may call Discord’s public API (for example to show approximate server member counts on banners). That request is made from your browser to Discord. See <a href="https://discord.com/privacy" target="_blank" rel="noopener">Discord’s Privacy Policy</a>.</p>
+    <h2>7. Hosting and Technical Information</h2>
+    <p>The website may be hosted on services such as <strong>GitHub Pages</strong>. The Discord bot / API may be hosted on services such as <strong>Railway</strong>. Providers may log technical information for security and operations.</p>
+    <p>Your browser may also contact third parties we rely on (Google Sheets, Discord, image hosts, Roblox avatar helpers). Those services receive standard request data under their own policies.</p>
     
-    <h2>6. Richest Players Leaderboard</h2>
+    <h2>8. How Website Features Use Your Device</h2>
+    <p><strong>Tax calculator and item search:</strong> Run in your browser. We do not store calculator inputs or searches on our servers as a personal profile.</p>
+    <p><strong>Spreadsheet content:</strong> Values are fetched in your browser from public Google Sheets (read-only).</p>
+    <p><strong>Discord invite counts / boosters:</strong> Public Discord or bot API requests may be made to display member counts or booster lists.</p>
+    
+    <h2>9. Richest Players Leaderboard</h2>
     <p>Our "Richest Players" feature displays in-game wealth rankings:</p>
     <ul>
-      <li><strong>Official Leaderboard:</strong> This is BlockSpin's official richest players leaderboard maintained by the game's community management</li>
-      <li><strong>Data Source:</strong> Player usernames, in-game levels and in-game cash amounts are pulled from an official Google Sheet regulated by BlockSpin's Community Lead, Csnsor</li>
+      <li><strong>Official Leaderboard:</strong> BlockSpin's official richest players leaderboard maintained by the game's community management</li>
+      <li><strong>Data Source:</strong> Player usernames, in-game levels and cash amounts from an official Google Sheet regulated by BlockSpin's Community Lead, Csnsor</li>
       <li><strong>Roblox Profiles:</strong> Clicking a player name links to their public Roblox profile</li>
-      <li><strong>Public Information:</strong> All displayed information (usernames, cash amounts) is already publicly visible in-game</li>
-      <li><strong>No Personal Data:</strong> We only display Roblox usernames and in-game currency amounts - no real names, emails, or personal information</li>
-      <li><strong>Removal Requests:</strong> For leaderboard removal requests, contact BlockSpin's Community Lead Csnsor</li>
+      <li><strong>Public Information:</strong> Displayed usernames and cash amounts are already publicly visible in-game</li>
+      <li><strong>Removal Requests:</strong> Contact BlockSpin's Community Lead Csnsor, or contact us for guidance</li>
     </ul>
     
-    <h2>7. Third-Party Services and Links</h2>
-    <p>Our website loads data from and links to external services. When you visit or click through, those services’ privacy policies apply:</p>
+    <h2>10. Third-Party Services and Links</h2>
+    <p>We load data from and link to external services, including Google Sheets, Google AdSense, Discord, TikTok, Roblox, and image hosts (for example ImgBB). Their privacy policies apply when you use those services.</p>
+    
+    <h2>11. How We Use Data</h2>
+    <p>We use the information above to:</p>
     <ul>
-      <li><strong>Google Sheets:</strong> Item values and other data are read from public Google Sheets in your browser</li>
-      <li><strong>Google AdSense:</strong> See Section 3 above</li>
-      <li><strong>Discord:</strong> Links to our server; optional API requests for public invite information</li>
-      <li><strong>TikTok:</strong> Links to creator profiles</li>
-      <li><strong>Roblox:</strong> Links to user profiles</li>
-      <li><strong>ImgBB:</strong> Images for items and crew logos</li>
+      <li>Operate the website, Discord bot, tickets, roles, and giveaways</li>
+      <li>Provide Discord login and Saved Cards</li>
+      <li>Remember preferences on your device</li>
+      <li>Show ads (via Google) and measure basic site operations</li>
+      <li>Respond to support requests and protect against abuse</li>
     </ul>
-    <p>We are not responsible for the privacy practices of third-party services.</p>
+    <p>We do <strong>not</strong> sell your personal data, and we do <strong>not</strong> use Discord message content to train machine learning or AI models.</p>
     
-    <h2>8. Your Rights and Choices</h2>
-    <p>Depending on where you live, you may have rights to access, correct, delete, or restrict processing of personal data, and to object to certain processing (for example targeted advertising). Because we minimize what we hold, many requests may be limited to information you sent us directly or to data held by third parties such as Google — use their tools and your browser settings where applicable.</p>
+    <h2>12. Your Rights and Choices</h2>
+    <p>Depending on where you live, you may have rights to access, correct, delete, or restrict processing of personal data. You can:</p>
     <ul>
-      <li><strong>Theme and local storage:</strong> Clear site data in your browser to remove our localStorage entries</li>
-      <li><strong>Ads:</strong> Use <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a> and your browser’s cookie controls</li>
-      <li><strong>Leaderboard:</strong> If your Roblox username appears on the Richest Players list and you wish to be removed, contact BlockSpin’s Community Lead (Csnsor) as described in Section 6 above, or contact us for guidance</li>
+      <li>Log out and clear site data in your browser</li>
+      <li>Delete Saved Cards in the website UI</li>
+      <li>Manage ads via <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a></li>
+      <li>Contact us (Section 14) to request deletion of Discord-login session records or saved-card data we control</li>
+      <li>Leave or adjust participation in Discord features / ask server staff about roles</li>
     </ul>
     
-    <h2>9. Changes to This Policy</h2>
-    <p>We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. Any changes will be posted on this page with an updated "Last Updated" date. Continued use of the website after changes constitutes acceptance of the updated policy.</p>
+    <h2>13. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date. Continued use after changes means you accept the updated policy.</p>
     
-    <h2>10. Contact Us</h2>
-    <p>If you have any questions, concerns, or requests regarding this Privacy Policy, please contact us:</p>
+    <h2>14. Contact Us</h2>
+    <p>Questions or privacy requests:</p>
     <ul>
       <li><strong>Email:</strong> riverytacc11@gmail.com</li>
       <li><strong>Discord:</strong> _.riverr</li>
     </ul>
     
-    <h2>11. Compliance</h2>
-    <p>We aim to follow applicable privacy laws, including the GDPR and CCPA, where they apply to our operations. This policy is not legal advice; consult a professional for your specific situation.</p>
+    <h2>15. Compliance</h2>
+    <p>We aim to follow applicable privacy laws, including the GDPR and CCPA, where they apply. This policy is not legal advice.</p>
 
     <div class="legal-page__footer">
-      <p class="last-updated">Last Updated: April 4, 2026</p>
+      <p class="last-updated">Last Updated: July 18, 2026</p>
       <a href="index.html" class="back-btn">← Back to Home</a>
     </div>
   </div>
   
 <div id="bsv-site-footer"></div>
 <script src="site-chrome.js?v=20260712-site-chrome"></script>
-<script src="script.js"></script>
+<script src="script.js?v=20260718-legal"></script>
 </body>
 </html>

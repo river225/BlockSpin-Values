@@ -100,7 +100,14 @@ if (typeof window !== "undefined") {
 
 const DISCORD_JOIN_NUDGE_DELAY_MS = 45000;
 const DISCORD_JOIN_NUDGE_STORAGE_KEY = "bsv-discord-nudge-dismissed";
-const ROBUX_GIVEAWAY_SECTION_TITLES = new Set(["Common / Uncommon", "Rare", "Epic", "Omega", "Misc"]);
+const ROBUX_GIVEAWAY_SECTION_TITLES = new Set([
+  "Common / Uncommon",
+  "Rare",
+  "Epic",
+  "Legendary",
+  "Vehicles",
+  "Misc"
+]);
 const GIVEAWAY_CONFIG_SPREADSHEET_ID = "1hjj8Pd21KOhI9bjUz4-UupADhJzksATcVDJfo186GFk";
 const GIVEAWAYS_SHEET_NAME = "Giveaways";
 const BANNERS_SHEET_NAME = "banner";
@@ -208,6 +215,34 @@ function buildHomeAnacondaBannerHtml() {
       "</div>" +
     "</article>"
   );
+}
+
+function buildHomeRobuxBannerHtml() {
+  var img = escapeAttr(ROBUX_GIVEAWAY_IMAGE_URL);
+  var href = escapeAttr(ROBUX_GIVEAWAY_DISCORD_URL);
+  return (
+    '<article class="home-robux-banner" role="complementary" aria-label="10K Robux Giveaway">' +
+      '<div class="home-robux-banner__stars" aria-hidden="true"></div>' +
+      '<div class="home-robux-banner__nebula" aria-hidden="true"></div>' +
+      '<div class="home-robux-banner__inner">' +
+        '<span class="home-robux-banner__urgency">Ends Very Soon!</span>' +
+        '<div class="home-robux-banner__prize-wrap">' +
+          '<img src="' + img + '" alt="10,000 Robux" class="home-robux-banner__prize" width="200" height="200" loading="lazy" decoding="async">' +
+        "</div>" +
+        '<div class="home-robux-banner__copy">' +
+          '<p class="home-robux-banner__amount">10,000 Robux</p>' +
+          '<h3 class="home-robux-banner__title">Robux Giveaway</h3>' +
+          '<p class="home-robux-banner__hook">Join our discord server to enter!</p>' +
+        "</div>" +
+        '<a href="' + href + '" target="_blank" rel="noopener noreferrer" class="home-robux-banner__cta">Enter Now <span aria-hidden="true">→</span></a>' +
+      "</div>" +
+    "</article>"
+  );
+}
+
+function buildSectionRobuxSlotHtml(title) {
+  if (!ROBUX_GIVEAWAY_SECTION_TITLES.has(title)) return "";
+  return '<div class="section-robux-slot">' + buildHomeRobuxBannerHtml() + "</div>";
 }
 
 function initHomeHeroBannerCarousel() {
@@ -469,6 +504,9 @@ function mountHomeDiscordPromo() {
             "</div>" +
             '<div class="home-hero-banner-carousel__slide" data-slide="anaconda" aria-hidden="true">' +
               buildHomeAnacondaBannerHtml() +
+            "</div>" +
+            '<div class="home-hero-banner-carousel__slide" data-slide="robux" aria-hidden="true">' +
+              buildHomeRobuxBannerHtml() +
             "</div>" +
           "</div>" +
         "</div>" +
@@ -2987,6 +3025,7 @@ function renderSection(title, items) {
         <div class="cards">
           ${buildCardsHtmlWithDiscordPromo(items, createCard, "Epic")}
         </div>
+        ${buildSectionRobuxSlotHtml("Epic")}
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -2997,6 +3036,7 @@ function renderSection(title, items) {
         <div class="cards">
           ${buildCardsHtmlWithDiscordPromo(items, createCard, title)}
         </div>
+        ${buildSectionRobuxSlotHtml(title)}
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -3015,6 +3055,7 @@ function renderVehiclesSectionWithBanner(items) {
       <div class="cards">
         ${buildCardsHtmlWithDiscordPromo(items, createCard, "Vehicles")}
       </div>
+      ${buildSectionRobuxSlotHtml("Vehicles")}
     </section>
   `;
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -3933,6 +3974,7 @@ function showSectionDeferred(name, cfg, isHome) {
   }
 
   trackEvent("view_section", { section_name: name });
+  syncMobileTaxPanel(cfg);
 }
 
 window.showSection = showSection;
@@ -4119,6 +4161,125 @@ function initTaxCalculator() {
   });
 
   update();
+}
+
+var MOBILE_TAX_MQ = "(max-width: 1024px)";
+
+function isMobileTaxViewport() {
+  return window.matchMedia(MOBILE_TAX_MQ).matches;
+}
+
+function getMobileTaxArrowSectionIds() {
+  if (typeof getSectionRegistry === "function") {
+    return getSectionRegistry()
+      .filter(function (entry) {
+        return entry.mobileTaxArrow === true || entry.taxCalc === "show";
+      })
+      .map(function (entry) {
+        return entry.id;
+      });
+  }
+  return ["uncommon", "rare", "epic", "legendary", "omega", "misc", "vehicles"];
+}
+
+function setMobileTaxPanelOpen(open) {
+  var fab = document.getElementById("mobile-calc-arrow");
+  var panel = document.getElementById("mobile-tax-calc");
+  if (!panel) return;
+
+  if (open) {
+    panel.hidden = false;
+    requestAnimationFrame(function () {
+      panel.classList.add("is-open");
+      if (fab) fab.classList.add("is-open");
+    });
+  } else {
+    panel.classList.remove("is-open");
+    if (fab) fab.classList.remove("is-open");
+    window.setTimeout(function () {
+      if (!panel.classList.contains("is-open")) panel.hidden = true;
+    }, 220);
+  }
+
+  if (fab) fab.setAttribute("aria-expanded", open ? "true" : "false");
+
+  if (open) {
+    var input = document.getElementById("mobile-tax-input");
+    if (input) {
+      setTimeout(function () {
+        input.focus({ preventScroll: true });
+      }, 180);
+    }
+  }
+}
+
+function syncMobileTaxPanel(cfg) {
+  var fab = document.getElementById("mobile-calc-arrow");
+  if (!fab) return;
+
+  var sectionId = cfg && cfg.id ? cfg.id : "";
+  var allowFab =
+    isMobileTaxViewport() &&
+    !!sectionId &&
+    getMobileTaxArrowSectionIds().indexOf(sectionId) !== -1;
+
+  fab.hidden = !allowFab;
+  fab.classList.toggle("is-visible", allowFab);
+
+  if (!allowFab) setMobileTaxPanelOpen(false);
+}
+
+function initMobileTaxPanel() {
+  var fab = document.getElementById("mobile-calc-arrow");
+  var panel = document.getElementById("mobile-tax-calc");
+  var closeBtn = document.getElementById("mobile-calc-close");
+  if (!fab || !panel) return;
+  if (fab.dataset.bsvMobileTaxInit === "1") return;
+  fab.dataset.bsvMobileTaxInit = "1";
+
+  bindTaxCalcWidget(panel);
+
+  fab.addEventListener("click", function () {
+    if (fab.hidden) return;
+    setMobileTaxPanelOpen(!panel.classList.contains("is-open"));
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function () {
+      setMobileTaxPanelOpen(false);
+    });
+  }
+
+  // Tap outside closes the panel but keeps the entered amount.
+  document.addEventListener(
+    "pointerdown",
+    function (e) {
+      if (!panel.classList.contains("is-open")) return;
+      if (panel.contains(e.target) || fab.contains(e.target)) return;
+      setMobileTaxPanelOpen(false);
+    },
+    true
+  );
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && panel.classList.contains("is-open")) {
+      setMobileTaxPanelOpen(false);
+    }
+  });
+
+  var mq = window.matchMedia(MOBILE_TAX_MQ);
+  function onViewportChange() {
+    var cfg =
+      typeof getSectionConfig === "function" ? getSectionConfig(_activeSectionName) : null;
+    syncMobileTaxPanel(cfg);
+  }
+  if (typeof mq.addEventListener === "function") {
+    mq.addEventListener("change", onViewportChange);
+  } else if (typeof mq.addListener === "function") {
+    mq.addListener(onViewportChange);
+  }
+
+  onViewportChange();
 }
 
 function copyToClipboard(text) {
@@ -4474,6 +4635,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initMobileSectionSearch();
   initSearch();
   initTaxCalculator();
+  initMobileTaxPanel();
   showSection("Home");
 
   const giveawayPromise = loadExternalGiveawayConfig();

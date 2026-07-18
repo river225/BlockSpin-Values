@@ -223,6 +223,10 @@
       "tax.bullets":
         "- <strong>You NEED BlockSpin Plus</strong> for this Calculator<br>- <span class=\"tax-warning-line\">Never reset with more than 60,000 cash on you</span><br>- <strong>NEVER</strong> leave the game in combat after resetting<br>- Wait 1 min in between cash drops",
       "tax.openMobile": "Open tax calculator",
+      "tax.closeMobile": "Close tax calculator",
+      "tax.afterLabel": "After Tax",
+      "tax.fabLabel": "Tax Calc",
+      "tax.bulletsShort": "Needs <strong>BlockSpin Plus</strong> · Never reset with 60k+ cash",
       "tax.dropOnce": "Drop ${amount} once",
       "tax.dropAmount": "Drop ${amount}",
       "tax.drop40kTimes": "Drop $40,000 {count} times",
@@ -511,6 +515,10 @@
       "tax.bullets":
         "- <strong>Vous avez BESOIN de BlockSpin Plus</strong> pour ce calculateur<br>- <span class=\"tax-warning-line\">Ne reset jamais avec plus de 60 000 d'argent sur toi</span><br>- <strong>NE JAMAIS</strong> quitter le jeu en combat après un reset<br>- Attendre 1 min entre chaque lâcher d'argent",
       "tax.openMobile": "Ouvrir le calculateur de taxe",
+      "tax.closeMobile": "Fermer le calculateur de taxe",
+      "tax.afterLabel": "Après taxe",
+      "tax.fabLabel": "Taxe",
+      "tax.bulletsShort": "Nécessite <strong>BlockSpin Plus</strong> · Ne reset jamais avec 60k+",
       "tax.dropOnce": "Lâcher ${amount} une fois",
       "tax.dropAmount": "Lâcher ${amount}",
       "tax.drop40kTimes": "Lâcher 40 000 $ {count} fois",
@@ -799,6 +807,10 @@
       "tax.bullets":
         "- <strong>NECESITAS BlockSpin Plus</strong> para esta calculadora<br>- <span class=\"tax-warning-line\">Nunca reinicies con más de 60.000 de dinero encima</span><br>- <strong>NUNCA</strong> salgas del juego en combate después de reiniciar<br>- Espera 1 min entre cada soltado de dinero",
       "tax.openMobile": "Abrir calculadora de impuestos",
+      "tax.closeMobile": "Cerrar calculadora de impuestos",
+      "tax.afterLabel": "Después de impuestos",
+      "tax.fabLabel": "Tax",
+      "tax.bulletsShort": "Necesitas <strong>BlockSpin Plus</strong> · Nunca reinicies con 60k+",
       "tax.dropOnce": "Soltar ${amount} una vez",
       "tax.dropAmount": "Soltar ${amount}",
       "tax.drop40kTimes": "Soltar $40,000 {count} veces",
