@@ -216,23 +216,25 @@
       "tax.title": "Tax Calculator",
       "tax.tooltip":
         "Our Tax Calculator has been carefully tested to ensure accuracy. If you find an issue, please let us know.",
-      "tax.placeholder": "Enter cash amount to drop",
+      "tax.placeholder": "Enter amount you want after tax",
       "tax.howTitle": "How does it work?",
       "tax.howIntro":
         "Tax Calculator shows exactly how much cash to drop and in what order to avoid losing money to the game's cash tax system.",
       "tax.bullets":
-        "- <strong>You NEED BlockSpin Plus</strong> for this Calculator<br>- <span class=\"tax-warning-line\">Never reset with more than 60,000 cash on you</span><br>- <strong>NEVER</strong> leave the game in combat after resetting<br>- Wait 1 min in between cash drops",
+        "- <strong>You NEED BlockSpin Plus</strong> for this Calculator<br>- Max drop is <strong>$60,000</strong> (gives <strong>$43,636</strong> after tax)<br>- <span class=\"tax-warning-line\">Never reset with more than 60,000 cash on you</span><br>- <strong>NEVER</strong> leave the game in combat after resetting<br>- Wait 1 min in between cash drops",
       "tax.openMobile": "Open tax calculator",
       "tax.closeMobile": "Close tax calculator",
-      "tax.afterLabel": "After Tax",
+      "tax.afterLabel": "To Drop",
       "tax.fabLabel": "Tax Calc",
-      "tax.bulletsShort": "Needs <strong>BlockSpin Plus</strong> · Never reset with 60k+ cash",
-      "tax.dropOnce": "Drop ${amount} once",
-      "tax.dropAmount": "Drop ${amount}",
-      "tax.drop40kTimes": "Drop $40,000 {count} times",
-      "tax.drop40kTimesOnce": "Drop $40,000 once",
-      "tax.thenDrop": "then Drop ${amount}.",
-      "tax.howLabel": "To drop {want} in game you drop {withdraw}. Steps:",
+      "tax.bulletsShort": "Needs <strong>BlockSpin Plus</strong> · Max drop $60k → $43,636",
+      "tax.dropOnce": "Drop {amount} once",
+      "tax.dropAmount": "Drop {amount}",
+      "tax.dropMaxTimes": "Drop $60,000 {count} times",
+      "tax.dropMaxTimesOnce": "Drop $60,000 once",
+      "tax.drop40kTimes": "Drop $60,000 {count} times",
+      "tax.drop40kTimesOnce": "Drop $60,000 once",
+      "tax.thenDrop": "Then drop {amount}.",
+      "tax.howLabel": "For {want} after tax, drop {withdraw}. Steps:",
       "promo.middleman":
         "Tired of getting scammed during trades?<br>Our Middleman service can help you never get scammed again!<br>Join our discord server and get a Middleman today!<br><span class=\"discord-mm-promo-cta\">Click here to join our Discord</span>",
       "giveaway.modalTitle": "Giveaway Active!",
@@ -508,23 +510,25 @@
       "tax.title": "Calculateur de taxe",
       "tax.tooltip":
         "Notre calculateur de taxe a été testé avec soin pour garantir sa précision. Si vous trouvez un problème, faites-le nous savoir.",
-      "tax.placeholder": "Entrez le montant d'argent à lâcher",
+      "tax.placeholder": "Entrez le montant voulu après taxe",
       "tax.howTitle": "Comment ça marche ?",
       "tax.howIntro":
         "Le calculateur de taxe indique exactement combien d'argent lâcher et dans quel ordre pour éviter de perdre de l'argent à cause du système de taxe du jeu.",
       "tax.bullets":
-        "- <strong>Vous avez BESOIN de BlockSpin Plus</strong> pour ce calculateur<br>- <span class=\"tax-warning-line\">Ne reset jamais avec plus de 60 000 d'argent sur toi</span><br>- <strong>NE JAMAIS</strong> quitter le jeu en combat après un reset<br>- Attendre 1 min entre chaque lâcher d'argent",
+        "- <strong>Vous avez BESOIN de BlockSpin Plus</strong> pour ce calculateur<br>- Lâcher max <strong>60 000 $</strong> (donne <strong>43 636 $</strong> après taxe)<br>- <span class=\"tax-warning-line\">Ne reset jamais avec plus de 60 000 d'argent sur toi</span><br>- <strong>NE JAMAIS</strong> quitter le jeu en combat après un reset<br>- Attendre 1 min entre chaque lâcher d'argent",
       "tax.openMobile": "Ouvrir le calculateur de taxe",
       "tax.closeMobile": "Fermer le calculateur de taxe",
-      "tax.afterLabel": "Après taxe",
+      "tax.afterLabel": "À lâcher",
       "tax.fabLabel": "Taxe",
-      "tax.bulletsShort": "Nécessite <strong>BlockSpin Plus</strong> · Ne reset jamais avec 60k+",
-      "tax.dropOnce": "Lâcher ${amount} une fois",
-      "tax.dropAmount": "Lâcher ${amount}",
-      "tax.drop40kTimes": "Lâcher 40 000 $ {count} fois",
-      "tax.drop40kTimesOnce": "Lâcher 40 000 $ une fois",
-      "tax.thenDrop": "puis lâcher ${amount}.",
-      "tax.howLabel": "Pour lâcher {want} en jeu, vous lâchez {withdraw}. Étapes :",
+      "tax.bulletsShort": "Nécessite <strong>BlockSpin Plus</strong> · Max 60k → 43 636 $",
+      "tax.dropOnce": "Lâcher {amount} une fois",
+      "tax.dropAmount": "Lâcher {amount}",
+      "tax.dropMaxTimes": "Lâcher 60 000 $ {count} fois",
+      "tax.dropMaxTimesOnce": "Lâcher 60 000 $ une fois",
+      "tax.drop40kTimes": "Lâcher 60 000 $ {count} fois",
+      "tax.drop40kTimesOnce": "Lâcher 60 000 $ une fois",
+      "tax.thenDrop": "Puis lâcher {amount}.",
+      "tax.howLabel": "Pour {want} après taxe, lâcher {withdraw}. Étapes :",
       "promo.middleman":
         "Marre de vous faire arnaquer lors des échanges ?<br>Notre service Middleman peut vous aider à ne plus jamais vous faire arnaquer !<br>Rejoignez notre serveur Discord et obtenez un Middleman dès aujourd'hui !<br><span class=\"discord-mm-promo-cta\">Cliquez ici pour rejoindre notre Discord</span>",
       "giveaway.modalTitle": "Giveaway actif !",
@@ -800,23 +804,25 @@
       "tax.title": "Calculadora de impuestos",
       "tax.tooltip":
         "Nuestra calculadora de impuestos ha sido probada cuidadosamente para garantizar precisión. Si encuentras un problema, avísanos.",
-      "tax.placeholder": "Ingresa la cantidad de dinero a soltar",
+      "tax.placeholder": "Ingresa el monto que quieres después de impuestos",
       "tax.howTitle": "¿Cómo funciona?",
       "tax.howIntro":
         "La calculadora muestra exactamente cuánto dinero soltar y en qué orden para no perder dinero por el sistema de impuestos del juego.",
       "tax.bullets":
-        "- <strong>NECESITAS BlockSpin Plus</strong> para esta calculadora<br>- <span class=\"tax-warning-line\">Nunca reinicies con más de 60.000 de dinero encima</span><br>- <strong>NUNCA</strong> salgas del juego en combate después de reiniciar<br>- Espera 1 min entre cada soltado de dinero",
+        "- <strong>NECESITAS BlockSpin Plus</strong> para esta calculadora<br>- Soltar máximo <strong>$60,000</strong> (da <strong>$43,636</strong> después de impuestos)<br>- <span class=\"tax-warning-line\">Nunca reinicies con más de 60.000 de dinero encima</span><br>- <strong>NUNCA</strong> salgas del juego en combate después de reiniciar<br>- Espera 1 min entre cada soltado de dinero",
       "tax.openMobile": "Abrir calculadora de impuestos",
       "tax.closeMobile": "Cerrar calculadora de impuestos",
-      "tax.afterLabel": "Después de impuestos",
+      "tax.afterLabel": "A soltar",
       "tax.fabLabel": "Tax",
-      "tax.bulletsShort": "Necesitas <strong>BlockSpin Plus</strong> · Nunca reinicies con 60k+",
-      "tax.dropOnce": "Soltar ${amount} una vez",
-      "tax.dropAmount": "Soltar ${amount}",
-      "tax.drop40kTimes": "Soltar $40,000 {count} veces",
-      "tax.drop40kTimesOnce": "Soltar $40,000 una vez",
-      "tax.thenDrop": "luego soltar ${amount}.",
-      "tax.howLabel": "Para soltar {want} en el juego, sueltas {withdraw}. Pasos:",
+      "tax.bulletsShort": "Necesitas <strong>BlockSpin Plus</strong> · Máx. $60k → $43,636",
+      "tax.dropOnce": "Soltar {amount} una vez",
+      "tax.dropAmount": "Soltar {amount}",
+      "tax.dropMaxTimes": "Soltar $60,000 {count} veces",
+      "tax.dropMaxTimesOnce": "Soltar $60,000 una vez",
+      "tax.drop40kTimes": "Soltar $60,000 {count} veces",
+      "tax.drop40kTimesOnce": "Soltar $60,000 una vez",
+      "tax.thenDrop": "Luego soltar {amount}.",
+      "tax.howLabel": "Para {want} después de impuestos, soltar {withdraw}. Pasos:",
       "promo.middleman":
         "¿Cansado de estafas en los intercambios?<br>¡Nuestro servicio Middleman puede ayudarte a no volver a ser estafado!<br>¡Únete a nuestro servidor de Discord y consigue un Middleman hoy!<br><span class=\"discord-mm-promo-cta\">Haz clic aquí para unirte a nuestro Discord</span>",
       "giveaway.modalTitle": "¡Sorteo activo!",
@@ -932,8 +938,9 @@
     var text = (STRINGS[lang] && STRINGS[lang][key]) || STRINGS.en[key] || key;
     if (vars && typeof vars === "object") {
       Object.keys(vars).forEach(function (name) {
-        text = text.split("{" + name + "}").join(String(vars[name]));
+        // Replace ${name} before {name} so "Drop ${amount}" + "$1" does not become "Drop $$1".
         text = text.split("${" + name + "}").join(String(vars[name]));
+        text = text.split("{" + name + "}").join(String(vars[name]));
       });
     }
     return text;

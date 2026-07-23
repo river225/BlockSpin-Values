@@ -767,9 +767,10 @@ function initDiscordJoinNudge() {
   }, DISCORD_JOIN_NUDGE_DELAY_MS);
 }
 
-const TAX_RECEIVE_RATIO = 29091 / 40000;
-const TAX_MAX_DROP = 40000;
-const TAX_RECEIVE_PER_40K = 29091;
+// Verified in-game: dropping $60,000 gives $43,636 after tax.
+const TAX_MAX_DROP = 60000;
+const TAX_RECEIVE_PER_MAX_DROP = 43636;
+const TAX_RECEIVE_RATIO = TAX_RECEIVE_PER_MAX_DROP / TAX_MAX_DROP;
 
 function formatNetWorth(value) {
   const cleanValue = String(value).replace(/[$,]/g, '');
@@ -4037,30 +4038,35 @@ function initSearch() {
 function getTaxBreakdown(amountWant) {
   const want = Math.round(Number(amountWant) || 0);
   if (want <= 0) return { totalWithdraw: 0, lines: [], singleDrop: true };
-  const totalWithdraw = Math.round(want / TAX_RECEIVE_RATIO);
-  if (totalWithdraw <= TAX_MAX_DROP) {
+
+  const oneDropCash = Math.round(want / TAX_RECEIVE_RATIO);
+  if (oneDropCash <= TAX_MAX_DROP) {
     return {
-      totalWithdraw,
-      lines: [i18n("tax.dropAmount", { amount: "$" + totalWithdraw.toLocaleString() })],
+      totalWithdraw: oneDropCash,
+      lines: [i18n("tax.dropAmount", { amount: formatDollar(oneDropCash) })],
       singleDrop: true
     };
   }
-  const full40kCount = Math.floor(totalWithdraw / TAX_MAX_DROP);
-  const receivedFromFull = full40kCount * TAX_RECEIVE_PER_40K;
+
+  const fullDropCount = Math.floor(want / TAX_RECEIVE_PER_MAX_DROP);
+  const receivedFromFull = fullDropCount * TAX_RECEIVE_PER_MAX_DROP;
   const lastReceive = want - receivedFromFull;
-  const lastWithdraw = Math.round(lastReceive / TAX_RECEIVE_RATIO);
+  const lastWithdraw = lastReceive > 0 ? Math.round(lastReceive / TAX_RECEIVE_RATIO) : 0;
+  const totalWithdraw = fullDropCount * TAX_MAX_DROP + lastWithdraw;
   const lines = [];
 
-  if (full40kCount === 1 && lastWithdraw > 0) {
-    lines.push(i18n("tax.drop40kTimesOnce"));
-    lines.push(i18n("tax.thenDrop", { amount: "$" + lastWithdraw.toLocaleString() }));
+  if (fullDropCount === 1 && lastWithdraw > 0) {
+    lines.push(i18n("tax.dropMaxTimesOnce"));
+    lines.push(i18n("tax.thenDrop", { amount: formatDollar(lastWithdraw) }));
   } else if (lastWithdraw > 0) {
-    lines.push(i18n("tax.drop40kTimes", { count: full40kCount.toLocaleString() }));
-    lines.push(i18n("tax.thenDrop", { amount: "$" + lastWithdraw.toLocaleString() }));
+    lines.push(i18n("tax.dropMaxTimes", { count: fullDropCount.toLocaleString() }));
+    lines.push(i18n("tax.thenDrop", { amount: formatDollar(lastWithdraw) }));
+  } else if (fullDropCount === 1) {
+    lines.push(i18n("tax.dropMaxTimesOnce") + ".");
   } else {
-    lines.push(i18n("tax.drop40kTimes", { count: full40kCount.toLocaleString() }) + ".");
+    lines.push(i18n("tax.dropMaxTimes", { count: fullDropCount.toLocaleString() }) + ".");
   }
-  return { totalWithdraw, lines, singleDrop: false };
+  return { totalWithdraw: totalWithdraw, lines: lines, singleDrop: false };
 }
 
 function formatDollar(amount) {
@@ -4132,7 +4138,7 @@ function initTaxCalculator() {
     const raw = taxInput.value.replace(/[^\d]/g, '');
     const want = parseInt(raw, 10) || 0;
     const b = getTaxBreakdown(want);
-    taxAmount.innerHTML = b.totalWithdraw.toLocaleString() + ' <span class="tax-after-label">After Tax</span>';
+    taxAmount.innerHTML = b.totalWithdraw.toLocaleString() + ' <span class="tax-after-label">' + escapeHtml(i18n("tax.afterLabel")) + '</span>';
     if (taxBreakdown) {
       if (b.totalWithdraw <= 0) {
         taxBreakdown.innerHTML = '';
