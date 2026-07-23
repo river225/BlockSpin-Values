@@ -221,12 +221,12 @@
       "tax.howIntro":
         "Tax Calculator shows exactly how much cash to drop and in what order to avoid losing money to the game's cash tax system.",
       "tax.bullets":
-        "- <strong>You NEED BlockSpin Plus</strong> for this Calculator<br>- Max drop is <strong>$60,000</strong> (gives <strong>$43,636</strong> after tax)<br>- <span class=\"tax-warning-line\">Never reset with more than 60,000 cash on you</span><br>- <strong>NEVER</strong> leave the game in combat after resetting<br>- Wait 1 min in between cash drops",
+        "- <strong>You NEED BlockSpin Plus</strong> for this Calculator<br>- <span class=\"tax-warning-line\">Never reset with more than 60,000 cash on you</span><br>- <strong>NEVER</strong> leave the game in combat after resetting<br>- Wait 1 min in between cash drops",
       "tax.openMobile": "Open tax calculator",
       "tax.closeMobile": "Close tax calculator",
       "tax.afterLabel": "To Drop",
       "tax.fabLabel": "Tax Calc",
-      "tax.bulletsShort": "Needs <strong>BlockSpin Plus</strong> · Max drop $60k → $43,636",
+      "tax.bulletsShort": "Needs <strong>BlockSpin Plus</strong> · Never reset with 60k+ cash",
       "tax.dropOnce": "Drop {amount} once",
       "tax.dropAmount": "Drop {amount}",
       "tax.dropMaxTimes": "Drop $60,000 {count} times",
@@ -515,12 +515,12 @@
       "tax.howIntro":
         "Le calculateur de taxe indique exactement combien d'argent lâcher et dans quel ordre pour éviter de perdre de l'argent à cause du système de taxe du jeu.",
       "tax.bullets":
-        "- <strong>Vous avez BESOIN de BlockSpin Plus</strong> pour ce calculateur<br>- Lâcher max <strong>60 000 $</strong> (donne <strong>43 636 $</strong> après taxe)<br>- <span class=\"tax-warning-line\">Ne reset jamais avec plus de 60 000 d'argent sur toi</span><br>- <strong>NE JAMAIS</strong> quitter le jeu en combat après un reset<br>- Attendre 1 min entre chaque lâcher d'argent",
+        "- <strong>Vous avez BESOIN de BlockSpin Plus</strong> pour ce calculateur<br>- <span class=\"tax-warning-line\">Ne reset jamais avec plus de 60 000 d'argent sur toi</span><br>- <strong>NE JAMAIS</strong> quitter le jeu en combat après un reset<br>- Attendre 1 min entre chaque lâcher d'argent",
       "tax.openMobile": "Ouvrir le calculateur de taxe",
       "tax.closeMobile": "Fermer le calculateur de taxe",
       "tax.afterLabel": "À lâcher",
       "tax.fabLabel": "Taxe",
-      "tax.bulletsShort": "Nécessite <strong>BlockSpin Plus</strong> · Max 60k → 43 636 $",
+      "tax.bulletsShort": "Nécessite <strong>BlockSpin Plus</strong> · Ne reset jamais avec 60k+",
       "tax.dropOnce": "Lâcher {amount} une fois",
       "tax.dropAmount": "Lâcher {amount}",
       "tax.dropMaxTimes": "Lâcher 60 000 $ {count} fois",
@@ -809,12 +809,12 @@
       "tax.howIntro":
         "La calculadora muestra exactamente cuánto dinero soltar y en qué orden para no perder dinero por el sistema de impuestos del juego.",
       "tax.bullets":
-        "- <strong>NECESITAS BlockSpin Plus</strong> para esta calculadora<br>- Soltar máximo <strong>$60,000</strong> (da <strong>$43,636</strong> después de impuestos)<br>- <span class=\"tax-warning-line\">Nunca reinicies con más de 60.000 de dinero encima</span><br>- <strong>NUNCA</strong> salgas del juego en combate después de reiniciar<br>- Espera 1 min entre cada soltado de dinero",
+        "- <strong>NECESITAS BlockSpin Plus</strong> para esta calculadora<br>- <span class=\"tax-warning-line\">Nunca reinicies con más de 60.000 de dinero encima</span><br>- <strong>NUNCA</strong> salgas del juego en combate después de reiniciar<br>- Espera 1 min entre cada soltado de dinero",
       "tax.openMobile": "Abrir calculadora de impuestos",
       "tax.closeMobile": "Cerrar calculadora de impuestos",
       "tax.afterLabel": "A soltar",
       "tax.fabLabel": "Tax",
-      "tax.bulletsShort": "Necesitas <strong>BlockSpin Plus</strong> · Máx. $60k → $43,636",
+      "tax.bulletsShort": "Necesitas <strong>BlockSpin Plus</strong> · Nunca reinicies con 60k+",
       "tax.dropOnce": "Soltar {amount} una vez",
       "tax.dropAmount": "Soltar {amount}",
       "tax.dropMaxTimes": "Soltar $60,000 {count} veces",
