@@ -95,7 +95,7 @@
     var dev = isDevSite();
     var isHome = activePage === "home";
     var login = (dev || isHome) ? '<div class="nav-login" id="nav-login"></div>' : "";
-    var brandHref = isHome ? "#" : "index.html";
+    var brandHref = isHome ? "#" : "/";
     var brandOnclick = isHome ? ' onclick="showSection(\'Home\'); return false;"' : "";
     var search = isHome ? headerSearch() : "";
     return (

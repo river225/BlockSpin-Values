@@ -198,6 +198,9 @@ background-attachment: fixed;
   background: #141d28;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
+  /* Skip layout/paint for off-screen cards — biggest mobile INP/scroll win */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
 }.card-giveaway-trigger {
   position: absolute;
   bottom: 10px;

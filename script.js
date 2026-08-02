@@ -3911,63 +3911,74 @@ function initMobileSectionSearch() {
   });
 }
 
-function showSection(name) {
-  _activeSectionName = name;
+function setSectionDisplay(el, sectionCfg, visible) {
+  if (!el) return;
+  if (!visible) {
+    el.style.display = "none";
+    el.style.flexDirection = "";
+    return;
+  }
+  if (sectionCfg && sectionCfg.id === "richest-players") {
+    el.style.display = "flex";
+    el.style.flexDirection = "column";
+  } else {
+    el.style.display = "block";
+    el.style.flexDirection = "";
+  }
+}
 
+function showSection(name) {
   const cfg = typeof getSectionConfig === "function" ? getSectionConfig(name) : null;
   if (!cfg) return;
 
-  const isHome = cfg.id === "home";
+  const prevName = _activeSectionName;
+  const isSame = prevName === name;
+  _activeSectionName = name;
 
+  const isHome = cfg.id === "home";
   document.body.classList.toggle("is-home", isHome);
 
-  getSectionRegistry().forEach(function (sectionCfg) {
-    const el = document.getElementById(sectionCfg.id);
-    if (!el) return;
-    if (sectionCfg.title === name) {
-      if (sectionCfg.id === "richest-players") {
-        el.style.display = "flex";
-        el.style.flexDirection = "column";
-      } else {
-        el.style.display = "block";
-        el.style.flexDirection = "";
-      }
+  // INP: only toggle previous + next sections (never restyle every card tree).
+  if (!isSame) {
+    if (prevName) {
+      const prevCfg = typeof getSectionConfig === "function" ? getSectionConfig(prevName) : null;
+      if (prevCfg) setSectionDisplay(document.getElementById(prevCfg.id), prevCfg, false);
     } else {
-      el.style.display = "none";
+      getSectionRegistry().forEach(function (sectionCfg) {
+        if (sectionCfg.title === name) return;
+        setSectionDisplay(document.getElementById(sectionCfg.id), sectionCfg, false);
+      });
     }
-  });
+    setSectionDisplay(document.getElementById(cfg.id), cfg, true);
+  }
 
-  document.querySelectorAll("#sections-nav button").forEach(function (b) {
-    b.classList.toggle("active", b.dataset.section === name);
-  });
+  const nav = document.getElementById("sections-nav");
+  if (nav) {
+    nav.querySelectorAll("button").forEach(function (b) {
+      const on = b.dataset.section === name;
+      if (b.classList.contains("active") !== on) b.classList.toggle("active", on);
+    });
+  }
 
   closeSectionsMenu();
 
-  const useMobileSectionSearch =
-    window.matchMedia("(max-width: 900px)").matches && shouldUseMobileSectionSearch(name);
-  setHeaderSearchVisible(useMobileSectionSearch || cfg.search !== "hide");
-  syncHeaderSearchPlacement(name);
-  syncBackToTopVisibility();
-
+  // Defer everything that is not needed for the tap paint.
   requestAnimationFrame(function () {
     showSectionDeferred(name, cfg, isHome);
   });
 }
 
 function showSectionDeferred(name, cfg, isHome) {
-  document.querySelectorAll(".durability-input").forEach(function (input) {
-    const card = input.closest(".card");
-    if (!card) return;
-    const maxDurability = card.dataset.maxDurability;
-    input.value = maxDurability;
-    updateCardValues(input);
-  });
+  const useMobileSectionSearch =
+    window.matchMedia("(max-width: 900px)").matches && shouldUseMobileSectionSearch(name);
+  setHeaderSearchVisible(useMobileSectionSearch || cfg.search !== "hide");
+  syncHeaderSearchPlacement(name);
+  syncBackToTopVisibility();
 
   const taxSidebarColumn = document.getElementById("tax-sidebar-column");
   const homeValueChanges = document.getElementById("home-value-changes");
   const taxCalc = taxSidebarColumn ? taxSidebarColumn.querySelector(".tax-calculator") : null;
   const middlemanPromo = taxSidebarColumn ? taxSidebarColumn.querySelector(".discord-mm-promo--sidebar") : null;
-  const accessoriesFastNav = document.getElementById(GUIDE_FAST_NAV_BOX_ID);
 
   if (taxSidebarColumn) {
     if (isHome || cfg.sidebarColumn === "hide") {
@@ -4029,7 +4040,8 @@ function initSearch() {
   const resetBtn = document.getElementById("search-reset");
   if (!input) return;
 
-  let searchFrame = 0;
+  let searchTimer = 0;
+  let searchToken = 0;
 
   function getActiveSearchScope() {
     const cfg = typeof getSectionConfig === "function" ? getSectionConfig(_activeSectionName) : null;
@@ -4043,18 +4055,35 @@ function initSearch() {
   function applySearchFilter() {
     const val = input.value.toLowerCase();
     const scope = getActiveSearchScope();
-    scope.querySelectorAll(".card").forEach(function (card) {
-      const name = (card.dataset.name || "").toLowerCase();
-      card.classList.toggle("hidden", val.length > 0 && !name.includes(val));
-    });
+    const cards = scope.querySelectorAll(".card");
+    const token = ++searchToken;
+    let i = 0;
+    const CHUNK = 60;
+
+    function step() {
+      if (token !== searchToken) return;
+      const end = Math.min(i + CHUNK, cards.length);
+      for (; i < end; i++) {
+        const card = cards[i];
+        const name = (card.dataset.name || "").toLowerCase();
+        const hide = val.length > 0 && name.indexOf(val) === -1;
+        if (card.classList.contains("hidden") !== hide) {
+          card.classList.toggle("hidden", hide);
+        }
+      }
+      if (i < cards.length) {
+        setTimeout(step, 0);
+      }
+    }
+    step();
   }
 
   function scheduleSearchFilter() {
-    if (searchFrame) cancelAnimationFrame(searchFrame);
-    searchFrame = requestAnimationFrame(function () {
-      searchFrame = 0;
+    if (searchTimer) clearTimeout(searchTimer);
+    searchTimer = setTimeout(function () {
+      searchTimer = 0;
       applySearchFilter();
-    });
+    }, 120);
   }
 
   function updateResetVisibility() {
@@ -4070,6 +4099,11 @@ function initSearch() {
   if (resetBtn) {
     resetBtn.addEventListener("click", function () {
       input.value = "";
+      searchToken += 1;
+      if (searchTimer) {
+        clearTimeout(searchTimer);
+        searchTimer = 0;
+      }
       applySearchFilter();
       updateResetVisibility();
       input.focus();
@@ -4389,8 +4423,8 @@ function adjustDurability(btn, direction, evt) {
       evt.type === 'touchstart' ||
       (evt.pointerType && evt.pointerType === 'touch')
     );
-  const holdDelayMs = isTouch ? 120 : 200;
-  const repeatEveryMs = isTouch ? 30 : 50;
+  const holdDelayMs = isTouch ? 180 : 200;
+  const repeatEveryMs = isTouch ? 70 : 50;
   
   function adjust() {
     let newValue = (parseInt(input.value) || 0) + direction;
@@ -4729,11 +4763,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   for (let i = 0; i < results.length; i++) {
     _renderedSectionCache.push(results[i]);
     renderSection(results[i].section, results[i].items);
-    if (i % 2 === 1) {
-      await new Promise(function (resolve) {
-        setTimeout(resolve, 0);
-      });
-    }
+    // Yield after each section so taps during load don't stack into Poor INP (>500ms).
+    await new Promise(function (resolve) {
+      setTimeout(resolve, 0);
+    });
   }
   if (typeof window.bsvRefreshSavedCardButtons === "function") {
     window.bsvRefreshSavedCardButtons();
