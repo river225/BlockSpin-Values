@@ -1,6 +1,30 @@
 (function (global) {
   "use strict";
 
+  // Ensure GA4 is present on subpages that don't use the index.html head snippet.
+  (function ensureAnalytics() {
+    var GA_ID = "G-0T25993BCC";
+    try {
+      window.dataLayer = window.dataLayer || [];
+      if (typeof window.gtag !== "function") {
+        window.gtag = function () {
+          window.dataLayer.push(arguments);
+        };
+      }
+      if (!document.querySelector('script[src*="googletagmanager.com/gtag/js?id=' + GA_ID + '"]')) {
+        var s = document.createElement("script");
+        s.async = true;
+        s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA_ID);
+        document.head.appendChild(s);
+      }
+      if (document.documentElement.dataset.bsvGaConfigured !== "1") {
+        document.documentElement.dataset.bsvGaConfigured = "1";
+        window.gtag("js", new Date());
+        window.gtag("config", GA_ID, { anonymize_ip: true, send_page_view: true });
+      }
+    } catch (_) {}
+  })();
+
   function isDevSite() {
     var html = document.documentElement;
     if (html.getAttribute("data-bsv-env") === "test") return true;

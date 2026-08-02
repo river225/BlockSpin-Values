@@ -684,21 +684,65 @@ function buildRobuxGiveawayBannerHtml(bannerId) {
 
 function initAnalytics() {
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
-  if (typeof window.gtag === "function") return;
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function() { window.dataLayer.push(arguments); };
-  window.gtag("js", new Date());
-  window.gtag("config", GA_MEASUREMENT_ID);
 
-  var gaScript = document.createElement("script");
-  gaScript.async = true;
-  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA_MEASUREMENT_ID);
-  document.head.appendChild(gaScript);
+  window.dataLayer = window.dataLayer || [];
+  if (typeof window.gtag !== "function") {
+    window.gtag = function () {
+      window.dataLayer.push(arguments);
+    };
+  }
+
+  // Avoid double-loading the GA library if the early <head> snippet already added it.
+  var alreadyLoaded = !!document.querySelector(
+    'script[src*="googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID + '"]'
+  );
+  if (!alreadyLoaded) {
+    var gaScript = document.createElement("script");
+    gaScript.async = true;
+    gaScript.src =
+      "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA_MEASUREMENT_ID);
+    document.head.appendChild(gaScript);
+  }
+
+  if (document.documentElement.dataset.bsvGaConfigured === "1") return;
+  document.documentElement.dataset.bsvGaConfigured = "1";
+  window.gtag("js", new Date());
+  window.gtag("config", GA_MEASUREMENT_ID, {
+    anonymize_ip: true,
+    send_page_view: true
+  });
 }
 
 function trackEvent(name, params) {
   if (typeof window.gtag !== "function") return;
   window.gtag("event", name, params || {});
+}
+
+function trackSectionPageView(sectionName) {
+  if (typeof window.gtag !== "function") return;
+  // Initial Home page_view already fires from the early <head> GA snippet.
+  if (
+    (!sectionName || sectionName === "Home") &&
+    document.documentElement.dataset.bsvGaHomePv !== "1"
+  ) {
+    document.documentElement.dataset.bsvGaHomePv = "1";
+    trackEvent("view_section", { section_name: "Home" });
+    return;
+  }
+  document.documentElement.dataset.bsvGaHomePv = "1";
+
+  var path = "/";
+  try {
+    if (sectionName && sectionName !== "Home") {
+      path = "/#sec=" + encodeURIComponent(sectionName);
+    }
+  } catch (_) {}
+  window.gtag("event", "page_view", {
+    page_title: sectionName ? "BlockSpin Values — " + sectionName : "BlockSpin Values",
+    page_path: path,
+    page_location: window.location.origin + path
+  });
+  trackEvent("view_section", { section_name: sectionName || "Home" });
 }
 
 function setupDiscordClickTracking() {
@@ -3974,7 +4018,7 @@ function showSectionDeferred(name, cfg, isHome) {
     homeValueChanges.style.display = cfg.homeValueChanges ? "block" : "none";
   }
 
-  trackEvent("view_section", { section_name: name });
+  trackSectionPageView(name);
   syncMobileTaxPanel(cfg);
 }
 
