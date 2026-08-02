@@ -3931,26 +3931,19 @@ function showSection(name) {
   const cfg = typeof getSectionConfig === "function" ? getSectionConfig(name) : null;
   if (!cfg) return;
 
-  const prevName = _activeSectionName;
-  const isSame = prevName === name;
   _activeSectionName = name;
 
   const isHome = cfg.id === "home";
   document.body.classList.toggle("is-home", isHome);
 
-  // INP: only toggle previous + next sections (never restyle every card tree).
-  if (!isSame) {
-    if (prevName) {
-      const prevCfg = typeof getSectionConfig === "function" ? getSectionConfig(prevName) : null;
-      if (prevCfg) setSectionDisplay(document.getElementById(prevCfg.id), prevCfg, false);
-    } else {
-      getSectionRegistry().forEach(function (sectionCfg) {
-        if (sectionCfg.title === name) return;
-        setSectionDisplay(document.getElementById(sectionCfg.id), sectionCfg, false);
-      });
-    }
-    setSectionDisplay(document.getElementById(cfg.id), cfg, true);
-  }
+  // Always sync section visibility. Some sections (e.g. #richest-players) have CSS
+  // that can override .section { display:none }, so newly rendered sections leak
+  // under Home if we only toggle prev/next.
+  getSectionRegistry().forEach(function (sectionCfg) {
+    const el = document.getElementById(sectionCfg.id);
+    if (!el) return;
+    setSectionDisplay(el, sectionCfg, sectionCfg.title === name);
+  });
 
   const nav = document.getElementById("sections-nav");
   if (nav) {
@@ -4040,7 +4033,6 @@ function refreshEzoicAds() {
     window.ezstandalone.cmd.push(function () {
       try {
         if (typeof window.ezstandalone.showAds === "function") {
-          // SPA-style section switches: refresh all placeholders for the new view
           window.ezstandalone.showAds();
         }
       } catch (_) {}

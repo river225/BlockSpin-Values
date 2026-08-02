@@ -201,24 +201,6 @@ background-attachment: fixed;
   /* Skip layout/paint for off-screen cards — biggest mobile INP/scroll win */
   content-visibility: auto;
   contain-intrinsic-size: auto 240px;
-}
-.bsv-ad-slot {
-  width: 100%;
-  margin: 18px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  min-height: 0;
-}
-.bsv-ad-slot--sidebar {
-  margin: 12px 0 16px;
-}
-.bsv-ad-slot--footer {
-  max-width: 1100px;
-  margin: 24px auto 8px;
-  padding: 0 16px;
-  box-sizing: border-box;
 }.card-giveaway-trigger {
   position: absolute;
   bottom: 10px;
@@ -5537,8 +5519,24 @@ background-attachment: fixed;
   justify-content: center;
   margin-bottom: 30px;
 }#richest-players {
-  display: flex;
+  /* Do NOT set display here — it overrides .section { display:none } and leaks
+     the richest list under Home. showSection() sets display:flex when active. */
   flex-direction: column;
+}.bsv-ad-slot {
+  width: 100%;
+  margin: 18px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  min-height: 0;
+}.bsv-ad-slot--sidebar {
+  margin: 12px 0 16px;
+}.bsv-ad-slot--footer {
+  max-width: 1100px;
+  margin: 24px auto 8px;
+  padding: 0 16px;
+  box-sizing: border-box;
 }.richest-container {
   order: 1;
   display: flex;
