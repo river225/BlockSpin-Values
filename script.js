@@ -4024,20 +4024,6 @@ function showSectionDeferred(name, cfg, isHome) {
 
   trackSectionPageView(name);
   syncMobileTaxPanel(cfg);
-  refreshEzoicAds();
-}
-
-function refreshEzoicAds() {
-  try {
-    if (!window.ezstandalone || !Array.isArray(window.ezstandalone.cmd)) return;
-    window.ezstandalone.cmd.push(function () {
-      try {
-        if (typeof window.ezstandalone.showAds === "function") {
-          window.ezstandalone.showAds();
-        }
-      } catch (_) {}
-    });
-  } catch (_) {}
 }
 
 window.showSection = showSection;
