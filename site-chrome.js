@@ -6,10 +6,10 @@
     try {
       if (document.querySelector('script[src*="quge5.com/88/tag.min.js"]')) return;
       var s = document.createElement("script");
-      s.src = "https://quge5.com/88/tag.min.js";
-      s.async = true;
-      s.setAttribute("data-zone", "268935");
       s.setAttribute("data-cfasync", "false");
+      s.async = true;
+      s.src = "https://quge5.com/88/tag.min.js";
+      s.setAttribute("data-zone", "268935");
       document.head.appendChild(s);
     } catch (_) {}
   })();
