@@ -1,6 +1,19 @@
 (function (global) {
   "use strict";
 
+  // Monetag Multitag (skip if already in the page head, e.g. index.html).
+  (function ensureMonetag() {
+    try {
+      if (document.querySelector('script[src*="quge5.com/88/tag.min.js"]')) return;
+      var s = document.createElement("script");
+      s.src = "https://quge5.com/88/tag.min.js";
+      s.async = true;
+      s.setAttribute("data-zone", "268935");
+      s.setAttribute("data-cfasync", "false");
+      document.head.appendChild(s);
+    } catch (_) {}
+  })();
+
   // Ensure GA4 is present on subpages that don't use the index.html head snippet.
   (function ensureAnalytics() {
     var GA_ID = "G-0T25993BCC";
