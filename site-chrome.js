@@ -27,12 +27,20 @@
   function ensureMonetag() {
     try {
       if (!hasMarketingConsent()) return;
-      if (document.querySelector('script[src*="quge5.com/88/tag.min.js"]')) return;
+      if (document.querySelector('script[src*="quge5.com/88/tag.min.js"]:not([type="text/plain"])')) {
+        return;
+      }
+      var placeholder = document.querySelector(
+        'script[type="text/plain"][data-bsv-consent="marketing"][src*="quge5.com/88/tag.min.js"]'
+      );
       var s = document.createElement("script");
       s.setAttribute("data-cfasync", "false");
       s.async = true;
-      s.src = MONETAG_SRC;
-      s.setAttribute("data-zone", MONETAG_ZONE);
+      s.src = (placeholder && placeholder.getAttribute("src")) || MONETAG_SRC;
+      s.setAttribute(
+        "data-zone",
+        (placeholder && placeholder.getAttribute("data-zone")) || MONETAG_ZONE
+      );
       document.head.appendChild(s);
     } catch (_) {}
   }
