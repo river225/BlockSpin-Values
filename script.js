@@ -684,6 +684,15 @@ function buildRobuxGiveawayBannerHtml(bannerId) {
 
 function initAnalytics() {
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
+  if (typeof window.bsvHasMarketingConsent === "function" && !window.bsvHasMarketingConsent()) {
+    return;
+  }
+  // If consent helper is not ready yet, wait for site-chrome to gate loading.
+  try {
+    if (localStorage.getItem("bsv-cookie-consent") !== "accepted") return;
+  } catch (_) {
+    return;
+  }
 
   window.dataLayer = window.dataLayer || [];
   if (typeof window.gtag !== "function") {
@@ -692,7 +701,7 @@ function initAnalytics() {
     };
   }
 
-  // Avoid double-loading the GA library if the early <head> snippet already added it.
+  // Avoid double-loading the GA library if consent already added it.
   var alreadyLoaded = !!document.querySelector(
     'script[src*="googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID + '"]'
   );

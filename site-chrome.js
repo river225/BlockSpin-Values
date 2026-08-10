@@ -1,23 +1,45 @@
 (function (global) {
   "use strict";
 
-  // Monetag Multitag (skip if already in the page head, e.g. index.html).
-  (function ensureMonetag() {
+  var CONSENT_KEY = "bsv-cookie-consent";
+  var GA_ID = "G-0T25993BCC";
+  var MONETAG_SRC = "https://quge5.com/88/tag.min.js";
+  var MONETAG_ZONE = "268935";
+
+  function getConsent() {
     try {
+      return localStorage.getItem(CONSENT_KEY);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function setConsent(value) {
+    try {
+      localStorage.setItem(CONSENT_KEY, value);
+    } catch (_) {}
+  }
+
+  function hasMarketingConsent() {
+    return getConsent() === "accepted";
+  }
+
+  function ensureMonetag() {
+    try {
+      if (!hasMarketingConsent()) return;
       if (document.querySelector('script[src*="quge5.com/88/tag.min.js"]')) return;
       var s = document.createElement("script");
       s.setAttribute("data-cfasync", "false");
       s.async = true;
-      s.src = "https://quge5.com/88/tag.min.js";
-      s.setAttribute("data-zone", "268935");
+      s.src = MONETAG_SRC;
+      s.setAttribute("data-zone", MONETAG_ZONE);
       document.head.appendChild(s);
     } catch (_) {}
-  })();
+  }
 
-  // Ensure GA4 is present on subpages that don't use the index.html head snippet.
-  (function ensureAnalytics() {
-    var GA_ID = "G-0T25993BCC";
+  function ensureAnalytics() {
     try {
+      if (!hasMarketingConsent()) return;
       window.dataLayer = window.dataLayer || [];
       if (typeof window.gtag !== "function") {
         window.gtag = function () {
@@ -36,7 +58,94 @@
         window.gtag("config", GA_ID, { anonymize_ip: true, send_page_view: true });
       }
     } catch (_) {}
-  })();
+  }
+
+  function unregisterMonetagServiceWorker() {
+    try {
+      if (!navigator.serviceWorker || !navigator.serviceWorker.getRegistrations) return;
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (reg) {
+          var url =
+            (reg.active && reg.active.scriptURL) ||
+            (reg.installing && reg.installing.scriptURL) ||
+            (reg.waiting && reg.waiting.scriptURL) ||
+            "";
+          if (/\/sw\.js(\?|$)/.test(url) || /5gvci\.com|quge5\.com/.test(url)) {
+            reg.unregister().catch(function () {});
+          }
+        });
+      });
+    } catch (_) {}
+  }
+
+  function applyConsent(value) {
+    setConsent(value);
+    var banner = document.getElementById("bsv-consent-banner");
+    if (banner) banner.remove();
+    if (value === "accepted") {
+      ensureAnalytics();
+      ensureMonetag();
+    } else {
+      unregisterMonetagServiceWorker();
+    }
+  }
+
+  function ensureConsentStyles() {
+    if (document.getElementById("bsv-consent-styles")) return;
+    var style = document.createElement("style");
+    style.id = "bsv-consent-styles";
+    style.textContent =
+      "#bsv-consent-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:100000;max-width:720px;margin:0 auto;padding:16px 18px;border-radius:14px;background:rgba(15,23,36,.96);border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 40px rgba(0,0,0,.45);color:#e8eef8;font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}" +
+      "#bsv-consent-banner p{margin:0 0 12px;color:#c9d4e5}" +
+      "#bsv-consent-banner a{color:#9ec1ff;text-decoration:underline}" +
+      "#bsv-consent-actions{display:flex;flex-wrap:wrap;gap:8px}" +
+      "#bsv-consent-actions button{appearance:none;border:0;border-radius:10px;padding:10px 14px;font:600 13px/1 system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer}" +
+      "#bsv-consent-accept{background:#3b82f6;color:#fff}" +
+      "#bsv-consent-reject{background:rgba(255,255,255,.08);color:#e8eef8;border:1px solid rgba(255,255,255,.14)}" +
+      "@media (max-width:520px){#bsv-consent-banner{left:10px;right:10px;bottom:10px;padding:14px}}";
+    document.head.appendChild(style);
+  }
+
+  function showConsentBanner() {
+    if (document.getElementById("bsv-consent-banner")) return;
+    ensureConsentStyles();
+    var el = document.createElement("div");
+    el.id = "bsv-consent-banner";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-live", "polite");
+    el.setAttribute("aria-label", "Cookie and advertising consent");
+    el.innerHTML =
+      "<p>We use cookies for analytics and ads (including Monetag). Essential site features still work if you reject. See our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
+      '<div id="bsv-consent-actions">' +
+      '<button type="button" id="bsv-consent-accept">Accept</button>' +
+      '<button type="button" id="bsv-consent-reject">Reject</button>' +
+      "</div>";
+    document.body.appendChild(el);
+    document.getElementById("bsv-consent-accept").addEventListener("click", function () {
+      applyConsent("accepted");
+    });
+    document.getElementById("bsv-consent-reject").addEventListener("click", function () {
+      applyConsent("rejected");
+    });
+  }
+
+  function openConsentSettings() {
+    showConsentBanner();
+  }
+
+  function initConsent() {
+    var choice = getConsent();
+    if (choice === "accepted") {
+      ensureAnalytics();
+      ensureMonetag();
+      return;
+    }
+    if (choice === "rejected") {
+      unregisterMonetagServiceWorker();
+      return;
+    }
+    showConsentBanner();
+  }
 
   function isDevSite() {
     var html = document.documentElement;
@@ -167,6 +276,9 @@
             '<li><a class="footer-side-nav__link" href="z-privacy.html">' +
               '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>' +
               "<span>Privacy Policy</span></a></li>" +
+            '<li><a class="footer-side-nav__link" href="#" id="bsv-cookie-settings">' +
+              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg>' +
+              "<span>Cookie settings</span></a></li>" +
           "</ul>" +
         "</div>" +
       "</div>"
@@ -233,6 +345,14 @@
     var boosters = document.getElementById("footer-boosters");
     if (boostersSlot && boosters) boostersSlot.appendChild(boosters);
     initMobileHeaderToolbar();
+    var cookieSettings = document.getElementById("bsv-cookie-settings");
+    if (cookieSettings) {
+      cookieSettings.addEventListener("click", function (e) {
+        e.preventDefault();
+        openConsentSettings();
+      });
+    }
+    initConsent();
   }
 
   function autoMount() {
@@ -251,4 +371,6 @@
   global.bsvMountSiteChrome = mount;
   global.bsvInitMobileHeaderToolbar = initMobileHeaderToolbar;
   global.initMobileHeaderToolbar = initMobileHeaderToolbar;
+  global.bsvHasMarketingConsent = hasMarketingConsent;
+  global.bsvOpenCookieSettings = openConsentSettings;
 })(typeof window !== "undefined" ? window : globalThis);
