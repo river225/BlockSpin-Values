@@ -95,14 +95,18 @@
     var style = document.createElement("style");
     style.id = "bsv-consent-styles";
     style.textContent =
-      "#bsv-consent-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:100000;max-width:720px;margin:0 auto;padding:16px 18px;border-radius:14px;background:rgba(15,23,36,.96);border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 40px rgba(0,0,0,.45);color:#e8eef8;font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}" +
-      "#bsv-consent-banner p{margin:0 0 12px;color:#c9d4e5}" +
+      "#bsv-consent-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:100000;max-width:720px;margin:0 auto;padding:18px 20px;border-radius:16px;background:rgba(12,18,30,.97);border:1px solid rgba(255,255,255,.14);box-shadow:0 16px 48px rgba(0,0,0,.5);color:#e8eef8;font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}" +
+      "#bsv-consent-banner p{margin:0 0 14px;color:#d5deec}" +
       "#bsv-consent-banner a{color:#9ec1ff;text-decoration:underline}" +
-      "#bsv-consent-actions{display:flex;flex-wrap:wrap;gap:8px}" +
-      "#bsv-consent-actions button{appearance:none;border:0;border-radius:10px;padding:10px 14px;font:600 13px/1 system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer}" +
-      "#bsv-consent-accept{background:#3b82f6;color:#fff}" +
-      "#bsv-consent-reject{background:rgba(255,255,255,.08);color:#e8eef8;border:1px solid rgba(255,255,255,.14)}" +
-      "@media (max-width:520px){#bsv-consent-banner{left:10px;right:10px;bottom:10px;padding:14px}}";
+      "#bsv-consent-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}" +
+      "#bsv-consent-actions button{appearance:none;border:0;border-radius:11px;padding:11px 18px;font:600 14px/1 system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer}" +
+      "#bsv-consent-accept{background:#3b82f6;color:#fff;box-shadow:0 6px 18px rgba(59,130,246,.35)}" +
+      "#bsv-consent-accept:hover{background:#2563eb}" +
+      "#bsv-consent-reject{background:transparent;color:#8b97a8;border:1px solid rgba(255,255,255,.1);font-weight:500}" +
+      "#bsv-consent-reject:hover{color:#a8b3c4;border-color:rgba(255,255,255,.16)}" +
+      "@media (max-width:520px){#bsv-consent-banner{left:10px;right:10px;bottom:10px;padding:16px}" +
+      "#bsv-consent-actions{flex-direction:column;align-items:stretch}" +
+      "#bsv-consent-actions button{width:100%}}";
     document.head.appendChild(style);
   }
 
@@ -115,10 +119,10 @@
     el.setAttribute("aria-live", "polite");
     el.setAttribute("aria-label", "Cookie and advertising consent");
     el.innerHTML =
-      "<p>We use cookies for analytics and ads (including Monetag). Essential site features still work if you reject. See our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
+      "<p>We use cookies for site analytics and ads (Monetag). The values list still works if you say no. Details in our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
       '<div id="bsv-consent-actions">' +
       '<button type="button" id="bsv-consent-accept">Accept</button>' +
-      '<button type="button" id="bsv-consent-reject">Reject</button>' +
+      '<button type="button" id="bsv-consent-reject">Reject non-essential</button>' +
       "</div>";
     document.body.appendChild(el);
     document.getElementById("bsv-consent-accept").addEventListener("click", function () {
