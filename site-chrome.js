@@ -14,10 +14,10 @@
 
   var ADSTERRA_BANNERS = [
     {
-      slot: "adsterra-300",
-      key: "fe158e39dab6a6068dfa3e3b5c7e374a",
-      width: 300,
-      height: 250
+      slot: "adsterra-728",
+      key: "51d41aea82cf845045466e646892ef25",
+      width: 728,
+      height: 90
     },
     {
       slot: "adsterra-320",
@@ -26,10 +26,10 @@
       height: 50
     },
     {
-      slot: "adsterra-728",
-      key: "51d41aea82cf845045466e646892ef25",
-      width: 728,
-      height: 90
+      slot: "adsterra-300",
+      key: "fe158e39dab6a6068dfa3e3b5c7e374a",
+      width: 300,
+      height: 250
     }
   ];
   var ADSTERRA_NATIVE = {
@@ -84,14 +84,38 @@
     var style = document.createElement("style");
     style.id = "bsv-ad-styles";
     style.textContent =
-      ".bsv-ad-slot{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;margin:18px auto;padding:0;overflow:hidden}" +
+      ".bsv-ad-rail{width:min(960px, calc(100% - 24px));margin:28px auto 8px;padding:14px 12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(10,15,22,.72);box-sizing:border-box}" +
+      ".bsv-ad-rail__label{margin:0 0 10px;color:#8b97a8;font:600 11px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:.06em;text-transform:uppercase;text-align:center}" +
+      ".bsv-ad-slot{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;margin:12px auto;padding:0;overflow:hidden;min-height:50px}" +
       ".bsv-ad-slot--leader{min-height:90px}" +
       ".bsv-ad-slot--mpu{min-height:250px}" +
       ".bsv-ad-slot--mobile{min-height:50px}" +
-      ".bsv-ad-slot--native{min-height:120px;max-width:960px}" +
+      ".bsv-ad-slot--native{min-height:120px}" +
       "@media (max-width:768px){.bsv-ad-slot--leader{display:none!important}}" +
       "@media (min-width:769px){.bsv-ad-slot--mobile{display:none!important}}";
     document.head.appendChild(style);
+  }
+
+  function ensureAdRail() {
+    if (document.getElementById("bsv-ad-rail")) return;
+    ensureAdStyles();
+    var rail = document.createElement("div");
+    rail.id = "bsv-ad-rail";
+    rail.className = "bsv-ad-rail";
+    rail.innerHTML =
+      '<p class="bsv-ad-rail__label">Advertisement</p>' +
+      '<div class="bsv-ad-slot bsv-ad-slot--leader" data-bsv-ad="adsterra-728" aria-hidden="true"></div>' +
+      '<div class="bsv-ad-slot bsv-ad-slot--mobile" data-bsv-ad="adsterra-320" aria-hidden="true"></div>' +
+      '<div class="bsv-ad-slot bsv-ad-slot--mpu" data-bsv-ad="adsterra-300" aria-hidden="true"></div>' +
+      '<div class="bsv-ad-slot bsv-ad-slot--native" data-bsv-ad="adsterra-native" aria-hidden="true"></div>';
+    var footerMount = document.getElementById("bsv-site-footer");
+    if (footerMount && footerMount.parentNode) {
+      footerMount.parentNode.insertBefore(rail, footerMount);
+    } else {
+      var footer = document.querySelector(".site-footer");
+      if (footer && footer.parentNode) footer.parentNode.insertBefore(rail, footer);
+      else (document.body || document.documentElement).appendChild(rail);
+    }
   }
 
   function fillAdsterraIframeSlot(slotEl, banner, done) {
@@ -131,11 +155,6 @@
     if (!slotEl || slotEl.dataset.bsvAdFilled === "1") return;
     slotEl.dataset.bsvAdFilled = "1";
     slotEl.removeAttribute("aria-hidden");
-    if (!document.getElementById(ADSTERRA_NATIVE.containerId)) {
-      var box = document.createElement("div");
-      box.id = ADSTERRA_NATIVE.containerId;
-      slotEl.appendChild(box);
-    }
     if (!document.querySelector('script[src="' + ADSTERRA_NATIVE.src + '"]')) {
       var s = document.createElement("script");
       s.async = true;
@@ -143,14 +162,19 @@
       s.src = ADSTERRA_NATIVE.src;
       slotEl.appendChild(s);
     }
+    if (!document.getElementById(ADSTERRA_NATIVE.containerId)) {
+      var box = document.createElement("div");
+      box.id = ADSTERRA_NATIVE.containerId;
+      slotEl.appendChild(box);
+    }
   }
 
   function ensureAdsterra() {
     try {
       if (!hasMarketingConsent()) return;
+      ensureAdRail();
       if (document.documentElement.dataset.bsvAdsterra === "1") return;
       document.documentElement.dataset.bsvAdsterra = "1";
-      ensureAdStyles();
 
       var i = 0;
       function next() {
