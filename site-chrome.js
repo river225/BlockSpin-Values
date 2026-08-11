@@ -248,7 +248,7 @@
     el.setAttribute("aria-live", "polite");
     el.setAttribute("aria-label", "Cookie and advertising consent");
     el.innerHTML =
-      "<p>We use cookies to improve your experience and analyze site traffic. Read our <a href=\"z-cookie.html\">Cookie Policy</a> to learn more.</p>" +
+      "<p>We use cookies to improve your experience and analyze site traffic. Read our <a href=\"z-privacy.html#cookies\">Cookie Policy</a> to learn more.</p>" +
       '<div id="bsv-consent-actions">' +
       '<button type="button" id="bsv-consent-accept">Accept</button>' +
       '<button type="button" id="bsv-consent-reject">Reject</button>' +
@@ -409,9 +409,6 @@
             '<li><a class="footer-side-nav__link" href="z-privacy.html">' +
               '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>' +
               "<span>Privacy Policy</span></a></li>" +
-            '<li><a class="footer-side-nav__link" href="z-cookie.html">' +
-              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg>' +
-              "<span>Cookie Policy</span></a></li>" +
           "</ul>" +
         "</div>" +
       "</div>"
