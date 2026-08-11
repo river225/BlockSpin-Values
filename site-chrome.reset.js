@@ -224,8 +224,7 @@
     var style = document.createElement("style");
     style.id = "bsv-ad-styles";
     style.textContent =
-      ".site-footer .bsv-ad-rail{grid-column:1/-1;justify-self:center;width:min(960px,calc(100% - 24px));margin:4px auto 12px;padding:14px 12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(10,15,22,.72);box-sizing:border-box}" +
-      ".bsv-ad-rail{width:min(960px,calc(100% - 24px));margin:20px auto;padding:14px 12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(10,15,22,.72);box-sizing:border-box}" +
+      ".bsv-ad-rail{width:min(960px,calc(100% - 24px));margin:12px auto 8px;padding:14px 12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(10,15,22,.72);box-sizing:border-box}" +
       ".bsv-ad-rail__label{margin:0 0 10px;color:#8b97a8;font:600 11px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:.06em;text-transform:uppercase;text-align:center}" +
       ".bsv-ad-slot{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;margin:10px auto;padding:0;overflow:hidden}" +
       ".bsv-ad-slot--leader{min-height:90px}" +
@@ -250,14 +249,10 @@
       '<div class="bsv-ad-slot bsv-ad-slot--mobile" data-bsv-ad="adsterra-320" aria-hidden="true"></div>' +
       '<div class="bsv-ad-slot bsv-ad-slot--mpu" data-bsv-ad="adsterra-300" aria-hidden="true"></div>' +
       '<div class="bsv-ad-slot bsv-ad-slot--native" data-bsv-ad="adsterra-native" aria-hidden="true"></div>';
-    // Sit inside the footer stack (below boosters, above copyright) so absolute
-    // booster overlays can never cover the ads.
+    // Keep ads outside the footer chrome (above copyright / legal).
     var footer = document.querySelector(".site-footer");
-    var content = footer && footer.querySelector(".footer-content");
-    if (content) {
-      footer.insertBefore(rail, content);
-    } else if (footer) {
-      footer.appendChild(rail);
+    if (footer && footer.parentNode) {
+      footer.parentNode.insertBefore(rail, footer);
     } else {
       (document.body || document.documentElement).appendChild(rail);
     }
@@ -620,14 +615,15 @@
 
   function renderFooter() {
     var copy = "© 2026 BlockSpin Values";
+    // Boosters sit above the footer element so they are not on the footer background.
     return (
+      '<section class="footer-boosters" id="footer-boosters" aria-label="Current Discord boosters" hidden>' +
+        '<h3 class="footer-boosters-title">Special Thanks to our Discord Server Boosters</h3>' +
+        '<div class="footer-boosters-viewport">' +
+          '<div class="footer-boosters-track" id="footer-boosters-track"></div>' +
+        "</div>" +
+      "</section>" +
       '<footer class="site-footer">' +
-        '<section class="footer-boosters" id="footer-boosters" aria-label="Current Discord boosters" hidden>' +
-          '<h3 class="footer-boosters-title">Special Thanks to our Discord Server Boosters</h3>' +
-          '<div class="footer-boosters-viewport">' +
-            '<div class="footer-boosters-track" id="footer-boosters-track"></div>' +
-          "</div>" +
-        "</section>" +
         '<div class="footer-content">' +
           "<p>" + copy + "</p>" +
         "</div>" +
