@@ -12,6 +12,32 @@
   // Push notifications removed (browser "wants to send notifications" prompts).
   // Direct link kept for optional manual use only (not auto-fired): https://omg10.com/4/11550422
 
+  var ADSTERRA_BANNERS = [
+    {
+      slot: "adsterra-300",
+      key: "fe158e39dab6a6068dfa3e3b5c7e374a",
+      width: 300,
+      height: 250
+    },
+    {
+      slot: "adsterra-320",
+      key: "944f5d5db27a044f98f7dd97adc36583",
+      width: 320,
+      height: 50
+    },
+    {
+      slot: "adsterra-728",
+      key: "51d41aea82cf845045466e646892ef25",
+      width: 728,
+      height: 90
+    }
+  ];
+  var ADSTERRA_NATIVE = {
+    slot: "adsterra-native",
+    containerId: "container-717a8f6edb7e68d29e0911501bd10b1c",
+    src: "https://pl30797754.effectivecpmnetwork.com/717a8f6edb7e68d29e0911501bd10b1c/invoke.js"
+  };
+
   function getConsent() {
     try {
       return localStorage.getItem(CONSENT_KEY);
@@ -33,22 +59,110 @@
   function ensureSoftAds() {
     try {
       if (!SOFT_ADS_ENABLED || !hasMarketingConsent()) return;
-      if (document.documentElement.dataset.bsvSoftAds === "1") return;
-      document.documentElement.dataset.bsvSoftAds = "1";
+      if (document.documentElement.dataset.bsvSoftAds !== "1") {
+        document.documentElement.dataset.bsvSoftAds = "1";
+        SOFT_AD_TAGS.forEach(function (tag) {
+          if (document.getElementById(tag.id)) return;
+          if (document.querySelector('script[src="' + tag.src + '"]')) return;
+          var s = document.createElement("script");
+          s.id = tag.id;
+          s.async = true;
+          s.setAttribute("data-cfasync", "false");
+          if (tag.kind === "dataset") {
+            s.dataset.zone = tag.zone;
+          }
+          s.src = tag.src;
+          (document.body || document.documentElement).appendChild(s);
+        });
+      }
+      ensureAdsterra();
+    } catch (_) {}
+  }
 
-      SOFT_AD_TAGS.forEach(function (tag) {
-        if (document.getElementById(tag.id)) return;
-        if (document.querySelector('script[src="' + tag.src + '"]')) return;
-        var s = document.createElement("script");
-        s.id = tag.id;
-        s.async = true;
-        s.setAttribute("data-cfasync", "false");
-        if (tag.kind === "dataset") {
-          s.dataset.zone = tag.zone;
+  function ensureAdStyles() {
+    if (document.getElementById("bsv-ad-styles")) return;
+    var style = document.createElement("style");
+    style.id = "bsv-ad-styles";
+    style.textContent =
+      ".bsv-ad-slot{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;margin:18px auto;padding:0;overflow:hidden}" +
+      ".bsv-ad-slot--leader{min-height:90px}" +
+      ".bsv-ad-slot--mpu{min-height:250px}" +
+      ".bsv-ad-slot--mobile{min-height:50px}" +
+      ".bsv-ad-slot--native{min-height:120px;max-width:960px}" +
+      "@media (max-width:768px){.bsv-ad-slot--leader{display:none!important}}" +
+      "@media (min-width:769px){.bsv-ad-slot--mobile{display:none!important}}";
+    document.head.appendChild(style);
+  }
+
+  function fillAdsterraIframeSlot(slotEl, banner, done) {
+    if (!slotEl) {
+      if (done) done();
+      return;
+    }
+    if (slotEl.dataset.bsvAdFilled === "1") {
+      if (done) done();
+      return;
+    }
+    slotEl.dataset.bsvAdFilled = "1";
+    slotEl.removeAttribute("aria-hidden");
+    var opts = document.createElement("script");
+    opts.text =
+      "atOptions = {" +
+      "key:'" +
+      banner.key +
+      "',format:'iframe',height:" +
+      banner.height +
+      ",width:" +
+      banner.width +
+      ",params:{}};";
+    slotEl.appendChild(opts);
+    var inv = document.createElement("script");
+    inv.src = "https://www.highperformanceformat.com/" + banner.key + "/invoke.js";
+    inv.onload = function () {
+      if (done) done();
+    };
+    inv.onerror = function () {
+      if (done) done();
+    };
+    slotEl.appendChild(inv);
+  }
+
+  function fillAdsterraNativeSlot(slotEl) {
+    if (!slotEl || slotEl.dataset.bsvAdFilled === "1") return;
+    slotEl.dataset.bsvAdFilled = "1";
+    slotEl.removeAttribute("aria-hidden");
+    if (!document.getElementById(ADSTERRA_NATIVE.containerId)) {
+      var box = document.createElement("div");
+      box.id = ADSTERRA_NATIVE.containerId;
+      slotEl.appendChild(box);
+    }
+    if (!document.querySelector('script[src="' + ADSTERRA_NATIVE.src + '"]')) {
+      var s = document.createElement("script");
+      s.async = true;
+      s.setAttribute("data-cfasync", "false");
+      s.src = ADSTERRA_NATIVE.src;
+      slotEl.appendChild(s);
+    }
+  }
+
+  function ensureAdsterra() {
+    try {
+      if (!hasMarketingConsent()) return;
+      if (document.documentElement.dataset.bsvAdsterra === "1") return;
+      document.documentElement.dataset.bsvAdsterra = "1";
+      ensureAdStyles();
+
+      var i = 0;
+      function next() {
+        if (i >= ADSTERRA_BANNERS.length) {
+          fillAdsterraNativeSlot(document.querySelector('[data-bsv-ad="' + ADSTERRA_NATIVE.slot + '"]'));
+          return;
         }
-        s.src = tag.src;
-        (document.body || document.documentElement).appendChild(s);
-      });
+        var banner = ADSTERRA_BANNERS[i++];
+        var slotEl = document.querySelector('[data-bsv-ad="' + banner.slot + '"]');
+        fillAdsterraIframeSlot(slotEl, banner, next);
+      }
+      next();
     } catch (_) {}
   }
 
@@ -134,7 +248,7 @@
     el.setAttribute("aria-live", "polite");
     el.setAttribute("aria-label", "Cookie and advertising consent");
     el.innerHTML =
-      "<p>We use cookies for site analytics and ads (Monetag banners / push). The values list still works if you say no. Details in our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
+      "<p>We use cookies for site analytics and ads (Monetag + Adsterra). The values list still works if you say no. Details in our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
       '<div id="bsv-consent-actions">' +
       '<button type="button" id="bsv-consent-accept">Accept</button>' +
       '<button type="button" id="bsv-consent-reject">Reject non-essential</button>' +
