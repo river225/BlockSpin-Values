@@ -224,13 +224,8 @@
     var style = document.createElement("style");
     style.id = "bsv-ad-styles";
     style.textContent =
-      ".bsv-ad-rail{width:min(960px,calc(100% - 24px));margin:12px auto 8px;padding:14px 12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(10,15,22,.72);box-sizing:border-box}" +
-      ".bsv-ad-rail__label{margin:0 0 10px;color:#8b97a8;font:600 11px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:.06em;text-transform:uppercase;text-align:center}" +
-      ".bsv-ad-slot{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;margin:10px auto;padding:0;overflow:hidden}" +
-      ".bsv-ad-slot--leader{min-height:90px}" +
-      ".bsv-ad-slot--mpu{min-height:250px}" +
-      ".bsv-ad-slot--mobile{min-height:50px}" +
-      ".bsv-ad-slot--native{min-height:120px}" +
+      ".bsv-ad-rail{width:min(960px,calc(100% - 24px));margin:10px auto;padding:0;border:0;background:transparent;box-sizing:border-box}" +
+      ".bsv-ad-slot{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;margin:8px auto;padding:0;overflow:visible;min-height:0}" +
       ".bsv-ad-slot.is-empty{display:none!important}" +
       "@media (max-width:768px){.bsv-ad-slot--leader{display:none!important}}" +
       "@media (min-width:769px){.bsv-ad-slot--mobile{display:none!important}}";
@@ -244,7 +239,6 @@
     rail.id = "bsv-ad-rail";
     rail.className = "bsv-ad-rail";
     rail.innerHTML =
-      '<p class="bsv-ad-rail__label">Advertisement</p>' +
       '<div class="bsv-ad-slot bsv-ad-slot--leader" data-bsv-ad="adsterra-728" aria-hidden="true"></div>' +
       '<div class="bsv-ad-slot bsv-ad-slot--mobile" data-bsv-ad="adsterra-320" aria-hidden="true"></div>' +
       '<div class="bsv-ad-slot bsv-ad-slot--mpu" data-bsv-ad="adsterra-300" aria-hidden="true"></div>' +
