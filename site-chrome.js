@@ -7,9 +7,9 @@
   var SOFT_ADS_ENABLED = true;
   var SOFT_AD_TAGS = [
     { id: "bsv-ad-vignette", zone: "11550419", src: "https://n6wxm.com/vignette.min.js", kind: "dataset" },
-    { id: "bsv-ad-ipp", zone: "11550420", src: "https://nap5k.com/tag.min.js", kind: "dataset" },
-    { id: "bsv-ad-push", zone: "11550421", src: "https://5gvci.com/act/files/tag.min.js?z=11550421", kind: "src" }
+    { id: "bsv-ad-ipp", zone: "11550420", src: "https://nap5k.com/tag.min.js", kind: "dataset" }
   ];
+  // Push notifications removed (browser "wants to send notifications" prompts).
   // Direct link kept for optional manual use only (not auto-fired): https://omg10.com/4/11550422
 
   function getConsent() {
