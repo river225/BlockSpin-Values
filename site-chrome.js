@@ -3,10 +3,18 @@
 
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
-  // Monetag paused — vignette/IPP creatives were still causing popunder reports.
-  var SOFT_ADS_ENABLED = false;
-  var SOFT_AD_TAGS = [];
-  // Direct link not used: https://omg10.com/4/11550422
+  // Bump this when you need every visitor to hard-refresh once (clears old SW/cache).
+  var BSV_BUILD = "20260811-monetag-nopop";
+  var BUILD_KEY = "bsv-build";
+  var BUILD_RELOAD_KEY = "bsv-build-reloading";
+
+  // Monetag soft formats only — no Multitag / Onclick / Push.
+  var SOFT_ADS_ENABLED = true;
+  var SOFT_AD_TAGS = [
+    { id: "bsv-ad-vignette", zone: "11550419", src: "https://n6wxm.com/vignette.min.js", kind: "dataset" },
+    { id: "bsv-ad-ipp", zone: "11550420", src: "https://nap5k.com/tag.min.js", kind: "dataset" }
+  ];
+  // Direct link / Multitag / Onclick not used.
 
   var ADSTERRA_BANNERS = [
     {
@@ -34,7 +42,41 @@
     src: "https://pl30797754.effectivecpmnetwork.com/717a8f6edb7e68d29e0911501bd10b1c/invoke.js"
   };
 
-  var MONETAG_SCRIPT_RE = /n6wxm\.com|nap5k\.com|quge5\.com|5gvci\.com|omg10\.com|monetag/i;
+  // Kill Multitag / Onclick / push domains. Keep vignette + IPP hostnames allowed when soft ads are on.
+  var MONETAG_BAD_SCRIPT_RE = /quge5\.com|5gvci\.com|omg10\.com|tag\.min\.js\?z=11550421|11548891|268935/i;
+
+  function forceRefreshIfNeeded() {
+    try {
+      var seen = localStorage.getItem(BUILD_KEY);
+      if (seen === BSV_BUILD) {
+        try {
+          sessionStorage.removeItem(BUILD_RELOAD_KEY);
+        } catch (_) {}
+        return false;
+      }
+      if (sessionStorage.getItem(BUILD_RELOAD_KEY) === BSV_BUILD) {
+        localStorage.setItem(BUILD_KEY, BSV_BUILD);
+        sessionStorage.removeItem(BUILD_RELOAD_KEY);
+        return false;
+      }
+      sessionStorage.setItem(BUILD_RELOAD_KEY, BSV_BUILD);
+      localStorage.setItem(BUILD_KEY, BSV_BUILD);
+      purgeMonetagArtifacts();
+      if (window.caches && caches.keys) {
+        caches.keys().then(function (keys) {
+          keys.forEach(function (key) {
+            caches.delete(key).catch(function () {});
+          });
+        });
+      }
+      var url = new URL(window.location.href);
+      url.searchParams.set("bsv_r", BSV_BUILD);
+      window.location.replace(url.toString());
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 
   function getConsent() {
     try {
@@ -57,11 +99,11 @@
   function purgeMonetagArtifacts() {
     try {
       document.querySelectorAll("script[src]").forEach(function (el) {
-        if (MONETAG_SCRIPT_RE.test(el.src || "")) {
+        if (MONETAG_BAD_SCRIPT_RE.test(el.src || "")) {
           el.remove();
         }
       });
-      ["bsv-ad-vignette", "bsv-ad-ipp", "bsv-ad-push"].forEach(function (id) {
+      ["bsv-ad-push"].forEach(function (id) {
         var el = document.getElementById(id);
         if (el) el.remove();
       });
@@ -71,13 +113,9 @@
 
   function ensureSoftAds() {
     try {
+      purgeMonetagArtifacts();
       if (!hasMarketingConsent()) return;
-      if (!SOFT_ADS_ENABLED) {
-        purgeMonetagArtifacts();
-        ensureAdsterra();
-        return;
-      }
-      if (document.documentElement.dataset.bsvSoftAds !== "1") {
+      if (SOFT_ADS_ENABLED && document.documentElement.dataset.bsvSoftAds !== "1") {
         document.documentElement.dataset.bsvSoftAds = "1";
         SOFT_AD_TAGS.forEach(function (tag) {
           if (document.getElementById(tag.id)) return;
@@ -543,6 +581,10 @@
         openConsentSettings();
       });
     }
+  }
+
+  if (forceRefreshIfNeeded()) {
+    return;
   }
 
   if (document.readyState === "loading") {
