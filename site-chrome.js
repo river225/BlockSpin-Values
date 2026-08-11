@@ -3,6 +3,8 @@
 
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
+  // Monetag Multitag paused (scammy popunder creatives). Re-enable when cleaner formats are set.
+  var MONETAG_ENABLED = false;
   var MONETAG_SRC = "https://quge5.com/88/tag.min.js";
   var MONETAG_ZONE = "268935";
 
@@ -26,6 +28,10 @@
 
   function ensureMonetag() {
     try {
+      if (!MONETAG_ENABLED) {
+        unregisterMonetagServiceWorker();
+        return;
+      }
       if (!hasMarketingConsent()) return;
       if (document.querySelector('script[src*="quge5.com/88/tag.min.js"]:not([type="text/plain"])')) {
         return;
@@ -127,7 +133,7 @@
     el.setAttribute("aria-live", "polite");
     el.setAttribute("aria-label", "Cookie and advertising consent");
     el.innerHTML =
-      "<p>We use cookies for site analytics and ads (Monetag). The values list still works if you say no. Details in our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
+      "<p>We use cookies for site analytics. The values list still works if you say no. Details in our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
       '<div id="bsv-consent-actions">' +
       '<button type="button" id="bsv-consent-accept">Accept</button>' +
       '<button type="button" id="bsv-consent-reject">Reject non-essential</button>' +
