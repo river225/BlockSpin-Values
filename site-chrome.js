@@ -3,14 +3,10 @@
 
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
-  // Soft Monetag formats only (no Multitag / Onclick popunder).
-  var SOFT_ADS_ENABLED = true;
-  var SOFT_AD_TAGS = [
-    { id: "bsv-ad-vignette", zone: "11550419", src: "https://n6wxm.com/vignette.min.js", kind: "dataset" },
-    { id: "bsv-ad-ipp", zone: "11550420", src: "https://nap5k.com/tag.min.js", kind: "dataset" }
-  ];
-  // Push notifications removed (browser "wants to send notifications" prompts).
-  // Direct link kept for optional manual use only (not auto-fired): https://omg10.com/4/11550422
+  // Monetag paused — vignette/IPP creatives were still causing popunder reports.
+  var SOFT_ADS_ENABLED = false;
+  var SOFT_AD_TAGS = [];
+  // Direct link not used: https://omg10.com/4/11550422
 
   var ADSTERRA_BANNERS = [
     {
@@ -38,6 +34,8 @@
     src: "https://pl30797754.effectivecpmnetwork.com/717a8f6edb7e68d29e0911501bd10b1c/invoke.js"
   };
 
+  var MONETAG_SCRIPT_RE = /n6wxm\.com|nap5k\.com|quge5\.com|5gvci\.com|omg10\.com|monetag/i;
+
   function getConsent() {
     try {
       return localStorage.getItem(CONSENT_KEY);
@@ -56,9 +54,29 @@
     return getConsent() === "accepted";
   }
 
+  function purgeMonetagArtifacts() {
+    try {
+      document.querySelectorAll("script[src]").forEach(function (el) {
+        if (MONETAG_SCRIPT_RE.test(el.src || "")) {
+          el.remove();
+        }
+      });
+      ["bsv-ad-vignette", "bsv-ad-ipp", "bsv-ad-push"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.remove();
+      });
+    } catch (_) {}
+    unregisterMonetagServiceWorker();
+  }
+
   function ensureSoftAds() {
     try {
-      if (!SOFT_ADS_ENABLED || !hasMarketingConsent()) return;
+      if (!hasMarketingConsent()) return;
+      if (!SOFT_ADS_ENABLED) {
+        purgeMonetagArtifacts();
+        ensureAdsterra();
+        return;
+      }
       if (document.documentElement.dataset.bsvSoftAds !== "1") {
         document.documentElement.dataset.bsvSoftAds = "1";
         SOFT_AD_TAGS.forEach(function (tag) {
@@ -76,6 +94,33 @@
         });
       }
       ensureAdsterra();
+    } catch (_) {}
+  }
+
+  function unregisterMonetagServiceWorker() {
+    try {
+      if (!navigator.serviceWorker || !navigator.serviceWorker.getRegistrations) return;
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (reg) {
+          var url =
+            (reg.active && reg.active.scriptURL) ||
+            (reg.installing && reg.installing.scriptURL) ||
+            (reg.waiting && reg.waiting.scriptURL) ||
+            "";
+          // Unregister Monetag workers and any root sw.js left from Multitag.
+          if (
+            /\/sw\.js(\?|$)/.test(url) ||
+            /5gvci\.com|quge5\.com|n6wxm\.com|nap5k\.com|monetag/i.test(url)
+          ) {
+            reg.unregister().catch(function () {});
+          }
+        });
+      });
+      if (navigator.serviceWorker.getRegistration) {
+        navigator.serviceWorker.getRegistration("/").then(function (reg) {
+          if (reg) reg.unregister().catch(function () {});
+        });
+      }
     } catch (_) {}
   }
 
@@ -213,33 +258,14 @@
     } catch (_) {}
   }
 
-  function unregisterMonetagServiceWorker() {
-    try {
-      if (!navigator.serviceWorker || !navigator.serviceWorker.getRegistrations) return;
-      navigator.serviceWorker.getRegistrations().then(function (regs) {
-        regs.forEach(function (reg) {
-          var url =
-            (reg.active && reg.active.scriptURL) ||
-            (reg.installing && reg.installing.scriptURL) ||
-            (reg.waiting && reg.waiting.scriptURL) ||
-            "";
-          if (/\/sw\.js(\?|$)/.test(url) || /5gvci\.com|quge5\.com|n6wxm\.com|nap5k\.com/.test(url)) {
-            reg.unregister().catch(function () {});
-          }
-        });
-      });
-    } catch (_) {}
-  }
-
   function applyConsent(value) {
     setConsent(value);
     var banner = document.getElementById("bsv-consent-banner");
     if (banner) banner.remove();
+    purgeMonetagArtifacts();
     if (value === "accepted") {
       ensureAnalytics();
       ensureSoftAds();
-    } else {
-      unregisterMonetagServiceWorker();
     }
   }
 
@@ -291,6 +317,7 @@
   }
 
   function initConsent() {
+    purgeMonetagArtifacts();
     var choice = getConsent();
     if (choice === "accepted") {
       ensureAnalytics();
@@ -298,7 +325,6 @@
       return;
     }
     if (choice === "rejected") {
-      unregisterMonetagServiceWorker();
       return;
     }
     showConsentBanner();
