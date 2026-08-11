@@ -2654,12 +2654,14 @@ background-attachment: fixed;
   color: #666;
   font-size: 0.9rem;
 }.footer-boosters {
+  grid-column: 1 / -1;
+  justify-self: center;
   width: min(1200px, calc(100% - 30px));
-  position: absolute;
-  left: 50%;
-  bottom: 100%;
-  transform: translateX(-50%);
-  margin: 0 0 10px 0;
+  position: relative;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  margin: 0 auto 14px;
   z-index: 3;
 }.footer-boosters-title {
   margin: 0 0 8px 0;
@@ -14354,18 +14356,14 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
     gap: 24px;
   }
 
-  .site-footer:has(#footer-boosters:not([hidden])) {
-    margin-top: 112px;
-  }
-
   .footer-boosters {
-    position: absolute;
-    left: 50%;
-    bottom: 100%;
-    transform: translateX(-50%);
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
     width: calc(100% - 20px);
     max-width: 100%;
-    margin: 0 0 12px;
+    margin: 0 auto 14px;
   }
 
   .footer-content {
