@@ -3,10 +3,14 @@
 
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
-  // Monetag Multitag paused (scammy popunder creatives). Re-enable when cleaner formats are set.
-  var MONETAG_ENABLED = false;
-  var MONETAG_SRC = "https://quge5.com/88/tag.min.js";
-  var MONETAG_ZONE = "268935";
+  // Soft Monetag formats only (no Multitag / Onclick popunder).
+  var SOFT_ADS_ENABLED = true;
+  var SOFT_AD_TAGS = [
+    { id: "bsv-ad-vignette", zone: "11550419", src: "https://n6wxm.com/vignette.min.js", kind: "dataset" },
+    { id: "bsv-ad-ipp", zone: "11550420", src: "https://nap5k.com/tag.min.js", kind: "dataset" },
+    { id: "bsv-ad-push", zone: "11550421", src: "https://5gvci.com/act/files/tag.min.js?z=11550421", kind: "src" }
+  ];
+  // Direct link kept for optional manual use only (not auto-fired): https://omg10.com/4/11550422
 
   function getConsent() {
     try {
@@ -26,28 +30,25 @@
     return getConsent() === "accepted";
   }
 
-  function ensureMonetag() {
+  function ensureSoftAds() {
     try {
-      if (!MONETAG_ENABLED) {
-        unregisterMonetagServiceWorker();
-        return;
-      }
-      if (!hasMarketingConsent()) return;
-      if (document.querySelector('script[src*="quge5.com/88/tag.min.js"]:not([type="text/plain"])')) {
-        return;
-      }
-      var placeholder = document.querySelector(
-        'script[type="text/plain"][data-bsv-consent="marketing"][src*="quge5.com/88/tag.min.js"]'
-      );
-      var s = document.createElement("script");
-      s.setAttribute("data-cfasync", "false");
-      s.async = true;
-      s.src = (placeholder && placeholder.getAttribute("src")) || MONETAG_SRC;
-      s.setAttribute(
-        "data-zone",
-        (placeholder && placeholder.getAttribute("data-zone")) || MONETAG_ZONE
-      );
-      document.head.appendChild(s);
+      if (!SOFT_ADS_ENABLED || !hasMarketingConsent()) return;
+      if (document.documentElement.dataset.bsvSoftAds === "1") return;
+      document.documentElement.dataset.bsvSoftAds = "1";
+
+      SOFT_AD_TAGS.forEach(function (tag) {
+        if (document.getElementById(tag.id)) return;
+        if (document.querySelector('script[src="' + tag.src + '"]')) return;
+        var s = document.createElement("script");
+        s.id = tag.id;
+        s.async = true;
+        s.setAttribute("data-cfasync", "false");
+        if (tag.kind === "dataset") {
+          s.dataset.zone = tag.zone;
+        }
+        s.src = tag.src;
+        (document.body || document.documentElement).appendChild(s);
+      });
     } catch (_) {}
   }
 
@@ -84,7 +85,7 @@
             (reg.installing && reg.installing.scriptURL) ||
             (reg.waiting && reg.waiting.scriptURL) ||
             "";
-          if (/\/sw\.js(\?|$)/.test(url) || /5gvci\.com|quge5\.com/.test(url)) {
+          if (/\/sw\.js(\?|$)/.test(url) || /5gvci\.com|quge5\.com|n6wxm\.com|nap5k\.com/.test(url)) {
             reg.unregister().catch(function () {});
           }
         });
@@ -98,7 +99,7 @@
     if (banner) banner.remove();
     if (value === "accepted") {
       ensureAnalytics();
-      ensureMonetag();
+      ensureSoftAds();
     } else {
       unregisterMonetagServiceWorker();
     }
@@ -133,7 +134,7 @@
     el.setAttribute("aria-live", "polite");
     el.setAttribute("aria-label", "Cookie and advertising consent");
     el.innerHTML =
-      "<p>We use cookies for site analytics. The values list still works if you say no. Details in our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
+      "<p>We use cookies for site analytics and ads (Monetag banners / push). The values list still works if you say no. Details in our <a href=\"z-privacy.html\">Privacy Policy</a>.</p>" +
       '<div id="bsv-consent-actions">' +
       '<button type="button" id="bsv-consent-accept">Accept</button>' +
       '<button type="button" id="bsv-consent-reject">Reject non-essential</button>' +
@@ -155,7 +156,7 @@
     var choice = getConsent();
     if (choice === "accepted") {
       ensureAnalytics();
-      ensureMonetag();
+      ensureSoftAds();
       return;
     }
     if (choice === "rejected") {
