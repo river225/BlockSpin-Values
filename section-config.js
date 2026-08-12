@@ -22,7 +22,7 @@
       sidebarColumn: "hide",
       taxCalc: "hide",
       middlemanPromo: "hide",
-      mobileTaxArrow: false,
+      mobileTaxArrow: true,
       homeValueChanges: false,
       accessoriesFastNav: false,
       crewFastNav: false,

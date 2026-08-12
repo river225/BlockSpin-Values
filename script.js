@@ -4265,7 +4265,7 @@ function getMobileTaxArrowSectionIds() {
         return entry.id;
       });
   }
-  return ["uncommon", "rare", "epic", "legendary", "omega", "misc", "vehicles"];
+  return ["home", "uncommon", "rare", "epic", "legendary", "omega", "misc", "vehicles"];
 }
 
 function setMobileTaxPanelOpen(open) {
