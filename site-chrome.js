@@ -4,43 +4,17 @@
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
   // Bump this when you need every visitor to hard-refresh once (clears old SW/cache/cookies).
-  var BSV_BUILD = "20260811-hard-reset";
+  var BSV_BUILD = "20260816-no-adsterra";
   var BUILD_KEY = "bsv-build";
   var BUILD_RELOAD_KEY = "bsv-build-reloading";
 
-  // Monetag soft formats only — no Multitag / Onclick / Push.
+  // Monetag soft formats only — no Multitag / Onclick / Push. Adsterra removed.
   var SOFT_ADS_ENABLED = true;
   var SOFT_AD_TAGS = [
     { id: "bsv-ad-vignette", zone: "11550419", src: "https://n6wxm.com/vignette.min.js", kind: "dataset" },
     { id: "bsv-ad-ipp", zone: "11550420", src: "https://nap5k.com/tag.min.js", kind: "dataset" }
   ];
   // Direct link / Multitag / Onclick not used.
-
-  var ADSTERRA_BANNERS = [
-    {
-      slot: "adsterra-728",
-      key: "51d41aea82cf845045466e646892ef25",
-      width: 728,
-      height: 90
-    },
-    {
-      slot: "adsterra-320",
-      key: "944f5d5db27a044f98f7dd97adc36583",
-      width: 320,
-      height: 50
-    },
-    {
-      slot: "adsterra-300",
-      key: "fe158e39dab6a6068dfa3e3b5c7e374a",
-      width: 300,
-      height: 250
-    }
-  ];
-  var ADSTERRA_NATIVE = {
-    slot: "adsterra-native",
-    containerId: "container-717a8f6edb7e68d29e0911501bd10b1c",
-    src: "https://pl30797754.effectivecpmnetwork.com/717a8f6edb7e68d29e0911501bd10b1c/invoke.js"
-  };
 
   // Kill Multitag / Onclick / push domains. Keep vignette + IPP hostnames allowed when soft ads are on.
   var MONETAG_BAD_SCRIPT_RE = /quge5\.com|5gvci\.com|omg10\.com|tag\.min\.js\?z=11550421|11548891|268935/i;
@@ -188,7 +162,6 @@
           (document.body || document.documentElement).appendChild(s);
         });
       }
-      ensureAdsterra();
     } catch (_) {}
   }
 
@@ -216,164 +189,6 @@
           if (reg) reg.unregister().catch(function () {});
         });
       }
-    } catch (_) {}
-  }
-
-  function ensureAdStyles() {
-    if (document.getElementById("bsv-ad-styles")) return;
-    var style = document.createElement("style");
-    style.id = "bsv-ad-styles";
-    style.textContent =
-      ".bsv-ad-rail{width:min(960px,calc(100% - 24px));margin:10px auto;padding:0;border:0;background:transparent;box-sizing:border-box}" +
-      ".bsv-ad-slot{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;margin:8px auto;padding:0;overflow:visible;min-height:0}" +
-      ".bsv-ad-slot.is-empty{display:none!important}" +
-      "@media (max-width:768px){.bsv-ad-slot--leader{display:none!important}}" +
-      "@media (min-width:769px){.bsv-ad-slot--mobile{display:none!important}}";
-    document.head.appendChild(style);
-  }
-
-  function ensureAdRail() {
-    if (document.getElementById("bsv-ad-rail")) return;
-    ensureAdStyles();
-    var rail = document.createElement("div");
-    rail.id = "bsv-ad-rail";
-    rail.className = "bsv-ad-rail";
-    rail.innerHTML =
-      '<div class="bsv-ad-slot bsv-ad-slot--leader" data-bsv-ad="adsterra-728" aria-hidden="true"></div>' +
-      '<div class="bsv-ad-slot bsv-ad-slot--mobile" data-bsv-ad="adsterra-320" aria-hidden="true"></div>' +
-      '<div class="bsv-ad-slot bsv-ad-slot--mpu" data-bsv-ad="adsterra-300" aria-hidden="true"></div>' +
-      '<div class="bsv-ad-slot bsv-ad-slot--native" data-bsv-ad="adsterra-native" aria-hidden="true"></div>';
-    // Keep ads outside the footer chrome (above copyright / legal).
-    var footer = document.querySelector(".site-footer");
-    if (footer && footer.parentNode) {
-      footer.parentNode.insertBefore(rail, footer);
-    } else {
-      (document.body || document.documentElement).appendChild(rail);
-    }
-  }
-
-  function markSlotEmptyIfBlank(slotEl) {
-    if (!slotEl) return;
-    var frame = slotEl.querySelector("iframe");
-    var nativeBox = slotEl.querySelector("#" + ADSTERRA_NATIVE.containerId);
-    var hasNative = nativeBox && nativeBox.childElementCount > 0;
-    var src = frame && (frame.getAttribute("src") || "");
-    var hasBanner = !!(frame && src && src !== "about:blank");
-    if (!hasBanner && !hasNative && !slotEl.querySelector("iframe[srcdoc]")) {
-      // srcdoc frames count as present even before paint
-      if (!frame) slotEl.classList.add("is-empty");
-    }
-  }
-
-  function fillAdsterraIframeSlot(slotEl, banner, done) {
-    if (!slotEl) {
-      if (done) done();
-      return;
-    }
-    if (slotEl.dataset.bsvAdFilled === "1") {
-      if (done) done();
-      return;
-    }
-    slotEl.dataset.bsvAdFilled = "1";
-    slotEl.removeAttribute("aria-hidden");
-
-    // Adsterra invoke.js uses document.write. Load it inside a dedicated iframe
-    // document so write works after the host page has already finished loading.
-    var frame = document.createElement("iframe");
-    frame.width = String(banner.width);
-    frame.height = String(banner.height);
-    frame.setAttribute("title", "Advertisement");
-    frame.setAttribute("loading", "lazy");
-    frame.setAttribute("scrolling", "no");
-    frame.setAttribute("frameborder", "0");
-    frame.style.cssText =
-      "border:0;margin:0 auto;display:block;max-width:100%;overflow:hidden;background:transparent;width:" +
-      banner.width +
-      "px;height:" +
-      banner.height +
-      "px";
-    frame.srcdoc =
-      "<!DOCTYPE html><html><head><meta charset='utf-8'>" +
-      "<meta name='viewport' content='width=device-width,initial-scale=1'>" +
-      "<style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>" +
-      "</head><body>" +
-      "<script>atOptions={key:'" +
-      banner.key +
-      "',format:'iframe',height:" +
-      banner.height +
-      ",width:" +
-      banner.width +
-      ",params:{}};<\/script>" +
-      "<script src='https://www.highperformanceformat.com/" +
-      banner.key +
-      "/invoke.js'><\/script>" +
-      "</body></html>";
-    slotEl.appendChild(frame);
-
-    var finished = false;
-    function finish() {
-      if (finished) return;
-      finished = true;
-      if (done) done();
-    }
-    frame.addEventListener("load", function () {
-      finish();
-      setTimeout(function () {
-        try {
-          var doc = frame.contentDocument;
-          if (!doc) return;
-          var inner = doc.querySelector("iframe");
-          var innerSrc = inner && (inner.getAttribute("src") || "");
-          if (!inner || !innerSrc || innerSrc === "about:blank") {
-            slotEl.classList.add("is-empty");
-          }
-        } catch (_) {
-          // Cross-origin after creative loads — treat as filled.
-        }
-      }, 1500);
-    });
-    setTimeout(finish, 3000);
-  }
-
-  function fillAdsterraNativeSlot(slotEl) {
-    if (!slotEl || slotEl.dataset.bsvAdFilled === "1") return;
-    slotEl.dataset.bsvAdFilled = "1";
-    slotEl.removeAttribute("aria-hidden");
-    if (!document.getElementById(ADSTERRA_NATIVE.containerId)) {
-      var box = document.createElement("div");
-      box.id = ADSTERRA_NATIVE.containerId;
-      slotEl.appendChild(box);
-    }
-    if (!document.querySelector('script[src="' + ADSTERRA_NATIVE.src + '"]')) {
-      var s = document.createElement("script");
-      s.async = true;
-      s.setAttribute("data-cfasync", "false");
-      s.src = ADSTERRA_NATIVE.src;
-      slotEl.appendChild(s);
-    }
-    setTimeout(function () {
-      markSlotEmptyIfBlank(slotEl);
-    }, 3500);
-  }
-
-  function ensureAdsterra() {
-    try {
-      if (!hasMarketingConsent()) return;
-      ensureAdRail();
-      if (document.documentElement.dataset.bsvAdsterra === "1") return;
-      document.documentElement.dataset.bsvAdsterra = "1";
-
-      var i = 0;
-      function next() {
-        if (i >= ADSTERRA_BANNERS.length) {
-          fillAdsterraNativeSlot(document.querySelector('[data-bsv-ad="' + ADSTERRA_NATIVE.slot + '"]'));
-          return;
-        }
-        var banner = ADSTERRA_BANNERS[i++];
-        var slotEl = document.querySelector('[data-bsv-ad="' + banner.slot + '"]');
-        fillAdsterraIframeSlot(slotEl, banner, next);
-      }
-      next();
     } catch (_) {}
   }
 
