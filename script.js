@@ -241,8 +241,9 @@ function buildHomeRobuxBannerHtml() {
 }
 
 function buildSectionRobuxSlotHtml(title) {
-  if (!ROBUX_GIVEAWAY_SECTION_TITLES.has(title)) return "";
-  return '<div class="section-robux-slot">' + buildHomeRobuxBannerHtml() + "</div>";
+  // Robux / giveaway strip banners removed from item sections —
+  // sitewide sponsorship banner sits at the page bottom instead.
+  return "";
 }
 
 function initHomeHeroBannerCarousel() {
@@ -3068,7 +3069,6 @@ function renderSection(title, items) {
         <div class="cards">
           ${buildCardsHtmlWithDiscordPromo(items, createCard, "Omega")}
         </div>
-        <div class="omega-anaconda-slot">${buildHomeAnacondaBannerHtml()}</div>
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
@@ -3944,6 +3944,9 @@ function showSection(name) {
 
   const isHome = cfg.id === "home";
   document.body.classList.toggle("is-home", isHome);
+  if (typeof window.bsvAlignSponsorBanner === "function") {
+    window.bsvAlignSponsorBanner();
+  }
 
   // Always sync section visibility. Some sections (e.g. #richest-players) have CSS
   // that can override .section { display:none }, so newly rendered sections leak
@@ -4799,6 +4802,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadValueChanges();
   fetchDiscordMemberCount();
   loadFooterBoosters();
+  if (typeof window.bsvPlaceSponsorBanner === "function") {
+    window.bsvPlaceSponsorBanner("home");
+  }
+  if (typeof window.bsvAlignSponsorBanner === "function") {
+    window.bsvAlignSponsorBanner();
+  }
 });
 
 function refreshDynamicContentForLanguage() {
@@ -4819,6 +4828,9 @@ function refreshDynamicContentForLanguage() {
 
   var taxInput = document.getElementById("taxInput");
   if (taxInput) taxInput.dispatchEvent(new Event("input"));
+  if (typeof window.bsvAlignSponsorBanner === "function") {
+    window.bsvAlignSponsorBanner();
+  }
 }
 
 document.addEventListener("bsv:languagechange", function () {

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+/* One-time hard client reset: cookies, storage, SW, caches */
+(function () {
+  var BUILD = "20260816-sponsors";
+  var KEY = "bsv-build";
+  var FLAG = "bsv-hard-resetting";
+  try {
+    if (localStorage.getItem(KEY) === BUILD) return;
+    if (sessionStorage.getItem(FLAG) === BUILD) {
+      localStorage.setItem(KEY, BUILD);
+      sessionStorage.removeItem(FLAG);
+      return;
+    }
+    sessionStorage.setItem(FLAG, BUILD);
+    var cookies = document.cookie ? document.cookie.split(";") : [];
+    var host = location.hostname || "";
+    var domains = ["", host, "." + host];
+    for (var i = 0; i < cookies.length; i++) {
+      var name = (cookies[i].split("=")[0] || "").trim();
+      if (!name) continue;
+      for (var d = 0; d < domains.length; d++) {
+        var base = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;Max-Age=0";
+        document.cookie = domains[d] ? base + ";domain=" + domains[d] : base;
+      }
+    }
+    try { localStorage.clear(); } catch (e) {}
+    try { sessionStorage.clear(); sessionStorage.setItem(FLAG, BUILD); } catch (e) {}
+    var pending = 1;
+    function done() {
+      if (--pending > 0) return;
+      var url = new URL(location.href);
+      url.searchParams.set("bsv_r", BUILD);
+      url.searchParams.set("_", String(Date.now()));
+      location.replace(url.toString());
+    }
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+      pending++;
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+      }).then(done, done);
+    }
+    if (window.caches && caches.keys) {
+      pending++;
+      caches.keys().then(function (keys) {
+        return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+      }).then(done, done);
+    }
+    done();
+  } catch (e) {}
+})();
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sponsor BlockSpin Values — Reach 45,000+ Gamers Monthly</title>
+  <meta name="description" content="Put your brand in front of 45,000+ engaged BlockSpin traders every month. Bottom banner and Full Sponsorship packages." />
+  <link rel="canonical" href="https://blockspinvalues.com/sponsors/" />
+  <link rel="icon" type="image/png" href="/assets/bsv-logo.png" />
+  <link rel="apple-touch-icon" href="/assets/bsv-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/sponsors/sponsors.css?v=20260817-no-badges2" />
+</head>
+<body data-bsv-page="sponsors" class="sponsors-body themes-disabled">
+<div id="bsv-site-header"></div>
+
+<main class="sponsors-page">
+  <div class="sponsors-atmosphere" aria-hidden="true"></div>
+
+  <section class="sponsors-hero sponsors-reveal is-hero" aria-labelledby="sponsors-hero-title">
+    <div class="sponsors-hero__inner">
+      <div class="sponsors-hero__logo sponsors-hero-anim" data-hero-step="0">
+        <img src="/assets/bsv-logo.png" width="180" height="180" alt="BlockSpin Values" />
+      </div>
+      <h1 id="sponsors-hero-title" class="sponsors-hero__title sponsors-hero-anim" data-hero-step="1">Work with us.</h1>
+      <p class="sponsors-hero__sub sponsors-hero-anim" data-hero-step="2">Put your brand in front of 45,000+ engaged gamers every month, on the site BlockSpin traders check before every deal.</p>
+      <a class="sponsors-btn sponsors-btn--green sponsors-hero-anim" data-hero-step="3" href="#pricing">See sponsorship options</a>
+      <p class="sponsors-hero__download sponsors-hero-anim" data-hero-step="4">
+        <a class="sponsors-download-link" href="/assets/blockspin-values-sponsorship-kit.pdf" target="_blank" rel="noopener noreferrer">Get the full details (PDF)</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="sponsors-section sponsors-reveal" aria-labelledby="sponsors-audience-title">
+    <div class="sponsors-wrap">
+      <h2 id="sponsors-audience-title" class="sponsors-section__title">Audience &amp; traffic</h2>
+      <div class="sponsors-stats" role="list">
+        <article class="sponsors-stat" role="listitem" style="--i:0">
+          <p class="sponsors-stat__value" data-count="45200" data-suffix="+">45,200+</p>
+          <p class="sponsors-stat__label">Sessions / 28 days</p>
+        </article>
+        <article class="sponsors-stat" role="listitem" style="--i:1">
+          <p class="sponsors-stat__value" data-count="12700" data-suffix="+">12,700+</p>
+          <p class="sponsors-stat__label">Active users / 28 days</p>
+        </article>
+        <article class="sponsors-stat" role="listitem" style="--i:2">
+          <p class="sponsors-stat__value" data-count="105900" data-suffix="+">105,900+</p>
+          <p class="sponsors-stat__label">Pageviews / 28 days</p>
+        </article>
+        <article class="sponsors-stat" role="listitem" style="--i:3">
+          <p class="sponsors-stat__value">63.8%</p>
+          <p class="sponsors-stat__label">Engagement rate</p>
+        </article>
+      </div>
+      <p class="sponsors-section__note">It's a small operation with a loyal following, and it's still growing. Nearly 4 in 5 sessions come from organic search, people actively searching, not just passing through.</p>
+    </div>
+  </section>
+
+  <section class="sponsors-section sponsors-reveal" aria-labelledby="sponsors-placements-title">
+    <div class="sponsors-wrap">
+      <h2 id="sponsors-placements-title" class="sponsors-section__title">Placements</h2>
+      <div class="sponsors-grid-2">
+        <article class="sponsors-card">
+          <h3 class="sponsors-card__title">Bottom Banner</h3>
+          <p class="sponsors-card__metric">106,000+ views / 28 days</p>
+          <p class="sponsors-card__body">Standard display banner, bottom of every page's content, sitewide (homepage included).</p>
+        </article>
+        <article class="sponsors-card">
+          <h3 class="sponsors-card__title">Homepage Feature Card</h3>
+          <p class="sponsors-card__metric">14,500+ views / 28 days</p>
+          <p class="sponsors-card__body">Dedicated card on the homepage, next to Announcements and Recent Value Changes. Not rotated, reserved for Full Sponsorship only.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sponsors-section sponsors-reveal" id="pricing" aria-labelledby="sponsors-pricing-title">
+    <div class="sponsors-wrap">
+      <h2 id="sponsors-pricing-title" class="sponsors-section__title">Pricing</h2>
+      <div class="sponsors-grid-2 sponsors-pricing">
+        <article class="sponsors-card sponsors-card--price">
+          <span class="sponsors-pill">SITEWIDE REACH</span>
+          <h3 class="sponsors-card__title">BOTTOM BANNER</h3>
+          <p class="sponsors-price"><span class="sponsors-price__amount">£49</span> <span class="sponsors-price__term">/ 4 wks</span></p>
+          <ul class="sponsors-list">
+            <li>Standard display banner, bottom of every page</li>
+            <li>Guaranteed 25% share of a fixed 4-position rotation (3 Bottom Banner + 1 reserved for Full Sponsorship)</li>
+            <li>One flat payment, no auto-renewal</li>
+            <li>Live within 48 hours of payment</li>
+          </ul>
+        </article>
+        <article class="sponsors-card sponsors-card--price sponsors-card--gold">
+          <span class="sponsors-pill sponsors-pill--gold">★ ONLY 1 AVAILABLE</span>
+          <h3 class="sponsors-card__title">FULL SPONSORSHIP</h3>
+          <p class="sponsors-price"><span class="sponsors-price__amount">£149</span> <span class="sponsors-price__term">/ 4 wks</span></p>
+          <ul class="sponsors-list">
+            <li>On the homepage: your own Feature Card</li>
+            <li>On every page: 1 of the 4 fixed Bottom Banner positions, reserved for you</li>
+            <li>Plus: a dedicated brand page (logo, description, link) and a Discord shoutout</li>
+            <li>Only 1 Full Sponsorship available at a time</li>
+            <li>Performance summary at the end of your run</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="sponsors-addons">
+        <table>
+          <caption class="visually-hidden">Add-ons</caption>
+          <tbody>
+            <tr>
+              <th scope="row">Extra Discord post (Bottom Banner sponsors)</th>
+              <td>+£25</td>
+            </tr>
+            <tr>
+              <th scope="row">One-week Full Sponsorship trial</th>
+              <td>£39 flat</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sponsors-fineprint">50% upfront to reserve your slot, balance due at go-live. Each booking is a one-time payment for a fixed 4-week run, nothing renews automatically.</p>
+    </div>
+  </section>
+
+  <section class="sponsors-section sponsors-reveal" aria-labelledby="sponsors-fit-title">
+    <div class="sponsors-wrap">
+      <h2 id="sponsors-fit-title" class="sponsors-section__title">Who we work with</h2>
+      <div class="sponsors-grid-2">
+        <article class="sponsors-card sponsors-card--fit">
+          <h3 class="sponsors-card__title">Good-fit sponsors</h3>
+          <p class="sponsors-card__body">Gaming peripherals and accessories, other games and studios, streaming and content platforms, Discord tools and bots, gift-card and top-up services, energy drinks and snacks, esports and gaming events, general entertainment brands.</p>
+        </article>
+        <article class="sponsors-card sponsors-card--nofit">
+          <h3 class="sponsors-card__title">What we don't run</h3>
+          <p class="sponsors-card__body">Gambling or betting services, real-money item trading, cryptocurrency platforms, dating services. Applies to all tiers, no exceptions.</p>
+        </article>
+      </div>
+      <aside class="sponsors-callout" role="note">
+        Open to individual creators too. Discord server owners, YouTubers, streamers, and anyone growing their own community or channel can sponsor a slot.
+      </aside>
+    </div>
+  </section>
+
+  <section class="sponsors-section sponsors-reveal" aria-labelledby="sponsors-howto-title">
+    <div class="sponsors-wrap">
+      <h2 id="sponsors-howto-title" class="sponsors-section__title">How it works</h2>
+      <ol class="sponsors-steps">
+        <li>
+          <span class="sponsors-steps__num" aria-hidden="true">1</span>
+          <p>Choose Bottom Banner or Full Sponsorship, or ask about a custom package.</p>
+        </li>
+        <li>
+          <span class="sponsors-steps__num" aria-hidden="true">2</span>
+          <p>We confirm placement, dates, and creative requirements.</p>
+        </li>
+        <li>
+          <span class="sponsors-steps__num" aria-hidden="true">3</span>
+          <p>50% deposit to reserve your slot; balance due at go-live.</p>
+        </li>
+        <li>
+          <span class="sponsors-steps__num" aria-hidden="true">4</span>
+          <p>You get a short performance summary at the end of your run.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sponsors-section sponsors-section--contact sponsors-reveal" aria-labelledby="sponsors-contact-title">
+    <div class="sponsors-wrap">
+      <p class="sponsors-download-note">
+        Prefer a PDF?
+        <a class="sponsors-download-link" href="/assets/blockspin-values-sponsorship-kit.pdf" target="_blank" rel="noopener noreferrer">Get the full details (PDF)</a>
+      </p>
+      <div class="sponsors-contact">
+        <h2 id="sponsors-contact-title" class="sponsors-contact__title">Ready to talk sponsorship?</h2>
+        <ul class="sponsors-contact__links">
+          <li>
+            <a href="mailto:riverytacc11@gmail.com">riverytacc11@gmail.com</a>
+          </li>
+          <li>
+            <a href="https://discord.gg/blockspinvalues" target="_blank" rel="noopener noreferrer">discord.gg/blockspinvalues</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="bsv-site-footer"></div>
+<script defer src="/site-chrome.js?v=20260817-banner-pin"></script>
+<script defer src="/sponsors/sponsors.js?v=20260817-no-badges2"></script>
+</body>
+</html>

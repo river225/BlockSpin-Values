@@ -4,9 +4,11 @@
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
   // Bump this when you need every visitor to hard-refresh once (clears old SW/cache/cookies).
-  var BSV_BUILD = "20260816-no-adsterra";
+  var BSV_BUILD = "20260816-sponsors";
   var BUILD_KEY = "bsv-build";
   var BUILD_RELOAD_KEY = "bsv-build-reloading";
+  // Keep in sync with script.js THEMES_DISABLED — theme UI is not shipping.
+  var THEMES_DISABLED = true;
 
   // Monetag soft formats only — no Multitag / Onclick / Push. Adsterra removed.
   var SOFT_ADS_ENABLED = true;
@@ -18,6 +20,18 @@
 
   // Kill Multitag / Onclick / push domains. Keep vignette + IPP hostnames allowed when soft ads are on.
   var MONETAG_BAD_SCRIPT_RE = /quge5\.com|5gvci\.com|omg10\.com|tag\.min\.js\?z=11550421|11548891|268935/i;
+  var SOFT_AD_HOST_RE = /n6wxm\.com|nap5k\.com|tzegilo\.com|monetag/i;
+
+  function isSponsorsRoute() {
+    try {
+      var path = String(location.pathname || "");
+      if (path === "/sponsors" || path.indexOf("/sponsors/") === 0) return true;
+    } catch (_) {}
+    try {
+      if (document.body && document.body.getAttribute("data-bsv-page") === "sponsors") return true;
+    } catch (_) {}
+    return false;
+  }
 
   function clearSiteCookies() {
     try {
@@ -142,9 +156,37 @@
     unregisterMonetagServiceWorker();
   }
 
+  function purgeSoftAdArtifacts() {
+    try {
+      SOFT_AD_TAGS.forEach(function (tag) {
+        var byId = document.getElementById(tag.id);
+        if (byId) byId.remove();
+        document.querySelectorAll('script[src="' + tag.src + '"]').forEach(function (el) {
+          el.remove();
+        });
+      });
+      document.querySelectorAll("script[src], iframe[src], img[src], link[href]").forEach(function (el) {
+        var url = el.src || el.href || "";
+        if (SOFT_AD_HOST_RE.test(url)) el.remove();
+      });
+      try {
+        delete document.documentElement.dataset.bsvSoftAds;
+      } catch (_) {
+        document.documentElement.removeAttribute("data-bsv-soft-ads");
+      }
+    } catch (_) {}
+    unregisterMonetagServiceWorker();
+  }
+
   function ensureSoftAds() {
     try {
       purgeMonetagArtifacts();
+      // Premium sponsorship page must never load remnant ad-network units.
+      if (isSponsorsRoute()) {
+        purgeSoftAdArtifacts();
+        guardSponsorsAgainstAds();
+        return;
+      }
       if (!hasMarketingConsent()) return;
       if (SOFT_ADS_ENABLED && document.documentElement.dataset.bsvSoftAds !== "1") {
         document.documentElement.dataset.bsvSoftAds = "1";
@@ -162,6 +204,18 @@
           (document.body || document.documentElement).appendChild(s);
         });
       }
+    } catch (_) {}
+  }
+
+  function guardSponsorsAgainstAds() {
+    try {
+      if (document.documentElement.dataset.bsvSponsorsNoAds === "1") return;
+      document.documentElement.dataset.bsvSponsorsNoAds = "1";
+      if (typeof MutationObserver === "undefined") return;
+      var observer = new MutationObserver(function () {
+        purgeSoftAdArtifacts();
+      });
+      observer.observe(document.documentElement, { childList: true, subtree: true });
     } catch (_) {}
   }
 
@@ -275,6 +329,10 @@
 
   function initConsent() {
     purgeMonetagArtifacts();
+    if (isSponsorsRoute()) {
+      purgeSoftAdArtifacts();
+      guardSponsorsAgainstAds();
+    }
     var choice = getConsent();
     if (choice === "accepted") {
       ensureAnalytics();
@@ -324,6 +382,107 @@
     return '<a href="' + href + '"' + cls + ">" + label + "</a>";
   }
 
+  function ensureSponsorBannerStyles() {
+    var old = document.getElementById("bsv-sponsor-banner-styles-v2");
+    if (old) old.remove();
+    if (document.getElementById("bsv-sponsor-banner-styles-v3")) return;
+    var style = document.createElement("style");
+    style.id = "bsv-sponsor-banner-styles-v3";
+    style.textContent =
+      /* Sit in the content column; match .what-is-section width so it lines up with section content */
+      ".bsv-sponsor-promo{display:flex;justify-content:center;width:100%;margin:12px 0 8px;padding:0;box-sizing:border-box;position:relative;left:auto!important;transform:none!important}" +
+      ".bsv-sponsor-promo__shell{position:relative;display:block;width:100%;max-width:800px;margin:0 auto;padding:12px 0 8px;box-sizing:border-box}" +
+      ".bsv-sponsor-promo__shell::before{content:'';position:absolute;pointer-events:none;z-index:0;inset:-8% -6% -10%;border-radius:50%;background:radial-gradient(ellipse 55% 50% at 50% 45%,rgba(155,45,220,.28),rgba(155,45,220,.08) 45%,transparent 70%);filter:blur(22px);opacity:.9}" +
+      "@media (prefers-reduced-motion:reduce){.bsv-sponsor-promo__shell::before{opacity:.8}}" +
+      ".bsv-sponsor-promo__frame{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;margin:0 auto;padding:22px 20px 18px;border-radius:16px;background:linear-gradient(165deg,#16111f 0%,#120e1a 100%);border:1px solid rgba(155,45,220,.32);box-shadow:0 0 0 1px rgba(155,45,220,.08),0 14px 32px rgba(0,0,0,.4);overflow:hidden;text-align:center;box-sizing:border-box}" +
+      ".bsv-sponsor-promo__frame::before,.bsv-sponsor-promo__frame::after{content:'';position:absolute;width:42%;height:1px;pointer-events:none;opacity:.35}" +
+      ".bsv-sponsor-promo__frame::before{top:18px;left:-6%;background:linear-gradient(90deg,transparent,rgba(155,45,220,.75),transparent);transform:rotate(-28deg)}" +
+      ".bsv-sponsor-promo__frame::after{bottom:22px;right:-6%;background:linear-gradient(90deg,transparent,rgba(76,175,30,.65),transparent);transform:rotate(-28deg)}" +
+      ".bsv-sponsor-promo__logo{position:relative;z-index:1;width:72px;height:72px;object-fit:contain;display:block;margin:0 auto;image-rendering:-webkit-optimize-contrast}" +
+      ".bsv-sponsor-promo__title{position:relative;z-index:1;margin:2px 0 0;font:800 clamp(1.55rem,4.5vw,2.05rem)/1.1 Poppins,system-ui,sans-serif;letter-spacing:-.02em;color:#fff}" +
+      ".bsv-sponsor-promo__title span{color:#4caf1e}" +
+      ".bsv-sponsor-promo__sub{position:relative;z-index:1;margin:0;max-width:34rem;font:500 0.92rem/1.45 Poppins,system-ui,sans-serif;color:#c7cce0}" +
+      ".bsv-sponsor-promo__cta{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;margin-top:6px;padding:11px 26px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,#62d12f 0%,#3fad1a 100%);color:#fff;font:700 0.95rem/1 Poppins,system-ui,sans-serif;letter-spacing:.03em;text-decoration:none;text-shadow:0 1px 0 rgba(0,0,0,.28);transition:transform .2s ease,filter .2s ease,border-color .2s ease;white-space:nowrap}" +
+      ".bsv-sponsor-promo__cta:hover{transform:translateY(-1px);filter:brightness(1.06);border-color:rgba(255,255,255,.3)}" +
+      ".bsv-sponsor-promo__cta:focus-visible{outline:2px solid #9B2DDC;outline-offset:3px}" +
+      ".bsv-sponsor-banner-slot{display:block;width:100%;max-width:1800px;margin:0 auto;padding:0 20px;box-sizing:border-box}" +
+      /* Values-list: banner lives inside #sections so it shares the content column */
+      "#sections > .bsv-sponsor-promo{flex:0 0 auto;width:100%;max-width:100%;padding:0;margin:8px 0 12px}" +
+      ".bsv-sponsor-banner-slot:empty{display:none}";
+    document.head.appendChild(style);
+  }
+
+  function renderSponsorBanner() {
+    return (
+      '<aside class="bsv-sponsor-promo" aria-label="Sponsorship">' +
+        '<div class="bsv-sponsor-promo__shell">' +
+          '<div class="bsv-sponsor-promo__frame">' +
+            '<img class="bsv-sponsor-promo__logo" src="/assets/bsv-logo.png" width="72" height="72" alt="" decoding="async">' +
+            '<p class="bsv-sponsor-promo__title">Work with <span>us</span></p>' +
+            '<p class="bsv-sponsor-promo__sub">Sponsor slots are open. Get your brand in front of 12,700+ active traders every month.</p>' +
+            '<a class="bsv-sponsor-promo__cta" href="/sponsors/">Work with us</a>' +
+          "</div>" +
+        "</div>" +
+      "</aside>"
+    );
+  }
+
+  // Pin the banner into the values-list content column so it stays centred
+  // with Home / Common / Rare / etc. (same column as the cards).
+  function alignSponsorBannerToHomeContent() {
+    var promo = document.querySelector(".bsv-sponsor-promo");
+    if (!promo) return;
+    promo.style.left = "";
+    promo.style.transform = "";
+
+    var sections = document.querySelector(".main-container > #sections");
+    if (sections) {
+      if (promo.parentElement !== sections || sections.lastElementChild !== promo) {
+        sections.appendChild(promo);
+      }
+      return;
+    }
+
+    var slot = document.getElementById("bsv-sponsor-banner-slot");
+    if (slot && promo.parentElement !== slot) {
+      slot.appendChild(promo);
+    }
+  }
+
+  function placeSponsorBanner(activePage) {
+    if (activePage === "sponsors") return;
+    ensureSponsorBannerStyles();
+    var existing = document.querySelector(".bsv-sponsor-promo");
+    if (existing) existing.remove();
+
+    var wrap = document.createElement("div");
+    wrap.innerHTML = renderSponsorBanner();
+    var el = wrap.firstElementChild;
+    if (!el) return;
+
+    var sections = document.querySelector(".main-container > #sections");
+    if (sections) {
+      sections.appendChild(el);
+      return;
+    }
+
+    // Static pages: prefer an explicit slot, then just before the footer mount.
+    var slot = document.getElementById("bsv-sponsor-banner-slot");
+    if (slot) {
+      slot.appendChild(el);
+    } else {
+      var footerMount = document.getElementById("bsv-site-footer");
+      if (footerMount && footerMount.parentNode) {
+        footerMount.parentNode.insertBefore(el, footerMount);
+      } else {
+        var footer = document.querySelector(".site-footer");
+        if (footer && footer.parentNode) {
+          footer.parentNode.insertBefore(el, footer);
+        }
+      }
+    }
+  }
+
   function headerSearch() {
     return (
       '<div class="search-container is-hidden" id="header-search">' +
@@ -369,12 +528,13 @@
                 '<img src="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png" alt="BlockSpin Values Logo" class="nav-logo-img">' +
                 '<span class="nav-title">Block<span class="brand-spin">Spin</span> Values</span>' +
               "</a>" +
-              navLink("x-about.html", "About Us", activePage, "about") +
-              navLink("x-faq.html", "FAQ", activePage, "faq") +
+              navLink("/x-about.html", "About Us", activePage, "about") +
+              navLink("/sponsors/", "Sponsors", activePage, "sponsors") +
+              navLink("/x-faq.html", "FAQ", activePage, "faq") +
             "</div>" +
             search +
             '<div class="nav-right">' +
-              themeSwitcher() +
+              (THEMES_DISABLED ? "" : themeSwitcher()) +
               SOCIAL +
               (isHome ? '<span class="nav-right-divider" aria-hidden="true"></span>' + navTools() : '') +
               login +
@@ -384,9 +544,11 @@
       "</header>" +
       '<div class="site-mobile-below-header">' +
         '<nav class="header-subnav" aria-label="Site pages">' +
-          navLink("x-about.html", "About Us", activePage, "about") +
+          navLink("/x-about.html", "About Us", activePage, "about") +
           '<span class="header-subnav__sep" aria-hidden="true">·</span>' +
-          navLink("x-faq.html", "FAQ", activePage, "faq") +
+          navLink("/sponsors/", "Sponsors", activePage, "sponsors") +
+          '<span class="header-subnav__sep" aria-hidden="true">·</span>' +
+          navLink("/x-faq.html", "FAQ", activePage, "faq") +
         "</nav>" +
         '<div class="nav-mobile-toolbar' + (isHome ? ' is-active' : '') + '" aria-label="Mobile shortcuts"></div>' +
       "</div>"
@@ -410,10 +572,10 @@
         '<div class="footer-side-nav__group" aria-label="Legal">' +
           '<p class="footer-side-nav__title">Legal</p>' +
           '<ul class="footer-side-nav__list">' +
-            '<li><a class="footer-side-nav__link" href="z-terms.html">' +
+            '<li><a class="footer-side-nav__link" href="/z-terms.html">' +
               '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>' +
               "<span>Terms of Service</span></a></li>" +
-            '<li><a class="footer-side-nav__link" href="z-privacy.html">' +
+            '<li><a class="footer-side-nav__link" href="/z-privacy.html">' +
               '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>' +
               "<span>Privacy Policy</span></a></li>" +
           "</ul>" +
@@ -422,7 +584,7 @@
     );
   }
 
-  function renderFooter() {
+  function renderFooter(activePage) {
     var copy = "© 2026 BlockSpin Values";
     // Boosters sit above the footer element so they are not on the footer background.
     return (
@@ -475,10 +637,17 @@
   }
 
   function mount(activePage) {
+    if (THEMES_DISABLED) {
+      try {
+        document.body.classList.add("themes-disabled");
+        document.body.removeAttribute("data-theme");
+      } catch (_) {}
+    }
     var headerMount = document.getElementById("bsv-site-header");
     var footerMount = document.getElementById("bsv-site-footer");
     if (headerMount) headerMount.outerHTML = renderHeader(activePage || "");
-    if (footerMount) footerMount.innerHTML = renderFooter();
+    if (footerMount) footerMount.innerHTML = renderFooter(activePage || "");
+    placeSponsorBanner(activePage || "");
     var boostersSlot = document.getElementById("bsv-discord-boosters-slot");
     var boosters = document.getElementById("footer-boosters");
     if (boostersSlot && boosters) boostersSlot.appendChild(boosters);
@@ -513,9 +682,15 @@
     autoMount();
   }
 
+  window.addEventListener("resize", function () {
+    alignSponsorBannerToHomeContent();
+  });
+
   global.bsvMountSiteChrome = mount;
   global.bsvInitMobileHeaderToolbar = initMobileHeaderToolbar;
   global.initMobileHeaderToolbar = initMobileHeaderToolbar;
   global.bsvHasMarketingConsent = hasMarketingConsent;
   global.bsvOpenCookieSettings = openConsentSettings;
+  global.bsvPlaceSponsorBanner = placeSponsorBanner;
+  global.bsvAlignSponsorBanner = alignSponsorBannerToHomeContent;
 })(typeof window !== "undefined" ? window : globalThis);
