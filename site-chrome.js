@@ -4,34 +4,16 @@
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
   // Bump this when you need every visitor to hard-refresh once (clears old SW/cache/cookies).
-  var BSV_BUILD = "20260816-sponsors";
+  var BSV_BUILD = "20260818-no-monetag";
   var BUILD_KEY = "bsv-build";
   var BUILD_RELOAD_KEY = "bsv-build-reloading";
   // Keep in sync with script.js THEMES_DISABLED — theme UI is not shipping.
   var THEMES_DISABLED = true;
 
-  // Monetag soft formats only — no Multitag / Onclick / Push. Adsterra removed.
-  var SOFT_ADS_ENABLED = true;
-  var SOFT_AD_TAGS = [
-    { id: "bsv-ad-vignette", zone: "11550419", src: "https://n6wxm.com/vignette.min.js", kind: "dataset" },
-    { id: "bsv-ad-ipp", zone: "11550420", src: "https://nap5k.com/tag.min.js", kind: "dataset" }
-  ];
-  // Direct link / Multitag / Onclick not used.
-
-  // Kill Multitag / Onclick / push domains. Keep vignette + IPP hostnames allowed when soft ads are on.
-  var MONETAG_BAD_SCRIPT_RE = /quge5\.com|5gvci\.com|omg10\.com|tag\.min\.js\?z=11550421|11548891|268935/i;
-  var SOFT_AD_HOST_RE = /n6wxm\.com|nap5k\.com|tzegilo\.com|monetag/i;
-
-  function isSponsorsRoute() {
-    try {
-      var path = String(location.pathname || "");
-      if (path === "/sponsors" || path.indexOf("/sponsors/") === 0) return true;
-    } catch (_) {}
-    try {
-      if (document.body && document.body.getAttribute("data-bsv-page") === "sponsors") return true;
-    } catch (_) {}
-    return false;
-  }
+  // Monetag fully removed. Strip any leftover tags/workers from older visits.
+  var MONETAG_HOST_RE =
+    /quge5\.com|5gvci\.com|omg10\.com|n6wxm\.com|nap5k\.com|tzegilo\.com|monetag|11550419|11550420|11550421|11548891|268935/i;
+  var MONETAG_TAG_IDS = ["bsv-ad-vignette", "bsv-ad-ipp", "bsv-ad-push"];
 
   function clearSiteCookies() {
     try {
@@ -143,80 +125,26 @@
 
   function purgeMonetagArtifacts() {
     try {
-      document.querySelectorAll("script[src]").forEach(function (el) {
-        if (MONETAG_BAD_SCRIPT_RE.test(el.src || "")) {
-          el.remove();
-        }
-      });
-      ["bsv-ad-push"].forEach(function (id) {
-        var el = document.getElementById(id);
-        if (el) el.remove();
-      });
-    } catch (_) {}
-    unregisterMonetagServiceWorker();
-  }
-
-  function purgeSoftAdArtifacts() {
-    try {
-      SOFT_AD_TAGS.forEach(function (tag) {
-        var byId = document.getElementById(tag.id);
+      MONETAG_TAG_IDS.forEach(function (id) {
+        var byId = document.getElementById(id);
         if (byId) byId.remove();
-        document.querySelectorAll('script[src="' + tag.src + '"]').forEach(function (el) {
-          el.remove();
-        });
       });
       document.querySelectorAll("script[src], iframe[src], img[src], link[href]").forEach(function (el) {
         var url = el.src || el.href || "";
-        if (SOFT_AD_HOST_RE.test(url)) el.remove();
+        if (MONETAG_HOST_RE.test(url)) el.remove();
       });
       try {
         delete document.documentElement.dataset.bsvSoftAds;
       } catch (_) {
         document.documentElement.removeAttribute("data-bsv-soft-ads");
       }
+      try {
+        delete document.documentElement.dataset.bsvSponsorsNoAds;
+      } catch (_) {
+        document.documentElement.removeAttribute("data-bsv-sponsors-no-ads");
+      }
     } catch (_) {}
     unregisterMonetagServiceWorker();
-  }
-
-  function ensureSoftAds() {
-    try {
-      purgeMonetagArtifacts();
-      // Premium sponsorship page must never load remnant ad-network units.
-      if (isSponsorsRoute()) {
-        purgeSoftAdArtifacts();
-        guardSponsorsAgainstAds();
-        return;
-      }
-      if (!hasMarketingConsent()) return;
-      if (SOFT_ADS_ENABLED && document.documentElement.dataset.bsvSoftAds !== "1") {
-        document.documentElement.dataset.bsvSoftAds = "1";
-        SOFT_AD_TAGS.forEach(function (tag) {
-          if (document.getElementById(tag.id)) return;
-          if (document.querySelector('script[src="' + tag.src + '"]')) return;
-          var s = document.createElement("script");
-          s.id = tag.id;
-          s.async = true;
-          s.setAttribute("data-cfasync", "false");
-          if (tag.kind === "dataset") {
-            s.dataset.zone = tag.zone;
-          }
-          s.src = tag.src;
-          (document.body || document.documentElement).appendChild(s);
-        });
-      }
-    } catch (_) {}
-  }
-
-  function guardSponsorsAgainstAds() {
-    try {
-      if (document.documentElement.dataset.bsvSponsorsNoAds === "1") return;
-      document.documentElement.dataset.bsvSponsorsNoAds = "1";
-      if (typeof MutationObserver === "undefined") return;
-      var observer = new MutationObserver(function () {
-        purgeSoftAdArtifacts();
-      });
-      observer.observe(document.documentElement, { childList: true, subtree: true });
-    } catch (_) {}
   }
 
   function unregisterMonetagServiceWorker() {
@@ -229,11 +157,8 @@
             (reg.installing && reg.installing.scriptURL) ||
             (reg.waiting && reg.waiting.scriptURL) ||
             "";
-          // Unregister Monetag workers and any root sw.js left from Multitag.
-          if (
-            /\/sw\.js(\?|$)/.test(url) ||
-            /5gvci\.com|quge5\.com|n6wxm\.com|nap5k\.com|monetag/i.test(url)
-          ) {
+          // Unregister leftover Monetag / Multitag workers and root sw.js.
+          if (/\/sw\.js(\?|$)/.test(url) || MONETAG_HOST_RE.test(url)) {
             reg.unregister().catch(function () {});
           }
         });
@@ -276,7 +201,6 @@
     purgeMonetagArtifacts();
     if (value === "accepted") {
       ensureAnalytics();
-      ensureSoftAds();
     }
   }
 
@@ -307,7 +231,7 @@
     el.id = "bsv-consent-banner";
     el.setAttribute("role", "dialog");
     el.setAttribute("aria-live", "polite");
-    el.setAttribute("aria-label", "Cookie and advertising consent");
+    el.setAttribute("aria-label", "Cookie consent");
     el.innerHTML =
       "<p>We use cookies to improve your experience and analyze site traffic. Read our <a href=\"z-privacy.html#cookies\">Cookie Policy</a> to learn more.</p>" +
       '<div id="bsv-consent-actions">' +
@@ -329,14 +253,9 @@
 
   function initConsent() {
     purgeMonetagArtifacts();
-    if (isSponsorsRoute()) {
-      purgeSoftAdArtifacts();
-      guardSponsorsAgainstAds();
-    }
     var choice = getConsent();
     if (choice === "accepted") {
       ensureAnalytics();
-      ensureSoftAds();
       return;
     }
     if (choice === "rejected") {

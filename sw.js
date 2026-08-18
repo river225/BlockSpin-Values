@@ -1,4 +1,4 @@
-/* Neutralized former Monetag Multitag worker. Unregisters itself. */
+/* Leftover worker stub — unregisters itself so old ad-network SWs do not stick. */
 self.addEventListener("install", function () {
   self.skipWaiting();
 });
