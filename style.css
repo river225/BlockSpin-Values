@@ -3821,9 +3821,95 @@ background-attachment: fixed;
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
 }.home-robux-banner--birthday .home-robux-banner__urgency {
-  background: linear-gradient(180deg, rgba(255, 236, 170, 0.98), rgba(251, 191, 36, 0.95));
-  color: #4a1d0a;
-  border-color: rgba(255, 255, 255, 0.7);
+  background: linear-gradient(180deg, #fff4c8 0%, #f5c84a 100%);
+  color: #5a2f08;
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 16px rgba(255, 214, 102, 0.55), 0 2px 0 #000;
+  animation: none;
+}.home-robux-banner--birthday {
+  min-height: 300px;
+  border-color: rgba(255, 228, 170, 0.7);
+  box-shadow:
+    0 6px 0 #000,
+    0 0 28px rgba(251, 191, 36, 0.35),
+    0 0 48px rgba(244, 114, 182, 0.18);
+  background:
+    radial-gradient(ellipse 90% 80% at 18% 18%, rgba(255, 255, 255, 0.42) 0%, transparent 48%),
+    radial-gradient(ellipse 70% 60% at 86% 78%, rgba(251, 191, 36, 0.32) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 50% at 70% 20%, rgba(244, 114, 182, 0.18) 0%, transparent 50%),
+    linear-gradient(135deg, #1a2450 0%, #2f4ea8 22%, #4f6ed8 42%, #7b6adf 62%, #c084fc 82%, #f0abfc 100%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 220% 220%;
+}.home-robux-banner--birthday .home-robux-banner__stars {
+  opacity: 0.85;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,255,255,0.95), transparent),
+    radial-gradient(1.5px 1.5px at 28% 72%, rgba(254, 240, 138, 0.9), transparent),
+    radial-gradient(1px 1px at 46% 28%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 68% 16%, rgba(251, 207, 232, 0.9), transparent),
+    radial-gradient(1px 1px at 82% 58%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 90% 34%, rgba(254, 240, 138, 0.85), transparent),
+    radial-gradient(1px 1px at 58% 84%, rgba(255,255,255,0.7), transparent);
+}.home-robux-banner--birthday .home-robux-banner__nebula {
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 236, 179, 0.28) 50%, transparent 62%);
+}.home-robux-banner__confetti {
+  display: none;
+}.home-robux-banner--birthday .home-robux-banner__confetti {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}.home-robux-banner--birthday .home-robux-banner__confetti span {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  opacity: 0.72;
+  animation: home-robux-confetti-drift 7s ease-in-out infinite;
+}.home-robux-banner--birthday .home-robux-banner__confetti span:nth-child(1) {
+  top: 18%; left: 12%; background: #fde68a; animation-delay: 0s;
+}.home-robux-banner--birthday .home-robux-banner__confetti span:nth-child(2) {
+  top: 28%; right: 14%; background: #f9a8d4; width: 6px; height: 6px; border-radius: 50%; animation-delay: 0.8s;
+}.home-robux-banner--birthday .home-robux-banner__confetti span:nth-child(3) {
+  bottom: 26%; left: 18%; background: #a5b4fc; width: 5px; height: 8px; animation-delay: 1.4s;
+}.home-robux-banner--birthday .home-robux-banner__confetti span:nth-child(4) {
+  top: 42%; left: 78%; background: #fcd34d; width: 8px; height: 4px; animation-delay: 0.4s;
+}.home-robux-banner--birthday .home-robux-banner__confetti span:nth-child(5) {
+  bottom: 18%; right: 22%; background: #fda4af; border-radius: 50%; animation-delay: 1.9s;
+}.home-robux-banner--birthday .home-robux-banner__confetti span:nth-child(6) {
+  top: 14%; left: 48%; background: #c4b5fd; width: 5px; height: 5px; animation-delay: 1.1s;
+}@keyframes home-robux-confetti-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.55; }
+  50% { transform: translateY(-10px) rotate(18deg); opacity: 0.9; }
+}.home-robux-banner--birthday .home-robux-banner__inner {
+  gap: 14px;
+  padding: 28px 20px 26px;
+}.home-robux-banner--birthday .home-robux-banner__eyebrow {
+  margin: 0 0 2px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fce7f3;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
+}.home-robux-banner--birthday .home-robux-banner__amount {
+  color: #fff7c2;
+  text-shadow: 2px 2px 0 #000, 0 0 22px rgba(253, 224, 71, 0.55);
+  font-size: clamp(1.55rem, 4vw, 2rem);
+}.home-robux-banner--birthday .home-robux-banner__title {
+  text-shadow: 2px 2px 0 #000, 0 0 18px rgba(251, 191, 36, 0.35);
+}.home-robux-banner--birthday .home-robux-banner__hook {
+  max-width: 34ch;
+  color: #f8fafc;
+}.home-robux-banner--birthday .home-robux-banner__cta {
+  background: linear-gradient(180deg, #ffe08a 0%, #f5b942 48%, #d97706 100%);
+  color: #3b1d05;
+  text-shadow: none;
+  box-shadow: 0 4px 0 #000, 0 0 18px rgba(251, 191, 36, 0.45);
+}.home-robux-banner--birthday .home-robux-banner__cta:hover {
+  color: #3b1d05;
+  box-shadow: 0 6px 0 #000, 0 0 26px rgba(252, 211, 77, 0.65);
 }.home-robux-banner__prize-wrap {
   position: relative;
   width: min(72%, 200px);

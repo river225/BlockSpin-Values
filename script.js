@@ -218,21 +218,21 @@ function buildHomeAnacondaBannerHtml() {
 }
 
 function buildHomeRobuxBannerHtml() {
-  var img = escapeAttr(ROBUX_GIVEAWAY_IMAGE_URL);
   var href = escapeAttr(BSV_DISCORD_INVITE_URL);
   return (
     '<article class="home-robux-banner home-robux-banner--birthday" role="complementary" aria-label="BlockSpin Values 1 Year Birthday — 10K Robux Giveaway">' +
       '<div class="home-robux-banner__stars" aria-hidden="true"></div>' +
       '<div class="home-robux-banner__nebula" aria-hidden="true"></div>' +
+      '<div class="home-robux-banner__confetti" aria-hidden="true">' +
+        "<span></span><span></span><span></span><span></span><span></span><span></span>" +
+      "</div>" +
       '<div class="home-robux-banner__inner">' +
-        '<span class="home-robux-banner__urgency">1 Year Birthday</span>' +
-        '<div class="home-robux-banner__prize-wrap">' +
-          '<img src="' + img + '" alt="10,000 Robux" class="home-robux-banner__prize" width="200" height="200" loading="lazy" decoding="async">' +
-        "</div>" +
+        '<span class="home-robux-banner__urgency">Happy 1 Year</span>' +
         '<div class="home-robux-banner__copy">' +
+          '<p class="home-robux-banner__eyebrow">BlockSpin Values Birthday</p>' +
           '<p class="home-robux-banner__amount">10,000 Robux</p>' +
           '<h3 class="home-robux-banner__title">Birthday Giveaway</h3>' +
-          '<p class="home-robux-banner__hook">Celebrating 1 year of BlockSpin Values — join our Discord to enter!</p>' +
+          '<p class="home-robux-banner__hook">Celebrating one year with the community — join Discord to enter!</p>' +
         "</div>" +
         '<a href="' + href + '" target="_blank" rel="noopener noreferrer" class="home-robux-banner__cta">Enter Now <span aria-hidden="true">→</span></a>' +
       "</div>" +
