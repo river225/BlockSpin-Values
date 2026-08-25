@@ -105,8 +105,8 @@ const ROBUX_GIVEAWAY_SECTION_TITLES = new Set([
   "Rare",
   "Epic",
   "Legendary",
-  "Vehicles",
-  "Misc"
+  "Omega",
+  "Vehicles"
 ]);
 const GIVEAWAY_CONFIG_SPREADSHEET_ID = "1hjj8Pd21KOhI9bjUz4-UupADhJzksATcVDJfo186GFk";
 const GIVEAWAYS_SHEET_NAME = "Giveaways";
@@ -241,9 +241,12 @@ function buildHomeRobuxBannerHtml() {
 }
 
 function buildSectionRobuxSlotHtml(title) {
-  // Robux / giveaway strip banners removed from item sections —
-  // sitewide sponsorship banner sits at the page bottom instead.
-  return "";
+  if (!ROBUX_GIVEAWAY_SECTION_TITLES.has(title)) return "";
+  return (
+    '<div class="section-robux-slot section-robux-slot--birthday" aria-label="Birthday giveaway">' +
+      buildHomeRobuxBannerHtml() +
+    "</div>"
+  );
 }
 
 function initHomeHeroBannerCarousel() {
@@ -1455,7 +1458,12 @@ function renderSectionContentEmbeds() {
         </iframe>
       </div>
     `;
-    sectionEl.appendChild(wrapper);
+    var robuxSlot = sectionEl.querySelector(".section-robux-slot");
+    if (robuxSlot) {
+      sectionEl.insertBefore(wrapper, robuxSlot);
+    } else {
+      sectionEl.appendChild(wrapper);
+    }
   });
   setupSectionEmbedScrollAutoplay();
 }
@@ -3066,6 +3074,7 @@ function renderSection(title, items) {
         <div class="cards">
           ${buildCardsHtmlWithDiscordPromo(items, createCard, "Omega")}
         </div>
+        ${buildSectionRobuxSlotHtml("Omega")}
       </section>
     `;
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);

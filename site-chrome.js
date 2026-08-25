@@ -348,6 +348,7 @@
 
   // Pin the banner into the values-list content column so it stays centred
   // with Home / Common / Rare / etc. (same column as the cards).
+  // Place it directly after the active section so birthday banners sit above it.
   function alignSponsorBannerToHomeContent() {
     var promo = document.querySelector(".bsv-sponsor-promo");
     if (!promo) return;
@@ -356,7 +357,30 @@
 
     var sections = document.querySelector(".main-container > #sections");
     if (sections) {
-      if (promo.parentElement !== sections || sections.lastElementChild !== promo) {
+      var active = null;
+      var kids = sections.children;
+      for (var i = 0; i < kids.length; i++) {
+        var el = kids[i];
+        if (!el || !el.classList || !el.classList.contains("section")) continue;
+        if (el.style.display === "none") continue;
+        var shown = el.style.display && el.style.display !== "none";
+        if (!shown) {
+          try {
+            shown = window.getComputedStyle(el).display !== "none";
+          } catch (_) {
+            shown = false;
+          }
+        }
+        if (shown) {
+          active = el;
+          break;
+        }
+      }
+      if (active) {
+        if (active.nextSibling !== promo) {
+          sections.insertBefore(promo, active.nextSibling);
+        }
+      } else if (promo.parentElement !== sections || sections.lastElementChild !== promo) {
         sections.appendChild(promo);
       }
       return;

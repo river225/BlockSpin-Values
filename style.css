@@ -3736,6 +3736,8 @@ background-attachment: fixed;
   width: 100%;
   max-width: 620px;
   margin: 28px auto 8px;
+}.section-robux-slot--birthday {
+  margin: 32px auto 16px;
 }.section-robux-slot .home-robux-banner {
   width: 100%;
 }.home-robux-banner {
