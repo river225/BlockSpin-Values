@@ -3820,6 +3820,10 @@ background-attachment: fixed;
 }@keyframes home-robux-urgency-pop {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
+}.home-robux-banner--birthday .home-robux-banner__urgency {
+  background: linear-gradient(180deg, rgba(255, 236, 170, 0.98), rgba(251, 191, 36, 0.95));
+  color: #4a1d0a;
+  border-color: rgba(255, 255, 255, 0.7);
 }.home-robux-banner__prize-wrap {
   position: relative;
   width: min(72%, 200px);
