@@ -878,7 +878,6 @@ function getRichestPlayerFields(player, index) {
     rankTier: getRankTierClass(rank),
     rankClass: String(rank).length >= 3 ? "rank-long" : "",
     playerName: playerName,
-    level: player["Level"] || "N/A",
     worth: formatNetWorth(player["Networth"] || player["Net Worth"] || 0),
     profileUrl: "https://www.roblox.com/search/users?keyword=" + encodeURIComponent(playerName)
   };
@@ -910,9 +909,6 @@ function buildRichestPlayerCard(player, index) {
     '<div class="player-name">' +
     escapeHtml(p.playerName) +
     "</div>" +
-    '<div class="player-level"><span class="player-level-label">' + escapeHtml(i18n("richest.level") + ": ") + '</span><span class="player-level-value">' +
-    escapeHtml(p.level) +
-    "</span></div>" +
     '<div class="player-worth"><span class="player-worth-label">' + escapeHtml(i18n("richest.netWorth") + ": ") + '</span>' +
     escapeHtml(p.worth) +
     "</div>" +
