@@ -5352,6 +5352,51 @@ background-attachment: fixed;
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
+}.richest-levels-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px auto 0;
+  padding: 8px 10px 8px 12px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: rgba(30, 41, 59, 0.92);
+  color: #f8fafc;
+}.richest-levels-notice[hidden] {
+  display: none !important;
+}.richest-levels-notice__text {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #e2e8f0;
+  text-align: left;
+}.richest-levels-notice__close {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}.richest-levels-notice__close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}.richest-levels-notice__close:focus-visible {
+  outline: 2px solid rgba(251, 191, 36, 0.7);
+  outline-offset: 2px;
 }.richest-search {
   width: 100%;
   max-width: none;

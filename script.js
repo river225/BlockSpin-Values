@@ -971,9 +971,36 @@ function createRichestPlayersSection(data) {
     '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>' +
     '<path d="M3 3v5h5"/>' +
     '</svg></button></div>' +
+    buildRichestLevelsNoticeHtml() +
     "</div>" +
     buildRichestCardsContainer(data)
   );
+}
+
+function buildRichestLevelsNoticeHtml() {
+  return (
+    '<div class="richest-levels-notice" id="richest-levels-notice" role="status">' +
+      '<p class="richest-levels-notice__text">We\'re aware of an issue with player levels and have temporarily disabled them.</p>' +
+      '<button type="button" class="richest-levels-notice__close" id="richest-levels-notice-close" aria-label="Dismiss notice">' +
+        '<span aria-hidden="true">×</span>' +
+      "</button>" +
+    "</div>"
+  );
+}
+
+function showRichestLevelsNotice() {
+  var notice = document.getElementById("richest-levels-notice");
+  if (notice) notice.hidden = false;
+}
+
+function initRichestLevelsNotice() {
+  var notice = document.getElementById("richest-levels-notice");
+  var closeBtn = document.getElementById("richest-levels-notice-close");
+  if (!notice || !closeBtn || closeBtn.dataset.ready === "1") return;
+  closeBtn.dataset.ready = "1";
+  closeBtn.addEventListener("click", function () {
+    notice.hidden = true;
+  });
 }
 
 function filterRichestPlayers(query) {
@@ -3576,6 +3603,8 @@ function renderScammerSection(items) {
     }
 
     updateRichestResetVisibility();
+    initRichestLevelsNotice();
+    showRichestLevelsNotice();
 
     const backToTop = document.getElementById("richest-back-to-top");
     const section = document.querySelector(".richest-players-section");
@@ -3950,6 +3979,9 @@ function showSection(name) {
 
   const isHome = cfg.id === "home";
   document.body.classList.toggle("is-home", isHome);
+  if (name === RICHEST_SECTION_NAME) {
+    showRichestLevelsNotice();
+  }
   if (typeof window.bsvAlignSponsorBanner === "function") {
     window.bsvAlignSponsorBanner();
   }
