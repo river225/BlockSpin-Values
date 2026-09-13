@@ -5362,9 +5362,9 @@ background-attachment: fixed;
   padding: 8px 10px 8px 12px;
   box-sizing: border-box;
   border-radius: 8px;
-  border: 1px solid rgba(251, 191, 36, 0.35);
-  background: rgba(30, 41, 59, 0.92);
-  color: #f8fafc;
+  border: 1px solid rgba(180, 130, 20, 0.45);
+  background: #f5c842;
+  color: #1a1508;
 }.richest-levels-notice[hidden] {
   display: none !important;
 }.richest-levels-notice__text {
@@ -5373,7 +5373,7 @@ background-attachment: fixed;
   font-size: 0.78rem;
   font-weight: 600;
   line-height: 1.35;
-  color: #e2e8f0;
+  color: #1f1808;
   text-align: left;
 }.richest-levels-notice__close {
   flex: 0 0 auto;
@@ -5387,15 +5387,15 @@ background-attachment: fixed;
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: #cbd5e1;
+  color: #3b2f0e;
   font-size: 1.15rem;
   line-height: 1;
   cursor: pointer;
 }.richest-levels-notice__close:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.1);
+  color: #000;
 }.richest-levels-notice__close:focus-visible {
-  outline: 2px solid rgba(251, 191, 36, 0.7);
+  outline: 2px solid rgba(80, 55, 0, 0.65);
   outline-offset: 2px;
 }.richest-search {
   width: 100%;
