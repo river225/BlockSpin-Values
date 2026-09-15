@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+/* One-time hard client reset: cookies, storage, SW, caches */
+(function () {
+  var BUILD = "20260818-no-monetag";
+  var KEY = "bsv-build";
+  var FLAG = "bsv-hard-resetting";
+  try {
+    if (localStorage.getItem(KEY) === BUILD) return;
+    if (sessionStorage.getItem(FLAG) === BUILD) {
+      localStorage.setItem(KEY, BUILD);
+      sessionStorage.removeItem(FLAG);
+      return;
+    }
+    sessionStorage.setItem(FLAG, BUILD);
+    var cookies = document.cookie ? document.cookie.split(";") : [];
+    var host = location.hostname || "";
+    var domains = ["", host, "." + host];
+    for (var i = 0; i < cookies.length; i++) {
+      var name = (cookies[i].split("=")[0] || "").trim();
+      if (!name) continue;
+      for (var d = 0; d < domains.length; d++) {
+        var base = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;Max-Age=0";
+        document.cookie = domains[d] ? base + ";domain=" + domains[d] : base;
+      }
+    }
+    try { localStorage.clear(); } catch (e) {}
+    try { sessionStorage.clear(); sessionStorage.setItem(FLAG, BUILD); } catch (e) {}
+    var pending = 1;
+    function done() {
+      if (--pending > 0) return;
+      var url = new URL(location.href);
+      url.searchParams.set("bsv_r", BUILD);
+      url.searchParams.set("_", String(Date.now()));
+      location.replace(url.toString());
+    }
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+      pending++;
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+      }).then(done, done);
+    }
+    if (window.caches && caches.keys) {
+      pending++;
+      caches.keys().then(function (keys) {
+        return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+      }).then(done, done);
+    }
+    done();
+  } catch (e) {}
+})();
+</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact BlockSpin Values — email and Discord for questions about values, sponsorships, and the community.">
+  <link rel="canonical" href="https://blockspinvalues.com/z-contact.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <title>Contact - BlockSpin Values</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-bsv-page="legal">
+
+<div id="bsv-site-header"></div>
+  <div class="legal-page legal-page--compact">
+    <a href="/" class="back-btn-top">← Back</a>
+
+    <h1>Contact</h1>
+
+    <p class="legal-page__intro">Questions about BlockSpin Values, sponsorships, or the Discord community? Reach us here.</p>
+
+    <h2>Email</h2>
+    <p><a href="mailto:riverytacc11@gmail.com">riverytacc11@gmail.com</a></p>
+
+    <h2>Discord</h2>
+    <ul>
+      <li>Server: <a href="https://discord.gg/blockspinvalues" target="_blank" rel="noopener noreferrer">discord.gg/blockspinvalues</a></li>
+      <li>Owner: <strong>_.riverr</strong></li>
+    </ul>
+
+    <h2>Sponsorships</h2>
+    <p>For brand partnerships and ad placements, see the <a href="/sponsors/">Sponsors</a> page or email us with “Sponsorship” in the subject line.</p>
+
+    <div class="legal-page__footer">
+      <p class="last-updated">Last Updated: September 15, 2026</p>
+      <a href="/" class="back-btn">← Back to Home</a>
+    </div>
+  </div>
+
+<div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
+<div id="bsv-site-footer"></div>
+<script src="site-chrome.js?v=20260818-no-monetag"></script>
+<script src="script.js?v=20260718-legal"></script>
+</body>
+</html>
