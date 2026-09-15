@@ -683,6 +683,27 @@ function buildRobuxGiveawayBannerHtml(bannerId) {
   return "";
 }
 
+function normalizeSectionNameForAnalytics(sectionName) {
+  var name = sectionName || "Home";
+  if (name === "Untradable Items") return ACCESSORIES_SECTION_NAME;
+  if (name === "Richest Players" || name === "richest-players") return "💰 Richest Players";
+  return name;
+}
+
+function cleanAnalyticsPagePath() {
+  var path = window.location.pathname || "/";
+  if (/\/index\.html$/i.test(path)) path = path.replace(/\/index\.html$/i, "/") || "/";
+  return path;
+}
+
+function shouldIgnoreAnalyticsReferrer() {
+  try {
+    return /bsv-bot-production\.up\.railway\.app/i.test(document.referrer || "");
+  } catch (_) {
+    return false;
+  }
+}
+
 function initAnalytics() {
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
   if (typeof window.bsvHasMarketingConsent === "function" && !window.bsvHasMarketingConsent()) {
@@ -717,9 +738,13 @@ function initAnalytics() {
   if (document.documentElement.dataset.bsvGaConfigured === "1") return;
   document.documentElement.dataset.bsvGaConfigured = "1";
   window.gtag("js", new Date());
+  var pagePath = cleanAnalyticsPagePath();
   window.gtag("config", GA_MEASUREMENT_ID, {
     anonymize_ip: true,
-    send_page_view: true
+    send_page_view: true,
+    page_path: pagePath,
+    page_location: window.location.origin + pagePath,
+    ignore_referrer: shouldIgnoreAnalyticsReferrer()
   });
 }
 
@@ -730,9 +755,13 @@ function trackEvent(name, params) {
 
 function trackSectionPageView(sectionName) {
   if (typeof window.gtag !== "function") return;
-  // Initial Home page_view already fires from the early <head> GA snippet.
+  var normalized = normalizeSectionNameForAnalytics(sectionName);
+  // Keep section_name on subsequent auto events in this page lifecycle.
+  window.gtag("set", { section_name: normalized });
+
+  // Initial Home page_view already fires from gtag config; only send view_section once.
   if (
-    (!sectionName || sectionName === "Home") &&
+    normalized === "Home" &&
     document.documentElement.dataset.bsvGaHomePv !== "1"
   ) {
     document.documentElement.dataset.bsvGaHomePv = "1";
@@ -741,18 +770,19 @@ function trackSectionPageView(sectionName) {
   }
   document.documentElement.dataset.bsvGaHomePv = "1";
 
-  var path = "/";
+  var path = cleanAnalyticsPagePath();
   try {
-    if (sectionName && sectionName !== "Home") {
-      path = "/#sec=" + encodeURIComponent(sectionName);
+    if (normalized && normalized !== "Home") {
+      path = (path.split("#")[0] || "/") + "#sec=" + encodeURIComponent(normalized);
     }
   } catch (_) {}
   window.gtag("event", "page_view", {
-    page_title: sectionName ? "BlockSpin Values — " + sectionName : "BlockSpin Values",
+    page_title: normalized ? "BlockSpin Values — " + normalized : "BlockSpin Values",
     page_path: path,
-    page_location: window.location.origin + path
+    page_location: window.location.origin + path,
+    section_name: normalized
   });
-  trackEvent("view_section", { section_name: sectionName || "Home" });
+  trackEvent("view_section", { section_name: normalized });
 }
 
 function setupDiscordClickTracking() {

@@ -4,7 +4,7 @@
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
   // Bump this when you need every visitor to hard-refresh once (clears old SW/cache/cookies).
-  var BSV_BUILD = "20260818-no-monetag";
+  var BSV_BUILD = "20260915-tech-fix";
   var BUILD_KEY = "bsv-build";
   var BUILD_RELOAD_KEY = "bsv-build-reloading";
   // Keep in sync with script.js THEMES_DISABLED — theme UI is not shipping.
@@ -69,8 +69,21 @@
     } catch (_) {}
   }
 
+  function stripBuildCacheBustParams() {
+    try {
+      var url = new URL(window.location.href);
+      if (!url.searchParams.has("bsv_r") && !url.searchParams.has("_")) return;
+      url.searchParams.delete("bsv_r");
+      url.searchParams.delete("_");
+      var qs = url.searchParams.toString();
+      history.replaceState(null, "", url.pathname + (qs ? "?" + qs : "") + url.hash);
+    } catch (_) {}
+  }
+
   function forceRefreshIfNeeded() {
     try {
+      // Remove one-time cache-bust params before analytics reads the URL.
+      stripBuildCacheBustParams();
       var seen = localStorage.getItem(BUILD_KEY);
       if (seen === BSV_BUILD) {
         try {
@@ -95,10 +108,11 @@
         sessionStorage.setItem(BUILD_RELOAD_KEY, BSV_BUILD);
       } catch (_) {}
       var url = new URL(window.location.href);
-      url.searchParams.set("bsv_r", BSV_BUILD);
-      // Bypass HTTP cache on the reload itself.
+      url.searchParams.delete("bsv_r");
+      // Bypass HTTP cache on the reload itself; stripped immediately on next load.
       url.searchParams.set("_", String(Date.now()));
-      window.location.replace(url.toString());
+      var qs = url.searchParams.toString();
+      window.location.replace(url.pathname + (qs ? "?" + qs : "") + url.hash);
       return true;
     } catch (_) {
       return false;
@@ -189,7 +203,21 @@
       if (document.documentElement.dataset.bsvGaConfigured !== "1") {
         document.documentElement.dataset.bsvGaConfigured = "1";
         window.gtag("js", new Date());
-        window.gtag("config", GA_ID, { anonymize_ip: true, send_page_view: true });
+        var pagePath = window.location.pathname || "/";
+        if (/\/index\.html$/i.test(pagePath)) {
+          pagePath = pagePath.replace(/\/index\.html$/i, "/") || "/";
+        }
+        var ignoreReferrer = false;
+        try {
+          ignoreReferrer = /bsv-bot-production\.up\.railway\.app/i.test(document.referrer || "");
+        } catch (_) {}
+        window.gtag("config", GA_ID, {
+          anonymize_ip: true,
+          send_page_view: true,
+          page_path: pagePath,
+          page_location: window.location.origin + pagePath,
+          ignore_referrer: ignoreReferrer
+        });
       }
     } catch (_) {}
   }

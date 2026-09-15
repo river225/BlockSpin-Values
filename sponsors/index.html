@@ -4,10 +4,18 @@
 <script>
 /* One-time hard client reset: cookies, storage, SW, caches */
 (function () {
-  var BUILD = "20260818-no-monetag";
+  var BUILD = "20260915-tech-fix";
   var KEY = "bsv-build";
   var FLAG = "bsv-hard-resetting";
   try {
+    // Strip one-time cache-bust params before analytics can read them.
+    var clean = new URL(location.href);
+    if (clean.searchParams.has("bsv_r") || clean.searchParams.has("_")) {
+      clean.searchParams.delete("bsv_r");
+      clean.searchParams.delete("_");
+      var qs = clean.searchParams.toString();
+      history.replaceState(null, "", clean.pathname + (qs ? "?" + qs : "") + clean.hash);
+    }
     if (localStorage.getItem(KEY) === BUILD) return;
     if (sessionStorage.getItem(FLAG) === BUILD) {
       localStorage.setItem(KEY, BUILD);
@@ -32,9 +40,10 @@
     function done() {
       if (--pending > 0) return;
       var url = new URL(location.href);
-      url.searchParams.set("bsv_r", BUILD);
+      url.searchParams.delete("bsv_r");
       url.searchParams.set("_", String(Date.now()));
-      location.replace(url.toString());
+      var q = url.searchParams.toString();
+      location.replace(url.pathname + (q ? "?" + q : "") + url.hash);
     }
     if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
       pending++;
@@ -241,7 +250,7 @@
 </main>
 
 <div id="bsv-site-footer"></div>
-<script defer src="/site-chrome.js?v=20260818-no-monetag"></script>
+<script defer src="/site-chrome.js?v=20260915-tech-fix"></script>
 <script defer src="/sponsors/sponsors.js?v=20260817-no-badges2"></script>
 </body>
 </html>
