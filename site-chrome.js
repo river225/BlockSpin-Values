@@ -549,6 +549,9 @@
             '<li><a class="footer-side-nav__link" href="/z-privacy.html">' +
               '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>' +
               "<span>Privacy Policy</span></a></li>" +
+            '<li><a class="footer-side-nav__link" href="/z-cookie.html">' +
+              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6zm5 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>' +
+              "<span>Cookie Policy</span></a></li>" +
           "</ul>" +
         "</div>" +
       "</div>"
