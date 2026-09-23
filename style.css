@@ -6268,7 +6268,7 @@ background-attachment: fixed;
   font-size: clamp(4.35rem, 6.5vw, 5.5rem);
   margin: 0 auto 8px;
   color: #fff;
-  font-family: 'Paytone One', sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif, 'Paytone One';
   text-shadow: 3px 3px 0 #000, -3px 3px 0 #000, 3px -3px 0 #000, -3px -3px 0 #000;
 }.welcome-header h1 .welcome-title-line {
   display: inline-block;
