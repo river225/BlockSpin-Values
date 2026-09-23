@@ -64,13 +64,13 @@
 
     <meta charset="UTF-8">
     
-<script src="auth-oauth-bounce.js?v=20260614-auth-fix"></script>
+<script src="auth-oauth-bounce.js?v=20260614-auth-fix" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://blockspinvalues.com/x-about.html" />
     <link rel="icon" type="image/png" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
     <link rel="apple-touch-icon" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
     <title>About Us - BlockSpin Values</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260923-cwv">
 </head>
 <body data-bsv-page="about">
 
@@ -79,7 +79,7 @@
 <div class="about-page about-page--cinematic">
     <header class="about-page__hero">
         <div class="about-page__hero-logo">
-            <img src="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png" alt="BlockSpin Values">
+            <img src="/assets/bsv-logo.png" alt="BlockSpin Values" width="120" height="120" decoding="async">
         </div>
         <h1 class="about-page__title">About Us</h1>
     </header>
@@ -142,8 +142,7 @@
 <div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
 <div id="bsv-site-footer"></div>
 
-<script src="site-chrome.js?v=20260915-tech-fix"></script>
-<script src="script.js"></script>
+<script src="site-chrome.js?v=20260923-cwv"></script>
 <script>
 (function () {
   function esc(s) {
@@ -152,6 +151,18 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
+  }
+  function shrinkAvatar(url) {
+    try {
+      var u = new URL(String(url || ""), window.location.origin);
+      if (!/cdn\.discordapp\.com|media\.discordapp\.net/i.test(u.hostname)) return String(url || "");
+      u.pathname = u.pathname.replace(/\.gif$/i, ".webp");
+      if (/\/avatars\//i.test(u.pathname) && !/\.[a-z0-9]+$/i.test(u.pathname)) u.pathname += ".webp";
+      u.searchParams.set("size", "72");
+      return u.toString();
+    } catch (_) {
+      return String(url || "");
+    }
   }
   function renderGrid(el, members) {
     if (!el) return;
@@ -165,7 +176,7 @@
       .map(function (m) {
         return (
           '<article class="about-team-member-card">' +
-          '<img src="' + esc(m.avatarUrl) + '" alt="" width="72" height="72" loading="lazy" decoding="async" />' +
+          '<img src="' + esc(shrinkAvatar(m.avatarUrl)) + '" alt="" width="72" height="72" loading="lazy" decoding="async" />' +
           '<span class="about-team-member-name">' + esc(m.displayName) + "</span>" +
           "</article>"
         );

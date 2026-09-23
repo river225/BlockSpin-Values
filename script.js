@@ -1702,7 +1702,7 @@ function createCard(item) {
 
   let imgTag = "";
   if (img) {
-    imgTag = `<img src="${img}" alt="${name}" onerror="this.style.display='none'">`;
+    imgTag = `<img src="${img}" alt="${escapeAttr(name)}" width="140" height="140" loading="lazy" decoding="async" onerror="this.style.display='none'">`;
   }
 
   let durabilityHTML = '';
@@ -1837,7 +1837,7 @@ function createCrewLogoCard(item) {
   const id = safe(item["ID"]);
 
   const imgTag = img
-    ? `<img src="${img}" alt="${name}" onerror="this.style.display='none'">`
+    ? `<img src="${img}" alt="${escapeAttr(name)}" width="140" height="140" loading="lazy" decoding="async" onerror="this.style.display='none'">`
     : "";
   return `
     <div class="card crew-logo-card" data-name="${escapeAttr(name)}">
@@ -1919,7 +1919,7 @@ function createAccessoryCard(item) {
     rarityNorm === "common" ? "rarity-common" :
     "rarity-default";
   const imgTag = img
-    ? `<img src="${img}" alt="${name}" onerror="this.style.display='none'">`
+    ? `<img src="${img}" alt="${escapeAttr(name)}" width="140" height="140" loading="lazy" decoding="async" onerror="this.style.display='none'">`
     : "";
   const exclusiveTier = getItemExclusiveTier(item);
 
@@ -2149,7 +2149,7 @@ function createGuideItemCard(item, config) {
   const description = guideField(item, config.descriptionKeys);
   const price = guideField(item, config.priceKeys);
   const imageHtml = imageUrl
-    ? `<div class="card-item-image-wrap"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(name)}" loading="lazy" onerror="this.style.display='none'"></div>`
+    ? `<div class="card-item-image-wrap"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(name)}" width="140" height="140" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>`
     : "";
 
   return `
@@ -2195,7 +2195,7 @@ function createFishingTypeCard(item) {
   const initialBlockSpinPrice = calculateFishBlockSpinPrice(sellAmount, initialWeight);
   const rarityClass = getGuideRarityClass(rarity);
   const imageHtml = imageUrl
-    ? `<div class="card-item-image-wrap"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(name)}" onerror="this.style.display='none'"></div>`
+    ? `<div class="card-item-image-wrap"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(name)}" width="140" height="140" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>`
     : "";
 
   return `
@@ -3195,17 +3195,32 @@ function fetchDiscordMemberCount() {
 
 function createFooterBoosterCard(booster) {
   const name = escapeHtml(String(booster?.name || "Unknown"));
-  const avatarUrl = escapeAttr(String(booster?.avatarUrl || ""));
+  let avatarUrl = String(booster?.avatarUrl || "");
+  try {
+    const u = new URL(avatarUrl);
+    if (/cdn\.discordapp\.com|media\.discordapp\.net/i.test(u.hostname)) {
+      u.pathname = u.pathname.replace(/\.gif$/i, ".webp");
+      if (/\/avatars\//i.test(u.pathname) && !/\.[a-z0-9]+$/i.test(u.pathname)) {
+        u.pathname += ".webp";
+      }
+      u.searchParams.set("size", "32");
+      avatarUrl = u.toString();
+    }
+  } catch (_) {}
+  avatarUrl = escapeAttr(avatarUrl);
   return `
     <article class="footer-booster-card" aria-label="${name}">
-      <img src="${avatarUrl}" alt="${name}" loading="lazy" decoding="async" />
+      <img src="${avatarUrl}" alt="" width="23" height="23" loading="lazy" decoding="async" fetchpriority="low" />
       <span>${name}</span>
     </article>
   `;
 }
 
 async function loadFooterBoosters() {
+  // Boosters are loaded lazily by site-chrome.js to protect mobile LCP.
+  // Keep this as a no-op when chrome already owns the footer.
   const footer = document.getElementById("footer-boosters");
+  if (footer && footer.dataset.bsvBoostersInit === "1") return;
   const track = document.getElementById("footer-boosters-track");
   if (!footer || !track) return;
 
@@ -3214,7 +3229,7 @@ async function loadFooterBoosters() {
   }
 
   try {
-    const res = await fetch(BOOSTERS_API_URL, { cache: "no-store" });
+    const res = await fetch(BOOSTERS_API_URL, { cache: "default" });
     if (!res.ok) throw new Error(`Boosters endpoint failed: ${res.status}`);
     const data = await res.json();
     const boosters = Array.isArray(data?.boosters) ? data.boosters : [];

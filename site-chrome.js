@@ -237,7 +237,7 @@
     var style = document.createElement("style");
     style.id = "bsv-consent-styles";
     style.textContent =
-      "#bsv-consent-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:100000;max-width:720px;margin:0 auto;padding:18px 20px;border-radius:16px;background:rgba(12,18,30,.97);border:1px solid rgba(255,255,255,.14);box-shadow:0 16px 48px rgba(0,0,0,.5);color:#e8eef8;font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}" +
+      "#bsv-consent-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:100000;max-width:720px;margin:0 auto;padding:18px 20px;border-radius:16px;background:rgba(12,18,30,.97);border:1px solid rgba(255,255,255,.14);box-shadow:0 16px 48px rgba(0,0,0,.5);color:#e8eef8;font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;contain:layout style}" +
       "#bsv-consent-banner p{margin:0 0 14px;color:#d5deec}" +
       "#bsv-consent-banner a{color:#9ec1ff;text-decoration:underline}" +
       "#bsv-consent-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}" +
@@ -496,7 +496,7 @@
           '<div class="nav-container-full">' +
             '<div class="nav-left">' +
               '<a href="' + brandHref + '" class="nav-brand"' + brandOnclick + ">" +
-                '<img src="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png" alt="BlockSpin Values Logo" class="nav-logo-img">' +
+                '<img src="/assets/bsv-logo.png" alt="BlockSpin Values Logo" class="nav-logo-img" width="60" height="60" decoding="async">' +
                 '<span class="nav-title">Block<span class="brand-spin">Spin</span> Values</span>' +
               "</a>" +
               navLink("/x-about.html", "About Us", activePage, "about") +
@@ -627,6 +627,104 @@
     if (boostersSlot && boosters) boostersSlot.appendChild(boosters);
     initMobileHeaderToolbar();
     initConsent();
+    initFooterBoostersLazy();
+  }
+
+  function shrinkDiscordAvatarUrl(url) {
+    try {
+      var u = new URL(String(url || ""), window.location.origin);
+      if (!/cdn\.discordapp\.com|media\.discordapp\.net/i.test(u.hostname)) return String(url || "");
+      // Animated GIF avatars are often 100–700KB; force a tiny static still.
+      u.pathname = u.pathname.replace(/\.gif$/i, ".webp");
+      if (/\/avatars\//i.test(u.pathname) && !/\.[a-z0-9]+$/i.test(u.pathname)) {
+        u.pathname += ".webp";
+      }
+      u.searchParams.set("size", "32");
+      return u.toString();
+    } catch (_) {
+      return String(url || "");
+    }
+  }
+
+  function escapeBoostHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function initFooterBoostersLazy() {
+    var footer = document.getElementById("footer-boosters");
+    var track = document.getElementById("footer-boosters-track");
+    if (!footer || !track || footer.dataset.bsvBoostersInit === "1") return;
+    footer.dataset.bsvBoostersInit = "1";
+
+    var apiBase =
+      (typeof window.bsvBotApiUrl === "function" && window.bsvBotApiUrl("api/boosters")) ||
+      "https://bsv-bot-production.up.railway.app/api/boosters";
+
+    function renderBoosters(boosters) {
+      if (!boosters.length) return;
+      var html = boosters
+        .map(function (b) {
+          var name = escapeBoostHtml(b && b.name ? b.name : "Unknown");
+          var avatar = escapeBoostHtml(shrinkDiscordAvatarUrl(b && b.avatarUrl));
+          return (
+            '<article class="footer-booster-card" aria-label="' +
+            name +
+            '">' +
+            '<img src="' +
+            avatar +
+            '" alt="" width="23" height="23" loading="lazy" decoding="async" fetchpriority="low" />' +
+            "<span>" +
+            name +
+            "</span></article>"
+          );
+        })
+        .join("");
+      // Second copy for marquee; browser cache means no extra network after first paint.
+      track.innerHTML = html + html;
+      footer.hidden = false;
+    }
+
+    function load() {
+      if (footer.dataset.bsvBoostersLoaded === "1") return;
+      footer.dataset.bsvBoostersLoaded = "1";
+      fetch(apiBase, { cache: "default" })
+        .then(function (res) {
+          if (!res.ok) throw new Error("boosters " + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          var list = Array.isArray(data && data.boosters) ? data.boosters : [];
+          renderBoosters(list);
+        })
+        .catch(function () {});
+    }
+
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(
+        function (entries) {
+          for (var i = 0; i < entries.length; i++) {
+            if (entries[i].isIntersecting) {
+              io.disconnect();
+              // Defer past LCP window — Discord GIFs were the #1 mobile LCP killer.
+              if (typeof requestIdleCallback === "function") {
+                requestIdleCallback(function () { setTimeout(load, 800); }, { timeout: 2500 });
+              } else {
+                setTimeout(load, 1800);
+              }
+              break;
+            }
+          }
+        },
+        { rootMargin: "80px 0px" }
+      );
+      io.observe(footer);
+    } else {
+      setTimeout(load, 3500);
+    }
   }
 
   function autoMount() {

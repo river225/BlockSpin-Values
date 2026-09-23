@@ -60,8 +60,21 @@
     }
   }
 
+  function ensureThemeFontsLoaded() {
+    if (document.getElementById("bsv-theme-fonts")) return;
+    var link = document.createElement("link");
+    link.id = "bsv-theme-fonts";
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Nunito+Sans:ital,wght@0,600;0,700;1,600&family=Oswald:wght@500;600;700&family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap";
+    document.head.appendChild(link);
+  }
+
   function applyFont(fontId) {
     var def = getFontDef(fontId);
+    if (fontId && fontId !== "default" && fontId !== "paytone") {
+      ensureThemeFontsLoaded();
+    }
     document.documentElement.style.setProperty("--bsv-site-font", def.family);
     if (fontId === "default") {
       document.documentElement.removeAttribute("data-bsv-font");
@@ -88,6 +101,7 @@
     var modal = document.getElementById("site-settings-modal");
     var btn = document.getElementById("nav-settings-btn");
     if (!modal || !btn) return;
+    ensureThemeFontsLoaded();
     modal.hidden = false;
     btn.setAttribute("aria-expanded", "true");
     document.body.classList.add("site-settings-open");

@@ -249,7 +249,15 @@ background-attachment: fixed;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  width: 140px;
+  height: 140px;
   line-height: 0;
+  contain: layout size;
+  width: 140px;
+  height: 140px;
+  min-width: 140px;
+  min-height: 140px;
+  aspect-ratio: 1 / 1;
 }.card-item-image-wrap::after {
   content: '';
   position: absolute;
@@ -5964,9 +5972,10 @@ background-attachment: fixed;
   gap: 15px;
 }.nav-logo-img {
   height: 60px;
-  width: auto;
+  width: 60px;
   object-fit: contain;
   margin-left: 12px;
+  flex-shrink: 0;
 }.nav-title {
   font-size: 1.5rem;
   font-weight: bold;
@@ -11039,10 +11048,12 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   width: 100%;
 }.richest-not-listed-page__visual img {
   width: 100%;
-  max-width: 520px;
+  max-width: 420px;
   height: auto;
+  aspect-ratio: 420 / 520;
   display: block;
   margin-left: auto;
+  object-fit: contain;
 }.richest-not-listed-page__content {
   min-width: 0;
 }.richest-not-listed-page__back {
@@ -12658,10 +12669,12 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
     linear-gradient(180deg, #1a3344 0%, #141d28 100%);
   border-bottom: 1px solid rgba(51, 204, 230, 0.2);
 }.about-page__hero-logo img {
+  width: 120px;
+  height: 120px;
   max-width: 200px;
-  height: auto;
   display: inline-block;
   margin-bottom: 16px;
+  object-fit: contain;
   filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
 }.about-page__title {
   font-family: "Paytone One", sans-serif;
