@@ -4907,19 +4907,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.bsvAlignSponsorBanner();
   }
 
-  // Warm remaining sections after LCP / idle so nav stays instant.
+  // Warm other sections only after real user activity (or a long idle),
+  // so mobile LCP / CrUX aren't crushed by building the full card DOM.
+  var warmed = false;
   function warmRemainingSections() {
-    let i = 0;
+    if (warmed) return;
+    warmed = true;
+    var i = 0;
     function step() {
       while (i < results.length) {
-        const sec = results[i++].section;
+        var sec = results[i++].section;
         if (sec === "Home" || _sectionsDomReady[sec]) continue;
         ensureSectionRendered(sec);
-        if (typeof requestIdleCallback === "function") {
-          requestIdleCallback(step, { timeout: 2000 });
-        } else {
-          setTimeout(step, 50);
-        }
+        setTimeout(step, 0);
         return;
       }
       if (typeof window.bsvRefreshSavedCardButtons === "function") {
@@ -4929,11 +4929,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     step();
   }
-  if (typeof requestIdleCallback === "function") {
-    requestIdleCallback(warmRemainingSections, { timeout: 4000 });
-  } else {
-    setTimeout(warmRemainingSections, 2500);
-  }
+  ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (evt) {
+    window.addEventListener(evt, warmRemainingSections, { once: true, passive: true });
+  });
+  setTimeout(warmRemainingSections, 12000);
 });
 
 function refreshDynamicContentForLanguage() {
