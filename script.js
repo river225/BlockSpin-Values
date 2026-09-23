@@ -147,6 +147,7 @@ function i18nSection(title) {
 }
 
 var _renderedSectionCache = [];
+var _sectionsDomReady = Object.create(null);
 var _activeSectionName = "Home";
 
 function shouldShowGiveawayCarousel() {
@@ -1089,6 +1090,8 @@ async function loadRichestPlayerAvatars() {
 
         const img = card.querySelector(".player-avatar");
         if (img) {
+          img.loading = "lazy";
+          img.decoding = "async";
           img.src = entry.imageUrl;
           img.alt = name;
         }
@@ -3092,25 +3095,24 @@ window.bsvActivateMoneyGuideTab = activateMoneyGuideTab;
 function renderSection(title, items) {
   if (title === "BlockSpin Map") {
     renderBlockSpinMapSection();
+    _sectionsDomReady[title] = true;
     return;
   }
 
   if (title === "Home") {
-    const html = `
-      <section class="section" id="${slugify(title)}">
-        <h2>${escapeHtml(i18nSection(title))}</h2>
-        <div class="home-content">
-        </div>
-      </section>
-    `;
-    document.getElementById("sections").insertAdjacentHTML("beforeend", html);
+    // Home markup lives in index.html — do not inject a duplicate #home section.
+    _sectionsDomReady[title] = true;
     return;
   }
   if (title === "Money & Game Guide") {
     renderMoneyGameGuideSection();
+    _sectionsDomReady[title] = true;
     return;
   }
-  if (!items || items.length === 0) return;
+  if (!items || items.length === 0) {
+    _sectionsDomReady[title] = true;
+    return;
+  }
 
   if (title === "💰 Richest Players") {
     renderRichestPlayersSection(items);
@@ -3155,8 +3157,24 @@ function renderSection(title, items) {
     document.getElementById("sections").insertAdjacentHTML("beforeend", html);
   }
 
+  _sectionsDomReady[title] = true;
+
   if (typeof window.bsvRefreshSavedCardButtons === "function") {
     window.bsvRefreshSavedCardButtons();
+  }
+}
+
+function ensureSectionRendered(title) {
+  if (!title || _sectionsDomReady[title]) return;
+  if (title === "Home") {
+    _sectionsDomReady[title] = true;
+    return;
+  }
+  const cached = _renderedSectionCache.find(function (r) {
+    return r.section === title;
+  });
+  if (cached) {
+    renderSection(cached.section, cached.items);
   }
 }
 
@@ -4016,6 +4034,8 @@ function showSection(name) {
   const cfg = typeof getSectionConfig === "function" ? getSectionConfig(name) : null;
   if (!cfg) return;
 
+  ensureSectionRendered(name);
+
   _activeSectionName = name;
 
   const isHome = cfg.id === "home";
@@ -4844,25 +4864,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   await giveawayPromise;
   await contentPromise;
 
-  for (let i = 0; i < results.length; i++) {
-    _renderedSectionCache.push(results[i]);
-    renderSection(results[i].section, results[i].items);
-    // Yield after each section so taps during load don't stack into Poor INP (>500ms).
-    await new Promise(function (resolve) {
-      setTimeout(resolve, 0);
-    });
-  }
-  if (typeof window.bsvRefreshSavedCardButtons === "function") {
-    window.bsvRefreshSavedCardButtons();
-  }
-  if (typeof window.bsvFetchSavedCards === "function") {
-    window.bsvFetchSavedCards();
-  }
-  updateHomeSiteStatsFromResults(results);
-  applyStripGiveawayBannerVisibility();
-  initGiveawayBannerCarousels();
-  initDiscordPromoCardCarousels();
-  renderSectionContentEmbeds();
+  _renderedSectionCache = results.slice();
+  _sectionsDomReady = Object.create(null);
+  _sectionsDomReady["Home"] = true;
 
   let initialSection = "Home";
   if (window.location.hash && window.location.hash.startsWith('#sec=')) {
@@ -4877,6 +4881,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // Only paint the active section up front — rendering every rarity into the DOM
+  // was creating 14k+ nodes and ~19MB of images on mobile LCP.
+  ensureSectionRendered(initialSection);
+  if (typeof window.bsvRefreshSavedCardButtons === "function") {
+    window.bsvRefreshSavedCardButtons();
+  }
+  if (typeof window.bsvFetchSavedCards === "function") {
+    window.bsvFetchSavedCards();
+  }
+  updateHomeSiteStatsFromResults(results);
+  applyStripGiveawayBannerVisibility();
+  initGiveawayBannerCarousels();
+  initDiscordPromoCardCarousels();
+  renderSectionContentEmbeds();
+
   showSection(initialSection);
   loadValueChanges();
   fetchDiscordMemberCount();
@@ -4887,6 +4906,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (typeof window.bsvAlignSponsorBanner === "function") {
     window.bsvAlignSponsorBanner();
   }
+
+  // Warm remaining sections after LCP / idle so nav stays instant.
+  function warmRemainingSections() {
+    let i = 0;
+    function step() {
+      while (i < results.length) {
+        const sec = results[i++].section;
+        if (sec === "Home" || _sectionsDomReady[sec]) continue;
+        ensureSectionRendered(sec);
+        if (typeof requestIdleCallback === "function") {
+          requestIdleCallback(step, { timeout: 2000 });
+        } else {
+          setTimeout(step, 50);
+        }
+        return;
+      }
+      if (typeof window.bsvRefreshSavedCardButtons === "function") {
+        window.bsvRefreshSavedCardButtons();
+      }
+      renderSectionContentEmbeds();
+    }
+    step();
+  }
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(warmRemainingSections, { timeout: 4000 });
+  } else {
+    setTimeout(warmRemainingSections, 2500);
+  }
 });
 
 function refreshDynamicContentForLanguage() {
@@ -4894,8 +4941,14 @@ function refreshDynamicContentForLanguage() {
     el.remove();
   });
 
+  _sectionsDomReady = Object.create(null);
+  _sectionsDomReady["Home"] = true;
+
+  // Re-render only the active section immediately; warm the rest idle.
+  ensureSectionRendered(_activeSectionName || "Home");
   _renderedSectionCache.forEach(function (result) {
-    renderSection(result.section, result.items);
+    if (result.section === (_activeSectionName || "Home")) return;
+    // Mark as not ready so idle warm / next nav rebuilds with new i18n strings.
   });
 
   applyStripGiveawayBannerVisibility();
@@ -4910,6 +4963,22 @@ function refreshDynamicContentForLanguage() {
   if (typeof window.bsvAlignSponsorBanner === "function") {
     window.bsvAlignSponsorBanner();
   }
+
+  function warm() {
+    var i = 0;
+    function step() {
+      while (i < _renderedSectionCache.length) {
+        var sec = _renderedSectionCache[i++].section;
+        if (sec === "Home" || _sectionsDomReady[sec]) continue;
+        ensureSectionRendered(sec);
+        setTimeout(step, 0);
+        return;
+      }
+      renderSectionContentEmbeds();
+    }
+    step();
+  }
+  setTimeout(warm, 300);
 }
 
 document.addEventListener("bsv:languagechange", function () {
