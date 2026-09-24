@@ -261,7 +261,7 @@
     el.setAttribute("aria-live", "polite");
     el.setAttribute("aria-label", "Cookie consent");
     el.innerHTML =
-      "<p>We use cookies to improve your experience and analyze site traffic. Read our <a href=\"z-privacy.html#cookies\">Cookie Policy</a> to learn more.</p>" +
+      "<p>We use cookies to improve your experience and analyze site traffic. Read our <a href=\"/z-cookie.html\">Cookie Policy</a> to learn more.</p>" +
       '<div id="bsv-consent-actions">' +
       '<button type="button" id="bsv-consent-accept">Accept</button>' +
       '<button type="button" id="bsv-consent-reject">Reject</button>' +

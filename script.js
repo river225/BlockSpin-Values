@@ -148,6 +148,7 @@ function i18nSection(title) {
 
 var _renderedSectionCache = [];
 var _sectionsDomReady = Object.create(null);
+var _pendingSectionName = null;
 var _activeSectionName = "Home";
 
 function shouldShowGiveawayCarousel() {
@@ -4034,8 +4035,32 @@ function showSection(name) {
   const cfg = typeof getSectionConfig === "function" ? getSectionConfig(name) : null;
   if (!cfg) return;
 
+  // Sheets load async. Early nav clicks used to hide #home before the target
+  // section existed, leaving a blank main pane.
+  if (name !== "Home" && !_renderedSectionCache.length) {
+    _pendingSectionName = name;
+    const nav = document.getElementById("sections-nav");
+    if (nav) {
+      nav.querySelectorAll("button").forEach(function (b) {
+        b.classList.toggle("active", b.dataset.section === name);
+      });
+    }
+    return;
+  }
+
   ensureSectionRendered(name);
 
+  // If render still couldn't create DOM (empty fetch), stay on Home.
+  if (name !== "Home") {
+    const targetCfg = cfg;
+    const targetEl = targetCfg && document.getElementById(targetCfg.id);
+    if (!targetEl) {
+      _pendingSectionName = name;
+      return;
+    }
+  }
+
+  _pendingSectionName = null;
   _activeSectionName = name;
 
   const isHome = cfg.id === "home";
@@ -4883,6 +4908,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Only paint the active section up front — rendering every rarity into the DOM
   // was creating 14k+ nodes and ~19MB of images on mobile LCP.
+  if (_pendingSectionName && SECTION_NAMES.includes(_pendingSectionName)) {
+    initialSection = _pendingSectionName;
+  }
   ensureSectionRendered(initialSection);
   if (typeof window.bsvRefreshSavedCardButtons === "function") {
     window.bsvRefreshSavedCardButtons();
