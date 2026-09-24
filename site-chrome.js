@@ -332,12 +332,15 @@
   function ensureSponsorBannerStyles() {
     var old = document.getElementById("bsv-sponsor-banner-styles-v2");
     if (old) old.remove();
-    if (document.getElementById("bsv-sponsor-banner-styles-v3")) return;
+    var old3 = document.getElementById("bsv-sponsor-banner-styles-v3");
+    if (old3) old3.remove();
+    if (document.getElementById("bsv-sponsor-banner-styles-v4")) return;
     var style = document.createElement("style");
-    style.id = "bsv-sponsor-banner-styles-v3";
+    style.id = "bsv-sponsor-banner-styles-v4";
     style.textContent =
       /* Sit in the content column; match .what-is-section width so it lines up with section content */
       ".bsv-sponsor-promo{display:flex;justify-content:center;width:100%;margin:12px 0 8px;padding:0;box-sizing:border-box;position:relative;left:auto!important;transform:none!important}" +
+      ".bsv-sponsor-promo[hidden],.bsv-sponsor-promo.is-hidden{display:none!important}" +
       ".bsv-sponsor-promo__shell{position:relative;display:block;width:100%;max-width:800px;margin:0 auto;padding:12px 0 8px;box-sizing:border-box}" +
       ".bsv-sponsor-promo__shell::before{content:'';position:absolute;pointer-events:none;z-index:0;inset:-8% -6% -10%;border-radius:50%;background:radial-gradient(ellipse 55% 50% at 50% 45%,rgba(155,45,220,.28),rgba(155,45,220,.08) 45%,transparent 70%);filter:blur(22px);opacity:.9}" +
       "@media (prefers-reduced-motion:reduce){.bsv-sponsor-promo__shell::before{opacity:.8}}" +
@@ -381,17 +384,16 @@
     promo.style.left = "";
     promo.style.transform = "";
 
-    var onHome =
-      document.body.classList.contains("is-home") ||
-      (document.body.getAttribute("data-bsv-page") === "home" &&
-        (!document.getElementById("home") ||
-          document.getElementById("home").style.display !== "none"));
+    // body.is-home is toggled by showSection — do not use data-bsv-page (always "home").
+    var onHome = document.body.classList.contains("is-home");
 
     if (!onHome) {
       promo.hidden = true;
+      promo.classList.add("is-hidden");
       return;
     }
     promo.hidden = false;
+    promo.classList.remove("is-hidden");
 
     var sections = document.querySelector(".main-container > #sections");
     var home = document.getElementById("home");
