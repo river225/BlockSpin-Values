@@ -700,30 +700,49 @@
           var list = Array.isArray(data && data.boosters) ? data.boosters : [];
           renderBoosters(list);
         })
-        .catch(function () {});
+        .catch(function () {
+          // Allow a later retry (e.g. after nav) if the first fetch fails.
+          delete footer.dataset.bsvBoostersLoaded;
+        });
     }
 
-    if ("IntersectionObserver" in window) {
+    function scheduleLoad() {
+      if (footer.dataset.bsvBoostersScheduled === "1") return;
+      footer.dataset.bsvBoostersScheduled = "1";
+      // Small idle defer so LCP still wins, but do not depend on intersecting a
+      // [hidden] node (display:none never intersects → boosters never appeared).
+      if (typeof requestIdleCallback === "function") {
+        requestIdleCallback(function () { setTimeout(load, 400); }, { timeout: 2000 });
+      } else {
+        setTimeout(load, 1200);
+      }
+    }
+
+    // Observe a visible footer sentinel — #footer-boosters starts hidden.
+    var observeTarget =
+      document.querySelector(".site-footer") ||
+      document.getElementById("bsv-site-footer") ||
+      footer.parentElement ||
+      footer;
+
+    if ("IntersectionObserver" in window && observeTarget) {
       var io = new IntersectionObserver(
         function (entries) {
           for (var i = 0; i < entries.length; i++) {
             if (entries[i].isIntersecting) {
               io.disconnect();
-              // Defer past LCP window — Discord GIFs were the #1 mobile LCP killer.
-              if (typeof requestIdleCallback === "function") {
-                requestIdleCallback(function () { setTimeout(load, 800); }, { timeout: 2500 });
-              } else {
-                setTimeout(load, 1800);
-              }
+              scheduleLoad();
               break;
             }
           }
         },
-        { rootMargin: "80px 0px" }
+        { rootMargin: "240px 0px" }
       );
-      io.observe(footer);
+      io.observe(observeTarget);
+      // Safety net if the sentinel never intersects (short pages / odd layout).
+      setTimeout(scheduleLoad, 6000);
     } else {
-      setTimeout(load, 3500);
+      scheduleLoad();
     }
   }
 
