@@ -374,42 +374,30 @@
     );
   }
 
-  // Pin the banner into the values-list content column so it stays centred
-  // with Home / Common / Rare / etc. (same column as the cards).
-  // Place it directly after the active section so birthday banners sit above it.
+  // Pin the banner under the Home section only (not Rare / Legendary / etc.).
   function alignSponsorBannerToHomeContent() {
     var promo = document.querySelector(".bsv-sponsor-promo");
     if (!promo) return;
     promo.style.left = "";
     promo.style.transform = "";
 
+    var onHome =
+      document.body.classList.contains("is-home") ||
+      (document.body.getAttribute("data-bsv-page") === "home" &&
+        (!document.getElementById("home") ||
+          document.getElementById("home").style.display !== "none"));
+
+    if (!onHome) {
+      promo.hidden = true;
+      return;
+    }
+    promo.hidden = false;
+
     var sections = document.querySelector(".main-container > #sections");
-    if (sections) {
-      var active = null;
-      var kids = sections.children;
-      for (var i = 0; i < kids.length; i++) {
-        var el = kids[i];
-        if (!el || !el.classList || !el.classList.contains("section")) continue;
-        if (el.style.display === "none") continue;
-        var shown = el.style.display && el.style.display !== "none";
-        if (!shown) {
-          try {
-            shown = window.getComputedStyle(el).display !== "none";
-          } catch (_) {
-            shown = false;
-          }
-        }
-        if (shown) {
-          active = el;
-          break;
-        }
-      }
-      if (active) {
-        if (active.nextSibling !== promo) {
-          sections.insertBefore(promo, active.nextSibling);
-        }
-      } else if (promo.parentElement !== sections || sections.lastElementChild !== promo) {
-        sections.appendChild(promo);
+    var home = document.getElementById("home");
+    if (sections && home) {
+      if (home.nextSibling !== promo) {
+        sections.insertBefore(promo, home.nextSibling);
       }
       return;
     }
@@ -421,9 +409,13 @@
   }
 
   function placeSponsorBanner(activePage) {
-    if (activePage === "sponsors") return;
-    ensureSponsorBannerStyles();
+    // Homepage only. Sponsors has its own hero CTA; other pages should stay clean.
     var existing = document.querySelector(".bsv-sponsor-promo");
+    if (activePage !== "home") {
+      if (existing) existing.remove();
+      return;
+    }
+    ensureSponsorBannerStyles();
     if (existing) existing.remove();
 
     var wrap = document.createElement("div");
@@ -432,25 +424,19 @@
     if (!el) return;
 
     var sections = document.querySelector(".main-container > #sections");
+    var home = document.getElementById("home");
+    if (sections && home) {
+      sections.insertBefore(el, home.nextSibling);
+      return;
+    }
     if (sections) {
       sections.appendChild(el);
       return;
     }
 
-    // Static pages: prefer an explicit slot, then just before the footer mount.
     var slot = document.getElementById("bsv-sponsor-banner-slot");
     if (slot) {
       slot.appendChild(el);
-    } else {
-      var footerMount = document.getElementById("bsv-site-footer");
-      if (footerMount && footerMount.parentNode) {
-        footerMount.parentNode.insertBefore(el, footerMount);
-      } else {
-        var footer = document.querySelector(".site-footer");
-        if (footer && footer.parentNode) {
-          footer.parentNode.insertBefore(el, footer);
-        }
-      }
     }
   }
 
