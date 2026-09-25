@@ -111,6 +111,20 @@
     });
   }
 
+  function isSponsorsPage() {
+    try {
+      if (/\/sponsors(\/|$)/i.test(location.pathname || "")) return true;
+      var body = document.body;
+      return !!(
+        body &&
+        (body.getAttribute("data-bsv-page") === "sponsors" ||
+          body.classList.contains("sponsors-body"))
+      );
+    } catch (_) {
+      return false;
+    }
+  }
+
   // One hue drives the whole navy surface ladder (shade/lightness stays fixed in CSS).
   function applyBackground(style, hue) {
     var root = document.documentElement;
@@ -118,6 +132,22 @@
     var h = typeof hue === "number" && !isNaN(hue) ? hue : getSavedBgHue();
     h = Math.max(0, Math.min(360, Math.round(h)));
 
+    // Sponsorship pages always stay stock navy (still save preference for other pages).
+    if (isSponsorsPage()) {
+      root.style.setProperty("--bsv-hue", "217");
+      root.style.setProperty("--bsv-accent-hue", "188");
+      root.style.backgroundColor = "hsl(217, 41%, 10%)";
+      root.removeAttribute("data-bsv-bg");
+      root.setAttribute("data-bsv-sponsors-lock", "1");
+      try {
+        localStorage.setItem(BG_STYLE_KEY, mode);
+        localStorage.setItem(BG_HUE_KEY, String(h));
+      } catch (_) {}
+      syncBgControls(mode, h);
+      return;
+    }
+
+    root.removeAttribute("data-bsv-sponsors-lock");
     if (mode === "colorized") {
       root.style.setProperty("--bsv-hue", String(h));
       root.style.setProperty("--bsv-accent-hue", String(h));

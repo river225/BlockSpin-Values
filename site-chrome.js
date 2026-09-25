@@ -15,6 +15,56 @@
     /quge5\.com|5gvci\.com|omg10\.com|n6wxm\.com|nap5k\.com|tzegilo\.com|monetag|11550419|11550420|11550421|11548891|268935/i;
   var MONETAG_TAG_IDS = ["bsv-ad-vignette", "bsv-ad-ipp", "bsv-ad-push"];
 
+  function isSponsorsPage() {
+    try {
+      if (/\/sponsors(\/|$)/i.test(location.pathname || "")) return true;
+      var body = document.body;
+      if (!body) return false;
+      return (
+        body.getAttribute("data-bsv-page") === "sponsors" ||
+        body.classList.contains("sponsors-body")
+      );
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Apply Colorized hue on every page that uses site chrome; keep /sponsors/ stock.
+  function paintSavedBackground() {
+    var root = document.documentElement;
+    if (isSponsorsPage()) {
+      root.style.setProperty("--bsv-hue", "217");
+      root.style.setProperty("--bsv-accent-hue", "188");
+      root.style.backgroundColor = "hsl(217, 41%, 10%)";
+      root.removeAttribute("data-bsv-bg");
+      root.setAttribute("data-bsv-sponsors-lock", "1");
+      return;
+    }
+    root.removeAttribute("data-bsv-sponsors-lock");
+    try {
+      var style = localStorage.getItem("bsv-bg-style") || "standard";
+      var hue = parseInt(localStorage.getItem("bsv-bg-hue") || "210", 10);
+      if (style !== "colorized") {
+        root.style.setProperty("--bsv-hue", "217");
+        root.style.setProperty("--bsv-accent-hue", "188");
+        root.style.backgroundColor = "hsl(217, 41%, 10%)";
+        root.removeAttribute("data-bsv-bg");
+        return;
+      }
+      if (isNaN(hue)) hue = 210;
+      hue = Math.max(0, Math.min(360, Math.round(hue)));
+      root.style.setProperty("--bsv-hue", String(hue));
+      root.style.setProperty("--bsv-accent-hue", String(hue));
+      root.style.backgroundColor = "hsl(" + hue + ", 41%, 10%)";
+      root.setAttribute("data-bsv-bg", "colorized");
+    } catch (_) {}
+  }
+
+  paintSavedBackground();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", paintSavedBackground);
+  }
+
   function clearSiteCookies() {
     try {
       var parts = document.cookie ? document.cookie.split(";") : [];

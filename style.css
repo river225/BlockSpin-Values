@@ -15522,3 +15522,34 @@ html[data-bsv-bg="colorized"] .crew-header,
 html[data-bsv-bg="colorized"] .section > h2 {
   border-bottom-color: var(--bsv-accent) !important;
 }
+
+
+/* Sponsorship pages keep stock navy — never follow the color wheel */
+html[data-bsv-sponsors-lock="1"],
+html[data-bsv-sponsors-lock="1"][data-bsv-bg="colorized"],
+body.sponsors-body {
+  --bsv-hue: 217;
+  --bsv-accent-hue: 188;
+  --bsv-s-chrome: 38%;
+  --bsv-s-panel: 26%;
+  --bsv-s-deep: 41%;
+  --bsv-s-card: 33%;
+  --bsv-s-stripe: 30%;
+  --bsv-s-raised: 32%;
+  --bsv-s-hover: 29%;
+  --bsv-s-mid: 42%;
+  --bsv-s-muted: 26%;
+  --bsv-s-soft: 24%;
+}
+html[data-bsv-sponsors-lock="1"],
+html[data-bsv-sponsors-lock="1"][data-bsv-bg="colorized"] {
+  background-color: hsl(217, 41%, 10%) !important;
+}
+html[data-bsv-sponsors-lock="1"] .top-navbar,
+html[data-bsv-sponsors-lock="1"] .site-footer,
+html[data-bsv-sponsors-lock="1"] .nav-mobile-toolbar,
+body.sponsors-body .top-navbar,
+body.sponsors-body .site-footer {
+  background: hsl(217, 38%, 6%) !important;
+  background-color: hsl(217, 38%, 6%) !important;
+}
