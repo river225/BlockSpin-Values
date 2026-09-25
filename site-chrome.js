@@ -44,19 +44,26 @@
     try {
       var style = localStorage.getItem("bsv-bg-style") || "standard";
       var hue = parseInt(localStorage.getItem("bsv-bg-hue") || "210", 10);
-      if (style !== "colorized") {
-        root.style.setProperty("--bsv-hue", "217");
-        root.style.setProperty("--bsv-accent-hue", "188");
-        root.style.backgroundColor = "hsl(217, 41%, 10%)";
-        root.removeAttribute("data-bsv-bg");
+      if (style === "colorized") {
+        if (isNaN(hue)) hue = 210;
+        hue = Math.max(0, Math.min(360, Math.round(hue)));
+        root.style.setProperty("--bsv-hue", String(hue));
+        root.style.setProperty("--bsv-accent-hue", String(hue));
+        root.style.backgroundColor = "hsl(" + hue + ", 41%, 10%)";
+        root.setAttribute("data-bsv-bg", "colorized");
         return;
       }
-      if (isNaN(hue)) hue = 210;
-      hue = Math.max(0, Math.min(360, Math.round(hue)));
-      root.style.setProperty("--bsv-hue", String(hue));
-      root.style.setProperty("--bsv-accent-hue", String(hue));
-      root.style.backgroundColor = "hsl(" + hue + ", 41%, 10%)";
-      root.setAttribute("data-bsv-bg", "colorized");
+      if (style === "dark") {
+        root.style.setProperty("--bsv-hue", "220");
+        root.style.setProperty("--bsv-accent-hue", "188");
+        root.style.backgroundColor = "hsl(220, 20%, 4%)";
+        root.setAttribute("data-bsv-bg", "dark");
+        return;
+      }
+      root.style.setProperty("--bsv-hue", "217");
+      root.style.setProperty("--bsv-accent-hue", "188");
+      root.style.backgroundColor = "hsl(217, 41%, 10%)";
+      root.removeAttribute("data-bsv-bg");
     } catch (_) {}
   }
 

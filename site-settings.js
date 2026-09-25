@@ -66,10 +66,16 @@
   function getSavedBgStyle() {
     try {
       var s = localStorage.getItem(BG_STYLE_KEY);
-      return s === "colorized" ? "colorized" : "standard";
+      if (s === "colorized" || s === "dark") return s;
+      return "standard";
     } catch (_) {
       return "standard";
     }
+  }
+
+  function normalizeBgStyle(style) {
+    if (style === "colorized" || style === "dark") return style;
+    return "standard";
   }
 
   function getSavedBgHue() {
@@ -128,7 +134,7 @@
   // One hue drives the whole navy surface ladder (shade/lightness stays fixed in CSS).
   function applyBackground(style, hue) {
     var root = document.documentElement;
-    var mode = style === "colorized" ? "colorized" : "standard";
+    var mode = normalizeBgStyle(style);
     var h = typeof hue === "number" && !isNaN(hue) ? hue : getSavedBgHue();
     h = Math.max(0, Math.min(360, Math.round(h)));
 
@@ -153,6 +159,11 @@
       root.style.setProperty("--bsv-accent-hue", String(h));
       root.style.backgroundColor = "hsl(" + h + ", 41%, 10%)";
       root.setAttribute("data-bsv-bg", "colorized");
+    } else if (mode === "dark") {
+      root.style.setProperty("--bsv-hue", "220");
+      root.style.setProperty("--bsv-accent-hue", "188");
+      root.style.backgroundColor = "hsl(220, 20%, 4%)";
+      root.setAttribute("data-bsv-bg", "dark");
     } else {
       root.style.setProperty("--bsv-hue", "217");
       root.style.setProperty("--bsv-accent-hue", "188");

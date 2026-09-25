@@ -44,11 +44,41 @@ html[data-bsv-bg="colorized"] {
   --bsv-s-soft: 40%;
 }
 
+/* Dark: near-black charcoal surfaces, stock cyan accent (deeper than Standard navy) */
+html[data-bsv-bg="dark"] {
+  --bsv-hue: 220;
+  --bsv-accent-hue: 188;
+  --bsv-s-chrome: 16%;
+  --bsv-s-panel: 12%;
+  --bsv-s-deep: 18%;
+  --bsv-s-card: 14%;
+  --bsv-s-stripe: 12%;
+  --bsv-s-raised: 13%;
+  --bsv-s-hover: 12%;
+  --bsv-s-mid: 16%;
+  --bsv-s-muted: 10%;
+  --bsv-s-soft: 10%;
+  --bsv-bg-mid: hsl(var(--bsv-hue), var(--bsv-s-mid), 8%);
+  --bsv-bg-deep: hsl(var(--bsv-hue), var(--bsv-s-deep), 4%);
+  --bsv-surface-chrome: hsl(var(--bsv-hue), var(--bsv-s-chrome), 3%);
+  --bsv-surface-panel: hsl(var(--bsv-hue), var(--bsv-s-panel), 4%);
+  --bsv-surface-card: hsl(var(--bsv-hue), var(--bsv-s-card), 7%);
+  --bsv-surface-stripe: hsl(var(--bsv-hue), var(--bsv-s-stripe), 8%);
+  --bsv-surface-raised: hsl(var(--bsv-hue), var(--bsv-s-raised), 9%);
+  --bsv-surface-hover: hsl(var(--bsv-hue), var(--bsv-s-hover), 11%);
+  --bsv-surface-muted: hsl(var(--bsv-hue), var(--bsv-s-muted), 14%);
+  --bsv-surface-soft: hsl(var(--bsv-hue), var(--bsv-s-soft), 18%);
+}
+
 /* Force key chrome/surfaces to follow the ladder (beats leftover hardcoded rules) */
 html[data-bsv-bg="colorized"] .top-navbar,
 html[data-bsv-bg="colorized"] .site-footer,
 html[data-bsv-bg="colorized"] .nav-mobile-toolbar,
-html[data-bsv-bg="colorized"] .sections-menu-toggle {
+html[data-bsv-bg="colorized"] .sections-menu-toggle,
+html[data-bsv-bg="dark"] .top-navbar,
+html[data-bsv-bg="dark"] .site-footer,
+html[data-bsv-bg="dark"] .nav-mobile-toolbar,
+html[data-bsv-bg="dark"] .sections-menu-toggle {
   background-color: var(--bsv-surface-chrome) !important;
   background-image: none !important;
 }
@@ -61,10 +91,21 @@ html[data-bsv-bg="colorized"] .guide-container,
 html[data-bsv-bg="colorized"] .faq-container,
 html[data-bsv-bg="colorized"] .about-container,
 html[data-bsv-bg="colorized"] .richest-search,
-html[data-bsv-bg="colorized"] .site-settings-modal__box {
+html[data-bsv-bg="colorized"] .site-settings-modal__box,
+html[data-bsv-bg="dark"] .card,
+html[data-bsv-bg="dark"] .crew-logo-card,
+html[data-bsv-bg="dark"] .tax-calculator,
+html[data-bsv-bg="dark"] .what-is-section,
+html[data-bsv-bg="dark"] .legal-page,
+html[data-bsv-bg="dark"] .guide-container,
+html[data-bsv-bg="dark"] .faq-container,
+html[data-bsv-bg="dark"] .about-container,
+html[data-bsv-bg="dark"] .richest-search,
+html[data-bsv-bg="dark"] .site-settings-modal__box {
   background-color: var(--bsv-surface-card) !important;
 }
-html[data-bsv-bg="colorized"] .card:not(.crew-logo-card):not(.scammer-card):not(.guide-vcard) > .card-left {
+html[data-bsv-bg="colorized"] .card:not(.crew-logo-card):not(.scammer-card):not(.guide-vcard) > .card-left,
+html[data-bsv-bg="dark"] .card:not(.crew-logo-card):not(.scammer-card):not(.guide-vcard) > .card-left {
   background-image: repeating-linear-gradient(
     -45deg,
     var(--bsv-surface-raised),
@@ -75,16 +116,24 @@ html[data-bsv-bg="colorized"] .card:not(.crew-logo-card):not(.scammer-card):not(
 }
 html[data-bsv-bg="colorized"] .crew-logo-card img,
 html[data-bsv-bg="colorized"] #crew-logos .crew-logos-scroll,
-html[data-bsv-bg="colorized"] #crew-logos .crew-logos-scroll::-webkit-scrollbar-track {
+html[data-bsv-bg="colorized"] #crew-logos .crew-logos-scroll::-webkit-scrollbar-track,
+html[data-bsv-bg="dark"] .crew-logo-card img,
+html[data-bsv-bg="dark"] #crew-logos .crew-logos-scroll,
+html[data-bsv-bg="dark"] #crew-logos .crew-logos-scroll::-webkit-scrollbar-track {
   background-color: var(--bsv-surface-hover) !important;
 }
 html[data-bsv-bg="colorized"] .home-column--announcements,
 html[data-bsv-bg="colorized"] .home-column--value-changes,
-html[data-bsv-bg="colorized"] .home-panel {
+html[data-bsv-bg="colorized"] .home-panel,
+html[data-bsv-bg="dark"] .home-column--announcements,
+html[data-bsv-bg="dark"] .home-column--value-changes,
+html[data-bsv-bg="dark"] .home-panel {
   background: linear-gradient(160deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-panel) 100%) !important;
 }
 html[data-bsv-bg="colorized"] body,
-html[data-bsv-bg="colorized"] html {
+html[data-bsv-bg="colorized"] html,
+html[data-bsv-bg="dark"] body,
+html[data-bsv-bg="dark"] html {
   background: linear-gradient(160deg, var(--bsv-bg-mid) 0%, var(--bsv-bg-deep) 100%) !important;
   background-attachment: fixed !important;
 }
@@ -8499,6 +8548,9 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   border-radius: 999px;
   color: var(--bsv-muted-dim);
   font-weight: 600;
+  font-size: 0.82rem;
+  padding-left: 10px;
+  padding-right: 10px;
 }.site-settings-segmented--style .site-settings-segment + .site-settings-segment {
   border-left: none;
 }.site-settings-segmented--style .site-settings-segment.is-active {
@@ -13515,7 +13567,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
 
   .nav-mobile-toolbar .nav-settings-btn:hover,
   .nav-mobile-toolbar .nav-settings-btn[aria-expanded="true"] {
-    background: #526077;
+    background: var(--bsv-surface-soft);
     color: #ffffff;
     transform: none;
   }
@@ -15513,9 +15565,14 @@ html[data-bsv-bg="colorized"] .home-column--announcements .announcement-date,
 html[data-bsv-bg="colorized"] .announcement-date {
   color: var(--bsv-accent-bright) !important;
 }
+/* Colorized: keep announcement / value-change box outlines identical to Standard */
 html[data-bsv-bg="colorized"] .home-column--announcements {
-  border-color: var(--bsv-accent-dim) !important;
-  box-shadow: 0 8px 0 color-mix(in srgb, var(--bsv-accent-dim) 70%, #000), 0 12px 24px rgba(0, 0, 0, 0.45) !important;
+  border-color: #000 !important;
+  box-shadow: 0 8px 0 #000, 0 12px 24px rgba(0, 0, 0, 0.45) !important;
+}
+html[data-bsv-bg="colorized"] .home-column--value-changes {
+  border-color: hsl(217, 24%, 25%) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
 }
 html[data-bsv-bg="colorized"] .home-site-stats {
   background: var(--bsv-bg-deep) !important;

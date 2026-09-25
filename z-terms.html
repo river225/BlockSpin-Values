@@ -76,17 +76,24 @@
     if (/\/sponsors(\/|$)/i.test(location.pathname || "")) return;
     var style = localStorage.getItem("bsv-bg-style") || "standard";
     var hue = parseInt(localStorage.getItem("bsv-bg-hue") || "210", 10);
-    if (style !== "colorized") return;
-    if (isNaN(hue)) hue = 210;
     var root = document.documentElement;
-    root.style.setProperty("--bsv-hue", String(hue));
-    root.style.setProperty("--bsv-accent-hue", String(hue));
-    root.style.backgroundColor = "hsl(" + hue + ", 41%, 10%)";
-    root.setAttribute("data-bsv-bg", "colorized");
+    if (style === "colorized") {
+      if (isNaN(hue)) hue = 210;
+      hue = Math.max(0, Math.min(360, Math.round(hue)));
+      root.style.setProperty("--bsv-hue", String(hue));
+      root.style.setProperty("--bsv-accent-hue", String(hue));
+      root.style.backgroundColor = "hsl(" + hue + ", 41%, 10%)";
+      root.setAttribute("data-bsv-bg", "colorized");
+    } else if (style === "dark") {
+      root.style.setProperty("--bsv-hue", "220");
+      root.style.setProperty("--bsv-accent-hue", "188");
+      root.style.backgroundColor = "hsl(220, 20%, 4%)";
+      root.setAttribute("data-bsv-bg", "dark");
+    }
   } catch (e) {}
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=20260925-settings-tint">
+<link rel="stylesheet" href="style.css?v=20260925-dark-mode">
 </head>
 <body data-bsv-page="legal">
 
@@ -157,6 +164,6 @@
 
 <div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
 <div id="bsv-site-footer"></div>
-<script src="site-chrome.js?v=20260925-settings-tint"></script>
+<script src="site-chrome.js?v=20260925-dark-mode"></script>
 </body>
 </html>
