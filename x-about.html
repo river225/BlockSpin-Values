@@ -182,7 +182,8 @@
       if (!/cdn\.discordapp\.com|media\.discordapp\.net/i.test(u.hostname)) return String(url || "");
       u.pathname = u.pathname.replace(/\.gif$/i, ".webp");
       if (/\/avatars\//i.test(u.pathname) && !/\.[a-z0-9]+$/i.test(u.pathname)) u.pathname += ".webp";
-      u.searchParams.set("size", "72");
+      // Discord CDN only accepts specific sizes (16/32/64/80/128/…); 72 returns 400.
+      u.searchParams.set("size", "80");
       return u.toString();
     } catch (_) {
       return String(url || "");
