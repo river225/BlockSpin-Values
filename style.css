@@ -673,8 +673,8 @@ background-attachment: fixed;
   padding: 8px 9px;
   margin-top: 0;
   margin-bottom: 10px;
-  max-height: min(70vh, 520px);
-  overflow-y: auto;
+  max-height: none;
+  overflow: visible;
   position: sticky;
   top: 12px;
 }.guide-fast-nav.is-visible {
@@ -8551,6 +8551,9 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   font-size: 0.82rem;
   padding-left: 10px;
   padding-right: 10px;
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
 }.site-settings-segmented--style .site-settings-segment + .site-settings-segment {
   border-left: none;
 }.site-settings-segmented--style .site-settings-segment.is-active {
@@ -13684,10 +13687,12 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   }
 
   .section-mobile-panel.is-open .section-mobile-panel__body {
-    max-height: 240px;
+    /* Tall enough for all Untradeable fast-nav rows (no inner scroll) */
+    max-height: 2000px;
     opacity: 1;
     margin-top: 8px;
     pointer-events: auto;
+    overflow: visible;
   }
 
   .section-mobile-panel:not(.is-open) .section-mobile-panel__body {
@@ -13705,15 +13710,14 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
     display: block !important;
     position: static;
     top: auto;
-    max-height: 220px;
+    max-height: none;
     margin: 0;
     padding: 2px 0 0;
     border: none;
     border-radius: 0;
     box-shadow: none;
     background: transparent;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
 
   #untradeable-items .search-container--in-section {
@@ -15545,6 +15549,14 @@ html[data-bsv-bg="colorized"] .sections-sidebar,
 html[data-bsv-bg="colorized"][data-sidenav-style="glass"] .sections-sidebar {
   background: linear-gradient(180deg, hsl(var(--bsv-hue) var(--bsv-s-card) 12% / 0.98) 0%, hsl(var(--bsv-hue) var(--bsv-s-deep) 10% / 0.96) 100%) !important;
 }
+html[data-bsv-bg="dark"] .sections-sidebar,
+html[data-bsv-bg="dark"][data-sidenav-style="glass"] .sections-sidebar {
+  background: linear-gradient(180deg, var(--bsv-surface-card) 0%, var(--bsv-bg-deep) 100%) !important;
+}
+html[data-bsv-bg="dark"] .guide-fast-nav,
+html[data-bsv-bg="dark"] .section-mobile-panel {
+  background-color: var(--bsv-surface-panel) !important;
+}
 html[data-bsv-bg="colorized"] .home-divider,
 html[data-bsv-bg="colorized"] #home .home-divider,
 html[data-bsv-bg="colorized"] .home-page-clean .home-divider {
@@ -15573,6 +15585,19 @@ html[data-bsv-bg="colorized"] .home-column--announcements {
 html[data-bsv-bg="colorized"] .home-column--value-changes {
   border-color: hsl(217, 24%, 25%) !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+@media (max-width: 900px) {
+  /* Match Standard mobile outlines (smaller black offset), not desktop shadows */
+  html[data-bsv-bg="colorized"] .home-column--announcements,
+  html[data-bsv-bg="colorized"] .home-column--value-changes {
+    box-shadow: 0 4px 0 #000, 0 6px 14px rgba(0, 0, 0, 0.32) !important;
+  }
+  html[data-bsv-bg="colorized"] .home-column--announcements {
+    border-color: #000 !important;
+  }
+  html[data-bsv-bg="colorized"] .home-column--value-changes {
+    border-color: hsl(217, 24%, 25%) !important;
+  }
 }
 html[data-bsv-bg="colorized"] .home-site-stats {
   background: var(--bsv-bg-deep) !important;
@@ -15770,10 +15795,25 @@ html[data-bsv-bg="colorized"] .site-settings-section__title {
   color: var(--bsv-muted) !important;
 }
 
+@media (max-width: 420px) {
+  .site-settings-segmented--style .site-settings-segment {
+    font-size: 0.72rem;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .site-settings-modal {
+    padding: 12px;
+  }
+  .site-settings-modal__box {
+    max-height: min(92vh, 720px);
+  }
+}
 
-/* Sponsorship pages keep stock navy — never follow the color wheel */
+
+/* Sponsorship pages keep stock navy — never follow the color wheel / dark mode */
 html[data-bsv-sponsors-lock="1"],
 html[data-bsv-sponsors-lock="1"][data-bsv-bg="colorized"],
+html[data-bsv-sponsors-lock="1"][data-bsv-bg="dark"],
 body.sponsors-body {
   --bsv-hue: 217;
   --bsv-accent-hue: 188;
@@ -15789,7 +15829,8 @@ body.sponsors-body {
   --bsv-s-soft: 24%;
 }
 html[data-bsv-sponsors-lock="1"],
-html[data-bsv-sponsors-lock="1"][data-bsv-bg="colorized"] {
+html[data-bsv-sponsors-lock="1"][data-bsv-bg="colorized"],
+html[data-bsv-sponsors-lock="1"][data-bsv-bg="dark"] {
   background-color: hsl(217, 41%, 10%) !important;
 }
 html[data-bsv-sponsors-lock="1"] .top-navbar,
