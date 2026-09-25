@@ -66,7 +66,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light only" />
 <meta name="theme-color" content="#0f1724" />
-<style>html{color-scheme:light only;-webkit-color-scheme:light;background-color:#0f1724}</style>
+<style>html{color-scheme:light only;-webkit-color-scheme:light;background-color:#0f1724;--bsv-bg-mid:#1a2740;--bsv-bg-deep:#0f1724;--bsv-surface-chrome:#0a0f16;--bsv-surface-card:#141d28}</style>
+<script>
+(function () {
+  try {
+    var style = localStorage.getItem("bsv-bg-style") || "standard";
+    var hue = parseInt(localStorage.getItem("bsv-bg-hue") || "210", 10);
+    if (style !== "colorized") return;
+    if (isNaN(hue)) hue = 210;
+    var root = document.documentElement;
+    root.style.setProperty("--bsv-bg-mid", "hsl(" + hue + ", 42%, 18%)");
+    root.style.setProperty("--bsv-bg-deep", "hsl(" + hue + ", 41%, 10%)");
+    root.style.setProperty("--bsv-surface-chrome", "hsl(" + hue + ", 38%, 6%)");
+    root.style.setProperty("--bsv-surface-card", "hsl(" + hue + ", 33%, 12%)");
+    root.style.backgroundColor = "hsl(" + hue + ", 41%, 10%)";
+    root.setAttribute("data-bsv-bg", "colorized");
+  } catch (e) {}
+})();
+</script>
 <script>
 /* GitHub Pages serves / and /index.html as the same file (HTTP 200).
    Send browsers off /index.html so Google stops rediscovering a duplicate URL. */
@@ -99,8 +116,8 @@
 <meta property="og:title" content="BlockSpin Values">
 <meta property="og:description" content="BlockSpin Values — trusted Roblox BlockSpin value list, tax calculator, and Discord for trading, giveaways &amp; middleman service.">
 <!-- Google Analytics loads only after cookie consent (see site-chrome.js) -->
-<link rel="preload" href="style.css?v=20260924-sponsor-hide" as="style" />
-<link rel="stylesheet" href="style.css?v=20260924-sponsor-hide" />
+<link rel="preload" href="style.css?v=20260925-bg-surfaces" as="style" />
+<link rel="stylesheet" href="style.css?v=20260925-bg-surfaces" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
@@ -227,6 +244,18 @@
       <section class="site-settings-section">
         <h3 class="site-settings-section__title" data-i18n="settings.font">Font</h3>
         <div class="site-settings-font-grid" id="font-picker-grid" role="listbox" data-i18n-aria="settings.ariaFont" aria-label="Font"></div>
+      </section>
+      <section class="site-settings-section">
+        <h3 class="site-settings-section__title">Style</h3>
+        <div class="site-settings-segmented site-settings-segmented--style" role="group" aria-label="Background style">
+          <button type="button" class="site-settings-segment is-active" data-bg-style="standard">Standard</button>
+          <button type="button" class="site-settings-segment" data-bg-style="colorized">Colorized</button>
+        </div>
+      </section>
+      <section class="site-settings-section site-settings-color-row" id="site-settings-color-row" hidden>
+        <h3 class="site-settings-section__title">Color</h3>
+        <label class="site-settings-visually-hidden" for="bsv-bg-hue">Background color</label>
+        <input type="range" id="bsv-bg-hue" class="site-settings-hue" min="0" max="360" value="210" step="1" aria-label="Background hue" />
       </section>
     </div>
   </div>
@@ -379,14 +408,14 @@ We’ve launched a complete site redesign, and items will now display both their
 
 <div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
 
-<script defer src="site-chrome.js?v=20260924-sponsor-hide"></script>
+<script defer src="site-chrome.js?v=20260925-bg-surfaces"></script>
 <script defer src="auth.js?v=20260713-cwv"></script>
 <script defer src="saved-cards.js?v=20260713-cwv"></script>
 <script defer src="site-i18n.js?v=20260723-tax60k"></script>
-<script defer src="site-settings.js?v=20260713-cwv"></script>
+<script defer src="site-settings.js?v=20260925-bg-surfaces"></script>
 <script defer src="section-config.js?v=20260811-home-tax"></script>
 <script defer src="quest-guide-i18n.js?v=20260713-cwv"></script>
-<script defer src="script.js?v=20260924-sponsor-hide"></script> 
+<script defer src="script.js?v=20260925-bg-surfaces"></script> 
 
 
 <div id="bsv-site-footer"></div>

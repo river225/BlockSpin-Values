@@ -1,5 +1,8 @@
 (function () {
   var FONT_KEY = "bsv-font";
+  var BG_STYLE_KEY = "bsv-bg-style";
+  var BG_HUE_KEY = "bsv-bg-hue";
+  var DEFAULT_HUE = 210;
 
   var FONTS = [
     {
@@ -60,6 +63,25 @@
     }
   }
 
+  function getSavedBgStyle() {
+    try {
+      var s = localStorage.getItem(BG_STYLE_KEY);
+      return s === "colorized" ? "colorized" : "standard";
+    } catch (_) {
+      return "standard";
+    }
+  }
+
+  function getSavedBgHue() {
+    try {
+      var h = parseInt(localStorage.getItem(BG_HUE_KEY) || String(DEFAULT_HUE), 10);
+      if (isNaN(h)) return DEFAULT_HUE;
+      return Math.max(0, Math.min(360, h));
+    } catch (_) {
+      return DEFAULT_HUE;
+    }
+  }
+
   function ensureThemeFontsLoaded() {
     if (document.getElementById("bsv-theme-fonts")) return;
     var link = document.createElement("link");
@@ -87,6 +109,50 @@
     document.querySelectorAll(".site-settings-font-chip").forEach(function (btn) {
       btn.classList.toggle("is-active", btn.dataset.font === fontId);
     });
+  }
+
+  // Keep luminance close to stock navy surfaces; only hue shifts.
+  function applyBackground(style, hue) {
+    var root = document.documentElement;
+    var mode = style === "colorized" ? "colorized" : "standard";
+    var h = typeof hue === "number" && !isNaN(hue) ? hue : getSavedBgHue();
+    h = Math.max(0, Math.min(360, Math.round(h)));
+
+    if (mode === "colorized") {
+      root.style.setProperty("--bsv-bg-mid", "hsl(" + h + ", 42%, 18%)");
+      root.style.setProperty("--bsv-bg-deep", "hsl(" + h + ", 41%, 10%)");
+      root.style.setProperty("--bsv-surface-chrome", "hsl(" + h + ", 38%, 6%)");
+      root.style.setProperty("--bsv-surface-card", "hsl(" + h + ", 33%, 12%)");
+      root.style.backgroundColor = "hsl(" + h + ", 41%, 10%)";
+      root.setAttribute("data-bsv-bg", "colorized");
+    } else {
+      root.style.setProperty("--bsv-bg-mid", "#1a2740");
+      root.style.setProperty("--bsv-bg-deep", "#0f1724");
+      root.style.setProperty("--bsv-surface-chrome", "#0a0f16");
+      root.style.setProperty("--bsv-surface-card", "#141d28");
+      root.style.backgroundColor = "#0f1724";
+      root.removeAttribute("data-bsv-bg");
+    }
+
+    try {
+      localStorage.setItem(BG_STYLE_KEY, mode);
+      localStorage.setItem(BG_HUE_KEY, String(h));
+    } catch (_) {}
+
+    syncBgControls(mode, h);
+  }
+
+  function syncBgControls(style, hue) {
+    document.querySelectorAll("[data-bg-style]").forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.getAttribute("data-bg-style") === style);
+    });
+    var row = document.getElementById("site-settings-color-row");
+    var slider = document.getElementById("bsv-bg-hue");
+    if (row) row.hidden = style !== "colorized";
+    if (slider) {
+      slider.disabled = style !== "colorized";
+      if (typeof hue === "number") slider.value = String(hue);
+    }
   }
 
   function closeSettingsModal() {
@@ -138,10 +204,30 @@
     });
   }
 
+  function initBackgroundControls() {
+    var style = getSavedBgStyle();
+    var hue = getSavedBgHue();
+    applyBackground(style, hue);
+
+    document.querySelectorAll("[data-bg-style]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        applyBackground(btn.getAttribute("data-bg-style"), getSavedBgHue());
+      });
+    });
+
+    var slider = document.getElementById("bsv-bg-hue");
+    if (slider) {
+      slider.addEventListener("input", function () {
+        applyBackground("colorized", parseInt(slider.value, 10));
+      });
+    }
+  }
+
   function initSiteSettings() {
     document.documentElement.classList.remove("bsv-card-effects-off");
     applyFont(getSavedFont());
     buildFontGrid();
+    initBackgroundControls();
 
     var settingsBtn = document.getElementById("nav-settings-btn");
     var modal = document.getElementById("site-settings-modal");
@@ -172,6 +258,7 @@
   }
 
   window.bsvApplySiteFont = applyFont;
+  window.bsvApplySiteBackground = applyBackground;
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initSiteSettings);
