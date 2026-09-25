@@ -8325,7 +8325,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   width: 1px;
   height: 24px;
   margin: 0 2px;
-  background: rgba(148, 163, 184, 0.35);
+  background: color-mix(in srgb, var(--bsv-muted) 35%, transparent);
   flex-shrink: 0;
   align-self: center;
 }.nav-tools {
@@ -8344,7 +8344,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   padding: 0;
   border: none;
   border-radius: 8px;
-  background: rgba(100, 116, 139, 0.28);
+  background: color-mix(in srgb, var(--bsv-muted-dim) 40%, transparent);
   color: #f1f5f9;
   cursor: pointer;
   flex-shrink: 0;
@@ -8352,7 +8352,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }.nav-settings-btn:hover,
 .nav-settings-btn[aria-expanded="true"] {
-  background: rgba(100, 116, 139, 0.42);
+  background: color-mix(in srgb, var(--bsv-accent) 28%, transparent);
   color: #fff;
   transform: scale(1.1);
 }.nav-settings-btn__icon {
@@ -8381,7 +8381,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   display: flex;
   flex-direction: column;
   background: linear-gradient(165deg, var(--bsv-bg-mid) 0%, var(--bsv-surface-panel) 100%);
-  border: 1px solid rgba(74, 111, 165, 0.45);
+  border: 1px solid color-mix(in srgb, var(--bsv-accent) 45%, transparent);
   border-radius: 16px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
   animation: site-settings-pop 0.2s ease-out;
@@ -8400,7 +8400,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   justify-content: space-between;
   gap: 12px;
   padding: 20px 22px 16px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1px solid color-mix(in srgb, var(--bsv-muted) 18%, transparent);
 }.site-settings-modal__title {
   margin: 0;
   font-size: 1.2rem;
@@ -8412,7 +8412,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   height: 34px;
   border: none;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
+  background: hsl(var(--bsv-hue) var(--bsv-s-hover) 16% / 0.45);
   color: var(--bsv-text-soft);
   font-size: 1.35rem;
   line-height: 1;
@@ -8446,9 +8446,9 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
 }.site-settings-font-chip {
   min-height: 42px;
   padding: 10px 12px;
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  border: 1px solid color-mix(in srgb, var(--bsv-muted) 22%, transparent);
   border-radius: 10px;
-  background: rgba(15, 23, 36, 0.65);
+  background: hsl(var(--bsv-hue) var(--bsv-s-deep) 10% / 0.7);
   color: #e2e8f0;
   font-size: 0.88rem;
   font-weight: 600;
@@ -8457,19 +8457,19 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
 }.site-settings-font-chip:hover {
   border-color: hsl(var(--bsv-accent-hue) 76% 55% / 0.45);
-  background: rgba(26, 39, 64, 0.85);
+  background: var(--bsv-surface-hover);
 }.site-settings-font-chip.is-active {
   border-color: var(--bsv-accent);
   background: hsl(var(--bsv-accent-hue) 76% 55% / 0.14);
-  color: #7ee8f7;
+  color: var(--bsv-accent-bright);
   box-shadow: inset 0 0 0 1px hsl(var(--bsv-accent-hue) 76% 55% / 0.25);
 }.site-settings-segmented {
   display: flex;
   width: 100%;
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  border: 1px solid color-mix(in srgb, var(--bsv-muted) 22%, transparent);
   border-radius: 10px;
   overflow: hidden;
-  background: rgba(15, 23, 36, 0.65);
+  background: hsl(var(--bsv-hue) var(--bsv-s-deep) 10% / 0.7);
 }.site-settings-segment {
   flex: 1;
   border: none;
@@ -8482,29 +8482,29 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }.site-settings-segment + .site-settings-segment {
-  border-left: 1px solid rgba(148, 163, 184, 0.18);
+  border-left: 1px solid color-mix(in srgb, var(--bsv-muted) 18%, transparent);
 }.site-settings-segment.is-active {
   background: hsl(var(--bsv-accent-hue) 76% 55% / 0.18);
-  color: #7ee8f7;
+  color: var(--bsv-accent-bright);
 }.site-settings-segment:not(.is-active):hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: hsl(var(--bsv-hue) var(--bsv-s-hover) 16% / 0.45);
 }.site-settings-segmented--lang .site-settings-segment {
   font-size: 0.85rem;
 }.site-settings-segmented--style {
   border-radius: 999px;
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: color-mix(in srgb, var(--bsv-muted) 22%, transparent);
   background: var(--bsv-surface-chrome);
   gap: 0;
 }.site-settings-segmented--style .site-settings-segment {
   border-radius: 999px;
-  color: #6b7280;
+  color: var(--bsv-muted-dim);
   font-weight: 600;
 }.site-settings-segmented--style .site-settings-segment + .site-settings-segment {
   border-left: none;
 }.site-settings-segmented--style .site-settings-segment.is-active {
-  background: #3a3f4a;
+  background: var(--bsv-surface-hover);
   color: #fff;
-  box-shadow: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bsv-accent) 35%, transparent);
 }.site-settings-color-row[hidden] {
   display: none !important;
 }.site-settings-hue {
@@ -15649,6 +15649,68 @@ html[data-bsv-bg="colorized"] .guide-fast-nav__top:hover {
 }
 html[data-bsv-bg="colorized"] .money-game-guide-section .guide-vcard__price {
   background: hsl(var(--bsv-hue) var(--bsv-s-deep) 10% / 0.7) !important;
+}
+
+/* Colorized: settings gear + modal controls follow the wheel */
+html[data-bsv-bg="colorized"] .nav-settings-btn {
+  background: color-mix(in srgb, var(--bsv-muted-dim) 42%, transparent) !important;
+  color: #f8fafc !important;
+}
+html[data-bsv-bg="colorized"] .nav-settings-btn:hover,
+html[data-bsv-bg="colorized"] .nav-settings-btn[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--bsv-accent) 32%, transparent) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] .nav-right-divider {
+  background: color-mix(in srgb, var(--bsv-muted) 40%, transparent) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-modal__box {
+  background: linear-gradient(165deg, var(--bsv-bg-mid) 0%, var(--bsv-surface-panel) 100%) !important;
+  border-color: color-mix(in srgb, var(--bsv-accent) 45%, transparent) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-modal__head {
+  border-bottom-color: color-mix(in srgb, var(--bsv-muted) 22%, transparent) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-modal__close {
+  background: hsl(var(--bsv-hue) var(--bsv-s-hover) 16% / 0.5) !important;
+  color: var(--bsv-text-soft) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-modal__close:hover {
+  background: hsl(var(--bsv-accent-hue) 76% 55% / 0.2) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-font-chip,
+html[data-bsv-bg="colorized"] .site-settings-segmented {
+  background: hsl(var(--bsv-hue) var(--bsv-s-deep) 10% / 0.75) !important;
+  border-color: color-mix(in srgb, var(--bsv-muted) 28%, transparent) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-font-chip:hover {
+  background: var(--bsv-surface-hover) !important;
+  border-color: color-mix(in srgb, var(--bsv-accent) 45%, transparent) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-font-chip.is-active,
+html[data-bsv-bg="colorized"] .site-settings-segment.is-active {
+  background: hsl(var(--bsv-accent-hue) 76% 55% / 0.2) !important;
+  border-color: var(--bsv-accent) !important;
+  color: var(--bsv-accent-bright) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-segment:not(.is-active):hover {
+  background: hsl(var(--bsv-hue) var(--bsv-s-hover) 16% / 0.5) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-segmented--style {
+  background: var(--bsv-surface-chrome) !important;
+  border-color: color-mix(in srgb, var(--bsv-muted) 28%, transparent) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-segmented--style .site-settings-segment {
+  color: var(--bsv-muted-dim) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-segmented--style .site-settings-segment.is-active {
+  background: var(--bsv-surface-hover) !important;
+  color: #fff !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bsv-accent) 40%, transparent) !important;
+}
+html[data-bsv-bg="colorized"] .site-settings-section__title {
+  color: var(--bsv-muted) !important;
 }
 
 
