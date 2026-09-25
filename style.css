@@ -1,15 +1,91 @@
 :root {
   --bsv-hue: 217;
-  --bsv-bg-mid: hsl(var(--bsv-hue), 42%, 18%);
-  --bsv-bg-deep: hsl(var(--bsv-hue), 41%, 10%);
-  --bsv-surface-chrome: hsl(var(--bsv-hue), 38%, 6%);
-  --bsv-surface-panel: hsl(var(--bsv-hue), 26%, 7%);
-  --bsv-surface-card: hsl(var(--bsv-hue), 33%, 12%);
-  --bsv-surface-stripe: hsl(var(--bsv-hue), 30%, 13%);
-  --bsv-surface-raised: hsl(var(--bsv-hue), 32%, 14%);
-  --bsv-surface-hover: hsl(var(--bsv-hue), 29%, 16%);
-  --bsv-surface-muted: hsl(var(--bsv-hue), 26%, 20%);
-  --bsv-surface-soft: hsl(var(--bsv-hue), 24%, 25%);
+  /* Stock navy saturation — Standard mode */
+  --bsv-s-chrome: 38%;
+  --bsv-s-panel: 26%;
+  --bsv-s-deep: 41%;
+  --bsv-s-card: 33%;
+  --bsv-s-stripe: 30%;
+  --bsv-s-raised: 32%;
+  --bsv-s-hover: 29%;
+  --bsv-s-mid: 42%;
+  --bsv-s-muted: 26%;
+  --bsv-s-soft: 24%;
+  --bsv-bg-mid: hsl(var(--bsv-hue), var(--bsv-s-mid), 18%);
+  --bsv-bg-deep: hsl(var(--bsv-hue), var(--bsv-s-deep), 10%);
+  --bsv-surface-chrome: hsl(var(--bsv-hue), var(--bsv-s-chrome), 6%);
+  --bsv-surface-panel: hsl(var(--bsv-hue), var(--bsv-s-panel), 7%);
+  --bsv-surface-card: hsl(var(--bsv-hue), var(--bsv-s-card), 12%);
+  --bsv-surface-stripe: hsl(var(--bsv-hue), var(--bsv-s-stripe), 13%);
+  --bsv-surface-raised: hsl(var(--bsv-hue), var(--bsv-s-raised), 14%);
+  --bsv-surface-hover: hsl(var(--bsv-hue), var(--bsv-s-hover), 16%);
+  --bsv-surface-muted: hsl(var(--bsv-hue), var(--bsv-s-muted), 20%);
+  --bsv-surface-soft: hsl(var(--bsv-hue), var(--bsv-s-soft), 25%);
+}
+
+/* Colorized: same lightness (shade), higher saturation so the hue actually reads on dark UI */
+html[data-bsv-bg="colorized"] {
+  --bsv-s-chrome: 58%;
+  --bsv-s-panel: 52%;
+  --bsv-s-deep: 55%;
+  --bsv-s-card: 50%;
+  --bsv-s-stripe: 48%;
+  --bsv-s-raised: 48%;
+  --bsv-s-hover: 46%;
+  --bsv-s-mid: 52%;
+  --bsv-s-muted: 42%;
+  --bsv-s-soft: 40%;
+}
+
+/* Force key chrome/surfaces to follow the ladder (beats leftover hardcoded rules) */
+html[data-bsv-bg="colorized"] .top-navbar,
+html[data-bsv-bg="colorized"] .site-footer,
+html[data-bsv-bg="colorized"] .nav-mobile-toolbar,
+html[data-bsv-bg="colorized"] .sections-menu-toggle {
+  background-color: var(--bsv-surface-chrome) !important;
+  background-image: none !important;
+}
+html[data-bsv-bg="colorized"] .card,
+html[data-bsv-bg="colorized"] .crew-logo-card,
+html[data-bsv-bg="colorized"] .sections-nav button:not(.active),
+html[data-bsv-bg="colorized"] #sections-nav button:not(.active),
+html[data-bsv-bg="colorized"] .tax-calculator,
+html[data-bsv-bg="colorized"] .what-is-section,
+html[data-bsv-bg="colorized"] .legal-page,
+html[data-bsv-bg="colorized"] .guide-container,
+html[data-bsv-bg="colorized"] .faq-container,
+html[data-bsv-bg="colorized"] .about-container,
+html[data-bsv-bg="colorized"] .richest-search,
+html[data-bsv-bg="colorized"] .site-settings-modal__box {
+  background-color: var(--bsv-surface-card) !important;
+}
+html[data-bsv-bg="colorized"] .card:not(.crew-logo-card):not(.scammer-card):not(.guide-vcard) > .card-left {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--bsv-surface-raised),
+    var(--bsv-surface-raised) 6px,
+    var(--bsv-surface-stripe) 6px,
+    var(--bsv-surface-stripe) 12px
+  ) !important;
+}
+html[data-bsv-bg="colorized"] .crew-logo-card img,
+html[data-bsv-bg="colorized"] #crew-logos .crew-logos-scroll,
+html[data-bsv-bg="colorized"] #crew-logos .crew-logos-scroll::-webkit-scrollbar-track {
+  background-color: var(--bsv-surface-hover) !important;
+}
+html[data-bsv-bg="colorized"] .home-column--announcements,
+html[data-bsv-bg="colorized"] .home-column--value-changes,
+html[data-bsv-bg="colorized"] .home-panel {
+  background: linear-gradient(160deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-panel) 100%) !important;
+}
+html[data-bsv-bg="colorized"] .sections-nav button:hover:not(.active),
+html[data-bsv-bg="colorized"] #sections-nav button:hover:not(.active) {
+  background-color: var(--bsv-surface-hover) !important;
+}
+html[data-bsv-bg="colorized"] body,
+html[data-bsv-bg="colorized"] html {
+  background: linear-gradient(160deg, var(--bsv-bg-mid) 0%, var(--bsv-bg-deep) 100%) !important;
+  background-attachment: fixed !important;
 }
 
 /* Lock appearance — ignore OS/browser forced dark mode */
@@ -518,9 +594,9 @@ background-attachment: fixed;
 }.card-info .badge.accessory-rarity-badge.rarity-uncommon {
   background: linear-gradient(135deg, #2c6b2f 0%, #388e3c 25%, #4caf50 50%, #6fd66f 75%, #81e681 100%);
 }.card-info .badge.accessory-rarity-badge.rarity-common {
-  background: linear-gradient(135deg, #3a4657 0%, #556274 25%, #6c7b8f 50%, #98a5b8 75%, #c3ccda 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-soft) 0%, #556274 25%, #6c7b8f 50%, #98a5b8 75%, #c3ccda 100%);
 }.card-info .badge.accessory-rarity-badge.rarity-default {
-  background: linear-gradient(135deg, #2f3f55 0%, #455a75 50%, #5f7591 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-soft) 0%, #455a75 50%, #5f7591 100%);
 }.hidden {
   display: none !important;
 }.tax-sidebar-column {
@@ -588,7 +664,7 @@ background-attachment: fixed;
 }.guide-fast-nav__top {
   width: 100%;
   padding: 6px 8px;
-  background: #203047;
+  background: var(--bsv-surface-hover);
   color: #cfe6ff;
   border: 1px solid #355274;
   border-radius: 8px;
@@ -597,9 +673,9 @@ background-attachment: fixed;
   font-size: 0.75rem;
   font-family: inherit;
 }.guide-fast-nav__top:hover {
-  background: #2a3f5c;
+  background: var(--bsv-surface-soft);
 }.tax-calculator {
-  background: linear-gradient(135deg, var(--bsv-surface-raised) 0%, #2a3a4a 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-muted) 100%);
   border: 2px solid #33cce6;
   border-radius: 12px;
   padding: 16px;
@@ -851,7 +927,7 @@ background-attachment: fixed;
   -moz-appearance: textfield;
 }.tax-result {
   background: var(--bsv-surface-raised);
-  border: 2px solid #2a3542;
+  border: 2px solid var(--bsv-surface-muted);
   border-radius: 8px;
   padding: 10px 12px;
   margin: 12px 0;
@@ -2301,7 +2377,7 @@ background-attachment: fixed;
   background: linear-gradient(135deg, #8b1045 0%, #c2185b 25%, #ec407a 50%, #ff8fb3 75%, #ffb3d9 100%);
   color: white;
 }#sections-nav button:nth-child(8).active {
-  background: linear-gradient(135deg, #2d3748 0%, #4a5568 25%, #718096 50%, #a0aec0 75%, #cbd5e0 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-muted) 0%, #4a5568 25%, #718096 50%, #a0aec0 75%, #cbd5e0 100%);
   color: white;
 }#sections-nav button:nth-child(9).active {
   background: linear-gradient(135deg, #3f2f72 0%, #59429b 25%, #765bc2 50%, #9a7ae0 75%, #b39af0 100%);
@@ -2495,7 +2571,7 @@ background-attachment: fixed;
   justify-content: center;
   z-index: 10000;
 }.river-links-modal .modal-content {
-  background: linear-gradient(135deg, var(--bsv-surface-raised) 0%, #2a3a4a 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-muted) 100%);
   border: 3px solid #33cce6;
   border-radius: 16px;
   padding: 25px 30px;
@@ -4301,7 +4377,7 @@ background-attachment: fixed;
   text-decoration: underline !important;
   text-underline-offset: 3px;
 }.announcement-box-home {
-  background: #0d1419;
+  background: var(--bsv-surface-panel);
   border: 2px solid #ff9800;
   border-radius: 10px;
   padding: 12px;
@@ -4382,7 +4458,7 @@ background-attachment: fixed;
 }.money-game-guide-section .money-guide-tab:hover:not(.active) {
   background: var(--bsv-surface-hover);
 }.money-game-guide-section .money-guide-tab.active {
-  background: #1a3344;
+  background: var(--bsv-bg-mid);
   border-color: #33cce6;
   color: #33cce6;
 }.money-game-guide-section .money-guide-panel {
@@ -5035,9 +5111,9 @@ background-attachment: fixed;
 }.money-game-guide-section .guide-vcard__rarity.rarity-uncommon {
   background: linear-gradient(135deg, #2c6b2f 0%, #388e3c 25%, #4caf50 50%, #6fd66f 75%, #81e681 100%);
 }.money-game-guide-section .guide-vcard__rarity.rarity-common {
-  background: linear-gradient(135deg, #3a4657 0%, #556274 25%, #6c7b8f 50%, #98a5b8 75%, #c3ccda 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-soft) 0%, #556274 25%, #6c7b8f 50%, #98a5b8 75%, #c3ccda 100%);
 }.money-game-guide-section .guide-vcard__rarity.rarity-default {
-  background: linear-gradient(135deg, #2f3f55 0%, #455a75 50%, #5f7591 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-soft) 0%, #455a75 50%, #5f7591 100%);
 }.money-game-guide-section .guide-vcard__weight {
   width: 100%;
   padding: 6px 8px;
@@ -6562,7 +6638,7 @@ background-attachment: fixed;
   font-size: 0.9rem;
 }.value-change-item {
   padding: 16px;
-  background: #181f2c;
+  background: var(--bsv-surface-card);
   position: relative;
   border-radius: 10px;
   margin-bottom: 0;
@@ -6714,7 +6790,7 @@ background-attachment: fixed;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.85);
 }.announcement-item-clean {
   padding: 16px;
-  background: #1c2937;
+  background: var(--bsv-surface-card);
   border-left: 5px solid #d4a027;
   border-radius: 10px;
 }.announcement-item-clean .announcement-date {
@@ -7559,7 +7635,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
 }.theme-switcher-btn.active {
   box-shadow: 0 0 0 2px #fff;
 }.theme-switcher-btn[data-theme="default"] {
-  background: linear-gradient(135deg, var(--bsv-surface-raised) 0%, #2a3a4a 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-muted) 100%);
 }.theme-switcher-btn[data-theme="red"] {
   background: linear-gradient(135deg, #b53535 0%, #d24a4a 100%);
 }.theme-switcher-btn[data-theme="pink"] {
@@ -7575,7 +7651,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
 }.money-guide-tax-calc {
   width: 100%;
   max-width: 720px;
-  background: linear-gradient(145deg, #121a26 0%, #1a2838 45%, #152030 100%);
+  background: linear-gradient(145deg, var(--bsv-surface-panel) 0%, var(--bsv-surface-card) 45%, #152030 100%);
   border: 3px solid #33cce6;
   border-radius: 20px;
   padding: 28px 32px 32px;
@@ -7638,7 +7714,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   margin: 0;
 }.money-guide-tax-calc__result {
   background: var(--bsv-bg-deep);
-  border: 2px solid #2a3a4a;
+  border: 2px solid var(--bsv-surface-muted);
   border-radius: 14px;
   padding: 22px 24px;
   margin-bottom: 22px;
@@ -7856,7 +7932,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   color: #33cce6;
   text-align: right;
 }.richest-table--table .richest-table__head {
-  background: linear-gradient(90deg, #1a2838, #121a26);
+  background: linear-gradient(90deg, var(--bsv-surface-card), var(--bsv-surface-panel));
 }.richest-podium__top3 {
   display: grid;
   grid-template-columns: 1fr 1.15fr 1fr;
@@ -8083,7 +8159,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   align-items: center;
   text-align: center;
   padding: 14px 10px;
-  background: #121a26;
+  background: var(--bsv-surface-panel);
   border: 2px solid var(--rank-color, var(--bsv-surface-soft));
   border-radius: 14px;
   position: relative;
@@ -8161,7 +8237,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: linear-gradient(135deg, var(--bsv-surface-raised), #0d1419);
+  background: linear-gradient(135deg, var(--bsv-surface-raised), var(--bsv-surface-panel));
   border: 2px solid var(--rank-color, #d4a027);
   border-radius: 16px;
 }.richest-magazine__hero-rank {
@@ -8217,7 +8293,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   align-items: center;
   gap: 8px;
   padding: 6px 12px 6px 6px;
-  background: #121a26;
+  background: var(--bsv-surface-panel);
   border: 1px solid var(--rank-color, var(--bsv-surface-soft));
   border-radius: 999px;
   font-size: 0.82rem;
@@ -8303,7 +8379,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(165deg, var(--bsv-bg-mid) 0%, #121a28 100%);
+  background: linear-gradient(165deg, var(--bsv-bg-mid) 0%, var(--bsv-surface-panel) 100%);
   border: 1px solid rgba(74, 111, 165, 0.45);
   border-radius: 16px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
@@ -8416,7 +8492,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
 }.site-settings-segmented--style {
   border-radius: 999px;
   border-color: rgba(255, 255, 255, 0.08);
-  background: #0a0e14;
+  background: var(--bsv-surface-chrome);
   gap: 0;
 }.site-settings-segmented--style .site-settings-segment {
   border-radius: 999px;
@@ -8519,7 +8595,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }.card-design-test__btn:hover {
-  background: #243447;
+  background: var(--bsv-surface-hover);
   border-color: #33cce6;
 }.card-design-test__btn.is-active {
   background: linear-gradient(135deg, #33cce6, #2aa8bd);
@@ -8556,7 +8632,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   padding: 10px 14px;
   border-radius: 10px;
   border: 2px solid #355274;
-  background: #0f1720;
+  background: var(--bsv-bg-deep);
   color: #dbeafe;
   font-size: 0.9rem;
 }.card-design-test__search:focus {
@@ -9157,7 +9233,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   justify-content: space-between;
   gap: 10px;
   padding: 12px 14px;
-  background: linear-gradient(90deg, #243447, var(--bsv-surface-raised));
+  background: linear-gradient(90deg, var(--bsv-surface-hover), var(--bsv-surface-raised));
   border-bottom: 2px solid #000;
 }.gun-card--07-topbar .gun-card__topbar h3 {
   margin: 0;
@@ -9231,7 +9307,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   background: rgba(31, 42, 56, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }.gun-card--11-gold {
-  background: linear-gradient(145deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-card) 55%, #1f2937 100%);
+  background: linear-gradient(145deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-card) 55%, var(--bsv-surface-hover) 100%);
   border-color: #d4a027;
   border-left-width: 5px;
   box-shadow: 0 6px 20px rgba(212, 160, 39, 0.12);
@@ -9296,7 +9372,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
 }.gun-card--14-inventory .gun-card__slot {
   width: 100%;
   aspect-ratio: 1;
-  background: linear-gradient(180deg, var(--bsv-surface-raised) 0%, #121a24 100%);
+  background: linear-gradient(180deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-panel) 100%);
   border: 2px solid #000;
   border-radius: 4px;
   display: flex;
@@ -9474,7 +9550,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
 }.gun-card--19-wide .gun-card__wide-banner {
   width: 100%;
   min-height: 120px;
-  background: linear-gradient(135deg, var(--bsv-surface-hover), #243447);
+  background: linear-gradient(135deg, var(--bsv-surface-hover), var(--bsv-surface-hover));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9594,7 +9670,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   display: none;
 }.gun-card--24-split .gun-card__split-img {
   flex: 0 0 45%;
-  background: linear-gradient(135deg, #243447 0%, var(--bsv-surface-raised) 100%);
+  background: linear-gradient(135deg, var(--bsv-surface-hover) 0%, var(--bsv-surface-raised) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9671,7 +9747,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   font-size: 1.15rem;
 }.gun-card--27-panel {
   flex-direction: column;
-  background: linear-gradient(180deg, var(--bsv-surface-raised) 0%, #121a24 100%);
+  background: linear-gradient(180deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-panel) 100%);
   border: 2px solid #4a5568;
   border-radius: 4px;
   padding: 0;
@@ -9681,7 +9757,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   display: none;
 }.gun-card--27-panel .gun-card__panel-title {
   padding: 10px 14px;
-  background: linear-gradient(180deg, #2d3748, #1a202c);
+  background: linear-gradient(180deg, var(--bsv-surface-muted), #1a202c);
   border-bottom: 2px solid #d4a027;
 }.gun-card--27-panel .gun-card__panel-title span {
   display: block;
@@ -10013,7 +10089,7 @@ body[data-theme="pink"] .icon-stats-row .value { color: #d8b0c0 !important; }bod
   transform: scale(0.92);
 }html[data-sidenav-style="refined"] .sections-sidebar {
   border-right: 2px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, #121a28 0%, #0f1622 100%);
+  background: linear-gradient(180deg, var(--bsv-surface-panel) 0%, #0f1622 100%);
 }html[data-sidenav-style="refined"] #sections-nav button,
 html[data-sidenav-style="refined"] .sections-nav button {
   border-width: 2px;
@@ -10158,20 +10234,20 @@ html[data-sidenav-palette="mono"] .sections-nav button.active {
 }html[data-sidenav-palette="mono"] #sections-nav button[data-section="Home"].active,
 html[data-sidenav-palette="mono"] .sections-nav button[data-section="Home"].active { background: linear-gradient(135deg, var(--bsv-surface-hover) 0%, #64748b 100%) !important; }html[data-sidenav-palette="mono"] #sections-nav button[data-section="💰 Richest Players"].active,
 html[data-sidenav-palette="mono"] .sections-nav button[data-section="💰 Richest Players"].active { background: linear-gradient(135deg, #475569 0%, #cbd5e1 100%) !important; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Home"].active,
-html[data-sidenav-palette="neon"] .sections-nav button[data-section="Home"].active { background: linear-gradient(135deg, #00ffff 0%, #0891b2 100%); color: #001018; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Common / Uncommon"].active,
+html[data-sidenav-palette="neon"] .sections-nav button[data-section="Home"].active { background: linear-gradient(135deg, #00ffff 0%, #0891b2 100%); color: var(--bsv-surface-chrome); }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Common / Uncommon"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="Common / Uncommon"].active { background: linear-gradient(135deg, #39ff14 0%, #15803d 100%); color: #041404; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Rare"].active,
-html[data-sidenav-palette="neon"] .sections-nav button[data-section="Rare"].active { background: linear-gradient(135deg, #00d4ff 0%, #2563eb 100%); color: #001018; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Epic"].active,
+html[data-sidenav-palette="neon"] .sections-nav button[data-section="Rare"].active { background: linear-gradient(135deg, #00d4ff 0%, #2563eb 100%); color: var(--bsv-surface-chrome); }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Epic"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="Epic"].active { background: linear-gradient(135deg, #bf00ff 0%, #6b21a8 100%); color: #fff; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Legendary"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="Legendary"].active { background: linear-gradient(135deg, #ffea00 0%, #ea580c 100%); color: #1a1000; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Omega"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="Omega"].active { background: linear-gradient(135deg, #ff0054 0%, #be123c 100%); color: #fff; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Misc"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="Misc"].active { background: linear-gradient(135deg, #ff00aa 0%, #be185d 100%); color: #fff; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Vehicles"].active,
-html[data-sidenav-palette="neon"] .sections-nav button[data-section="Vehicles"].active { background: linear-gradient(135deg, #7df9ff 0%, #475569 100%); color: #041018; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Untradeable Items"].active,
+html[data-sidenav-palette="neon"] .sections-nav button[data-section="Vehicles"].active { background: linear-gradient(135deg, #7df9ff 0%, #475569 100%); color: var(--bsv-surface-chrome); }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Untradeable Items"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="Untradeable Items"].active { background: linear-gradient(135deg, #ccff00 0%, #65a30d 100%); color: #101804; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Money & Game Guide"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="Money & Game Guide"].active { background: linear-gradient(135deg, #00ffd5 0%, #0d9488 100%); color: #001814; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="💰 Richest Players"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="💰 Richest Players"].active { background: linear-gradient(135deg, #ffe600 0%, #ca8a04 100%); color: #1a1400; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Crew Logos"].active,
 html[data-sidenav-palette="neon"] .sections-nav button[data-section="Crew Logos"].active { background: linear-gradient(135deg, #ff6ec7 0%, #9333ea 100%); color: #fff; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="BlockSpin Map"].active,
-html[data-sidenav-palette="neon"] .sections-nav button[data-section="BlockSpin Map"].active { background: linear-gradient(135deg, #00f0ff 0%, #4f46e5 100%); color: #001018; }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Test"].active,
-html[data-sidenav-palette="neon"] .sections-nav button[data-section="Test"].active { background: linear-gradient(135deg, #39ff14 0%, #00ffff 100%); color: #041018; }html[data-sidenav-palette="neon"] #sections-nav button.active,
+html[data-sidenav-palette="neon"] .sections-nav button[data-section="BlockSpin Map"].active { background: linear-gradient(135deg, #00f0ff 0%, #4f46e5 100%); color: var(--bsv-surface-chrome); }html[data-sidenav-palette="neon"] #sections-nav button[data-section="Test"].active,
+html[data-sidenav-palette="neon"] .sections-nav button[data-section="Test"].active { background: linear-gradient(135deg, #39ff14 0%, #00ffff 100%); color: var(--bsv-surface-chrome); }html[data-sidenav-palette="neon"] #sections-nav button.active,
 html[data-sidenav-palette="neon"] .sections-nav button.active {
   box-shadow: 0 0 16px currentColor, inset 0 0 0 1px rgba(255, 255, 255, 0.25);
 }.ui-showcase-section {
@@ -10212,7 +10288,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   transition: background 0.15s, border-color 0.15s, transform 0.15s;
 }.ui-showcase__filter:hover {
   border-color: #33cce6;
-  background: #1c2937;
+  background: var(--bsv-surface-card);
 }.ui-showcase__filter.is-active {
   background: linear-gradient(135deg, #33cce6, #2aa8bd);
   border-color: #33cce6;
@@ -10248,7 +10324,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   flex-direction: column;
   border-radius: 16px;
   border: 2px solid var(--bsv-surface-soft);
-  background: linear-gradient(165deg, #0f1720 0%, #121a24 100%);
+  background: linear-gradient(165deg, var(--bsv-bg-deep) 0%, var(--bsv-surface-panel) 100%);
   overflow: hidden;
   transition: border-color 0.2s, box-shadow 0.2s;
 }.ui-showcase__card--picked {
@@ -10336,7 +10412,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   text-shadow: 2px 2px 0 #000;
 }.ann-item--gold {
   padding: 14px;
-  background: #1c2937;
+  background: var(--bsv-surface-card);
   border-left: 5px solid #d4a027;
   border-radius: 10px;
   margin-bottom: 10px;
@@ -10636,7 +10712,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
 }.vc-item--classic {
   position: relative;
   padding: 14px 14px 14px 16px;
-  background: #181f2c;
+  background: var(--bsv-surface-card);
   border-radius: 10px;
   margin-bottom: 10px;
 }.vc-item--classic.vc-item--green { border-left: 4px solid #a2e82d; }.vc-item--classic.vc-item--orange { border-left: 4px solid #ff9800; }.vc-item--classic.vc-item--red { border-left: 4px solid #ff4444; }.vc-item--classic.vc-item--blue { border-left: 4px solid #33cce6; }.vc-item--classic .vc-icon {
@@ -10719,7 +10795,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   grid-template-columns: auto 1fr;
   gap: 4px 10px;
   padding: 10px;
-  background: #1f2937;
+  background: var(--bsv-surface-hover);
   border-radius: 8px;
   margin-bottom: 6px;
   align-items: center;
@@ -10806,7 +10882,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   border-radius: 8px;
 }.vc-item--neon.vc-item--green { border-left: 4px solid #a2e82d; box-shadow: -4px 0 16px rgba(162, 232, 45, 0.35); }.vc-item--neon.vc-item--orange { border-left: 4px solid #ff9800; box-shadow: -4px 0 16px rgba(255, 152, 0, 0.35); }.vc-item--neon.vc-item--red { border-left: 4px solid #ff4444; box-shadow: -4px 0 16px rgba(255, 68, 68, 0.35); }.vc-item--neon.vc-item--blue { border-left: 4px solid #33cce6; box-shadow: -4px 0 16px rgba(51, 204, 230, 0.35); }.vc-item--neon .vc-title { color: #fff; font-size: 0.85rem; font-weight: 700; margin: 0 0 2px; }.vc-item--neon .vc-date { color: #64748b; font-size: 0.65rem; margin: 0 0 3px; }.vc-item--neon .vc-text { color: #94a3b8; font-size: 0.78rem; margin: 0; }.vc-box--split {
   background: #131920;
-  border: 2px solid #2d3748;
+  border: 2px solid var(--bsv-surface-muted);
   border-radius: 14px;
   padding: 16px;
 }.vc-box--split .vc-box__title {
@@ -10817,7 +10893,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   grid-template-columns: 72px 1fr;
   gap: 8px 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #2d3748;
+  border-bottom: 1px solid var(--bsv-surface-muted);
 }.vc-item--split .vc-date {
   grid-column: 1;
   grid-row: 1 / span 2;
@@ -10933,7 +11009,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   z-index: 100001;
   width: min(320px, calc(100vw - 24px));
   max-height: min(420px, 70vh);
-  background: linear-gradient(180deg, #121a24 0%, var(--bsv-surface-panel) 100%);
+  background: linear-gradient(180deg, var(--bsv-surface-panel) 0%, var(--bsv-surface-panel) 100%);
   border: 1px solid rgba(148, 163, 184, 0.28);
   border-radius: 14px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
@@ -11247,7 +11323,7 @@ html[data-sidenav-palette="neon"] .sections-nav button.active {
   background: #243242;
   border-color: #33cce6;
 }.faq-page--pills .faq-item.active .faq-question {
-  background: #1a3344;
+  background: var(--bsv-bg-mid);
   border-color: #33cce6;
 }.faq-page--pills .faq-question h3 {
   margin: 0;
@@ -11374,7 +11450,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   border-radius: 10px;
   overflow: auto;
   max-height: 420px;
-  background: #0b1018;
+  background: var(--bsv-surface-chrome);
   border: 1px solid rgba(47, 63, 82, 0.65);
   font-size: 0.72rem;
   line-height: 1.5;
@@ -11383,7 +11459,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   overflow: visible;
   font-size: 0.92rem;
   line-height: 1.6;
-  background: #0b1018;
+  background: var(--bsv-surface-chrome);
 }.page-designs__stack {
   display: flex;
   flex-direction: column;
@@ -11447,7 +11523,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   font-size: 0.95rem;
   color: #33cce6;
 }.pd-contact--02 {
-  background: #121a24;
+  background: var(--bsv-surface-panel);
   border-radius: 10px;
 }.pd-contact--02 .pd-contact__row {
   padding: 10px 0;
@@ -11514,7 +11590,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   gap: 12px;
   align-items: start;
 }.pd-contact--07 .pd-contact__split-left {
-  background: #1a3344;
+  background: var(--bsv-bg-mid);
   border-radius: 10px;
   padding: 12px;
 }.pd-contact--08 .pd-contact__compact {
@@ -11667,7 +11743,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   margin: 0;
 }.pd-about--09 {
   position: relative;
-  background: linear-gradient(135deg, #0d1a28 0%, #1a2a44 40%, var(--bsv-surface-panel) 100%);
+  background: linear-gradient(135deg, var(--bsv-bg-deep) 0%, var(--bsv-bg-mid) 40%, var(--bsv-surface-panel) 100%);
   border-radius: 8px;
   padding: 14px;
 }.pd-about--09 .pd-about__glass-hero {
@@ -11726,7 +11802,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   color: #33cce6;
   font-weight: 700;
 }.pd-about--02 .pd-about__hero {
-  background: linear-gradient(135deg, #1a3344, var(--bsv-surface-card));
+  background: linear-gradient(135deg, var(--bsv-bg-mid), var(--bsv-surface-card));
   border-radius: 10px;
   padding: 14px;
   text-align: center;
@@ -11765,14 +11841,14 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   margin-bottom: 12px;
   border-left: 2px solid #33cce6;
 }.pd-about--06 {
-  background: #101820;
+  background: var(--bsv-bg-deep);
   border-radius: 8px;
 }.pd-about--06 hr {
   border: none;
   border-top: 1px solid var(--bsv-surface-soft);
   margin: 12px 0;
 }.pd-about--07 .pd-about__grad-head {
-  background: linear-gradient(90deg, #33cce6, #1a3344);
+  background: linear-gradient(90deg, #33cce6, var(--bsv-bg-mid));
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 10px;
@@ -11887,7 +11963,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   gap: 12px;
   margin-bottom: 14px;
 }.pd-about--11 .pd-about__split-left {
-  background: linear-gradient(135deg, #1a3344, var(--bsv-surface-panel));
+  background: linear-gradient(135deg, var(--bsv-bg-mid), var(--bsv-surface-panel));
   border-radius: 8px;
   padding: 14px;
   border: 1px solid #33cce6;
@@ -11921,7 +11997,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   font-weight: 700;
 }.pd-about--13 {
   position: relative;
-  background: linear-gradient(135deg, #0d1a28 0%, #1a2a44 40%, var(--bsv-surface-panel) 100%);
+  background: linear-gradient(135deg, var(--bsv-bg-deep) 0%, var(--bsv-bg-mid) 40%, var(--bsv-surface-panel) 100%);
   border-radius: 8px;
   padding: 14px;
 }.pd-about--13 .pd-about__glass-hero {
@@ -12068,7 +12144,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   background:
     radial-gradient(circle at 20% 30%, rgba(51, 204, 230, 0.35), transparent 50%),
     radial-gradient(circle at 80% 70%, rgba(26, 51, 68, 0.8), transparent 50%),
-    linear-gradient(135deg, #0d1a28, #1a3344);
+    linear-gradient(135deg, var(--bsv-bg-deep), var(--bsv-bg-mid));
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -12226,7 +12302,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   background: var(--bsv-surface-card);
   margin-bottom: 8px;
 }.pd-faq--05 .pd-faq__chat-q {
-  background: #1a3344;
+  background: var(--bsv-bg-mid);
   border-radius: 10px 10px 10px 2px;
   padding: 8px 10px;
   margin: 8px 20% 4px 0;
@@ -12282,7 +12358,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
 }.pd-legal--02 {
   max-width: 38ch;
   margin: 0 auto;
-  background: #101820;
+  background: var(--bsv-bg-deep);
   border-radius: 8px;
 }.pd-legal--03 .pd-legal__card {
   background: var(--bsv-surface-raised);
@@ -12324,7 +12400,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   border-radius: 6px;
 }.pd-legal--06 h1,
 .pd-legal--06 h2 {
-  color: #1a3344;
+  color: var(--bsv-bg-mid);
   text-shadow: none;
 }.pd-legal--04-stripes .pd-legal__stripe {
   padding: 10px;
@@ -12365,7 +12441,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
 }.pd-fastnav--04.guide-fast-nav {
   box-shadow: none;
   border: 1px solid #355274;
-  background: #101820;
+  background: var(--bsv-bg-deep);
 }.pd-fastnav--05 .guide-fast-nav__btn--group {
   background: rgba(51, 204, 230, 0.12);
   border-radius: 999px;
@@ -12387,7 +12463,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   padding-top: 6px;
   padding-bottom: 6px;
 }.pd-fastnav--08.guide-fast-nav {
-  background: linear-gradient(180deg, #1a3344 0%, var(--bsv-surface-card) 100%);
+  background: linear-gradient(180deg, var(--bsv-bg-mid) 0%, var(--bsv-surface-card) 100%);
   border-color: #2a4a5e;
 }.pd-fastnav--09.guide-fast-nav {
   background: transparent;
@@ -12589,7 +12665,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   padding: 56px 32px 48px;
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(51, 204, 230, 0.22), transparent 70%),
-    linear-gradient(180deg, #1a3344 0%, var(--bsv-surface-card) 100%);
+    linear-gradient(180deg, var(--bsv-bg-mid) 0%, var(--bsv-surface-card) 100%);
   border-bottom: 1px solid rgba(51, 204, 230, 0.2);
 }.pd-about--cinematic .pd-about__cinema-hero .pd-about__logo img {
   max-width: 200px;
@@ -12681,7 +12757,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }.pd-about--night {
   position: relative;
-  background: #0a0e14;
+  background: var(--bsv-surface-chrome);
   border-radius: 12px;
   padding: 36px 28px 44px;
   overflow: hidden;
@@ -12747,7 +12823,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   padding: 56px 32px 48px;
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(51, 204, 230, 0.22), transparent 70%),
-    linear-gradient(180deg, #1a3344 0%, var(--bsv-surface-card) 100%);
+    linear-gradient(180deg, var(--bsv-bg-mid) 0%, var(--bsv-surface-card) 100%);
   border-bottom: 1px solid rgba(51, 204, 230, 0.2);
 }.about-page__hero-logo img {
   width: 120px;
@@ -14769,7 +14845,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
 
 .exclusive-badge-gallery__tile:hover {
   border-color: #33cce6;
-  background: #243447;
+  background: var(--bsv-surface-hover);
   transform: translateY(-1px);
 }
 
@@ -15200,7 +15276,7 @@ body[data-bsv-page="discord"] .site-footer {
     border: 2px solid #000;
     border-radius: 999px;
     background: linear-gradient(180deg, #5ee7ff 0%, #33cce6 55%, #1a9bb8 100%);
-    color: #041018;
+    color: var(--bsv-surface-chrome);
     font: inherit;
     font-size: 0.92rem;
     font-weight: 800;
@@ -15231,7 +15307,7 @@ body[data-bsv-page="discord"] .site-footer {
     height: 28px;
     border-radius: 999px;
     border: 2px solid #000;
-    background: #041018;
+    background: var(--bsv-surface-chrome);
     color: #33cce6;
     font-size: 0.95rem;
     font-weight: 900;
