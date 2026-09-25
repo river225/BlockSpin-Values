@@ -120,10 +120,12 @@
 
     if (mode === "colorized") {
       root.style.setProperty("--bsv-hue", String(h));
+      root.style.setProperty("--bsv-accent-hue", String(h));
       root.style.backgroundColor = "hsl(" + h + ", 41%, 10%)";
       root.setAttribute("data-bsv-bg", "colorized");
     } else {
       root.style.setProperty("--bsv-hue", "217");
+      root.style.setProperty("--bsv-accent-hue", "188");
       root.style.backgroundColor = "hsl(217, 41%, 10%)";
       root.removeAttribute("data-bsv-bg");
     }
