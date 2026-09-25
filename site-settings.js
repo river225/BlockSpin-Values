@@ -111,7 +111,7 @@
     });
   }
 
-  // Keep luminance close to stock navy surfaces; only hue shifts.
+  // One hue drives the whole navy surface ladder (shade/lightness stays fixed in CSS).
   function applyBackground(style, hue) {
     var root = document.documentElement;
     var mode = style === "colorized" ? "colorized" : "standard";
@@ -119,18 +119,12 @@
     h = Math.max(0, Math.min(360, Math.round(h)));
 
     if (mode === "colorized") {
-      root.style.setProperty("--bsv-bg-mid", "hsl(" + h + ", 42%, 18%)");
-      root.style.setProperty("--bsv-bg-deep", "hsl(" + h + ", 41%, 10%)");
-      root.style.setProperty("--bsv-surface-chrome", "hsl(" + h + ", 38%, 6%)");
-      root.style.setProperty("--bsv-surface-card", "hsl(" + h + ", 33%, 12%)");
+      root.style.setProperty("--bsv-hue", String(h));
       root.style.backgroundColor = "hsl(" + h + ", 41%, 10%)";
       root.setAttribute("data-bsv-bg", "colorized");
     } else {
-      root.style.setProperty("--bsv-bg-mid", "#1a2740");
-      root.style.setProperty("--bsv-bg-deep", "#0f1724");
-      root.style.setProperty("--bsv-surface-chrome", "#0a0f16");
-      root.style.setProperty("--bsv-surface-card", "#141d28");
-      root.style.backgroundColor = "#0f1724";
+      root.style.setProperty("--bsv-hue", "217");
+      root.style.backgroundColor = "hsl(217, 41%, 10%)";
       root.removeAttribute("data-bsv-bg");
     }
 
