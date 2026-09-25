@@ -2378,7 +2378,7 @@ background-attachment: fixed;
   background: linear-gradient(135deg, #8b1045 0%, #c2185b 25%, #ec407a 50%, #ff8fb3 75%, #ffb3d9 100%);
   color: white;
 }#sections-nav button:nth-child(8).active {
-  background: linear-gradient(135deg, var(--bsv-surface-muted) 0%, #4a5568 25%, #718096 50%, #a0aec0 75%, #cbd5e0 100%);
+  background: linear-gradient(135deg, #334155 0%, #4a5568 25%, #718096 50%, #a0aec0 75%, #cbd5e0 100%);
   color: white;
 }#sections-nav button:nth-child(9).active {
   background: linear-gradient(135deg, #3f2f72 0%, #59429b 25%, #765bc2 50%, #9a7ae0 75%, #b39af0 100%);
@@ -2402,7 +2402,7 @@ background-attachment: fixed;
   transform: rotate(25deg);
   animation: lightSweep 2.5s infinite;
 }#sections-nav button[data-section="Crew Logos"].active {
-  background: linear-gradient(135deg, #1a5560 0%, #2d7a8a 25%, #3a9fb0 50%, var(--bsv-accent-bright) 75%, #6dd5f0 100%);
+  background: linear-gradient(135deg, #1a5560 0%, #2d7a8a 25%, #3a9fb0 50%, #5bc5de 75%, #6dd5f0 100%);
   color: white;
 }@keyframes lightSweep {
   0% { left: -50%; }
@@ -10159,9 +10159,9 @@ html[data-sidenav-style="compact"] .sections-nav button {
   box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04);
 }html[data-sidenav-style="glass"] .sections-nav {
   padding: 10px 8px;
-}html[data-sidenav-style="glass"] #sections-nav button,
-html[data-sidenav-style="glass"] .sections-nav button {
-  background: #1e2a38;
+}html[data-sidenav-style="glass"] #sections-nav button:not(.active),
+html[data-sidenav-style="glass"] .sections-nav button:not(.active) {
+  background: var(--bsv-surface-raised);
   border: 2px solid #000;
   border-radius: 10px;
   box-shadow: 0 3px 0 #000;
@@ -10170,13 +10170,17 @@ html[data-sidenav-style="glass"] .sections-nav button {
   padding: 12px 16px;
 }html[data-sidenav-style="glass"] #sections-nav button:hover:not(.active),
 html[data-sidenav-style="glass"] .sections-nav button:hover:not(.active) {
-  background: #243041 !important;
+  background: var(--bsv-surface-hover) !important;
   border-color: #000 !important;
   color: #f8fafc;
 }html[data-sidenav-style="glass"] #sections-nav button.active,
 html[data-sidenav-style="glass"] .sections-nav button.active {
   border: 2px solid #000;
+  border-radius: 10px;
   box-shadow: 0 3px 0 #000, 0 0 14px color-mix(in srgb, currentColor 35%, transparent);
+  min-height: 54px;
+  padding: 12px 16px;
+  color: #fff;
   transform: none;
 }html[data-sidenav-style="glass"] #sections-nav button.active::before,
 html[data-sidenav-style="glass"] .sections-nav button.active::before {
@@ -15541,20 +15545,83 @@ html[data-bsv-bg="colorized"] .section > h2 {
   border-bottom-color: var(--bsv-accent) !important;
 }
 
-/* Colorized: section nav button fills stay stock navy (no hue mix) */
+/* Colorized: unselected + hover follow the wheel; selected keeps standard rarity colors */
 html[data-bsv-bg="colorized"] .sections-nav button:not(.active),
 html[data-bsv-bg="colorized"] #sections-nav button:not(.active),
 html[data-bsv-bg="colorized"][data-sidenav-style="glass"] .sections-nav button:not(.active),
 html[data-bsv-bg="colorized"][data-sidenav-style="glass"] #sections-nav button:not(.active) {
-  background: #1e2a38 !important;
-  background-color: #1e2a38 !important;
+  background: var(--bsv-surface-raised) !important;
+  background-color: var(--bsv-surface-raised) !important;
+  background-image: none !important;
 }
 html[data-bsv-bg="colorized"] .sections-nav button:hover:not(.active),
 html[data-bsv-bg="colorized"] #sections-nav button:hover:not(.active),
 html[data-bsv-bg="colorized"][data-sidenav-style="glass"] .sections-nav button:hover:not(.active),
 html[data-bsv-bg="colorized"][data-sidenav-style="glass"] #sections-nav button:hover:not(.active) {
-  background: #243041 !important;
-  background-color: #243041 !important;
+  background: var(--bsv-surface-hover) !important;
+  background-color: var(--bsv-surface-hover) !important;
+  background-image: none !important;
+}
+/* Selected: lock to standard fixed gradients (no wheel mix) */
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Home"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Home"].active {
+  background: linear-gradient(135deg, #1a5560 0%, #2d7a8a 25%, #3a9fb0 50%, #5bc5de 75%, #6dd5f0 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Common / Uncommon"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Common / Uncommon"].active {
+  background: linear-gradient(135deg, #2c6b2f 0%, #388e3c 25%, #4caf50 50%, #6fd66f 75%, #81e681 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Rare"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Rare"].active {
+  background: linear-gradient(135deg, #1e4d7a 0%, #2d6db5 25%, #4a90e2 50%, #73b3f5 75%, #8fc3ff 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Epic"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Epic"].active {
+  background: linear-gradient(135deg, #4d3670 0%, #6a4c9e 25%, #8e63ce 50%, #b388ff 75%, #c9a3ff 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Legendary"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Legendary"].active {
+  background: linear-gradient(135deg, #a66a0a 0%, #d68910 25%, #f39c12 50%, #ffb74d 75%, #ffc870 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Omega"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Omega"].active {
+  background: linear-gradient(135deg, #8b251f 0%, #c0392b 25%, #e74c3c 50%, #ff6b6b 75%, #ff8080 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Misc"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Misc"].active {
+  background: linear-gradient(135deg, #8b1045 0%, #c2185b 25%, #ec407a 50%, #ff8fb3 75%, #ffb3d9 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Vehicles"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Vehicles"].active {
+  background: linear-gradient(135deg, #334155 0%, #4a5568 25%, #718096 50%, #a0aec0 75%, #cbd5e0 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Untradeable Items"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Untradeable Items"].active {
+  background: linear-gradient(135deg, #3f2f72 0%, #59429b 25%, #765bc2 50%, #9a7ae0 75%, #b39af0 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Money & Game Guide"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Money & Game Guide"].active {
+  background: linear-gradient(135deg, #064e3b 0%, #047857 22%, #059669 48%, #10b981 72%, #34d399 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="💰 Richest Players"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="💰 Richest Players"].active {
+  background: linear-gradient(135deg, #9b7e0a 0%, #d6a910 25%, #f5c312 50%, #ffdb4d 75%, #ffed70 100%) !important;
+  color: #fff !important;
+}
+html[data-bsv-bg="colorized"] #sections-nav button[data-section="Crew Logos"].active,
+html[data-bsv-bg="colorized"] .sections-nav button[data-section="Crew Logos"].active {
+  background: linear-gradient(135deg, #1a5560 0%, #2d7a8a 25%, #3a9fb0 50%, #5bc5de 75%, #6dd5f0 100%) !important;
+  color: #fff !important;
 }
 
 /* Colorized: tooltip / back-to-top / money-guide price follow the wheel */
