@@ -1623,34 +1623,32 @@ function nextExclusiveBadgeIconId(suffix) {
 }
 
 function buildExclusiveBadgeIconSvg(tier) {
+  // Scarlet-star shape: gold for Exclusive, red for Very Exclusive
+  var g = nextExclusiveBadgeIconId(tier === "veryexclusive" ? "Vx" : "Ex");
   if (tier === "veryexclusive") {
-    var g = nextExclusiveBadgeIconId("Bd");
     return (
       '<svg class="card-exclusive-badge__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">' +
         "<defs>" +
-          '<linearGradient id="' + g + '" x1="20%" y1="0%" x2="80%" y2="100%">' +
-            '<stop offset="0%" stop-color="#fda4af"/>' +
-            '<stop offset="40%" stop-color="#be123c"/>' +
-            '<stop offset="100%" stop-color="#1a0510"/>' +
+          '<linearGradient id="' + g + '" x1="0%" y1="0%" x2="100%" y2="100%">' +
+            '<stop offset="0%" stop-color="#fecaca"/>' +
+            '<stop offset="40%" stop-color="#ef4444"/>' +
+            '<stop offset="100%" stop-color="#7f1d1d"/>' +
           "</linearGradient>" +
         "</defs>" +
-        '<path fill="url(#' + g + ')" stroke="#4c0519" stroke-width="1" stroke-linejoin="round" d="M12 3 19.5 9 12 21 4.5 9z"/>' +
-        '<path fill="none" stroke="#fecdd3" stroke-opacity="0.35" stroke-width="0.7" d="M4.5 9h15M12 3v18"/>' +
+        '<path fill="url(#' + g + ')" stroke="#7f1d1d" stroke-width="1" d="M12 2.8 14.6 9.2 21.5 9.8 16.2 14.4 17.8 21.2 12 17.8 6.2 21.2 7.8 14.4 2.5 9.8 9.4 9.2z"/>' +
       "</svg>"
     );
   }
-
-  var g = nextExclusiveBadgeIconId("Ss");
   return (
     '<svg class="card-exclusive-badge__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">' +
       "<defs>" +
-        '<linearGradient id="' + g + '" x1="0%" y1="0%" x2="0%" y2="100%">' +
-          '<stop offset="0%" stop-color="#fde68a"/>' +
-          '<stop offset="100%" stop-color="#d97706"/>' +
+        '<linearGradient id="' + g + '" x1="0%" y1="0%" x2="100%" y2="100%">' +
+          '<stop offset="0%" stop-color="#fef08a"/>' +
+          '<stop offset="40%" stop-color="#fbbf24"/>' +
+          '<stop offset="100%" stop-color="#a16207"/>' +
         "</linearGradient>" +
       "</defs>" +
-      '<path fill="url(#' + g + ')" stroke="#78350f" stroke-width="1" d="M12 2.5 20 7v7c0 5-3.5 8.5-8 9.5-4.5-1-8-4.5-8-9.5V7z"/>' +
-      '<path fill="#fef3c7" stroke="#92400e" stroke-width="0.5" d="M12 8.5l1.3 2.6 2.9.4-2.1 2 .5 2.9L12 15l-2.6 1.4.5-2.9-2.1-2 2.9-.4z"/>' +
+      '<path fill="url(#' + g + ')" stroke="#78350f" stroke-width="1" d="M12 2.8 14.6 9.2 21.5 9.8 16.2 14.4 17.8 21.2 12 17.8 6.2 21.2 7.8 14.4 2.5 9.8 9.4 9.2z"/>' +
     "</svg>"
   );
 }
@@ -1665,7 +1663,7 @@ function buildCardExclusiveBadgeHtml(tier) {
     '<div class="card-exclusive-badge-wrapper ' + modClass + '">' +
       '<div class="card-exclusive-badge" role="img" aria-label="' + escapeAttr(i18n(ariaKey)) + '">' +
         buildExclusiveBadgeIconSvg(tier) +
-      '</div>' +
+      "</div>" +
       '<div class="card-exclusive-badge-tooltip" role="tooltip">' + escapeHtml(i18n(tooltipKey)) + "</div>" +
     "</div>"
   );
@@ -3169,6 +3167,10 @@ function ensureSectionRendered(title) {
   if (!title || _sectionsDomReady[title]) return;
   if (title === "Home") {
     _sectionsDomReady[title] = true;
+    return;
+  }
+  if (title === "Money & Game Guide") {
+    renderSection(title, []);
     return;
   }
   const cached = _renderedSectionCache.find(function (r) {

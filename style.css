@@ -54,8 +54,6 @@ html[data-bsv-bg="colorized"] .sections-menu-toggle {
 }
 html[data-bsv-bg="colorized"] .card,
 html[data-bsv-bg="colorized"] .crew-logo-card,
-html[data-bsv-bg="colorized"] .sections-nav button:not(.active),
-html[data-bsv-bg="colorized"] #sections-nav button:not(.active),
 html[data-bsv-bg="colorized"] .tax-calculator,
 html[data-bsv-bg="colorized"] .what-is-section,
 html[data-bsv-bg="colorized"] .legal-page,
@@ -84,10 +82,6 @@ html[data-bsv-bg="colorized"] .home-column--announcements,
 html[data-bsv-bg="colorized"] .home-column--value-changes,
 html[data-bsv-bg="colorized"] .home-panel {
   background: linear-gradient(160deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-panel) 100%) !important;
-}
-html[data-bsv-bg="colorized"] .sections-nav button:hover:not(.active),
-html[data-bsv-bg="colorized"] #sections-nav button:hover:not(.active) {
-  background-color: var(--bsv-surface-hover) !important;
 }
 html[data-bsv-bg="colorized"] body,
 html[data-bsv-bg="colorized"] html {
@@ -2363,7 +2357,7 @@ background-attachment: fixed;
   border-radius: 8px 8px 0 0;
   pointer-events: none;
 }#sections-nav button:nth-child(1).active {
-  background: linear-gradient(135deg, #1a5560 0%, #2d7a8a 25%, #3a9fb0 50%, var(--bsv-accent-bright) 75%, #6dd5f0 100%);
+  background: linear-gradient(135deg, #1a5560 0%, #2d7a8a 25%, #3a9fb0 50%, #5bc5de 75%, #6dd5f0 100%);
   color: white;
 }#sections-nav button:nth-child(2).active {
   background: linear-gradient(135deg, #2c6b2f 0%, #388e3c 25%, #4caf50 50%, #6fd66f 75%, #81e681 100%);
@@ -6480,10 +6474,10 @@ background-attachment: fixed;
   flex-direction: column;
 }.home-column--announcements {
   background: linear-gradient(160deg, var(--bsv-surface-raised) 0%, var(--bsv-surface-panel) 100%);
-  border: 4px solid var(--bsv-accent-dim);
+  border: 4px solid #000;
   border-radius: 14px;
   padding: 16px;
-  box-shadow: 0 8px 0 color-mix(in srgb, var(--bsv-accent-dim) 70%, #000), 0 12px 24px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 0 #000, 0 12px 24px rgba(0, 0, 0, 0.45);
 }.home-column--value-changes {
   background: var(--bsv-surface-panel);
   border: 2px solid var(--bsv-surface-soft);
@@ -10167,7 +10161,7 @@ html[data-sidenav-style="compact"] .sections-nav button {
   padding: 10px 8px;
 }html[data-sidenav-style="glass"] #sections-nav button,
 html[data-sidenav-style="glass"] .sections-nav button {
-  background: var(--bsv-surface-raised);
+  background: #1e2a38;
   border: 2px solid #000;
   border-radius: 10px;
   box-shadow: 0 3px 0 #000;
@@ -10176,7 +10170,7 @@ html[data-sidenav-style="glass"] .sections-nav button {
   padding: 12px 16px;
 }html[data-sidenav-style="glass"] #sections-nav button:hover:not(.active),
 html[data-sidenav-style="glass"] .sections-nav button:hover:not(.active) {
-  background: var(--bsv-surface-hover) !important;
+  background: #243041 !important;
   border-color: #000 !important;
   color: #f8fafc;
 }html[data-sidenav-style="glass"] #sections-nav button.active,
@@ -13067,7 +13061,7 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
   padding: 10px 14px;
   border: 2px solid var(--bsv-accent);
   border-radius: 12px;
-  background: linear-gradient(180deg, hsl(var(--bsv-hue) var(--bsv-s-card) 12% / 0.96) 0%, rgba(10, 15, 22, 0.98) 100%);
+  background: linear-gradient(180deg, var(--bsv-surface-card) 0%, var(--bsv-bg-deep) 100%);
   color: #fff;
   cursor: pointer;
   box-shadow: 0 3px 0 #000, 0 0 12px hsl(var(--bsv-accent-hue) 76% 55% / 0.25);
@@ -14889,11 +14883,35 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
 .exclusive-badge-gallery__tile-preview .card-bottom-actions {
   position: static;
   transform: none;
-  pointer-events: none;
+  pointer-events: auto;
+}
+
+.exclusive-badge-gallery__tile--pair .exclusive-badge-gallery__tile-preview {
+  min-height: 64px;
+}
+
+.exclusive-badge-gallery__tile-pair-names {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.62rem;
+  line-height: 1.3;
+  color: var(--bsv-muted);
+}
+
+.exclusive-badge-test__group {
+  margin: 0 0 32px;
+}
+
+.exclusive-badge-test__group h3 {
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+  color: #f8fafc;
 }
 
 .exclusive-badge-test__actions {
   gap: 14px;
+  pointer-events: auto;
 }
 
 @media (max-width: 420px) {
@@ -15521,6 +15539,49 @@ html[data-bsv-bg="colorized"] .nav-extras-header,
 html[data-bsv-bg="colorized"] .crew-header,
 html[data-bsv-bg="colorized"] .section > h2 {
   border-bottom-color: var(--bsv-accent) !important;
+}
+
+/* Colorized: section nav button fills stay stock navy (no hue mix) */
+html[data-bsv-bg="colorized"] .sections-nav button:not(.active),
+html[data-bsv-bg="colorized"] #sections-nav button:not(.active),
+html[data-bsv-bg="colorized"][data-sidenav-style="glass"] .sections-nav button:not(.active),
+html[data-bsv-bg="colorized"][data-sidenav-style="glass"] #sections-nav button:not(.active) {
+  background: #1e2a38 !important;
+  background-color: #1e2a38 !important;
+}
+html[data-bsv-bg="colorized"] .sections-nav button:hover:not(.active),
+html[data-bsv-bg="colorized"] #sections-nav button:hover:not(.active),
+html[data-bsv-bg="colorized"][data-sidenav-style="glass"] .sections-nav button:hover:not(.active),
+html[data-bsv-bg="colorized"][data-sidenav-style="glass"] #sections-nav button:hover:not(.active) {
+  background: #243041 !important;
+  background-color: #243041 !important;
+}
+
+/* Colorized: tooltip / back-to-top / money-guide price follow the wheel */
+html[data-bsv-bg="colorized"] .tax-badge-tooltip,
+html[data-bsv-bg="colorized"] .card-exclusive-badge-tooltip {
+  background: hsl(var(--bsv-hue) var(--bsv-s-card) 14% / 0.96) !important;
+  border-color: color-mix(in srgb, var(--bsv-accent) 50%, transparent) !important;
+}
+html[data-bsv-bg="colorized"] .card-exclusive-badge-wrapper--very .card-exclusive-badge-tooltip {
+  border-color: rgba(248, 113, 113, 0.65) !important;
+}
+html[data-bsv-bg="colorized"] .section-back-to-top,
+html[data-bsv-bg="colorized"] .richest-back-to-top {
+  background: linear-gradient(180deg, var(--bsv-surface-card) 0%, var(--bsv-bg-deep) 100%) !important;
+  border-color: var(--bsv-accent) !important;
+  box-shadow: 0 3px 0 #000, 0 0 12px hsl(var(--bsv-accent-hue) 76% 55% / 0.3) !important;
+}
+html[data-bsv-bg="colorized"] .guide-fast-nav__top {
+  background: var(--bsv-surface-card) !important;
+  border-color: var(--bsv-accent-dim) !important;
+  color: var(--bsv-text-soft) !important;
+}
+html[data-bsv-bg="colorized"] .guide-fast-nav__top:hover {
+  background: var(--bsv-surface-hover) !important;
+}
+html[data-bsv-bg="colorized"] .money-game-guide-section .guide-vcard__price {
+  background: hsl(var(--bsv-hue) var(--bsv-s-deep) 10% / 0.7) !important;
 }
 
 
