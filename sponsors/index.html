@@ -2,6 +2,48 @@
 <html lang="en">
 <head>
 <script>
+(function () {
+  try {
+    var R = "/";
+    if (/\.github\.io$/i.test(location.hostname)) {
+      var seg = (location.pathname || "/").split("/").filter(Boolean)[0];
+      if (seg) R = "/" + seg + "/";
+    }
+    window.BSV_SITE_ROOT = R;
+    window.bsvSitePath = function (p) { return R + String(p || "").replace(/^\//, ""); };
+    function fixAttr(sel, attr) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        var v = el.getAttribute(attr);
+        if (v && v.charAt(0) === "/" && v.indexOf(R) !== 0 && v.indexOf("//") !== 0) {
+          el.setAttribute(attr, R + v.slice(1));
+        }
+      });
+    }
+    function addIcon(rel, file, type, sizes) {
+      var l = document.createElement("link");
+      l.rel = rel;
+      l.href = R + file;
+      if (type) l.type = type;
+      if (sizes) l.setAttribute("sizes", sizes);
+      document.head.appendChild(l);
+    }
+    // Always inject site-rooted icons (avoids /favicon.ico 404 on GitHub project Pages).
+    addIcon("icon", "favicon.ico", null, "any");
+    addIcon("icon", "favicon.png", "image/png", null);
+    addIcon("apple-touch-icon", "apple-touch-icon.png", null, null);
+    document.addEventListener("DOMContentLoaded", function () {
+      // Drop any leftover root-absolute icon tags that would win over the good ones.
+      document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(function (el) {
+        var v = el.getAttribute("href") || "";
+        if (v.charAt(0) === "/" && v.indexOf(R) !== 0) el.remove();
+      });
+      fixAttr('link[href^="/assets/"], a[href^="/assets/"], a[href^="/x-"], a[href^="/z-"], a[href^="/sponsors"]', "href");
+      fixAttr('img[src^="/assets/"]', "src");
+    });
+  } catch (e) {}
+})();
+</script>
+<script>
 /* One-time hard client reset: cookies, storage, SW, caches */
 (function () {
   var BUILD = "20260915-tech-fix";
@@ -66,9 +108,8 @@
   <title>Sponsor BlockSpin Values — Reach 45,000+ Gamers Monthly</title>
   <meta name="description" content="Put your brand in front of 45,000+ engaged BlockSpin traders every month. Bottom banner and Full Sponsorship packages." />
   <link rel="canonical" href="https://blockspinvalues.com/sponsors/" />
-  <link rel="icon" type="image/png" href="/assets/bsv-logo.png" />
-  <link rel="apple-touch-icon" href="/assets/bsv-logo.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>html{color-scheme:light only;-webkit-color-scheme:light;--bsv-hue:217;--bsv-accent-hue:188;background-color:hsl(217,41%,10%)}</style>
@@ -84,8 +125,8 @@
   } catch (e) {}
 })();
 </script>
-<link rel="stylesheet" href="/style.css?v=20260925-responsive-pass" />
-  <link rel="stylesheet" href="/sponsors/sponsors.css?v=20260817-no-badges2" />
+<link rel="stylesheet" href="../style.css?v=20260926-sponsors-scroll" />
+  <link rel="stylesheet" href="sponsors.css?v=20260926-sponsors-scroll" />
 </head>
 <body data-bsv-page="sponsors" class="sponsors-body themes-disabled">
 <div id="bsv-site-header"></div>
@@ -96,13 +137,13 @@
   <section class="sponsors-hero sponsors-reveal is-hero" aria-labelledby="sponsors-hero-title">
     <div class="sponsors-hero__inner">
       <div class="sponsors-hero__logo sponsors-hero-anim" data-hero-step="0">
-        <img src="/assets/bsv-logo.png" width="180" height="180" alt="BlockSpin Values" />
+        <img src="../assets/bsv-logo.png" width="180" height="180" alt="BlockSpin Values" />
       </div>
       <h1 id="sponsors-hero-title" class="sponsors-hero__title sponsors-hero-anim" data-hero-step="1">Work with us.</h1>
       <p class="sponsors-hero__sub sponsors-hero-anim" data-hero-step="2">Put your brand in front of 45,000+ engaged gamers every month, on the site BlockSpin traders check before every deal.</p>
       <a class="sponsors-btn sponsors-btn--green sponsors-hero-anim" data-hero-step="3" href="#pricing">See sponsorship options</a>
       <p class="sponsors-hero__download sponsors-hero-anim" data-hero-step="4">
-        <a class="sponsors-download-link" href="/assets/blockspin-values-sponsorship-kit.pdf" target="_blank" rel="noopener noreferrer">Get the full details (PDF)</a>
+        <a class="sponsors-download-link" href="../assets/blockspin-values-sponsorship-kit.pdf" target="_blank" rel="noopener noreferrer">Get the full details (PDF)</a>
       </p>
     </div>
   </section>
@@ -245,7 +286,7 @@
     <div class="sponsors-wrap">
       <p class="sponsors-download-note">
         Prefer a PDF?
-        <a class="sponsors-download-link" href="/assets/blockspin-values-sponsorship-kit.pdf" target="_blank" rel="noopener noreferrer">Get the full details (PDF)</a>
+        <a class="sponsors-download-link" href="../assets/blockspin-values-sponsorship-kit.pdf" target="_blank" rel="noopener noreferrer">Get the full details (PDF)</a>
       </p>
       <div class="sponsors-contact">
         <h2 id="sponsors-contact-title" class="sponsors-contact__title">Ready to talk sponsorship?</h2>
@@ -263,7 +304,7 @@
 </main>
 
 <div id="bsv-site-footer"></div>
-<script defer src="/site-chrome.js?v=20260925-responsive-pass"></script>
-<script defer src="/sponsors/sponsors.js?v=20260817-no-badges2"></script>
+<script defer src="../site-chrome.js?v=20260926-sponsors-scroll"></script>
+<script defer src="sponsors.js?v=20260926-sponsors-scroll"></script>
 </body>
 </html>

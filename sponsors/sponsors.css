@@ -1,4 +1,13 @@
 /* Sponsors page — extends BSV dark theme */
+/* Unlock document scroll: sitewide html/body { height:100% } traps this long page. */
+html[data-bsv-sponsors-lock="1"],
+body.sponsors-body {
+  height: auto !important;
+  min-height: 100%;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
 .sponsors-body {
   --sp-bg0: #16141f;
   --sp-bg1: #1e1a2a;
@@ -22,7 +31,7 @@
 
 .sponsors-page {
   position: relative;
-  overflow: clip;
+  overflow: visible;
   padding-bottom: 64px;
   color: var(--sp-text);
   font-family: var(--sp-font);

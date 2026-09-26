@@ -108,8 +108,7 @@
       io.observe(section);
     });
 
-    // Safety: if a section is already in the viewport on load, force reveal.
-    requestAnimationFrame(function () {
+    function revealVisible() {
       sections.forEach(function (section) {
         if (section.classList.contains("is-hero") || section.classList.contains("is-in")) return;
         var rect = section.getBoundingClientRect();
@@ -119,7 +118,18 @@
           io.unobserve(section);
         }
       });
-    });
+    }
+
+    // Safety: reveal anything already in view, and unstick if scroll/IO never fires.
+    requestAnimationFrame(revealVisible);
+    window.setTimeout(function () {
+      sections.forEach(function (section) {
+        if (section.classList.contains("is-in")) return;
+        section.classList.add("is-in");
+        runCounts(section, false);
+        io.unobserve(section);
+      });
+    }, 1200);
   }
 
   function runCounts(section, instant) {
