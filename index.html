@@ -2,6 +2,48 @@
 <html lang="en" data-sidenav-style="glass"> 
 <head>
 <script>
+(function () {
+  try {
+    var R = "/";
+    if (/\.github\.io$/i.test(location.hostname)) {
+      var seg = (location.pathname || "/").split("/").filter(Boolean)[0];
+      if (seg) R = "/" + seg + "/";
+    }
+    window.BSV_SITE_ROOT = R;
+    window.bsvSitePath = function (p) { return R + String(p || "").replace(/^\//, ""); };
+    function fixAttr(sel, attr) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        var v = el.getAttribute(attr);
+        if (v && v.charAt(0) === "/" && v.indexOf(R) !== 0 && v.indexOf("//") !== 0) {
+          el.setAttribute(attr, R + v.slice(1));
+        }
+      });
+    }
+    function addIcon(rel, file, type, sizes) {
+      var l = document.createElement("link");
+      l.rel = rel;
+      l.href = R + file;
+      if (type) l.type = type;
+      if (sizes) l.setAttribute("sizes", sizes);
+      document.head.appendChild(l);
+    }
+    // Always inject site-rooted icons (avoids /favicon.ico 404 on GitHub project Pages).
+    addIcon("icon", "favicon.ico", null, "any");
+    addIcon("icon", "favicon.png", "image/png", null);
+    addIcon("apple-touch-icon", "apple-touch-icon.png", null, null);
+    document.addEventListener("DOMContentLoaded", function () {
+      // Drop any leftover root-absolute icon tags that would win over the good ones.
+      document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(function (el) {
+        var v = el.getAttribute("href") || "";
+        if (v.charAt(0) === "/" && v.indexOf(R) !== 0) el.remove();
+      });
+      fixAttr('link[href^="/assets/"], a[href^="/assets/"], a[href^="/x-"], a[href^="/z-"], a[href^="/sponsors"]', "href");
+      fixAttr('img[src^="/assets/"]', "src");
+    });
+  } catch (e) {}
+})();
+</script>
+<script>
 /* One-time hard client reset: cookies, storage, SW, caches */
 (function () {
   var BUILD = "20260915-tech-fix";
@@ -114,9 +156,8 @@
 <title>BlockSpin Values</title>
 <meta name="description" content="BlockSpin Values — trusted Roblox BlockSpin value list, tax calculator, and Discord for trading, giveaways &amp; middleman service.">
 <link rel="canonical" href="https://blockspinvalues.com/" />
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" href="/favicon.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
 <meta property="og:image" content="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
 <meta property="og:title" content="BlockSpin Values">
 <meta property="og:description" content="BlockSpin Values — trusted Roblox BlockSpin value list, tax calculator, and Discord for trading, giveaways &amp; middleman service.">
@@ -324,7 +365,7 @@
         <div class="announcement-list">
 
              <div class="announcement-item-clean">
-  <p class="announcement-date" data-i18n="announce.1.date">April 17, 2025</p>
+  <p class="announcement-date" data-i18n="announce.1.date">April 17, 2026</p>
   <p class="announcement-text" data-i18n="announce.1.text">Website Update is now live! The Tax Calculator is finally back and more advanced 🔥 It shows exactly how much to trade and in what order to avoid overpaying. New Recent Changes box lets you track all value list updates. (On mobile click blue arrow in a gun section to access tax calculator.)</p>
 </div>
 
@@ -414,7 +455,7 @@ We’ve launched a complete site redesign, and items will now display both their
 
 <div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
 
-<script defer src="site-chrome.js?v=20260925-responsive-pass"></script>
+<script defer src="site-chrome.js?v=20260926-site-root"></script>
 <script defer src="auth.js?v=20260713-cwv"></script>
 <script defer src="saved-cards.js?v=20260713-cwv"></script>
 <script defer src="site-i18n.js?v=20260723-tax60k"></script>
