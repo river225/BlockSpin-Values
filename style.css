@@ -21765,9 +21765,12 @@ body.lt-picker-open {
     font-size: 0.64rem;
   }
   .lt-rail {
-    min-height: 118px;
+    min-height: 0;
     gap: 8px;
     padding: 2px 0;
+  }
+  .lt-rail__empty {
+    padding: 28px 10px;
   }
   .lt-icard {
     flex: 0 0 92px;
@@ -21826,6 +21829,23 @@ body.lt-picker-open {
   .lt-post__meta {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  /* flex-basis:220px is a WIDTH hint on desktop; in a column it becomes HEIGHT. */
+  .lt-post__summary {
+    flex: 0 1 auto;
+    max-width: none;
+    width: 100%;
+    padding: 7px 9px;
+  }
+  .lt-post__summary-label {
+    margin: 0 0 3px;
+    font-size: 0.68rem;
+  }
+  .lt-post__summary-text {
+    font-size: 0.76rem;
+    line-height: 1.3;
   }
   .lt-post__actions {
     margin-left: 0;
@@ -21837,6 +21857,12 @@ body.lt-picker-open {
     width: auto;
     min-width: min(100%, 220px);
     margin: 0 auto;
+  }
+  .lt-post {
+    padding: 12px 12px 12px;
+  }
+  .lt-post__head {
+    margin-bottom: 10px;
   }
   /* Drop the outer feed box — page scrolls the trades. */
   .lt-feed-wrap {
