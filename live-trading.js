@@ -6,7 +6,8 @@
   var HIDDEN_AUTHORS_KEY = "bsv-lt-hidden-authors-v1";
   var GUIDELINES_ACK_KEY = "bsv-lt-guidelines-ack-v1";
   var GUIDELINES_ACK_MS = 24 * 60 * 60 * 1000;
-  var EMPTY_SLOT_COUNT = 8;
+  /* Only show real items + Add; no filler empties crowding the grid. */
+  var EMPTY_SLOT_COUNT = 0;
   var profileOpenDiscordId = "";
   var pendingOpenComposerAfterGuidelines = false;
   var postsCache = [];
@@ -1023,6 +1024,8 @@
     var sideAttr = escapeAttr(side);
     var metricControls = "";
     if (hasWeight) {
+      var wMax = roundFishWeight(entry.maxWeight || FISH_WEIGHT_MAX);
+      var wCur = roundFishWeight(entry.weight != null ? entry.weight : wMax);
       metricControls =
         '<div class="lt-slot__dura lt-slot__weight" role="group" aria-label="Weight">' +
         '<span class="lt-slot__dura-label">Weight</span>' +
@@ -1032,8 +1035,15 @@
         '" data-index="' +
         idx +
         '" data-delta="-0.1" aria-label="Lower weight">−</button>' +
-        '<span class="lt-slot__dura-val lt-slot__weight-val">' +
-        escapeHtml(metricLabel) +
+        '<input type="text" inputmode="decimal" class="lt-slot__dura-val lt-slot__weight-val" data-side="' +
+        sideAttr +
+        '" data-index="' +
+        idx +
+        '" value="' +
+        escapeAttr(wCur.toFixed(1)) +
+        '" aria-label="Weight value" autocomplete="off" spellcheck="false">' +
+        '<span class="lt-slot__dura-max">/' +
+        escapeHtml(wMax.toFixed(1)) +
         "</span>" +
         '<button type="button" class="lt-slot__dura-btn lt-slot__weight-btn" data-side="' +
         sideAttr +
@@ -1043,6 +1053,8 @@
         "</div>" +
         "</div>";
     } else if (hasDura) {
+      var dMax = Math.max(1, Number(entry.maxDurability) || 1);
+      var dCur = Math.max(0, Math.min(dMax, Number(entry.durability) || dMax));
       metricControls =
         '<div class="lt-slot__dura" role="group" aria-label="Durability">' +
         '<span class="lt-slot__dura-label">Durability</span>' +
@@ -1052,8 +1064,15 @@
         '" data-index="' +
         idx +
         '" data-delta="-1" aria-label="Lower durability">−</button>' +
-        '<span class="lt-slot__dura-val">' +
-        escapeHtml(metricLabel) +
+        '<input type="text" inputmode="numeric" class="lt-slot__dura-val" data-side="' +
+        sideAttr +
+        '" data-index="' +
+        idx +
+        '" value="' +
+        escapeAttr(String(dCur)) +
+        '" aria-label="Durability value" autocomplete="off" spellcheck="false">' +
+        '<span class="lt-slot__dura-max">/' +
+        escapeHtml(String(dMax)) +
         "</span>" +
         '<button type="button" class="lt-slot__dura-btn" data-side="' +
         sideAttr +
@@ -1084,7 +1103,7 @@
       (entry.image
         ? '<img class="lt-slot__img" src="' +
           escapeAttr(entry.image) +
-          '" alt="" width="56" height="56" loading="lazy" decoding="async">'
+          '" alt="" width="88" height="88" loading="lazy" decoding="async">'
         : '<span class="lt-slot__ph" aria-hidden="true"></span>') +
       '<div class="lt-slot__meta">' +
       metricControls +
@@ -1096,9 +1115,13 @@
       '" data-index="' +
       idx +
       '" data-delta="-1" aria-label="Decrease quantity">−</button>' +
-      '<span class="lt-slot__qty-val">' +
-      escapeHtml(String(qty)) +
-      "</span>" +
+      '<input type="text" inputmode="numeric" class="lt-slot__qty-val" data-side="' +
+      sideAttr +
+      '" data-index="' +
+      idx +
+      '" value="' +
+      escapeAttr(String(qty)) +
+      '" aria-label="Quantity value" autocomplete="off" spellcheck="false">' +
       '<button type="button" class="lt-slot__qty-btn" data-side="' +
       sideAttr +
       '" data-index="' +
@@ -1183,9 +1206,22 @@
     if (!Number.isFinite(i) || i < 0 || i >= list.length) return;
     var slot = draftSlotEl(side, i);
     if (!slot) return;
-    var label = formatMetricFull(list[i]);
+    var entry = list[i];
     var val = slot.querySelector(".lt-slot__dura-val");
-    if (val) val.textContent = label;
+    var maxEl = slot.querySelector(".lt-slot__dura-max");
+    if (val) {
+      if (itemHasWeight(entry)) {
+        var wMax = roundFishWeight(entry.maxWeight || FISH_WEIGHT_MAX);
+        var wCur = roundFishWeight(entry.weight != null ? entry.weight : wMax);
+        if (document.activeElement !== val) val.value = wCur.toFixed(1);
+        if (maxEl) maxEl.textContent = "/" + wMax.toFixed(1);
+      } else if (itemHasDurability(entry)) {
+        var dMax = Math.max(1, Number(entry.maxDurability) || 1);
+        var dCur = Math.max(0, Math.min(dMax, Number(entry.durability) || dMax));
+        if (document.activeElement !== val) val.value = String(dCur);
+        if (maxEl) maxEl.textContent = "/" + dMax;
+      }
+    }
     syncDraftSlotTitle(side, i);
   }
 
@@ -1197,8 +1233,52 @@
     if (!slot) return;
     var qty = Math.max(1, Math.min(MAX_DRAFT_QTY, Number(list[i].qty) || 1));
     var val = slot.querySelector(".lt-slot__qty-val");
-    if (val) val.textContent = String(qty);
+    if (val && document.activeElement !== val) val.value = String(qty);
     syncDraftSlotTitle(side, i);
+  }
+
+  function commitDraftQtyInput(side, index, raw) {
+    var list = draft[side] || [];
+    var i = Number(index);
+    if (!Number.isFinite(i) || i < 0 || i >= list.length) return;
+    var parsed = parseInt(String(raw == null ? "" : raw).replace(/[^\d]/g, ""), 10);
+    if (!Number.isFinite(parsed)) {
+      syncDraftQtyLabel(side, i);
+      return;
+    }
+    list[i].qty = Math.max(1, Math.min(MAX_DRAFT_QTY, parsed));
+    draft[side] = list;
+    syncDraftQtyLabel(side, i);
+  }
+
+  function commitDraftMetricInput(side, index, raw) {
+    var list = draft[side] || [];
+    var i = Number(index);
+    if (!Number.isFinite(i) || i < 0 || i >= list.length) return;
+    var entry = list[i];
+    if (itemHasWeight(entry)) {
+      var parsedW = parseFloat(String(raw == null ? "" : raw).replace(/[^0-9.]/g, ""));
+      if (!Number.isFinite(parsedW)) {
+        syncDraftDuraLabel(side, i);
+        return;
+      }
+      entry.weight = roundFishWeight(parsedW);
+      entry.maxWeight = roundFishWeight(entry.maxWeight || FISH_WEIGHT_MAX);
+      entry.metric = "weight";
+      draft[side] = list;
+      syncDraftDuraLabel(side, i);
+      return;
+    }
+    if (!itemHasDurability(entry)) return;
+    var max = Math.max(1, Number(entry.maxDurability) || 1);
+    var parsedD = parseInt(String(raw == null ? "" : raw).replace(/[^\d]/g, ""), 10);
+    if (!Number.isFinite(parsedD)) {
+      syncDraftDuraLabel(side, i);
+      return;
+    }
+    entry.durability = Math.max(0, Math.min(max, parsedD));
+    draft[side] = list;
+    syncDraftDuraLabel(side, i);
   }
 
   function adjustDraftQty(side, index, delta, soft) {
@@ -3112,6 +3192,54 @@
       }
     });
     window.addEventListener("blur", stopSlotHold);
+
+    document.addEventListener("focusin", function (e) {
+      var inp =
+        e.target &&
+        e.target.classList &&
+        (e.target.classList.contains("lt-slot__qty-val") ||
+          e.target.classList.contains("lt-slot__dura-val"))
+          ? e.target
+          : null;
+      if (inp) {
+        try {
+          inp.select();
+        } catch (_) {}
+      }
+    });
+    document.addEventListener("change", function (e) {
+      var t = e.target;
+      if (!t || !t.classList) return;
+      if (t.classList.contains("lt-slot__qty-val")) {
+        commitDraftQtyInput(
+          t.getAttribute("data-side"),
+          t.getAttribute("data-index"),
+          t.value
+        );
+        return;
+      }
+      if (t.classList.contains("lt-slot__dura-val")) {
+        commitDraftMetricInput(
+          t.getAttribute("data-side"),
+          t.getAttribute("data-index"),
+          t.value
+        );
+      }
+    });
+    document.addEventListener("keydown", function (e) {
+      var t = e.target;
+      if (!t || !t.classList) return;
+      if (
+        !t.classList.contains("lt-slot__qty-val") &&
+        !t.classList.contains("lt-slot__dura-val")
+      ) {
+        return;
+      }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        t.blur();
+      }
+    });
 
     document.addEventListener("click", function (e) {
       var profileBtn = e.target.closest && e.target.closest("[data-lt-profile]");
