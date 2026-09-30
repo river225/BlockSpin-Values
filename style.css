@@ -16591,42 +16591,60 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
     max-width: 100%;
   }
 
-  .sections-sidebar {
+  .sections-sidebar,
+  html[data-sidenav-style] .sections-sidebar,
+  html[data-sidenav-style="glass"] .sections-sidebar,
+  body.live-trading-page .sections-sidebar {
     position: fixed;
     top: 0;
     left: 0;
+    right: auto;
     bottom: 0;
     z-index: 1600;
     width: min(88vw, 300px);
     max-width: 300px;
-    flex: none;
+    /* Prefer dynamic viewport so iOS/Android browser chrome can't clip the menu. */
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    flex: none !important;
     align-self: auto;
     margin: 0;
     /* Clear fixed header so Home is never clipped */
-    padding: 96px 0 max(36px, env(safe-area-inset-bottom, 0px) + 24px);
+    padding: 96px 0 max(48px, env(safe-area-inset-bottom, 0px) + 32px) !important;
     border-right: 3px solid #000;
     border-bottom: none;
     background: var(--bsv-surface-chrome);
-    overflow-x: hidden;
-    overflow-y: auto;
+    /* Must win over glass/LT overflow:visible so short phones can scroll. */
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    touch-action: pan-y;
     transform: translateX(-105%);
     transition: transform 0.25s ease;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.45);
   }
 
-  body.sections-menu-open .sections-sidebar {
+  body.sections-menu-open .sections-sidebar,
+  html[data-sidenav-style] body.sections-menu-open .sections-sidebar,
+  body.live-trading-page.sections-menu-open .sections-sidebar {
     transform: translateX(0);
-    padding-top: 96px;
+    padding-top: 96px !important;
   }
 
-  .sections-nav {
+  .sections-nav,
+  html[data-sidenav-style] .sections-nav,
+  html[data-sidenav-style="glass"] .sections-nav {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 10px 10px max(40px, env(safe-area-inset-bottom, 0px) + 28px);
+    width: 100%;
+    max-width: none;
+    flex: 0 0 auto;
+    padding: 10px 10px max(56px, env(safe-area-inset-bottom, 0px) + 40px);
     overflow: visible;
   }
 
@@ -21682,11 +21700,18 @@ body.lt-picker-open {
     height: auto;
     overflow: visible;
   }
-  body.live-trading-page .sections-sidebar,
   body.live-trading-page .live-trading-main {
     flex: 1 1 auto !important;
     width: 100% !important;
     max-width: none !important;
+  }
+  /* Keep the hamburger drawer scrollable on Live Trading (do not stretch to page width). */
+  body.live-trading-page .sections-sidebar {
+    flex: none !important;
+    width: min(88vw, 300px) !important;
+    max-width: 300px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
   }
   body.live-trading-page .live-trading-main {
     min-height: 0;
@@ -22119,3 +22144,23 @@ html[data-bsv-bg="dark"] .lt-slot__dura {
   border-color: color-mix(in srgb, var(--bsv-accent) 22%, transparent) !important;
 }
 
+
+/* Mobile hamburger: always scrollable on every phone size (final override). */
+@media (max-width: 900px) {
+  html[data-sidenav-style] .sections-sidebar,
+  html[data-sidenav-style="glass"] .sections-sidebar,
+  html[data-sidenav-style="refined"] .sections-sidebar,
+  html[data-sidenav-style="glow"] .sections-sidebar,
+  html[data-sidenav-style="minimal"] .sections-sidebar,
+  html[data-sidenav-style="compact"] .sections-sidebar,
+  body.live-trading-page .sections-sidebar,
+  .sections-sidebar {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+  }
+}
