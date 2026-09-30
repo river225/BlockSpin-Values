@@ -3,10 +3,6 @@
 
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
-  // Bump this when you need every visitor to hard-refresh once (clears old SW/cache/cookies).
-  var BSV_BUILD = "20260915-tech-fix";
-  var BUILD_KEY = "bsv-build";
-  var BUILD_RELOAD_KEY = "bsv-build-reloading";
   // Keep in sync with script.js THEMES_DISABLED — theme UI is not shipping.
   var THEMES_DISABLED = true;
 
@@ -14,6 +10,53 @@
   var MONETAG_HOST_RE =
     /quge5\.com|5gvci\.com|omg10\.com|n6wxm\.com|nap5k\.com|tzegilo\.com|monetag|11550419|11550420|11550421|11548891|268935/i;
   var MONETAG_TAG_IDS = ["bsv-ad-vignette", "bsv-ad-ipp", "bsv-ad-push"];
+
+  // GitHub project Pages live under /RepoName/ — root-absolute "/assets/..." would 404 at domain root.
+  function siteRoot() {
+    try {
+      if (typeof window.BSV_SITE_ROOT === "string" && window.BSV_SITE_ROOT) {
+        return window.BSV_SITE_ROOT;
+      }
+      var host = location.hostname || "";
+      if (/\.github\.io$/i.test(host)) {
+        var seg = (location.pathname || "/").split("/").filter(Boolean)[0];
+        if (seg) return "/" + seg + "/";
+      }
+    } catch (_) {}
+    return "/";
+  }
+
+  function sitePath(path) {
+    var p = String(path || "");
+    if (!p) return siteRoot();
+    if (/^(https?:|data:|mailto:|tel:|#)/i.test(p)) return p;
+    return siteRoot() + p.replace(/^\//, "");
+  }
+
+  try {
+    window.BSV_SITE_ROOT = siteRoot();
+    window.bsvSitePath = sitePath;
+  } catch (_) {}
+
+  function rewriteRootAbsoluteAssets(rootEl) {
+    var root = siteRoot();
+    if (root === "/") return;
+    var scope = rootEl || document;
+    // Include plain "/" and "/#..." back-links — those break on GitHub project Pages.
+    var nodes = scope.querySelectorAll(
+      '[src^="/"], [href^="/"]'
+    );
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var attr = el.hasAttribute("src") ? "src" : "href";
+      var val = el.getAttribute(attr);
+      if (!val || val.charAt(0) !== "/") continue;
+      // Don't rewrite protocol-relative or already-prefixed paths.
+      if (val.indexOf("//") === 0) continue;
+      if (val.indexOf(root) === 0) continue;
+      el.setAttribute(attr, root + val.slice(1));
+    }
+  }
 
   function isSponsorsPage() {
     try {
@@ -70,110 +113,6 @@
   paintSavedBackground();
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", paintSavedBackground);
-  }
-
-  function clearSiteCookies() {
-    try {
-      var parts = document.cookie ? document.cookie.split(";") : [];
-      var host = location.hostname || "";
-      var domains = ["", host, "." + host];
-      if (host.indexOf(".") !== -1) {
-        var root = host.split(".").slice(-2).join(".");
-        domains.push(root, "." + root);
-      }
-      parts.forEach(function (part) {
-        var name = (part.split("=")[0] || "").trim();
-        if (!name) return;
-        domains.forEach(function (domain) {
-          var base = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;Max-Age=0";
-          document.cookie = domain ? base + ";domain=" + domain : base;
-          document.cookie = base + ";SameSite=Lax";
-        });
-      });
-    } catch (_) {}
-  }
-
-  function clearClientCaches() {
-    try {
-      if (window.caches && caches.keys) {
-        caches.keys().then(function (keys) {
-          keys.forEach(function (key) {
-            caches.delete(key).catch(function () {});
-          });
-        });
-      }
-    } catch (_) {}
-    try {
-      if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
-        navigator.serviceWorker.getRegistrations().then(function (regs) {
-          regs.forEach(function (reg) {
-            reg.unregister().catch(function () {});
-          });
-        });
-      }
-    } catch (_) {}
-  }
-
-  function wipeClientStateForBuild() {
-    clearSiteCookies();
-    purgeMonetagArtifacts();
-    clearClientCaches();
-    try {
-      localStorage.clear();
-    } catch (_) {}
-    try {
-      sessionStorage.clear();
-    } catch (_) {}
-  }
-
-  function stripBuildCacheBustParams() {
-    try {
-      var url = new URL(window.location.href);
-      if (!url.searchParams.has("bsv_r") && !url.searchParams.has("_")) return;
-      url.searchParams.delete("bsv_r");
-      url.searchParams.delete("_");
-      var qs = url.searchParams.toString();
-      history.replaceState(null, "", url.pathname + (qs ? "?" + qs : "") + url.hash);
-    } catch (_) {}
-  }
-
-  function forceRefreshIfNeeded() {
-    try {
-      // Remove one-time cache-bust params before analytics reads the URL.
-      stripBuildCacheBustParams();
-      var seen = localStorage.getItem(BUILD_KEY);
-      if (seen === BSV_BUILD) {
-        try {
-          sessionStorage.removeItem(BUILD_RELOAD_KEY);
-        } catch (_) {}
-        return false;
-      }
-      if (sessionStorage.getItem(BUILD_RELOAD_KEY) === BSV_BUILD) {
-        // Second pass after wipe+reload: mark build seen, keep storage clean otherwise.
-        try {
-          localStorage.clear();
-        } catch (_) {}
-        try {
-          sessionStorage.removeItem(BUILD_RELOAD_KEY);
-        } catch (_) {}
-        localStorage.setItem(BUILD_KEY, BSV_BUILD);
-        return false;
-      }
-      sessionStorage.setItem(BUILD_RELOAD_KEY, BSV_BUILD);
-      wipeClientStateForBuild();
-      try {
-        sessionStorage.setItem(BUILD_RELOAD_KEY, BSV_BUILD);
-      } catch (_) {}
-      var url = new URL(window.location.href);
-      url.searchParams.delete("bsv_r");
-      // Bypass HTTP cache on the reload itself; stripped immediately on next load.
-      url.searchParams.set("_", String(Date.now()));
-      var qs = url.searchParams.toString();
-      window.location.replace(url.pathname + (qs ? "?" + qs : "") + url.hash);
-      return true;
-    } catch (_) {
-      return false;
-    }
   }
 
   function getConsent() {
@@ -318,7 +257,9 @@
     el.setAttribute("aria-live", "polite");
     el.setAttribute("aria-label", "Cookie consent");
     el.innerHTML =
-      "<p>We use cookies to improve your experience and analyze site traffic. Read our <a href=\"/z-cookie.html\">Cookie Policy</a> to learn more.</p>" +
+      "<p>We use cookies to improve your experience and analyze site traffic. Read our <a href=\"" +
+      sitePath("z-cookie.html") +
+      "\">Cookie Policy</a> to learn more.</p>" +
       '<div id="bsv-consent-actions">' +
       '<button type="button" id="bsv-consent-accept">Accept</button>' +
       '<button type="button" id="bsv-consent-reject">Reject</button>' +
@@ -386,24 +327,338 @@
     return '<a href="' + href + '"' + cls + ">" + label + "</a>";
   }
 
+  function navLiveTradingLink(activeKey) {
+    var cls =
+      "nav-live-trading-link" +
+      (activeKey === "live-trading" ? " nav-link--active" : "");
+    return (
+      '<a href="' +
+      sitePath("live-trading.html") +
+      '" class="' +
+      cls +
+      '" aria-label="Live Trading">' +
+      '<span class="nav-live-trading-link__icon" aria-hidden="true">' +
+      '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M3 7h13"/><path d="M13 3l4 4-4 4"/>' +
+      '<path d="M21 17H8"/><path d="M11 13l-4 4 4 4"/>' +
+      "</svg>" +
+      "</span>" +
+      '<span class="nav-live-trading-link__label">Live Trading</span>' +
+      "</a>"
+    );
+  }
+
+  var VALUE_LIST_SECTIONS = [
+    "Common / Uncommon",
+    "Rare",
+    "Epic",
+    "Legendary",
+    "Omega",
+    "Misc",
+    "Vehicles"
+  ];
+  var VALUE_LIST_EXTRAS = [
+    "Live Trading",
+    "Money & Game Guide",
+    "Untradeable Items",
+    "Richest Players",
+    "Crew Logos"
+  ];
+  var DISCORD_INVITE = "https://discord.gg/QbapryYUUx";
+
+  function goToSection(title) {
+    if (typeof global.showSection === "function" && document.getElementById("sections-nav")) {
+      global.showSection(title);
+      return;
+    }
+    var cfg =
+      typeof global.getSectionConfig === "function" ? global.getSectionConfig(title) : null;
+    if (cfg && cfg.pageHref) {
+      location.href = sitePath(cfg.pageHref);
+      return;
+    }
+    location.href = sitePath("") + "#sec=" + encodeURIComponent(title);
+  }
+
+  function navValueListMenu() {
+    var items = VALUE_LIST_SECTIONS.map(function (title) {
+      return (
+        '<button type="button" class="nav-icon-menu__item" data-section-go="' +
+        title.replace(/"/g, "&quot;") +
+        '">' +
+        title +
+        "</button>"
+      );
+    }).join("");
+    var extras = VALUE_LIST_EXTRAS.map(function (title) {
+      return (
+        '<button type="button" class="nav-icon-menu__item" data-section-go="' +
+        title.replace(/"/g, "&quot;") +
+        '">' +
+        title +
+        "</button>"
+      );
+    }).join("");
+    return (
+      '<div class="nav-icon-menu" data-nav-menu="value-list">' +
+        '<button type="button" class="nav-icon-menu__btn" aria-expanded="false" aria-haspopup="true" aria-label="Value List">' +
+          '<span class="nav-icon-menu__icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/>' +
+              '<path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>' +
+            "</svg>" +
+          "</span>" +
+          '<span class="nav-icon-menu__label">Value List</span>' +
+        "</button>" +
+        '<div class="nav-icon-menu__panel" hidden>' +
+          items +
+          '<p class="nav-icon-menu__group" aria-hidden="true">Extras</p>' +
+          extras +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function navGiveawaysMenu() {
+    return (
+      '<div class="nav-icon-menu" data-nav-menu="giveaways">' +
+        '<button type="button" class="nav-icon-menu__btn" aria-expanded="false" aria-haspopup="dialog" aria-label="Giveaways" data-open-giveaways="1">' +
+          '<span class="nav-icon-menu__icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>' +
+            "</svg>" +
+          "</span>" +
+          '<span class="nav-icon-menu__label">Giveaways</span>' +
+        "</button>" +
+      "</div>"
+    );
+  }
+
+  function giveawaysModalHtml() {
+    return (
+      '<div class="bsv-giveaways-modal" id="bsv-giveaways-modal" hidden>' +
+        '<div class="bsv-giveaways-modal__backdrop" data-close-giveaways="1"></div>' +
+        '<div class="bsv-giveaways-modal__card" role="dialog" aria-modal="true" aria-labelledby="bsv-giveaways-title">' +
+          '<button type="button" class="bsv-giveaways-modal__close" data-close-giveaways="1" aria-label="Close">&times;</button>' +
+          '<span class="bsv-giveaways-modal__badge">Active Giveaways</span>' +
+          '<h2 class="bsv-giveaways-modal__title" id="bsv-giveaways-title">Win free BlockSpin items</h2>' +
+          '<p class="bsv-giveaways-modal__body">We\'ve given away <strong>tons of guns, vehicles, and Robux</strong> to the community. Join our Discord for active giveaways and enter the next drop.</p>' +
+          '<a class="bsv-giveaways-modal__cta" href="' +
+          DISCORD_INVITE +
+          '" target="_blank" rel="noopener noreferrer">Join Discord for Giveaways →</a>' +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function valueListModalHtml() {
+    var main = VALUE_LIST_SECTIONS.map(function (title) {
+      return (
+        '<button type="button" class="bsv-value-list-modal__item" data-section-go="' +
+        title.replace(/"/g, "&quot;") +
+        '">' +
+        title +
+        "</button>"
+      );
+    }).join("");
+    var extras = VALUE_LIST_EXTRAS.map(function (title) {
+      return (
+        '<button type="button" class="bsv-value-list-modal__item" data-section-go="' +
+        title.replace(/"/g, "&quot;") +
+        '">' +
+        title +
+        "</button>"
+      );
+    }).join("");
+    return (
+      '<div class="bsv-value-list-modal" id="bsv-value-list-modal" hidden>' +
+        '<div class="bsv-value-list-modal__backdrop" data-close-value-list="1"></div>' +
+        '<div class="bsv-value-list-modal__card" role="dialog" aria-modal="true" aria-labelledby="bsv-value-list-title">' +
+          '<button type="button" class="bsv-value-list-modal__close" data-close-value-list="1" aria-label="Close">&times;</button>' +
+          '<h2 class="bsv-value-list-modal__title" id="bsv-value-list-title">Value List</h2>' +
+          '<div class="bsv-value-list-modal__list">' +
+            main +
+            '<p class="bsv-value-list-modal__group">Extras</p>' +
+            extras +
+          "</div>" +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function initHeaderIconMenus() {
+    if (!document.getElementById("bsv-giveaways-modal")) {
+      var wrap = document.createElement("div");
+      wrap.innerHTML = giveawaysModalHtml();
+      document.body.appendChild(wrap.firstElementChild);
+    }
+    if (!document.getElementById("bsv-value-list-modal")) {
+      var vlWrap = document.createElement("div");
+      vlWrap.innerHTML = valueListModalHtml();
+      document.body.appendChild(vlWrap.firstElementChild);
+    }
+
+    function closeAllMenus() {
+      document.querySelectorAll(".nav-icon-menu.is-open").forEach(function (menu) {
+        menu.classList.remove("is-open");
+        var btn = menu.querySelector(".nav-icon-menu__btn");
+        var panel = menu.querySelector(".nav-icon-menu__panel");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        if (panel) panel.hidden = true;
+      });
+    }
+
+    function openGiveaways() {
+      closeAllMenus();
+      closeValueListModal();
+      var modal = document.getElementById("bsv-giveaways-modal");
+      if (modal) modal.hidden = false;
+    }
+
+    function closeGiveaways() {
+      var modal = document.getElementById("bsv-giveaways-modal");
+      if (modal) modal.hidden = true;
+    }
+
+    function openValueListModal() {
+      closeAllMenus();
+      closeGiveaways();
+      var modal = document.getElementById("bsv-value-list-modal");
+      if (modal) modal.hidden = false;
+    }
+
+    function closeValueListModal() {
+      var modal = document.getElementById("bsv-value-list-modal");
+      if (modal) modal.hidden = true;
+    }
+
+    global.bsvOpenValueListMenu = function () {
+      if (window.matchMedia("(max-width: 900px)").matches) {
+        openValueListModal();
+        return;
+      }
+      var menu = document.querySelector('.nav-icon-menu[data-nav-menu="value-list"]');
+      var btn = menu && menu.querySelector(".nav-icon-menu__btn");
+      if (btn) btn.click();
+    };
+
+    document.querySelectorAll(".nav-icon-menu").forEach(function (menu) {
+      if (menu._bsvBound) return;
+      menu._bsvBound = true;
+      var btn = menu.querySelector(".nav-icon-menu__btn");
+      var panel = menu.querySelector(".nav-icon-menu__panel");
+      if (!btn) return;
+
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (btn.getAttribute("data-open-giveaways")) {
+          openGiveaways();
+          return;
+        }
+        var open = menu.classList.contains("is-open");
+        closeAllMenus();
+        if (!open && panel) {
+          menu.classList.add("is-open");
+          btn.setAttribute("aria-expanded", "true");
+          panel.hidden = false;
+        }
+      });
+
+      menu.querySelectorAll("[data-section-go]").forEach(function (item) {
+        item.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var title = item.getAttribute("data-section-go");
+          closeAllMenus();
+          if (title) goToSection(title);
+        });
+      });
+    });
+
+    document.querySelectorAll(".nav-live-trading-link").forEach(function (link) {
+      if (link._bsvCloseMenusBound) return;
+      link._bsvCloseMenusBound = true;
+      link.addEventListener("click", function () {
+        closeAllMenus();
+        closeValueListModal();
+        closeGiveaways();
+      });
+    });
+
+    document.querySelectorAll("[data-open-giveaways]").forEach(function (el) {
+      if (el._bsvGwBound) return;
+      el._bsvGwBound = true;
+      if (el.closest(".nav-icon-menu")) return;
+      el.addEventListener("click", function (e) {
+        e.preventDefault();
+        openGiveaways();
+      });
+    });
+
+    document.querySelectorAll("[data-close-giveaways]").forEach(function (el) {
+      if (el._bsvGwCloseBound) return;
+      el._bsvGwCloseBound = true;
+      el.addEventListener("click", function () {
+        closeGiveaways();
+      });
+    });
+
+    document.querySelectorAll("[data-close-value-list]").forEach(function (el) {
+      if (el._bsvVlCloseBound) return;
+      el._bsvVlCloseBound = true;
+      el.addEventListener("click", function () {
+        closeValueListModal();
+      });
+    });
+
+    var vlModal = document.getElementById("bsv-value-list-modal");
+    if (vlModal && !vlModal._bsvBound) {
+      vlModal._bsvBound = true;
+      vlModal.querySelectorAll("[data-section-go]").forEach(function (item) {
+        item.addEventListener("click", function (e) {
+          e.preventDefault();
+          var title = item.getAttribute("data-section-go");
+          closeValueListModal();
+          if (title) goToSection(title);
+        });
+      });
+    }
+
+    if (!document._bsvNavMenusDocBound) {
+      document._bsvNavMenusDocBound = true;
+      document.addEventListener("click", function () {
+        closeAllMenus();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeAllMenus();
+          closeGiveaways();
+          closeValueListModal();
+        }
+      });
+    }
+  }
+
   function ensureSponsorBannerStyles() {
     var old = document.getElementById("bsv-sponsor-banner-styles-v2");
     if (old) old.remove();
     var old3 = document.getElementById("bsv-sponsor-banner-styles-v3");
     if (old3) old3.remove();
-    if (document.getElementById("bsv-sponsor-banner-styles-v4")) return;
+    var old4 = document.getElementById("bsv-sponsor-banner-styles-v4");
+    if (old4) old4.remove();
+    if (document.getElementById("bsv-sponsor-banner-styles-v5")) return;
     var style = document.createElement("style");
-    style.id = "bsv-sponsor-banner-styles-v4";
+    style.id = "bsv-sponsor-banner-styles-v5";
     style.textContent =
-      /* Sit in the content column; match .what-is-section width so it lines up with section content */
       ".bsv-sponsor-promo{display:flex;justify-content:center;width:100%;margin:12px 0 8px;padding:0;box-sizing:border-box;position:relative;left:auto!important;transform:none!important}" +
       ".bsv-sponsor-promo[hidden],.bsv-sponsor-promo.is-hidden{display:none!important}" +
       ".bsv-sponsor-promo__shell{position:relative;display:block;width:100%;max-width:800px;margin:0 auto;padding:12px 0 8px;box-sizing:border-box}" +
-      ".bsv-sponsor-promo__shell::before{content:'';position:absolute;pointer-events:none;z-index:0;inset:-8% -6% -10%;border-radius:50%;background:radial-gradient(ellipse 55% 50% at 50% 45%,rgba(155,45,220,.28),rgba(155,45,220,.08) 45%,transparent 70%);filter:blur(22px);opacity:.9}" +
-      "@media (prefers-reduced-motion:reduce){.bsv-sponsor-promo__shell::before{opacity:.8}}" +
-      ".bsv-sponsor-promo__frame{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;margin:0 auto;padding:22px 20px 18px;border-radius:16px;background:linear-gradient(165deg,#16111f 0%,#120e1a 100%);border:1px solid rgba(155,45,220,.32);box-shadow:0 0 0 1px rgba(155,45,220,.08),0 14px 32px rgba(0,0,0,.4);overflow:hidden;text-align:center;box-sizing:border-box}" +
-      ".bsv-sponsor-promo__frame::before,.bsv-sponsor-promo__frame::after{content:'';position:absolute;width:42%;height:1px;pointer-events:none;opacity:.35}" +
-      ".bsv-sponsor-promo__frame::before{top:18px;left:-6%;background:linear-gradient(90deg,transparent,rgba(155,45,220,.75),transparent);transform:rotate(-28deg)}" +
+      ".bsv-sponsor-promo__shell::before{content:'';position:absolute;pointer-events:none;z-index:0;inset:-10% -8% -12%;border-radius:50%;background:radial-gradient(ellipse 58% 52% at 50% 42%,rgba(124,58,237,.22),rgba(91,33,182,.1) 42%,transparent 72%);filter:blur(26px);opacity:.95}" +
+      "@media (prefers-reduced-motion:reduce){.bsv-sponsor-promo__shell::before{opacity:.85}}" +
+      ".bsv-sponsor-promo__frame{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;margin:0 auto;padding:22px 20px 18px;border-radius:18px;background:linear-gradient(165deg,#1a1630 0%,#12101f 55%,#0e0c18 100%);border:1px solid rgba(167,139,250,.28);box-shadow:0 0 0 1px rgba(124,58,237,.08),0 14px 32px rgba(0,0,0,.42);overflow:hidden;text-align:center;box-sizing:border-box}" +
+      ".bsv-sponsor-promo__frame::before,.bsv-sponsor-promo__frame::after{content:'';position:absolute;width:42%;height:1px;pointer-events:none;opacity:.4}" +
+      ".bsv-sponsor-promo__frame::before{top:18px;left:-6%;background:linear-gradient(90deg,transparent,rgba(167,139,250,.8),transparent);transform:rotate(-28deg)}" +
       ".bsv-sponsor-promo__frame::after{bottom:22px;right:-6%;background:linear-gradient(90deg,transparent,rgba(76,175,30,.65),transparent);transform:rotate(-28deg)}" +
       ".bsv-sponsor-promo__logo{position:relative;z-index:1;width:72px;height:72px;object-fit:contain;display:block;margin:0 auto;image-rendering:-webkit-optimize-contrast}" +
       ".bsv-sponsor-promo__title{position:relative;z-index:1;margin:2px 0 0;font:800 clamp(1.55rem,4.5vw,2.05rem)/1.1 Poppins,system-ui,sans-serif;letter-spacing:-.02em;color:#fff}" +
@@ -411,9 +666,8 @@
       ".bsv-sponsor-promo__sub{position:relative;z-index:1;margin:0;max-width:34rem;font:500 0.92rem/1.45 Poppins,system-ui,sans-serif;color:#c7cce0}" +
       ".bsv-sponsor-promo__cta{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;margin-top:6px;padding:11px 26px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,#62d12f 0%,#3fad1a 100%);color:#fff;font:700 0.95rem/1 Poppins,system-ui,sans-serif;letter-spacing:.03em;text-decoration:none;text-shadow:0 1px 0 rgba(0,0,0,.28);transition:transform .2s ease,filter .2s ease,border-color .2s ease;white-space:nowrap}" +
       ".bsv-sponsor-promo__cta:hover{transform:translateY(-1px);filter:brightness(1.06);border-color:rgba(255,255,255,.3)}" +
-      ".bsv-sponsor-promo__cta:focus-visible{outline:2px solid #9B2DDC;outline-offset:3px}" +
+      ".bsv-sponsor-promo__cta:focus-visible{outline:2px solid #a78bfa;outline-offset:3px}" +
       ".bsv-sponsor-banner-slot{display:block;width:100%;max-width:1800px;margin:0 auto;padding:0 20px;box-sizing:border-box}" +
-      /* Values-list: banner lives inside #sections so it shares the content column */
       "#sections > .bsv-sponsor-promo{flex:0 0 auto;width:100%;max-width:100%;padding:0;margin:8px 0 12px}" +
       ".bsv-sponsor-banner-slot:empty{display:none}";
     document.head.appendChild(style);
@@ -424,54 +678,183 @@
       '<aside class="bsv-sponsor-promo" aria-label="Sponsorship">' +
         '<div class="bsv-sponsor-promo__shell">' +
           '<div class="bsv-sponsor-promo__frame">' +
-            '<img class="bsv-sponsor-promo__logo" src="/assets/bsv-logo.png" width="72" height="72" alt="" decoding="async">' +
+            '<img class="bsv-sponsor-promo__logo" src="' + sitePath("assets/bsv-logo.png") + '" width="72" height="72" alt="" decoding="async">' +
             '<p class="bsv-sponsor-promo__title">Work with <span>us</span></p>' +
             '<p class="bsv-sponsor-promo__sub">Sponsor slots are open. Get your brand in front of 12,700+ active traders every month.</p>' +
-            '<a class="bsv-sponsor-promo__cta" href="/sponsors/">Work with us</a>' +
+            '<a class="bsv-sponsor-promo__cta" href="' + sitePath("sponsors/") + '">Work with us</a>' +
           "</div>" +
         "</div>" +
       "</aside>"
     );
   }
 
-  // Pin the banner under the Home section only (not Rare / Legendary / etc.).
-  function alignSponsorBannerToHomeContent() {
-    var promo = document.querySelector(".bsv-sponsor-promo");
-    if (!promo) return;
-    promo.style.left = "";
-    promo.style.transform = "";
+  function ensureSectionLtPromoStyles() {
+    var oldStyles = document.getElementById("bsv-section-lt-promo-styles");
+    if (oldStyles) oldStyles.remove();
+    var style = document.createElement("style");
+    style.id = "bsv-section-lt-promo-styles";
+    style.textContent =
+      ".home-lt-bar.bsv-section-lt-promo{flex:0 0 auto;display:block;width:100%;max-width:min(1100px,100%)!important;margin:2px auto 10px;padding:26px 28px 22px;box-sizing:border-box}" +
+      ".bsv-section-lt-promo[hidden],.bsv-section-lt-promo.is-hidden{display:none!important}" +
+      ".section > .bsv-section-lt-promo{margin-top:0}" +
+      ".section > h2:first-of-type + .bsv-section-lt-promo{margin-top:0}" +
+      ".bsv-section-lt-promo .home-lt-bar__new{" +
+        "top:-8px;right:-8px;left:auto;" +
+        "padding:8px 15px 7px;border-radius:8px;" +
+        "letter-spacing:.16em;font-size:.78rem;" +
+        "transform:rotate(16deg);transform-origin:center;" +
+        "box-shadow:0 0 0 2px #7c2d12,0 3px 0 #9a3412;" +
+        "animation:bsv-lt-new-heartbeat 4.8s ease-in-out infinite" +
+      "}" +
+      "@keyframes bsv-lt-new-heartbeat{" +
+        "0%,100%{transform:rotate(16deg) scale(1)}" +
+        "50%{transform:rotate(16deg) scale(1.055)}" +
+      "}" +
+      "@media (prefers-reduced-motion:reduce){.bsv-section-lt-promo .home-lt-bar__new{animation:none;transform:rotate(16deg)}}";
+    document.head.appendChild(style);
+  }
 
-    // body.is-home is toggled by showSection — do not use data-bsv-page (always "home").
-    var onHome = document.body.classList.contains("is-home");
+  function renderLiveTradingSectionPromo() {
+    return (
+      '<aside class="home-lt-bar bsv-section-lt-promo" aria-label="Live Trading">' +
+        '<span class="home-lt-bar__new">NEW</span>' +
+        "<h3>BlockSpin Live Trading</h3>" +
+        "<p>Post offers, browse live deals, and message traders instantly.</p>" +
+        '<div class="home-lt-bar__actions">' +
+          '<a class="home-lt-bar__btn" href="' +
+          sitePath("live-trading.html") +
+          '">Start Trading →</a>' +
+        "</div>" +
+      "</aside>"
+    );
+  }
 
-    if (!onHome) {
-      promo.hidden = true;
-      promo.classList.add("is-hidden");
+  function ensureLiveTradingSectionPromo() {
+    ensureSectionLtPromoStyles();
+    var existing = document.querySelector(".bsv-section-lt-promo");
+    // Refresh older Alt-C markup so sections use the home Live Trading banner.
+    if (existing && !existing.classList.contains("home-lt-bar")) {
+      existing.remove();
+      existing = null;
+    }
+    if (existing) return existing;
+    var wrap = document.createElement("div");
+    wrap.innerHTML = renderLiveTradingSectionPromo();
+    var el = wrap.firstElementChild;
+    if (!el) return null;
+    var sections = document.querySelector(".main-container > #sections");
+    if (sections) {
+      sections.appendChild(el);
+      return el;
+    }
+    var slot = document.getElementById("bsv-sponsor-banner-slot");
+    if (slot) {
+      slot.appendChild(el);
+      return el;
+    }
+    return null;
+  }
+
+  var LT_PROMO_HIDDEN_SECTION_IDS = {
+    "untradeable-items": true,
+    "richest-players": true,
+    "crew-logos": true,
+    "live-trading": true
+  };
+
+  function getActiveItemSection() {
+    var active = null;
+    document.querySelectorAll("#sections > .section").forEach(function (sec) {
+      if (!sec || sec.id === "home") return;
+      if (sec.style.display === "none") return;
+      if (sec.hidden) return;
+      try {
+        if (window.getComputedStyle(sec).display === "none") return;
+      } catch (e) {
+        return;
+      }
+      active = sec;
+    });
+    return active;
+  }
+
+  function shouldShowLiveTradingSectionPromo(active) {
+    if (!active || !active.id) return false;
+    try {
+      var page = document.body && document.body.getAttribute("data-bsv-page");
+      if (page === "live-trading") return false;
+    } catch (e) {}
+    return !LT_PROMO_HIDDEN_SECTION_IDS[active.id];
+  }
+
+  function placeLiveTradingPromoAtSectionTop(ltPromo) {
+    if (!ltPromo) return;
+    var active = getActiveItemSection();
+    if (!active || !shouldShowLiveTradingSectionPromo(active)) return;
+    var heading = null;
+    for (var i = 0; i < active.children.length; i++) {
+      if (active.children[i].tagName === "H2") {
+        heading = active.children[i];
+        break;
+      }
+    }
+    // Always sit above the section title (first child, or immediately before h2).
+    if (heading) {
+      if (ltPromo.parentElement !== active || heading.previousElementSibling !== ltPromo) {
+        active.insertBefore(ltPromo, heading);
+      }
       return;
     }
-    promo.hidden = false;
-    promo.classList.remove("is-hidden");
+    if (ltPromo.parentElement !== active || active.firstElementChild !== ltPromo) {
+      active.insertBefore(ltPromo, active.firstChild);
+    }
+  }
 
+  function setPromoVisible(el, on) {
+    if (!el) return;
+    el.hidden = !on;
+    el.classList.toggle("is-hidden", !on);
+  }
+
+  // Home → sponsorship. Other value sections → Live Trading at section top.
+  function alignSponsorBannerToHomeContent() {
+    var promo = document.querySelector(".bsv-sponsor-promo");
+    var ltPromo = ensureLiveTradingSectionPromo();
+    var onHome = document.body.classList.contains("is-home");
     var sections = document.querySelector(".main-container > #sections");
     var home = document.getElementById("home");
-    if (sections && home) {
-      if (home.nextSibling !== promo) {
+
+    if (promo) {
+      promo.style.left = "";
+      promo.style.transform = "";
+    }
+
+    if (onHome) {
+      setPromoVisible(promo, true);
+      setPromoVisible(ltPromo, false);
+      if (promo && sections && home && home.nextSibling !== promo) {
         sections.insertBefore(promo, home.nextSibling);
+      } else if (promo && !sections) {
+        var slot = document.getElementById("bsv-sponsor-banner-slot");
+        if (slot && promo.parentElement !== slot) slot.appendChild(promo);
       }
       return;
     }
 
-    var slot = document.getElementById("bsv-sponsor-banner-slot");
-    if (slot && promo.parentElement !== slot) {
-      slot.appendChild(promo);
-    }
+    setPromoVisible(promo, false);
+    var active = getActiveItemSection();
+    var showLt = shouldShowLiveTradingSectionPromo(active);
+    setPromoVisible(ltPromo, showLt);
+    if (showLt) placeLiveTradingPromoAtSectionTop(ltPromo);
   }
 
   function placeSponsorBanner(activePage) {
-    // Homepage only. Sponsors has its own hero CTA; other pages should stay clean.
+    // Values list page only. Sponsors page has its own hero CTA.
     var existing = document.querySelector(".bsv-sponsor-promo");
+    var existingLt = document.querySelector(".bsv-section-lt-promo");
     if (activePage !== "home") {
       if (existing) existing.remove();
+      if (existingLt) existingLt.remove();
       return;
     }
     ensureSponsorBannerStyles();
@@ -486,17 +869,15 @@
     var home = document.getElementById("home");
     if (sections && home) {
       sections.insertBefore(el, home.nextSibling);
-      return;
-    }
-    if (sections) {
+    } else if (sections) {
       sections.appendChild(el);
-      return;
+    } else {
+      var slot = document.getElementById("bsv-sponsor-banner-slot");
+      if (slot) slot.appendChild(el);
     }
 
-    var slot = document.getElementById("bsv-sponsor-banner-slot");
-    if (slot) {
-      slot.appendChild(el);
-    }
+    ensureLiveTradingSectionPromo();
+    alignSponsorBannerToHomeContent();
   }
 
   function headerSearch() {
@@ -529,11 +910,12 @@
   }
 
   function renderHeader(activePage) {
-    var dev = isDevSite();
+    // Same home header on every page (login + settings) so logged-in / logged-out
+    // visitors always get identical chrome HTML — auth only fills #nav-login after load.
     var isHome = activePage === "home";
-    var login = (dev || isHome) ? '<div class="nav-login" id="nav-login"></div>' : "";
-    var brandHref = isHome ? "#" : "/";
-    var brandOnclick = isHome ? ' onclick="showSection(\'Home\'); return false;"' : "";
+    var login = '<div class="nav-login" id="nav-login"></div>';
+    var brandHref = isHome ? "#" : sitePath("");
+    var brandOnclick = isHome ? ' onclick="if(typeof showSection===\'function\'){showSection(\'Home\');} return false;"' : "";
     var search = isHome ? headerSearch() : "";
     return (
       '<header class="site-header-shell">' +
@@ -541,18 +923,19 @@
           '<div class="nav-container-full">' +
             '<div class="nav-left">' +
               '<a href="' + brandHref + '" class="nav-brand"' + brandOnclick + ">" +
-                '<img src="/assets/bsv-logo.png" alt="BlockSpin Values Logo" class="nav-logo-img" width="60" height="60" decoding="async">' +
+                '<img src="' + sitePath("assets/bsv-logo.png") + '" alt="BlockSpin Values Logo" class="nav-logo-img" width="60" height="60" decoding="async">' +
                 '<span class="nav-title">Block<span class="brand-spin">Spin</span> Values</span>' +
               "</a>" +
-              navLink("/x-about.html", "About Us", activePage, "about") +
-              navLink("/sponsors/", "Sponsors", activePage, "sponsors") +
-              navLink("/x-faq.html", "FAQ", activePage, "faq") +
+              navValueListMenu() +
+              navLiveTradingLink(activePage) +
+              navGiveawaysMenu() +
             "</div>" +
             search +
             '<div class="nav-right">' +
               (THEMES_DISABLED ? "" : themeSwitcher()) +
               SOCIAL +
-              (isHome ? '<span class="nav-right-divider" aria-hidden="true"></span>' + navTools() : '') +
+              '<span class="nav-right-divider" aria-hidden="true"></span>' +
+              navTools() +
               login +
             "</div>" +
           "</div>" +
@@ -560,43 +943,148 @@
       "</header>" +
       '<div class="site-mobile-below-header">' +
         '<nav class="header-subnav" aria-label="Site pages">' +
-          navLink("/x-about.html", "About Us", activePage, "about") +
+          '<button type="button" class="header-subnav__btn" data-open-value-list="1">Value List</button>' +
           '<span class="header-subnav__sep" aria-hidden="true">·</span>' +
-          navLink("/sponsors/", "Sponsors", activePage, "sponsors") +
+          navLink(sitePath("live-trading.html"), "Live Trading", activePage, "live-trading") +
           '<span class="header-subnav__sep" aria-hidden="true">·</span>' +
-          navLink("/x-faq.html", "FAQ", activePage, "faq") +
+          '<button type="button" class="header-subnav__btn" data-open-giveaways="1">Giveaways</button>' +
         "</nav>" +
-        '<div class="nav-mobile-toolbar' + (isHome ? ' is-active' : '') + '" aria-label="Mobile shortcuts"></div>' +
+        '<div class="nav-mobile-toolbar is-active" aria-label="Mobile shortcuts"></div>' +
       "</div>"
     );
+  }
+
+  function settingsModalHtml() {
+    return (
+      '<div class="site-settings-modal" id="site-settings-modal" hidden>' +
+        '<div class="site-settings-modal__backdrop" id="site-settings-backdrop"></div>' +
+        '<div class="site-settings-modal__box" role="dialog" aria-modal="true" aria-labelledby="site-settings-title">' +
+          '<div class="site-settings-modal__head">' +
+            '<h2 class="site-settings-modal__title" id="site-settings-title" data-i18n="settings.title">Settings</h2>' +
+            '<button type="button" class="site-settings-modal__close" id="site-settings-close" data-i18n-aria="settings.close" aria-label="Close settings">&times;</button>' +
+          "</div>" +
+          '<div class="site-settings-modal__body">' +
+            '<section class="site-settings-section">' +
+              '<h3 class="site-settings-section__title" data-i18n="settings.language">Language</h3>' +
+              '<div class="site-settings-segmented site-settings-segmented--lang" role="group" data-i18n-aria="settings.ariaLanguage" aria-label="Language">' +
+                '<button type="button" class="site-settings-segment" data-lang="en">English</button>' +
+                '<button type="button" class="site-settings-segment" data-lang="fr">Français</button>' +
+                '<button type="button" class="site-settings-segment" data-lang="es">Español</button>' +
+              "</div>" +
+            "</section>" +
+            '<section class="site-settings-section">' +
+              '<h3 class="site-settings-section__title" data-i18n="settings.font">Font</h3>' +
+              '<div class="site-settings-font-grid" id="font-picker-grid" role="listbox" data-i18n-aria="settings.ariaFont" aria-label="Font"></div>' +
+            "</section>" +
+            '<section class="site-settings-section">' +
+              '<h3 class="site-settings-section__title">Style</h3>' +
+              '<div class="site-settings-segmented site-settings-segmented--style" role="group" aria-label="Background style">' +
+                '<button type="button" class="site-settings-segment is-active" data-bg-style="standard">Standard</button>' +
+                '<button type="button" class="site-settings-segment" data-bg-style="dark">Dark</button>' +
+                '<button type="button" class="site-settings-segment" data-bg-style="colorized">Colorized</button>' +
+              "</div>" +
+            "</section>" +
+            '<section class="site-settings-section site-settings-color-row" id="site-settings-color-row" hidden>' +
+              '<h3 class="site-settings-section__title">Color</h3>' +
+              '<label class="site-settings-visually-hidden" for="bsv-bg-hue">Background color</label>' +
+              '<input type="range" id="bsv-bg-hue" class="site-settings-hue" min="0" max="360" value="210" step="1" aria-label="Background hue" />' +
+            "</section>" +
+          "</div>" +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function ensureSettingsModal() {
+    if (document.getElementById("site-settings-modal")) return;
+    var wrap = document.createElement("div");
+    wrap.innerHTML = settingsModalHtml();
+    var modal = wrap.firstElementChild;
+    if (!modal) return;
+    var header = document.querySelector(".site-header-shell");
+    if (header && header.parentNode) {
+      header.parentNode.insertBefore(modal, header.nextSibling);
+    } else {
+      document.body.insertBefore(modal, document.body.firstChild);
+    }
+  }
+
+  function hasScriptFile(fileName) {
+    var scripts = document.getElementsByTagName("script");
+    for (var i = 0; i < scripts.length; i++) {
+      var src = scripts[i].getAttribute("src") || "";
+      if (src.indexOf(fileName) !== -1) return true;
+    }
+    return false;
+  }
+
+  function loadScriptOnce(fileName, version) {
+    if (hasScriptFile(fileName)) return Promise.resolve();
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = sitePath(fileName) + (version ? "?v=" + version : "");
+      s.async = false;
+      s.onload = function () { resolve(); };
+      s.onerror = function () { reject(new Error("failed_load_" + fileName)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  // Keep chrome-injected deps on the same cache-bust as the page build id.
+  var CHROME_ASSET_V =
+    (typeof window !== "undefined" && window.BSV_BUILD) || "20260930-sync";
+
+  function ensureHomeHeaderDeps() {
+    ensureSettingsModal();
+    // Load in order so settings/auth always attach to the same header shell.
+    return loadScriptOnce("site-i18n.js", CHROME_ASSET_V)
+      .then(function () { return loadScriptOnce("auth.js", CHROME_ASSET_V); })
+      .then(function () { return loadScriptOnce("site-settings.js", CHROME_ASSET_V); })
+      .catch(function (err) {
+        try { console.warn("BSV chrome deps:", err); } catch (_) {}
+      });
   }
 
   function footerSideNavBlock() {
     return (
       '<div class="footer-side-nav">' +
-        '<div class="footer-side-nav__group" aria-label="Contact">' +
-          '<p class="footer-side-nav__title">Contact</p>' +
+        '<div class="footer-side-nav__group" aria-label="About">' +
+          '<p class="footer-side-nav__title">About</p>' +
           '<ul class="footer-side-nav__list">' +
-            '<li><a class="footer-side-nav__link" href="/z-contact.html">' +
-              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/></svg>' +
-              "<span>Contact</span></a></li>" +
-            '<li><a class="footer-side-nav__link" href="https://discord.gg/blockspinvalues" target="_blank" rel="noopener noreferrer">' +
-              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.445.865-.608 1.25-1.845-.276-3.68-.276-5.487 0-.164-.393-.406-.874-.618-1.25a.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.028C.533 9.046-.319 13.58.099 18.058a.082.082 0 0 0 .031.056c2.053 1.508 4.041 2.423 5.993 3.029a.078.078 0 0 0 .084-.028c.462-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.042-.106c-.653-.248-1.274-.55-1.872-.892a.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.007.128 12.299 12.299 0 0 1-1.873.891.077.077 0 0 0-.041.107c.36.698.772 1.363 1.225 1.993a.076.076 0 0 0 .084.028c1.961-.607 3.95-1.522 6.002-3.029a.077.077 0 0 0 .031-.055c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.029zM8.02 15.331c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.211 0 2.176 1.095 2.157 2.419 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.095 2.157 2.419 0 1.333-.946 2.419-2.157 2.419z"/></svg>' +
-              "<span>Discord</span></a></li>" +
+            '<li><a class="footer-side-nav__link" href="' + sitePath("x-about.html") + '">' +
+              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>' +
+              "<span>About Us</span></a></li>" +
+            '<li><a class="footer-side-nav__link" href="' + sitePath("sponsors/") + '">' +
+              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 9.2 8.6 2 9.2l5.4 4.6L5.6 22 12 18.2 18.4 22l-1.8-8.2L22 9.2l-7.2-.6L12 2z"/></svg>' +
+              "<span>Sponsors</span></a></li>" +
+            '<li><a class="footer-side-nav__link" href="' + sitePath("x-faq.html") + '">' +
+              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>' +
+              "<span>FAQ</span></a></li>" +
           "</ul>" +
         "</div>" +
         '<div class="footer-side-nav__group" aria-label="Legal">' +
           '<p class="footer-side-nav__title">Legal</p>' +
           '<ul class="footer-side-nav__list">' +
-            '<li><a class="footer-side-nav__link" href="/z-terms.html">' +
+            '<li><a class="footer-side-nav__link" href="' + sitePath("z-terms.html") + '">' +
               '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>' +
               "<span>Terms of Service</span></a></li>" +
-            '<li><a class="footer-side-nav__link" href="/z-privacy.html">' +
+            '<li><a class="footer-side-nav__link" href="' + sitePath("z-privacy.html") + '">' +
               '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>' +
               "<span>Privacy Policy</span></a></li>" +
-            '<li><a class="footer-side-nav__link" href="/z-cookie.html">' +
+            '<li><a class="footer-side-nav__link" href="' + sitePath("z-cookie.html") + '">' +
               '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6zm5 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>' +
               "<span>Cookie Policy</span></a></li>" +
+          "</ul>" +
+        "</div>" +
+        '<div class="footer-side-nav__group" aria-label="Contact">' +
+          '<p class="footer-side-nav__title">Contact</p>' +
+          '<ul class="footer-side-nav__list">' +
+            '<li><a class="footer-side-nav__link" href="' + sitePath("z-contact.html") + '">' +
+              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/></svg>' +
+              "<span>Contact</span></a></li>" +
+            '<li><a class="footer-side-nav__link" href="https://discord.gg/blockspinvalues" target="_blank" rel="noopener noreferrer">' +
+              '<svg class="footer-side-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.445.865-.608 1.25-1.845-.276-3.68-.276-5.487 0-.164-.393-.406-.874-.618-1.25a.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.028C.533 9.046-.319 13.58.099 18.058a.082.082 0 0 0 .031.056c2.053 1.508 4.041 2.423 5.993 3.029a.078.078 0 0 0 .084-.028c.462-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.042-.106c-.653-.248-1.274-.55-1.872-.892a.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.007.128 12.299 12.299 0 0 1-1.873.891.077.077 0 0 0-.041.107c.36.698.772 1.363 1.225 1.993a.076.076 0 0 0 .084.028c1.961-.607 3.95-1.522 6.002-3.029a.077.077 0 0 0 .031-.055c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.029zM8.02 15.331c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.211 0 2.176 1.095 2.157 2.419 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.095 2.157 2.419 0 1.333-.946 2.419-2.157 2.419z"/></svg>' +
+              "<span>Discord</span></a></li>" +
           "</ul>" +
         "</div>" +
       "</div>"
@@ -671,8 +1159,36 @@
     var boosters = document.getElementById("footer-boosters");
     if (boostersSlot && boosters) boostersSlot.appendChild(boosters);
     initMobileHeaderToolbar();
+    initHeaderIconMenus();
+    ensureHomeHeaderDeps();
     initConsent();
     initFooterBoostersLazy();
+    rewriteRootAbsoluteAssets(document);
+
+    document.querySelectorAll("[data-open-value-list]").forEach(function (el) {
+      if (el._bsvVlBound) return;
+      el._bsvVlBound = true;
+      el.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (typeof global.bsvOpenValueListMenu === "function") {
+          global.bsvOpenValueListMenu();
+        }
+      });
+    });
+  }
+
+  function ensureProjectPageFavicons() {
+    var root = siteRoot();
+    if (root === "/") return;
+    var have = document.querySelector('link[rel="icon"][href*="favicon"]');
+    if (have && String(have.getAttribute("href") || "").indexOf(root) === 0) return;
+    // Replace root-absolute icons that 404 on GitHub project Pages.
+    document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(function (el) {
+      var href = el.getAttribute("href") || "";
+      if (href.charAt(0) === "/" && href.indexOf(root) !== 0) {
+        el.setAttribute("href", root + href.slice(1));
+      }
+    });
   }
 
   function shrinkDiscordAvatarUrl(url) {
@@ -792,6 +1308,8 @@
   }
 
   function autoMount() {
+    ensureProjectPageFavicons();
+    rewriteRootAbsoluteAssets(document);
     var page = document.body.getAttribute("data-bsv-page") || "";
     if (document.getElementById("bsv-site-header") || document.getElementById("bsv-site-footer")) {
       mount(page);
@@ -808,14 +1326,88 @@
     }
   }
 
-  if (forceRefreshIfNeeded()) {
-    return;
+  // Anonymous site presence so "Members online" can include people on the website.
+  // Prefer script.js helper when available (home also combines Discord counts).
+  var presenceTimer = 0;
+  function botPublicBase() {
+    try {
+      if (typeof window.BSV_BOT_PUBLIC_BASE === "string" && window.BSV_BOT_PUBLIC_BASE) {
+        return String(window.BSV_BOT_PUBLIC_BASE).replace(/\/+$/, "");
+      }
+    } catch (_) {}
+    return "https://bsv-bot-production.up.railway.app";
+  }
+  function presenceVisitorId() {
+    var id = "";
+    try {
+      id = localStorage.getItem("bsv_presence_id") || "";
+    } catch (_) {}
+    if (id && /^[a-zA-Z0-9_-]{8,80}$/.test(id)) return id;
+    id =
+      "v_" +
+      Math.random().toString(36).slice(2, 10) +
+      Date.now().toString(36) +
+      Math.random().toString(36).slice(2, 8);
+    try {
+      localStorage.setItem("bsv_presence_id", id);
+    } catch (_) {}
+    return id;
+  }
+  function sendPresenceHeartbeat() {
+    if (typeof window.bsvStartSitePresence === "function") {
+      window.bsvStartSitePresence();
+      return;
+    }
+    fetch(botPublicBase() + "/api/presence/heartbeat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: presenceVisitorId() }),
+      keepalive: true,
+      cache: "no-store"
+    })
+      .then(function (res) {
+        return res.ok ? res.json() : null;
+      })
+      .then(function (data) {
+        if (data && data.id) {
+          try {
+            localStorage.setItem("bsv_presence_id", String(data.id));
+          } catch (_) {}
+        }
+      })
+      .catch(function () {});
+  }
+  function startPresenceFromChrome() {
+    if (presenceTimer) return;
+    var tries = 0;
+    function attempt() {
+      // Prefer script.js on home (also merges Discord + site into Members online).
+      if (typeof window.bsvStartSitePresence === "function") {
+        window.bsvStartSitePresence();
+        return;
+      }
+      tries += 1;
+      if (tries < 25) {
+        setTimeout(attempt, 80);
+        return;
+      }
+      // Pages without script.js still count toward website presence.
+      if (presenceTimer) return;
+      sendPresenceHeartbeat();
+      presenceTimer = setInterval(sendPresenceHeartbeat, 25000);
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) sendPresenceHeartbeat();
+      });
+    }
+    attempt();
   }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", autoMount);
+    document.addEventListener("DOMContentLoaded", startPresenceFromChrome);
   } else {
     autoMount();
+    startPresenceFromChrome();
   }
 
   window.addEventListener("resize", function () {

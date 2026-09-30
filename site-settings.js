@@ -271,7 +271,8 @@
     var backdrop = document.getElementById("site-settings-backdrop");
     var closeBtn = document.getElementById("site-settings-close");
 
-    if (settingsBtn) {
+    if (settingsBtn && !settingsBtn.dataset.bsvSettingsBound) {
+      settingsBtn.dataset.bsvSettingsBound = "1";
       settingsBtn.addEventListener("click", function (e) {
         e.stopPropagation();
         toggleSettingsModal();

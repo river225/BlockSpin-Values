@@ -1,9 +1,9 @@
-const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
+const SPREADSHEET_ID = "18s5ZK-b256navTEfZQFF1TxICwQ3xLjhiSJH4X97Ji4";
 const SECTION_NAMES = typeof getSectionTitles === "function" ? getSectionTitles() : [];
 
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
 const ACCESSORIES_SECTION_NAME = "Untradeable Items";
-const RICHEST_SECTION_NAME = "💰 Richest Players";
+const RICHEST_SECTION_NAME = "Richest Players";
 const MONEY_GAME_GUIDE_SECTION = "Money & Game Guide";
 const MONEY_GUIDE_SHEETS = {
   fishingItems: "Fishing Item",
@@ -151,6 +151,35 @@ var _sectionsDomReady = Object.create(null);
 var _pendingSectionName = null;
 var _activeSectionName = "Home";
 
+function clearHashSectionBootHide() {
+  document.documentElement.classList.remove("bsv-hash-section");
+  var bootStyle = document.getElementById("bsv-hash-section-style");
+  if (bootStyle) bootStyle.remove();
+}
+
+function resolveHashSectionRequest() {
+  if (!window.location.hash || !window.location.hash.startsWith("#sec=")) {
+    return null;
+  }
+  var requested = decodeURIComponent(window.location.hash.substring(5));
+  if (requested === "Uncommon") requested = "Common / Uncommon";
+  if (
+    requested === "richest-players" ||
+    requested === "Richest Players" ||
+    requested === "💰 Richest Players"
+  ) {
+    requested = "Richest Players";
+  }
+  if (requested === "live-trading" || requested === "Live Trading") {
+    return { redirectLiveTrading: true };
+  }
+  if (requested === "Untradable Items") requested = ACCESSORIES_SECTION_NAME;
+  if (typeof SECTION_NAMES !== "undefined" && SECTION_NAMES.includes(requested)) {
+    return { section: requested };
+  }
+  return null;
+}
+
 function shouldShowGiveawayCarousel() {
   return false;
 }
@@ -220,35 +249,12 @@ function buildHomeAnacondaBannerHtml() {
 }
 
 function buildHomeRobuxBannerHtml() {
-  var href = escapeAttr(BSV_DISCORD_INVITE_URL);
-  return (
-    '<article class="home-robux-banner home-robux-banner--birthday" role="complementary" aria-label="BlockSpin Values 1 Year Birthday — 10K Robux Giveaway">' +
-      '<div class="home-robux-banner__stars" aria-hidden="true"></div>' +
-      '<div class="home-robux-banner__nebula" aria-hidden="true"></div>' +
-      '<div class="home-robux-banner__confetti" aria-hidden="true">' +
-        "<span></span><span></span><span></span><span></span><span></span><span></span>" +
-      "</div>" +
-      '<div class="home-robux-banner__inner">' +
-        '<span class="home-robux-banner__urgency">Happy 1 Year</span>' +
-        '<div class="home-robux-banner__copy">' +
-          '<p class="home-robux-banner__eyebrow">BlockSpin Values Birthday</p>' +
-          '<p class="home-robux-banner__amount">10,000 Robux</p>' +
-          '<h3 class="home-robux-banner__title">Birthday Giveaway</h3>' +
-          '<p class="home-robux-banner__hook">Celebrating one year with the community — join Discord to enter!</p>' +
-        "</div>" +
-        '<a href="' + href + '" target="_blank" rel="noopener noreferrer" class="home-robux-banner__cta">Enter Now <span aria-hidden="true">→</span></a>' +
-      "</div>" +
-    "</article>"
-  );
+  // 10K Robux birthday banner retired.
+  return "";
 }
 
 function buildSectionRobuxSlotHtml(title) {
-  if (!ROBUX_GIVEAWAY_SECTION_TITLES.has(title)) return "";
-  return (
-    '<div class="section-robux-slot section-robux-slot--birthday" aria-label="Birthday giveaway">' +
-      buildHomeRobuxBannerHtml() +
-    "</div>"
-  );
+  return "";
 }
 
 function initHomeHeroBannerCarousel() {
@@ -295,9 +301,39 @@ function buildMiddlemanShieldIconHtml(size) {
   var px = size || 26;
   return (
     '<svg class="middleman-shield-icon" viewBox="0 0 24 24" width="' + px + '" height="' + px + '" aria-hidden="true">' +
-      '<path fill="#ffffff" stroke="#000000" stroke-width="1.65" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' +
-      '<path fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12.5l2 2.5 4.5-5"></path>' +
+      '<path fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' +
+      '<path fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="M9 12.5l2 2.5 4.5-5"></path>' +
     '</svg>'
+  );
+}
+
+function buildValueListPerkIconHtml() {
+  return (
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/>' +
+      '<path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>' +
+    "</svg>"
+  );
+}
+
+function buildCommunityPerkIconHtml() {
+  return (
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<circle cx="9" cy="8" r="3"/>' +
+      '<circle cx="17" cy="9.5" r="2.2"/>' +
+      '<path d="M3.5 19c.5-2.6 2.8-4.2 5.5-4.2S14 16.4 14.5 19"/>' +
+      '<path d="M15.2 15.2c1.7-.35 3.5.2 4.8 1.55V19"/>' +
+    "</svg>"
+  );
+}
+
+function buildGiveawayPerkIconHtml() {
+  return (
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/>' +
+      '<path d="M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7z"/>' +
+      '<path d="M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>' +
+    "</svg>"
   );
 }
 
@@ -331,36 +367,16 @@ function buildDiscordCardExplainerSlideHtml(kind) {
 
 function buildDiscordPromoCardSlotHtml(sectionTitle) {
   var copy = getDiscordPromoSectionCopy(sectionTitle);
-  var joinSlide =
-    '<div class="home-discord-promo__carousel-slide is-active" data-slide="join" aria-hidden="false">' +
-      '<img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="48" height="48" class="home-discord-promo__card-logo">' +
-      '<p class="home-discord-promo__card-title">Join Our Discord Server</p>' +
-      '<p class="home-discord-promo__card-stat"><span class="discord-member-count" data-home-stat="traders">0</span>+ traders</p>' +
-      '<p class="home-discord-promo__card-tags">' + escapeHtml(copy.tags) + '</p>' +
-      '<div class="home-discord-promo__card-actions">' +
-        '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__card-btn home-discord-promo__card-btn--join">' + escapeHtml(i18n("discord.card.joinNow")) + '</a>' +
-        '<button type="button" class="home-discord-promo__card-btn home-discord-promo__card-btn--more home-discord-promo__card-btn--show-offers">' + escapeHtml(i18n("discord.card.whatWeOffer")) + '</button>' +
-      '</div>' +
-    '</div>';
-
   return (
     '<div class="home-discord-promo home-discord-promo--card-slot" role="complementary" aria-label="Join BlockSpin Discord">' +
       '<div class="home-discord-promo__card-inner">' +
-        '<div class="home-discord-promo__carousel" data-rotate="1" aria-live="polite">' +
-          '<div class="home-discord-promo__carousel-viewport">' +
-            joinSlide +
-            '<div class="home-discord-promo__carousel-slide" data-slide="giveaways" aria-hidden="true">' +
-              buildDiscordCardExplainerSlideHtml("giveaways") +
-            '</div>' +
-            '<div class="home-discord-promo__carousel-slide" data-slide="middleman" aria-hidden="true">' +
-              buildDiscordCardExplainerSlideHtml("middleman") +
-            '</div>' +
-          '</div>' +
-          '<div class="home-discord-promo__carousel-dots" aria-hidden="true">' +
-            '<span class="home-discord-promo__carousel-dot is-active"></span>' +
-            '<span class="home-discord-promo__carousel-dot"></span>' +
-            '<span class="home-discord-promo__carousel-dot"></span>' +
-          '</div>' +
+        '<img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="48" height="48" class="home-discord-promo__card-logo">' +
+        '<p class="home-discord-promo__card-title">Join Our Discord Server</p>' +
+        '<p class="home-discord-promo__card-stat"><span class="discord-member-count" data-home-stat="traders">0</span>+ traders</p>' +
+        '<p class="home-discord-promo__card-tags">' + escapeHtml(copy.tags) + '</p>' +
+        '<div class="home-discord-promo__card-actions">' +
+          '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__card-btn home-discord-promo__card-btn--join">' + escapeHtml(i18n("discord.card.joinNow")) + '</a>' +
+          '<a href="blockspin-discord-server.html" class="home-discord-promo__card-btn home-discord-promo__card-btn--more">' + escapeHtml(i18n("discord.card.whatWeOffer")) + '</a>' +
         '</div>' +
       '</div>' +
     '</div>'
@@ -386,44 +402,13 @@ function goToDiscordCardCarouselSlide(carousel, targetIndex) {
 }
 
 function initDiscordPromoCardCarousels(root) {
+  // Card slots are static join CTAs now — clear any leftover carousel timers.
   var scope = root || document;
-  scope.querySelectorAll(".home-discord-promo__carousel[data-rotate='1']").forEach(function (carousel) {
+  scope.querySelectorAll(".home-discord-promo__carousel").forEach(function (carousel) {
     if (carousel._discordCarouselTimer) {
       clearInterval(carousel._discordCarouselTimer);
       carousel._discordCarouselTimer = null;
     }
-    var slides = carousel.querySelectorAll(".home-discord-promo__carousel-slide");
-    if (slides.length < 2) return;
-
-    var dots = carousel.querySelectorAll(".home-discord-promo__carousel-dot");
-    var activeIdx = 0;
-    slides.forEach(function (slide, i) {
-      if (slide.classList.contains("is-active")) activeIdx = i;
-    });
-    carousel.dataset.activeIndex = String(activeIdx);
-
-    function advance() {
-      var idx = Number(carousel.dataset.activeIndex || "0");
-      goToDiscordCardCarouselSlide(carousel, idx + 1);
-    }
-
-    dots.forEach(function (dot, i) {
-      dot.onclick = function () {
-        goToDiscordCardCarouselSlide(carousel, i);
-      };
-    });
-
-    var card = carousel.closest(".home-discord-promo--card-slot");
-    if (card) {
-      card.querySelectorAll(".home-discord-promo__card-btn--show-offers").forEach(function (btn) {
-        btn.onclick = function (e) {
-          e.preventDefault();
-          goToDiscordCardCarouselSlide(carousel, 1);
-        };
-      });
-    }
-
-    carousel._discordCarouselTimer = setInterval(advance, DISCORD_CARD_CAROUSEL_INTERVAL_MS);
   });
 }
 
@@ -441,19 +426,13 @@ function buildDiscordPromoBannerHtml(inCards) {
   if (inCards) return buildDiscordPromoCardSlotHtml("");
   return (
     '<div class="home-discord-promo home-discord-promo--home home-discord-promo--home-flash" role="complementary" aria-label="Join BlockSpin Discord">' +
-      '<div class="home-discord-promo__home-glow" aria-hidden="true"></div>' +
-      '<div class="home-discord-promo__home-shimmer" aria-hidden="true"></div>' +
-      '<span class="home-discord-promo__shape home-discord-promo__shape--1" aria-hidden="true"></span>' +
-      '<span class="home-discord-promo__shape home-discord-promo__shape--2" aria-hidden="true"></span>' +
-      '<span class="home-discord-promo__shape home-discord-promo__shape--3" aria-hidden="true"></span>' +
       '<div class="home-discord-promo__inner">' +
-        '<div class="home-discord-promo__flash-badges">' +
-          '<span class="home-discord-promo__flash-badge home-discord-promo__flash-badge--mm">' + escapeHtml(i18n("discord.home.badgeFreeMm")) + "</span>" +
-          '<span class="home-discord-promo__flash-badge home-discord-promo__flash-badge--gw">' + escapeHtml(i18n("discord.home.badgeGiveaways")) + "</span>" +
-          '<span class="home-discord-promo__flash-badge home-discord-promo__flash-badge--trade">' + escapeHtml(i18n("discord.home.badgeTrading")) + "</span>" +
-        "</div>" +
         '<div class="home-discord-promo__flash-hero">' +
-          '<img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="52" height="52" class="home-discord-promo__logo home-discord-promo__flash-logo">' +
+          '<span class="home-discord-promo__flash-logo" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" width="76" height="76" focusable="false">' +
+              '<path fill="#5865F2" d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>' +
+            "</svg>" +
+          "</span>" +
           '<p class="home-discord-promo__title home-discord-promo__flash-title">' + escapeHtml(i18n("discord.home.title")) + "</p>" +
           '<p class="home-discord-promo__hook home-discord-promo__flash-hook">' + escapeHtml(i18n("discord.home.hook")) + "</p>" +
           '<p class="home-discord-promo__flash-stat">' +
@@ -462,9 +441,9 @@ function buildDiscordPromoBannerHtml(inCards) {
           "</p>" +
         "</div>" +
         '<div class="home-discord-promo__flash-perks">' +
-          buildHomeFlashPerkHtml("trading", "📊", "discord.card.tradingPerk", "discord.home.tradingTag1") +
-          buildHomeFlashPerkHtml("middleman", buildMiddlemanShieldIconHtml(22), "discord.card.middlemanTitle", "discord.card.middlemanStep1") +
-          buildHomeFlashPerkHtml("giveaways", "🎁", "discord.card.giveawaysTitle", "discord.card.giveawaysTag2") +
+          buildHomeFlashPerkHtml("community", buildCommunityPerkIconHtml(), "discord.home.badgeCommunity", "discord.home.communityTag") +
+          buildHomeFlashPerkHtml("middleman", buildMiddlemanShieldIconHtml(18), "discord.home.badgeMiddleman", "discord.card.middlemanStep1") +
+          buildHomeFlashPerkHtml("giveaways", buildGiveawayPerkIconHtml(), "discord.home.badgeGiveaways", "discord.card.giveawaysTag2") +
         "</div>" +
         '<div class="home-discord-promo__actions home-discord-promo__actions--home home-discord-promo__flash-actions">' +
           '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__btn home-discord-promo__btn--primary home-discord-promo__btn--flash-join">' +
@@ -497,71 +476,407 @@ function buildCardsHtmlWithDiscordPromo(items, cardBuilder, sectionTitle, minIte
   return parts.join("");
 }
 
+function homeLiveTradingHref() {
+  return typeof window.bsvSitePath === "function"
+    ? window.bsvSitePath("live-trading.html")
+    : "live-trading.html";
+}
+
+function buildHomeLiveTradingBarHtml() {
+  return (
+    '<aside class="home-lt-bar" aria-label="Live Trading">' +
+      '<span class="home-lt-bar__new">NEW</span>' +
+      "<h3>BlockSpin Live Trading</h3>" +
+      "<p>Post offers, browse live deals, and message traders instantly.</p>" +
+      '<div class="home-lt-bar__actions">' +
+        '<a class="home-lt-bar__btn" href="' + homeLiveTradingHref() + '">Start Trading →</a>' +
+      "</div>" +
+    "</aside>"
+  );
+}
+
+var HOME_FEATURE_VALUE_LIST_IMG =
+  "https://i.ibb.co/dRWzVWd/Screenshot-2026-09-29-at-09-52-56.png";
+var HOME_FEATURE_LIVE_TRADING_IMG =
+  "https://i.ibb.co/nqg9PzFQ/Screenshot-2026-09-29-at-11-23-38.png";
+
+function buildHomeFeatureMediaHtml(src, alt) {
+  return (
+    '<div class="home-feature-showcase__media" data-home-tilt>' +
+      '<div class="home-feature-showcase__tilt">' +
+        '<img class="home-feature-showcase__img" src="' +
+        src +
+        '" alt="' +
+        escapeAttr(alt) +
+        '" width="960" height="540" loading="lazy" decoding="async">' +
+      "</div>" +
+    "</div>"
+  );
+}
+
+function buildHomeFeatureShowcaseHtml() {
+  var discordInvite = BSV_DISCORD_INVITE_URL || "https://discord.gg/QbapryYUUx";
+  return (
+    '<section class="home-feature-showcase" aria-label="Value List and Live Trading">' +
+      '<article class="home-feature-showcase__row">' +
+        '<div class="home-feature-showcase__copy">' +
+          '<h2 class="home-feature-showcase__title">Value List</h2>' +
+          '<p class="home-feature-showcase__text">' +
+            'BlockSpin Values is the largest and most trusted value list for ' +
+            '<a class="home-feature-showcase__link" href="https://www.roblox.com/games/104715542330896/BlockSpin" target="_blank" rel="noopener noreferrer">Roblox BlockSpin</a>. ' +
+            "Built by top traders, we keep accurate values updated daily for the whole community." +
+          "</p>" +
+          '<ul class="home-feature-showcase__bullets">' +
+            "<li>Trusted and transparent</li>" +
+            "<li>Daily updates plus extra tools</li>" +
+          "</ul>" +
+          '<button type="button" class="home-feature-showcase__cta" data-home-feature-section="Common / Uncommon">Browse values <span aria-hidden="true">→</span></button>' +
+        "</div>" +
+        buildHomeFeatureMediaHtml(HOME_FEATURE_VALUE_LIST_IMG, "BlockSpin Values value list preview") +
+      "</article>" +
+      '<article class="home-feature-showcase__row home-feature-showcase__row--flip">' +
+        buildHomeFeatureMediaHtml(HOME_FEATURE_LIVE_TRADING_IMG, "BlockSpin Live Trading preview") +
+        '<div class="home-feature-showcase__copy">' +
+          '<h2 class="home-feature-showcase__title">Live Trading</h2>' +
+          '<p class="home-feature-showcase__text">' +
+            "Find the best deals as soon as they go up. Post offers, browse other traders, and message them in seconds. " +
+            'You can also use our middleman service in ' +
+            '<a class="home-feature-showcase__link" href="' +
+            discordInvite +
+            '" target="_blank" rel="noopener noreferrer">Our Discord Server</a> to keep trades safe.' +
+          "</p>" +
+          '<ul class="home-feature-showcase__bullets">' +
+            "<li>Easy to use</li>" +
+            "<li>Find trades fast</li>" +
+          "</ul>" +
+          '<a class="home-feature-showcase__cta" href="' +
+          homeLiveTradingHref() +
+          '">Open Live Trading <span aria-hidden="true">→</span></a>' +
+        "</div>" +
+      "</article>" +
+      buildHomeExtraBannersHtml() +
+    "</section>"
+  );
+}
+
+function buildHomeExtraBannersHtml() {
+  return (
+    '<div class="home-extra-banners-wrap" aria-label="More sections">' +
+      '<h2 class="home-extra-banners__heading">And More...</h2>' +
+      '<div class="home-extra-banners">' +
+        '<button type="button" class="home-extra-banner home-extra-banner--guide" data-home-feature-section="Money & Game Guide">' +
+          '<span class="home-extra-banner__glow" aria-hidden="true"></span>' +
+          '<span class="home-extra-banner__icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' +
+            "</svg>" +
+          "</span>" +
+          '<span class="home-extra-banner__body">' +
+            '<span class="home-extra-banner__eyebrow">Guides</span>' +
+            '<span class="home-extra-banner__title">Money & Game Guide</span>' +
+            '<span class="home-extra-banner__text">Fishing, farming, and the best ways to make cash in BlockSpin.</span>' +
+          "</span>" +
+          '<span class="home-extra-banner__cta" aria-hidden="true">Open <span>→</span></span>' +
+        "</button>" +
+        '<button type="button" class="home-extra-banner home-extra-banner--richest" data-home-feature-section="Richest Players">' +
+          '<span class="home-extra-banner__glow" aria-hidden="true"></span>' +
+          '<span class="home-extra-banner__icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10l-1 7a4 4 0 0 1-8 0L7 4z"/><path d="M5 4h14"/>' +
+            "</svg>" +
+          "</span>" +
+          '<span class="home-extra-banner__body">' +
+            '<span class="home-extra-banner__eyebrow">Leaderboard</span>' +
+            '<span class="home-extra-banner__title">Richest Players</span>' +
+            '<span class="home-extra-banner__text">See who tops the BlockSpin net worth list and where you rank.</span>' +
+          "</span>" +
+          '<span class="home-extra-banner__cta" aria-hidden="true">Open <span>→</span></span>' +
+        "</button>" +
+      "</div>" +
+    "</div>"
+  );
+}
+
+function initHomeFeatureShowcase(root) {
+  var scope = root || document;
+  scope.querySelectorAll("[data-home-feature-section]").forEach(function (btn) {
+    if (btn._homeFeatureSectionBound) return;
+    btn._homeFeatureSectionBound = true;
+    btn.addEventListener("click", function () {
+      var name = btn.getAttribute("data-home-feature-section");
+      if (name && typeof showSection === "function") showSection(name);
+    });
+  });
+  initHomeFeatureTilt(scope);
+}
+
+function initHomeFeatureTilt(root) {
+  var scope = root || document;
+  var reduceMotion =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  scope.querySelectorAll("[data-home-tilt]").forEach(function (wrap) {
+    if (wrap._homeTiltBound) return;
+    wrap._homeTiltBound = true;
+    var tilt = wrap.querySelector(".home-feature-showcase__tilt");
+    if (!tilt) return;
+    if (reduceMotion) return;
+
+    var max = 4.5;
+    function setTilt(clientX, clientY) {
+      var rect = wrap.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      var x = (clientX - rect.left) / rect.width;
+      var y = (clientY - rect.top) / rect.height;
+      x = Math.max(0, Math.min(1, x));
+      y = Math.max(0, Math.min(1, y));
+      var rotY = (0.5 - x) * max * 2;
+      var rotX = (y - 0.5) * max * 2;
+      tilt.style.transform =
+        "perspective(1200px) rotateX(" +
+        rotX.toFixed(2) +
+        "deg) rotateY(" +
+        rotY.toFixed(2) +
+        "deg)";
+    }
+    function resetTilt() {
+      tilt.style.transform =
+        "perspective(1200px) rotateX(0deg) rotateY(0deg)";
+    }
+
+    wrap.addEventListener(
+      "pointermove",
+      function (e) {
+        setTilt(e.clientX, e.clientY);
+      },
+      { passive: true }
+    );
+    wrap.addEventListener("pointerleave", resetTilt);
+    wrap.addEventListener("pointercancel", resetTilt);
+  });
+}
+
+function buildHomeChangesStripHtml(listId) {
+  return (
+    '<aside class="home-changes-strip" aria-label="' + escapeHtml(i18n("home.recentChanges")) + '">' +
+      '<p class="home-changes-strip__heading">' + escapeHtml(i18n("home.recentChanges")) + "</p>" +
+      '<div class="home-changes-strip__viewport" id="' + listId + '">' +
+        '<div class="value-changes-loading" data-i18n="loading.changes">' + escapeHtml(i18n("loading.changes")) + "</div>" +
+      "</div>" +
+      '<button type="button" class="home-changes-changelog-link" id="home-changelog-open" data-changelog-open>' +
+        '<span>' + escapeHtml(i18n("home.readFullChangelog")) + "</span>" +
+        '<svg class="home-changes-changelog-link__icon" viewBox="0 0 24 24" width="10" height="10" aria-hidden="true" focusable="false">' +
+          '<path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M9 5h10M9 12h10M9 19h10M5 5h.01M5 12h.01M5 19h.01"/>' +
+        "</svg>" +
+      "</button>" +
+    "</aside>"
+  );
+}
+
+var homeValueChangesCache = [];
+
+function buildChangelogFeedItemHtml(r) {
+  return buildValueChangeItemHtml(r, "feed");
+}
+
+function ensureChangelogModal() {
+  var existing = document.getElementById("home-changelog-modal");
+  if (existing) return existing;
+
+  var modal = document.createElement("div");
+  modal.id = "home-changelog-modal";
+  modal.className = "home-changelog-modal";
+  modal.hidden = true;
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "home-changelog-title");
+  modal.innerHTML =
+    '<div class="home-changelog-modal__backdrop" data-changelog-close tabindex="-1"></div>' +
+    '<div class="home-changelog-modal__panel">' +
+      '<div class="home-changelog-modal__header">' +
+        '<h2 class="home-changelog-modal__title" id="home-changelog-title">' + escapeHtml(i18n("home.fullChangelogTitle")) + "</h2>" +
+        '<button type="button" class="home-changelog-modal__close" data-changelog-close aria-label="' + escapeAttr(i18n("home.changelogClose")) + '">&times;</button>' +
+      "</div>" +
+      '<div class="home-changelog-modal__body" id="home-changelog-list">' +
+        '<div class="value-changes-loading">' + escapeHtml(i18n("loading.changes")) + "</div>" +
+      "</div>" +
+    "</div>";
+  document.body.appendChild(modal);
+  return modal;
+}
+
+function renderChangelogModalList() {
+  var list = document.getElementById("home-changelog-list");
+  if (!list) return;
+  if (!homeValueChangesCache.length) {
+    list.innerHTML = '<div class="value-changes-loading">' + escapeHtml(i18n("changes.none")) + "</div>";
+    return;
+  }
+  list.innerHTML =
+    '<div class="home-changelog-feed" role="list">' +
+      homeValueChangesCache.map(buildChangelogFeedItemHtml).join("") +
+    "</div>";
+}
+
+function openChangelogModal() {
+  var modal = ensureChangelogModal();
+  renderChangelogModalList();
+  modal.hidden = false;
+  modal.classList.add("is-open");
+  document.body.classList.add("home-changelog-open");
+  var closeBtn = modal.querySelector(".home-changelog-modal__close");
+  if (closeBtn) closeBtn.focus();
+}
+
+function closeChangelogModal() {
+  var modal = document.getElementById("home-changelog-modal");
+  if (!modal) return;
+  modal.classList.remove("is-open");
+  modal.hidden = true;
+  document.body.classList.remove("home-changelog-open");
+}
+
 function mountHomeDiscordPromo() {
   var slot = document.getElementById("home-discord-promo-slot");
   if (!slot) return;
   slot.outerHTML =
-    '<div class="home-hero-row">' +
-      '<div class="home-hero-row__banner">' +
-        '<div class="home-hero-banner-carousel" data-rotate="1" aria-live="polite">' +
-          '<div class="home-hero-banner-carousel__viewport">' +
-            '<div class="home-hero-banner-carousel__slide is-active" data-slide="discord" aria-hidden="false">' +
-              buildDiscordPromoBannerHtml(false) +
-            "</div>" +
-            '<div class="home-hero-banner-carousel__slide" data-slide="robux" aria-hidden="true">' +
-              buildHomeRobuxBannerHtml() +
-            "</div>" +
-          "</div>" +
+    '<div class="home-hero-stack">' +
+      '<div class="home-hero-top">' +
+        '<div class="home-hero-top__discord">' +
+          buildDiscordPromoBannerHtml(false) +
+        "</div>" +
+        '<div class="home-hero-top__stats">' +
+          '<div id="home-site-stats-slot"></div>' +
+          buildHomeChangesStripHtml("home-main-value-changes-list") +
         "</div>" +
       "</div>" +
-      '<div class="home-hero-row__stats" id="home-site-stats-slot"></div>' +
+      buildHomeFeatureShowcaseHtml() +
     "</div>";
+  // Keep tax-column home rail empty; stats sit in-line with Discord.
+  var rail = document.getElementById("home-right-rail");
+  if (rail) {
+    rail.innerHTML = "";
+    rail.hidden = true;
+    rail.style.display = "none";
+  }
   mountHomeSiteStats();
-  initHomeHeroBannerCarousel();
+  initHomeFeatureShowcase(document.getElementById("home") || document);
 }
 
 function mountHomeSiteStats() {
   var slot = document.getElementById("home-site-stats-slot");
-  if (slot) slot.innerHTML = buildHomeSiteStatsHtml("home-site-stats--beside");
+  if (slot) slot.outerHTML = buildHomeSiteStatsHtml("home-stats-strip--rail", "home-site-stats-rail");
+  applyCachedHomeStatValues(document);
 }
 
-var HOME_SITE_STATS_ICONS = {
-  items:
-    '<svg class="home-site-stats__icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>' +
-    '</svg>',
-  online:
-    '<svg class="home-site-stats__icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">' +
-      '<rect x="2" y="14" width="3" height="6" rx="0.75"/><rect x="7" y="10" width="3" height="10" rx="0.75"/><rect x="12" y="6" width="3" height="14" rx="0.75"/><rect x="17" y="2" width="3" height="18" rx="0.75"/>' +
-    '</svg>'
-};
-
-function buildHomeSiteStatsHtml(extraClass) {
-  var statsClass = "home-site-stats" + (extraClass ? " " + extraClass : "");
+function homeStatsLabelIcon(kind) {
+  if (kind === "items") {
+    // Clear faceted diamond / gem
+    return (
+      '<svg class="home-stats-strip__icon home-stats-strip__icon--items" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false">' +
+        '<path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linejoin="round" d="M7.1 4.6h9.8L21 9.2 12 20.4 3 9.2z"/>' +
+        '<path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linejoin="round" d="M3.4 9.2h17.2"/>' +
+        '<path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linejoin="round" d="M9.1 4.6 12 9.2l2.9-4.6"/>' +
+        '<path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linejoin="round" d="M7.1 9.2 12 20.4l4.9-11.2"/>' +
+      "</svg>"
+    );
+  }
+  if (kind === "online") {
+    // User in circle
+    return (
+      '<svg class="home-stats-strip__icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">' +
+        '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/>' +
+        '<circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/>' +
+        '<path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M7.4 18.2a5.2 5.2 0 0 1 9.2 0"/>' +
+      "</svg>"
+    );
+  }
+  // Total changes — circular history / refresh arrows
   return (
-    '<aside class="' + statsClass + '" aria-label="' + escapeHtml(i18n("home.stats.aria")) + '">' +
-      '<div class="home-site-stats__item">' +
-        '<span class="home-site-stats__value" data-home-stat="items">0</span>' +
-        '<span class="home-site-stats__label">' +
-          '<span class="home-site-stats__icon">' + HOME_SITE_STATS_ICONS.items + '</span>' +
-          escapeHtml(i18n("home.stats.itemsTracked")) +
-        '</span>' +
-      '</div>' +
-      '<div class="home-site-stats__item">' +
-        '<span class="home-site-stats__value" data-home-stat="online">0</span>' +
-        '<span class="home-site-stats__label">' +
-          '<span class="home-site-stats__icon">' + HOME_SITE_STATS_ICONS.online + '</span>' +
-          escapeHtml(i18n("home.stats.onlineMembers")) +
-        '</span>' +
-      '</div>' +
-    '</aside>'
+    '<svg class="home-stats-strip__icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">' +
+      '<path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M20 6.5v4.2h-4.2"/>' +
+      '<path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M19.1 10.6A7.2 7.2 0 1 0 18 16.2"/>' +
+    "</svg>"
+  );
+}
+
+function buildHomeSiteStatsHtml(extraClass, elementId) {
+  var statsClass = "home-stats-strip" + (extraClass && extraClass !== "home-stats-strip" ? " " + extraClass : "");
+  var idAttr = elementId ? ' id="' + elementId + '"' : "";
+  return (
+    '<aside class="' + statsClass + '"' + idAttr + ' aria-label="' + escapeHtml(i18n("home.stats.aria")) + '">' +
+      '<div class="home-stats-strip__item">' +
+        '<span class="home-stats-strip__value" data-home-stat="items">0</span>' +
+        '<span class="home-stats-strip__label">' + homeStatsLabelIcon("items") +
+          '<span class="home-stats-strip__label-text">' + escapeHtml(i18n("home.stats.itemsTracked")) + "</span></span>" +
+      "</div>" +
+      '<span class="home-stats-strip__rule" aria-hidden="true"></span>' +
+      '<div class="home-stats-strip__item">' +
+        '<span class="home-stats-strip__value" data-home-stat="online">0</span>' +
+        '<span class="home-stats-strip__label">' + homeStatsLabelIcon("online") +
+          '<span class="home-stats-strip__label-text">' + escapeHtml(i18n("home.stats.onlineMembers")) + "</span></span>" +
+      "</div>" +
+      '<span class="home-stats-strip__rule" aria-hidden="true"></span>' +
+      '<div class="home-stats-strip__item">' +
+        '<span class="home-stats-strip__value" data-home-stat="changes">0</span>' +
+        '<span class="home-stats-strip__label">' + homeStatsLabelIcon("changes") +
+          '<span class="home-stats-strip__label-text">' + escapeHtml(i18n("home.stats.totalChanges")) + "</span></span>" +
+      "</div>" +
+    "</aside>"
   );
 }
 
 var homeStatAnimFrames = {};
+var homeStatValueCache = { traders: null, online: null, items: null, changes: null };
+
+function syncDiscordMemberCountElements(value) {
+  if (typeof value !== "number" || isNaN(value)) return;
+  var text = value.toLocaleString();
+  document.querySelectorAll(".discord-member-count").forEach(function (el) {
+    el.textContent = text;
+  });
+}
+
+function applyCachedHomeStatValues(root) {
+  var scope = root && root.querySelectorAll ? root : document;
+  Object.keys(homeStatValueCache).forEach(function (key) {
+    var value = homeStatValueCache[key];
+    if (typeof value !== "number" || isNaN(value)) return;
+    var text = value.toLocaleString();
+    scope.querySelectorAll('[data-home-stat="' + key + '"]').forEach(function (el) {
+      el.textContent = text;
+    });
+  });
+  if (typeof homeStatValueCache.traders === "number") {
+    var tradersText = homeStatValueCache.traders.toLocaleString();
+    scope.querySelectorAll(".discord-member-count").forEach(function (el) {
+      el.textContent = tradersText;
+    });
+  }
+}
+
+function markHomeStatGrown(key) {
+  // Discord traders stay white — gold is only for the home stats strip.
+  if (key === "traders") {
+    document.querySelectorAll(".home-discord-promo__flash-stat-num").forEach(function (wrap) {
+      wrap.classList.remove("is-counting", "is-grown");
+    });
+    document.querySelectorAll(".home-discord-promo__flash-stat").forEach(function (pill) {
+      pill.classList.remove("is-grown");
+    });
+    return;
+  }
+  var els = document.querySelectorAll('[data-home-stat="' + key + '"]');
+  els.forEach(function (wrap) {
+    wrap.classList.remove("is-counting");
+    wrap.classList.add("is-grown");
+  });
+}
 
 function setHomeStatValue(key, value, animate) {
   if (typeof value !== "number" || isNaN(value)) return;
+  homeStatValueCache[key] = value;
+  if (key === "traders") syncDiscordMemberCountElements(value);
   if (animate) {
     animateHomeStatValue(key, value);
     return;
@@ -569,6 +884,10 @@ function setHomeStatValue(key, value, animate) {
   document.querySelectorAll('[data-home-stat="' + key + '"]').forEach(function (el) {
     el.textContent = value.toLocaleString();
   });
+  // Instant updates (incl. reduced-motion) still get the finished gold look.
+  if (key === "items" || key === "online" || key === "changes") {
+    markHomeStatGrown(key);
+  }
 }
 
 function animateHomeStatValue(key, targetValue, durationMs) {
@@ -585,36 +904,159 @@ function animateHomeStatValue(key, targetValue, durationMs) {
   }
 
   var els = document.querySelectorAll('[data-home-stat="' + key + '"]');
-  if (!els.length) return;
+  // Cache is already set — if the DOM isn't mounted yet, apply later via applyCachedHomeStatValues.
+  if (!els.length && key !== "traders") return;
 
+  var animWraps =
+    key === "traders"
+      ? document.querySelectorAll(".home-discord-promo__flash-stat-num")
+      : els;
+  if (!animWraps.length && !els.length) return;
+
+  animWraps.forEach(function (wrap) {
+    wrap.classList.remove("is-grown");
+    void wrap.offsetWidth;
+    wrap.classList.add("is-counting");
+  });
+
+  var countTargets = els.length ? els : animWraps;
   var start = performance.now();
   function frame(now) {
     var progress = Math.min(1, (now - start) / durationMs);
     var eased = 1 - Math.pow(1 - progress, 3);
     var current = Math.round(targetValue * eased);
-    els.forEach(function (el) {
-      el.textContent = current.toLocaleString();
+    countTargets.forEach(function (el) {
+      if (el.classList && el.classList.contains("home-discord-promo__flash-stat-num")) {
+        var inner = el.querySelector(".discord-member-count") || el;
+        inner.textContent = current.toLocaleString();
+      } else {
+        el.textContent = current.toLocaleString();
+      }
     });
+    if (key === "traders") syncDiscordMemberCountElements(current);
     if (progress < 1) {
       homeStatAnimFrames[key] = requestAnimationFrame(frame);
     } else {
       homeStatAnimFrames[key] = null;
-      els.forEach(function (el) {
-        el.textContent = targetValue.toLocaleString();
-      });
+      if (key === "traders") {
+        syncDiscordMemberCountElements(targetValue);
+        animWraps.forEach(function (wrap) {
+          wrap.classList.remove("is-counting", "is-grown");
+        });
+      } else {
+        els.forEach(function (el) {
+          el.textContent = targetValue.toLocaleString();
+        });
+        markHomeStatGrown(key);
+      }
     }
   }
   homeStatAnimFrames[key] = requestAnimationFrame(frame);
+}
+
+function isWebsiteConfigMetaRow(name) {
+  var key = String(name || "").trim().toLowerCase();
+  return (
+    key === "anaconda gw" ||
+    key === "firework gw" ||
+    key === "cell edits" ||
+    key === "total cell edits" ||
+    key === "spreadsheet edits"
+  );
 }
 
 function filterValueChangeRows(rows) {
   if (!rows || !rows.length) return [];
   return rows.filter(function (r) {
     var name = (r.Title || r.Name || "").toString().trim();
-    if (name === "Anaconda GW" || name === "Firework GW") return false;
+    if (isWebsiteConfigMetaRow(name)) return false;
     var t = (r.Title || r.Date || r.Text || "").toString().trim();
     return t.length > 0;
   });
+}
+
+/**
+ * Spreadsheet Version history cell-level edits (legitimately thousands over the sheet's life).
+ * Override via Website Configs Title: "Cell Edits" / "Total Cell Edits" / "Spreadsheet Edits".
+ * Full "Total changes" override: Title "Total Changes".
+ */
+var HOME_STATS_CELL_EDITS_FALLBACK = 3184;
+
+var homeStatsTrackedItems = 0;
+var homeStatsChangeRows = null;
+
+function resolveNamedConfigCount(rows, names) {
+  var wanted = {};
+  (names || []).forEach(function (n) {
+    wanted[String(n).toLowerCase()] = true;
+  });
+  var list = rows || [];
+  for (var i = 0; i < list.length; i++) {
+    var name = String((list[i] && (list[i].Title || list[i].Name)) || "")
+      .trim()
+      .toLowerCase();
+    if (!wanted[name]) continue;
+    var raw = String((list[i] && (list[i].Text || list[i].Date)) || "").replace(/,/g, "").trim();
+    var n = parseInt(raw, 10);
+    if (!isNaN(n) && n > 0) return n;
+  }
+  return null;
+}
+
+function resolveCellEditsCount(rows) {
+  var n = resolveNamedConfigCount(rows, [
+    "cell edits",
+    "total cell edits",
+    "spreadsheet edits"
+  ]);
+  // Ignore stale sub-thousand measurements (old ~239 Version history sample).
+  if (n != null && n >= 1000) return n;
+  return HOME_STATS_CELL_EDITS_FALLBACK;
+}
+
+/** Total changes = sheet cell edits + changelog events + every tracked item (each was added). */
+function computeHomeTotalChanges(rows, trackedItems) {
+  var override = resolveNamedConfigCount(rows, ["total changes", "total edits"]);
+  if (override != null) return override;
+  var cellEdits = resolveCellEditsCount(rows);
+  var changelogEvents = countValueChangesFromRows(rows);
+  var items = typeof trackedItems === "number" && trackedItems > 0 ? trackedItems : 0;
+  return cellEdits + changelogEvents + items;
+}
+
+function publishTotalChangesStat(animate) {
+  var total = computeHomeTotalChanges(homeStatsChangeRows || [], homeStatsTrackedItems);
+  setHomeStatValue("changes", total, Boolean(animate));
+}
+
+/** Count individual spreadsheet changelog rows (adds, removes, value/demand edits, etc.). */
+function countValueChangesFromRows(rows) {
+  var filtered = filterValueChangeRows(rows);
+  var verbRe =
+    /\b(added|removed|deleted|increased|decreased|changed|updated|lowered|raised|nerfed|buffed|reverted|moved|renamed|adjusted)\b/gi;
+  var total = 0;
+  filtered.forEach(function (row) {
+    var text = String((row && row.Text) || "").trim();
+    if (!text) {
+      total += 1;
+      return;
+    }
+    var chunks = text
+      .replace(/\r/g, "")
+      .split(/\n+|•|●|▪|;/g)
+      .map(function (chunk) {
+        return chunk.trim();
+      })
+      .filter(Boolean);
+    if (!chunks.length) chunks = [text];
+    var rowCount = 0;
+    chunks.forEach(function (chunk) {
+      var hits = chunk.match(verbRe);
+      rowCount += hits && hits.length ? hits.length : 1;
+    });
+    total += Math.max(1, rowCount);
+  });
+  return total;
 }
 
 function countNamedSheetItems(items) {
@@ -638,7 +1080,7 @@ function countTrackedItemsFromResults(results) {
     var cfg = typeof getSectionConfig === "function" ? getSectionConfig(result.section) : null;
     if (cfg) {
       if (cfg.dataSource !== "sheet") return;
-    } else if (result.section === "Home" || result.section === "\uD83D\uDCB0 Richest Players") {
+    } else if (result.section === "Home" || result.section === "Richest Players" || result.section === "💰 Richest Players") {
       return;
     }
     if (result.section === ACCESSORIES_SECTION_NAME) {
@@ -678,7 +1120,10 @@ async function updateHomeSiteStatsFromResults(results) {
   } catch (err) {
     console.warn("Failed to load guide item counts for home stats:", err);
   }
+  homeStatsTrackedItems = total;
   setHomeStatValue("items", total, true);
+  publishTotalChangesStat(true);
+  applyCachedHomeStatValues(document);
 }
 
 function buildRobuxGiveawayBannerHtml(bannerId) {
@@ -688,7 +1133,13 @@ function buildRobuxGiveawayBannerHtml(bannerId) {
 function normalizeSectionNameForAnalytics(sectionName) {
   var name = sectionName || "Home";
   if (name === "Untradable Items") return ACCESSORIES_SECTION_NAME;
-  if (name === "Richest Players" || name === "richest-players") return "💰 Richest Players";
+  if (
+    name === "Richest Players" ||
+    name === "richest-players" ||
+    name === "💰 Richest Players"
+  ) {
+    return "Richest Players";
+  }
   return name;
 }
 
@@ -707,6 +1158,7 @@ function shouldIgnoreAnalyticsReferrer() {
 }
 
 function initAnalytics() {
+  if (isBsvTestEnvironment()) return;
   if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === "G-XXXXXXXXXX") return;
   if (typeof window.bsvHasMarketingConsent === "function" && !window.bsvHasMarketingConsent()) {
     return;
@@ -1661,12 +2113,52 @@ function buildCardExclusiveBadgeHtml(tier) {
   var ariaKey = isVery ? "card.exclusiveVeryAria" : "card.exclusiveAria";
   return (
     '<div class="card-exclusive-badge-wrapper ' + modClass + '">' +
-      '<div class="card-exclusive-badge" role="img" aria-label="' + escapeAttr(i18n(ariaKey)) + '">' +
+      '<button type="button" class="card-exclusive-badge" aria-label="' +
+        escapeAttr(i18n(ariaKey)) +
+        '" aria-expanded="false">' +
         buildExclusiveBadgeIconSvg(tier) +
-      "</div>" +
+      "</button>" +
       '<div class="card-exclusive-badge-tooltip" role="tooltip">' + escapeHtml(i18n(tooltipKey)) + "</div>" +
     "</div>"
   );
+}
+
+function closeExclusiveBadgeTips(exceptWrap) {
+  document.querySelectorAll(".card-exclusive-badge-wrapper.is-tip-open").forEach(function (wrap) {
+    if (exceptWrap && wrap === exceptWrap) return;
+    wrap.classList.remove("is-tip-open");
+    var btn = wrap.querySelector(".card-exclusive-badge");
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  });
+}
+
+function initExclusiveBadgeTips() {
+  if (document.documentElement.dataset.exclusiveTipsWired === "1") return;
+  document.documentElement.dataset.exclusiveTipsWired = "1";
+  document.addEventListener(
+    "click",
+    function (e) {
+      var badge = e.target.closest(".card-exclusive-badge");
+      if (badge) {
+        e.preventDefault();
+        e.stopPropagation();
+        var wrap = badge.closest(".card-exclusive-badge-wrapper");
+        if (!wrap) return;
+        var willOpen = !wrap.classList.contains("is-tip-open");
+        closeExclusiveBadgeTips(willOpen ? wrap : null);
+        wrap.classList.toggle("is-tip-open", willOpen);
+        badge.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        return;
+      }
+      if (!e.target.closest(".card-exclusive-badge-wrapper.is-tip-open")) {
+        closeExclusiveBadgeTips();
+      }
+    },
+    true
+  );
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeExclusiveBadgeTips();
+  });
 }
 
 function buildCardBottomActionsHtml(exclusiveTier) {
@@ -1813,24 +2305,61 @@ if (showPawn) {
 }
 
 function ensureGiveawayModal() {
-  if (document.getElementById('giveaway-modal')) return;
-  const modal = document.createElement('div');
-  modal.id = 'giveaway-modal';
-  modal.className = 'giveaway-modal';
-  modal.innerHTML = `
-    <div class="giveaway-modal-backdrop" data-giveaway-close></div>
-    <div class="giveaway-modal-content">
-      <button class="giveaway-modal-close" type="button" aria-label="${escapeAttr(i18n("giveaway.close"))}" data-giveaway-close>&times;</button>
-      <h2 class="giveaway-modal-title">${escapeHtml(i18n("giveaway.modalTitle"))}</h2>
-      <p class="giveaway-modal-text">
-        ${escapeHtml(i18n("giveaway.modalBody"))}
-      </p>
-      <a href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener" class="giveaway-modal-button">
-        ${escapeHtml(i18n("giveaway.modalBtn"))}
-      </a>
-    </div>
-  `;
+  var existing = document.getElementById("giveaway-modal");
+  if (existing && existing.dataset.revamp === "1") return existing;
+  if (existing) existing.remove();
+
+  var discordUrl = typeof BSV_DISCORD_INVITE_URL === "string" && BSV_DISCORD_INVITE_URL
+    ? BSV_DISCORD_INVITE_URL
+    : "https://discord.gg/QbapryYUUx";
+  var modal = document.createElement("div");
+  modal.id = "giveaway-modal";
+  modal.className = "giveaway-modal";
+  modal.dataset.revamp = "1";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "giveaway-modal-title");
+  modal.innerHTML =
+    '<div class="giveaway-modal-backdrop" data-giveaway-close></div>' +
+    '<div class="giveaway-modal-content">' +
+      '<button class="giveaway-modal-close" type="button" aria-label="' +
+        escapeAttr(i18n("giveaway.close")) +
+      '" data-giveaway-close>&times;</button>' +
+      '<div class="giveaway-modal__gift" aria-hidden="true"></div>' +
+      '<p class="giveaway-modal__eyebrow">' + escapeHtml(i18n("giveaway.modalEyebrow")) + "</p>" +
+      '<h2 class="giveaway-modal-title" id="giveaway-modal-title">' +
+        escapeHtml(i18n("giveaway.modalTitle")) +
+      "</h2>" +
+      '<p class="giveaway-modal__item" data-giveaway-item></p>' +
+      '<p class="giveaway-modal-text" data-giveaway-body></p>' +
+      '<a href="' + escapeAttr(discordUrl) + '" target="_blank" rel="noopener noreferrer" class="giveaway-modal-button">' +
+        '<span class="giveaway-modal-button__icon" aria-hidden="true">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">' +
+            '<path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>' +
+          "</svg>" +
+        "</span>" +
+        '<span data-giveaway-btn>' + escapeHtml(i18n("giveaway.modalBtn")) + "</span>" +
+      "</a>" +
+    "</div>";
   document.body.appendChild(modal);
+  return modal;
+}
+
+function openGiveawayModal(itemName) {
+  var modal = ensureGiveawayModal();
+  if (!modal) return;
+  var label = (itemName || "").toString().trim() || i18n("giveaway.thisItem");
+  var itemEl = modal.querySelector("[data-giveaway-item]");
+  var bodyEl = modal.querySelector("[data-giveaway-body]");
+  var titleEl = modal.querySelector("#giveaway-modal-title");
+  var btnEl = modal.querySelector("[data-giveaway-btn]");
+  var eyebrowEl = modal.querySelector(".giveaway-modal__eyebrow");
+  if (titleEl) titleEl.textContent = i18n("giveaway.modalTitle");
+  if (eyebrowEl) eyebrowEl.textContent = i18n("giveaway.modalEyebrow");
+  if (itemEl) itemEl.textContent = label;
+  if (bodyEl) bodyEl.textContent = i18n("giveaway.modalBody", { item: label });
+  if (btnEl) btnEl.textContent = i18n("giveaway.modalBtn");
+  modal.classList.add("visible");
 }
 
 function createCrewLogoCard(item) {
@@ -3113,7 +3642,7 @@ function renderSection(title, items) {
     return;
   }
 
-  if (title === "💰 Richest Players") {
+  if (title === "Richest Players") {
     renderRichestPlayersSection(items);
   } else if (title === "Crew Logos") {
     renderCrewLogosSection(items);
@@ -3158,6 +3687,9 @@ function renderSection(title, items) {
 
   _sectionsDomReady[title] = true;
 
+  // Section Discord cards mount after the invite count fetch — fill cached totals.
+  applyCachedHomeStatValues(document);
+
   if (typeof window.bsvRefreshSavedCardButtons === "function") {
     window.bsvRefreshSavedCardButtons();
   }
@@ -3166,6 +3698,11 @@ function renderSection(title, items) {
 function ensureSectionRendered(title) {
   if (!title || _sectionsDomReady[title]) return;
   if (title === "Home") {
+    _sectionsDomReady[title] = true;
+    return;
+  }
+  var earlyCfg = typeof getSectionConfig === "function" ? getSectionConfig(title) : null;
+  if (earlyCfg && earlyCfg.pageHref) {
     _sectionsDomReady[title] = true;
     return;
   }
@@ -3195,23 +3732,127 @@ function renderVehiclesSectionWithBanner(items) {
   document.getElementById("sections").insertAdjacentHTML("beforeend", html);
 }
 
+var sitePresenceVisitorId = "";
+var sitePresenceTimer = 0;
+var discordOnlineCache = null;
+var siteOnlineCache = null;
+var discordOnlineReady = false;
+
+function getSitePresenceVisitorId() {
+  if (sitePresenceVisitorId) return sitePresenceVisitorId;
+  try {
+    var stored = localStorage.getItem("bsv_presence_id");
+    if (stored && /^[a-zA-Z0-9_-]{8,80}$/.test(stored)) {
+      sitePresenceVisitorId = stored;
+      return sitePresenceVisitorId;
+    }
+  } catch (e) {}
+  sitePresenceVisitorId =
+    "v_" +
+    Math.random().toString(36).slice(2, 10) +
+    Date.now().toString(36) +
+    Math.random().toString(36).slice(2, 8);
+  try {
+    localStorage.setItem("bsv_presence_id", sitePresenceVisitorId);
+  } catch (e2) {}
+  return sitePresenceVisitorId;
+}
+
+function publishCombinedOnlineCount(animate) {
+  // Wait for Discord presence so Members Online doesn't flash a small site-only
+  // number, then jump to thousands when Discord counts arrive.
+  if (!discordOnlineReady) return;
+  var discord = typeof discordOnlineCache === "number" ? discordOnlineCache : 0;
+  var site = typeof siteOnlineCache === "number" ? siteOnlineCache : 0;
+  var total = discord + site;
+  if (!(total > 0) && discordOnlineCache == null && siteOnlineCache == null) return;
+  setHomeStatValue("online", total, Boolean(animate));
+  document.querySelectorAll(".discord-online-count").forEach(function (el) {
+    el.textContent = total.toLocaleString();
+  });
+}
+
+function sendSitePresenceHeartbeat() {
+  var url = BSV_BOT_PUBLIC_BASE + "/api/presence/heartbeat";
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: getSitePresenceVisitorId() }),
+    keepalive: true,
+    cache: "no-store"
+  })
+    .then(function (res) {
+      if (!res.ok) throw new Error("presence " + res.status);
+      return res.json();
+    })
+    .then(function (data) {
+      if (data && data.id) {
+        sitePresenceVisitorId = String(data.id);
+        try {
+          localStorage.setItem("bsv_presence_id", sitePresenceVisitorId);
+        } catch (e) {}
+      }
+      if (data && typeof data.online === "number" && !isNaN(data.online)) {
+        var firstSite = siteOnlineCache == null;
+        siteOnlineCache = data.online;
+        // Only publish once Discord is ready; otherwise just cache site presence.
+        publishCombinedOnlineCount(firstSite && discordOnlineReady);
+      }
+      return data;
+    })
+    .catch(function () {
+      return null;
+    });
+}
+
+function startSitePresenceTracking() {
+  if (sitePresenceTimer) return;
+  sendSitePresenceHeartbeat();
+  sitePresenceTimer = setInterval(sendSitePresenceHeartbeat, 25000);
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) sendSitePresenceHeartbeat();
+  });
+}
+
+// Shared chrome can also start presence; keep a single timer via sitePresenceTimer.
+try {
+  window.bsvStartSitePresence = startSitePresenceTracking;
+} catch (e) {}
+
 function fetchDiscordMemberCount() {
+  startSitePresenceTracking();
   fetch("https://discord.com/api/v10/invites/QbapryYUUx?with_counts=true")
-    .then(function (res) { return res.json(); })
+    .then(function (res) {
+      if (!res.ok) throw new Error("invite " + res.status);
+      return res.json();
+    })
     .then(function (data) {
       var n = data.approximate_member_count;
       var online = data.approximate_presence_count;
       if (typeof n === "number" && !isNaN(n)) {
         setHomeStatValue("traders", n, true);
+        syncDiscordMemberCountElements(n);
       }
       if (typeof online === "number" && !isNaN(online)) {
-        setHomeStatValue("online", online, true);
-        document.querySelectorAll(".discord-online-count").forEach(function (el) {
-          el.textContent = online.toLocaleString();
-        });
+        var firstDiscord = !discordOnlineReady;
+        discordOnlineCache = online;
+        discordOnlineReady = true;
+        publishCombinedOnlineCount(firstDiscord);
+      } else if (!discordOnlineReady) {
+        discordOnlineCache = 0;
+        discordOnlineReady = true;
+        publishCombinedOnlineCount(true);
       }
+      applyCachedHomeStatValues(document);
     })
-    .catch(function () {});
+    .catch(function () {
+      if (!discordOnlineReady) {
+        discordOnlineCache = 0;
+        discordOnlineReady = true;
+        publishCombinedOnlineCount(true);
+      }
+      applyCachedHomeStatValues(document);
+    });
 }
 
 function createFooterBoosterCard(booster) {
@@ -3596,17 +4237,25 @@ function renderMoneyGuideFastNav() {
 
 function renderAccessoriesFastNav(navData) {
   accessoriesFastNavData = navData;
-  renderGuideFastNav(navData, {
-    sectionId: slugify(ACCESSORIES_SECTION_NAME)
-  });
-  renderAccessoriesMobileFastNav(navData);
+  var cfg = typeof getSectionConfig === "function" ? getSectionConfig(_activeSectionName) : null;
+  if (cfg && cfg.accessoriesFastNav) {
+    renderGuideFastNav(navData, {
+      sectionId: slugify(ACCESSORIES_SECTION_NAME)
+    });
+    renderAccessoriesMobileFastNav(navData);
+    setGuideFastNavVisible(true);
+  }
 }
 
 function renderCrewFastNav(navData) {
   crewFastNavData = navData;
-  renderGuideFastNav(navData, {
-    sectionId: slugify("Crew Logos")
-  });
+  var cfg = typeof getSectionConfig === "function" ? getSectionConfig(_activeSectionName) : null;
+  if (cfg && cfg.crewFastNav) {
+    renderGuideFastNav(navData, {
+      sectionId: slugify("Crew Logos")
+    });
+    setGuideFastNavVisible(true);
+  }
 }
 
 
@@ -3625,7 +4274,7 @@ function renderScammerSection(items) {
 
 
  function renderRichestPlayersSection(items) {
-  const sectionId = slugify("💰 Richest Players");
+  const sectionId = slugify("Richest Players");
   const html = `
     <section class="section richest-players-section" id="${sectionId}">
       <a href="#" class="richest-back-to-top" id="richest-back-to-top" hidden aria-label="${escapeAttr(i18n("richest.backToTop"))}">
@@ -3705,8 +4354,45 @@ function initSectionsNav() {
 
     const btn = document.createElement("button");
     btn.dataset.section = name;
-    btn.textContent = i18nSection(name);
-    btn.addEventListener("click", () => showSection(name));
+
+    if (typeof appendSectionNavIcon === "function") {
+      appendSectionNavIcon(btn, name);
+    }
+
+    if (cfg && cfg.id === "live-trading") {
+      btn.classList.add("nav-live-trading");
+      var ltLabel = document.createElement("span");
+      ltLabel.className = "nav-section-label nav-live-trading__label";
+      ltLabel.textContent = i18nSection(name);
+      var ltNew = document.createElement("span");
+      ltNew.className = "nav-live-trading__new";
+      ltNew.setAttribute("aria-hidden", "true");
+      ltNew.textContent = "NEW";
+      btn.appendChild(ltLabel);
+      btn.appendChild(ltNew);
+      if (
+        document.body.classList.contains("live-trading-page") ||
+        document.body.getAttribute("data-bsv-page") === "live-trading"
+      ) {
+        btn.classList.add("active");
+      }
+    } else {
+      var label = document.createElement("span");
+      label.className = "nav-section-label";
+      label.textContent = i18nSection(name);
+      btn.appendChild(label);
+    }
+    btn.addEventListener("click", function () {
+      if (cfg && cfg.pageHref) {
+        var href =
+          typeof window.bsvSitePath === "function"
+            ? window.bsvSitePath(cfg.pageHref)
+            : cfg.pageHref;
+        window.location.href = href;
+        return;
+      }
+      showSection(name);
+    });
     nav.appendChild(btn);
   });
 }
@@ -3854,10 +4540,10 @@ function setHeaderSearchVisible(visible) {
 }
 
 function shouldUseMobileSectionSearch(sectionName) {
-  if (sectionName === "💰 Richest Players") return false;
+  if (sectionName === "Richest Players") return false;
   const cfg = typeof getSectionConfig === "function" ? getSectionConfig(sectionName) : null;
   if (cfg) return cfg.mobileSearchInSection === true;
-  const hiddenSearchSections = ["Home", "Crew Logos", "Crate Game", "💰 Richest Players", ACCESSORIES_SECTION_NAME];
+  const hiddenSearchSections = ["Home", "Crew Logos", "Crate Game", "Richest Players", ACCESSORIES_SECTION_NAME];
   return !hiddenSearchSections.includes(sectionName);
 }
 
@@ -3869,7 +4555,7 @@ function isHeaderSearchVisibleForSection(sectionName) {
     }
     return cfg.search !== "hide";
   }
-  const hiddenSearchSections = ["Home", "Crew Logos", "Crate Game", "💰 Richest Players", ACCESSORIES_SECTION_NAME];
+  const hiddenSearchSections = ["Home", "Crew Logos", "Crate Game", "Richest Players", ACCESSORIES_SECTION_NAME];
   return !hiddenSearchSections.includes(sectionName);
 }
 
@@ -4037,6 +4723,13 @@ function showSection(name) {
   const cfg = typeof getSectionConfig === "function" ? getSectionConfig(name) : null;
   if (!cfg) return;
 
+  if (cfg.pageHref) {
+    var pageHref =
+      typeof window.bsvSitePath === "function" ? window.bsvSitePath(cfg.pageHref) : cfg.pageHref;
+    window.location.href = pageHref;
+    return;
+  }
+
   // Sheets load async. Early nav clicks used to hide #home before the target
   // section existed, leaving a blank main pane.
   if (name !== "Home" && !_renderedSectionCache.length) {
@@ -4064,14 +4757,17 @@ function showSection(name) {
 
   _pendingSectionName = null;
   _activeSectionName = name;
+  clearHashSectionBootHide();
 
   const isHome = cfg.id === "home";
   document.body.classList.toggle("is-home", isHome);
+  // Value-list item sections + crew logos get compact mobile scaling
+  var isItemSection = cfg.dataSource === "sheet" && cfg.id !== "crew-logos";
+  var isCrewSection = cfg.id === "crew-logos";
+  document.body.classList.toggle("is-item-section", isItemSection);
+  document.body.classList.toggle("is-crew-section", isCrewSection);
   if (name === RICHEST_SECTION_NAME) {
     showRichestLevelsNotice();
-  }
-  if (typeof window.bsvAlignSponsorBanner === "function") {
-    window.bsvAlignSponsorBanner();
   }
 
   // Always sync section visibility. Some sections (e.g. #richest-players) have CSS
@@ -4083,6 +4779,11 @@ function showSection(name) {
     setSectionDisplay(el, sectionCfg, sectionCfg.title === name);
   });
 
+  // Place Live Trading after visibility sync so the active section is correct.
+  if (typeof window.bsvAlignSponsorBanner === "function") {
+    window.bsvAlignSponsorBanner();
+  }
+
   const nav = document.getElementById("sections-nav");
   if (nav) {
     nav.querySelectorAll("button").forEach(function (b) {
@@ -4092,6 +4793,10 @@ function showSection(name) {
   }
 
   closeSectionsMenu();
+
+  // Snap to top immediately so a deep scroll in the previous section
+  // cannot leave you stranded at the bottom of the next one.
+  scrollActiveSectionToTop(cfg);
 
   // Defer everything that is not needed for the tap paint.
   requestAnimationFrame(function () {
@@ -4108,11 +4813,19 @@ function showSectionDeferred(name, cfg, isHome) {
 
   const taxSidebarColumn = document.getElementById("tax-sidebar-column");
   const homeValueChanges = document.getElementById("home-value-changes");
+  const homeRightRail = document.getElementById("home-right-rail");
   const taxCalc = taxSidebarColumn ? taxSidebarColumn.querySelector(".tax-calculator") : null;
   const middlemanPromo = taxSidebarColumn ? taxSidebarColumn.querySelector(".discord-mm-promo--sidebar") : null;
 
   if (taxSidebarColumn) {
-    if (isHome || cfg.sidebarColumn === "hide") {
+    taxSidebarColumn.classList.remove("tax-sidebar-column--home-rail");
+    if (isHome) {
+      // Free the tax-column width on Home so Discord + stats can share one aligned row.
+      taxSidebarColumn.style.display = "none";
+      taxSidebarColumn.style.visibility = "hidden";
+      taxSidebarColumn.style.opacity = "0";
+      taxSidebarColumn.style.pointerEvents = "none";
+    } else if (cfg.sidebarColumn === "hide") {
       taxSidebarColumn.style.display = "flex";
       taxSidebarColumn.style.visibility = "hidden";
       taxSidebarColumn.style.opacity = "0";
@@ -4123,6 +4836,11 @@ function showSectionDeferred(name, cfg, isHome) {
       taxSidebarColumn.style.display = "flex";
       taxSidebarColumn.style.pointerEvents = "auto";
     }
+  }
+
+  if (homeRightRail) {
+    homeRightRail.hidden = true;
+    homeRightRail.style.display = "none";
   }
 
   if (typeof applyVisibilityMode === "function") {
@@ -4154,6 +4872,9 @@ function showSectionDeferred(name, cfg, isHome) {
     setGuideFastNavVisible(false);
   }
 
+  // Never let guide / crew fast-nav sit on Home (or leak into the home right rail).
+  if (isHome) setGuideFastNavVisible(false);
+
   if (homeValueChanges) {
     homeValueChanges.style.visibility = cfg.homeValueChanges ? "visible" : "hidden";
     homeValueChanges.style.opacity = cfg.homeValueChanges ? "1" : "0";
@@ -4162,6 +4883,37 @@ function showSectionDeferred(name, cfg, isHome) {
 
   trackSectionPageView(name);
   syncMobileTaxPanel(cfg);
+
+  if (typeof window.bsvAlignSponsorBanner === "function") {
+    window.bsvAlignSponsorBanner();
+  }
+
+  // Home is long — leaving it mid-scroll used to land inside the middle/bottom of
+  // the next section. Always snap to the top of the newly shown section.
+  scrollActiveSectionToTop(cfg);
+}
+
+function scrollActiveSectionToTop(cfg) {
+  // In-page sections use display toggling, so document top is always the
+  // start of the newly shown section. Do not measure element offsets while
+  // layout is settling — that was sending users to the bottom/mid of the next page.
+  function snap() {
+    var se = document.scrollingElement || document.documentElement;
+    if (se) se.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    } catch (e) {
+      window.scrollTo(0, 0);
+    }
+  }
+  snap();
+  requestAnimationFrame(function () {
+    snap();
+    requestAnimationFrame(snap);
+  });
+  setTimeout(snap, 40);
+  setTimeout(snap, 120);
 }
 
 window.showSection = showSection;
@@ -4283,10 +5035,28 @@ function formatDollar(amount) {
 }
 
 function buildTaxBreakdownHtml(want, breakdown) {
-  return '<span class="tax-how-label">' +
-    escapeHtml(i18n("tax.howLabel", { want: formatDollar(want), withdraw: formatDollar(breakdown.totalWithdraw) })) +
-    '</span><br>' +
-    breakdown.lines.map(function(line) { return escapeHtml(line) + '<br>'; }).join('');
+  var lost = Math.max(0, (breakdown.totalWithdraw || 0) - (want || 0));
+  var stepsHtml = breakdown.lines
+    .map(function (line) {
+      return '<p class="tax-steps-line">' + escapeHtml(line) + "</p>";
+    })
+    .join("");
+  return (
+    '<span class="tax-how-label">' +
+      escapeHtml(
+        i18n("tax.howLabel", {
+          want: formatDollar(want),
+          lost: formatDollar(lost)
+        })
+      ) +
+    "</span>" +
+    '<p class="tax-steps-heading">' +
+      escapeHtml(i18n("tax.stepsTitle")) +
+    "</p>" +
+    '<div class="tax-steps-list">' +
+      stepsHtml +
+    "</div>"
+  );
 }
 
 function bindTaxCalcWidget(root) {
@@ -4302,8 +5072,6 @@ function bindTaxCalcWidget(root) {
     var want = parseInt(raw, 10) || 0;
     var b = getTaxBreakdown(want);
     amountEl.textContent = b.totalWithdraw.toLocaleString();
-    var afterLabel = root.querySelector("[data-tax-after-label]");
-    if (afterLabel) afterLabel.hidden = b.totalWithdraw <= 0;
     if (!breakdownEl) return;
     if (b.totalWithdraw <= 0) {
       breakdownEl.innerHTML = "";
@@ -4347,7 +5115,7 @@ function initTaxCalculator() {
     const raw = taxInput.value.replace(/[^\d]/g, '');
     const want = parseInt(raw, 10) || 0;
     const b = getTaxBreakdown(want);
-    taxAmount.innerHTML = b.totalWithdraw.toLocaleString() + ' <span class="tax-after-label">' + escapeHtml(i18n("tax.afterLabel")) + '</span>';
+    taxAmount.textContent = b.totalWithdraw.toLocaleString();
     if (taxBreakdown) {
       if (b.totalWithdraw <= 0) {
         taxBreakdown.innerHTML = '';
@@ -4375,7 +5143,23 @@ function initTaxCalculator() {
     document.execCommand('insertText', false, cleaned);
   });
 
+  initTaxRemindersCollapse();
   update();
+}
+
+function initTaxRemindersCollapse() {
+  var toggle = document.getElementById("tax-reminders-toggle");
+  var body = document.getElementById("tax-reminders-body");
+  var wrap = toggle && toggle.closest(".tax-reminders");
+  if (!toggle || !body || !wrap || toggle.dataset.bound === "1") return;
+  toggle.dataset.bound = "1";
+  toggle.addEventListener("click", function () {
+    var open = toggle.getAttribute("aria-expanded") === "true";
+    var next = !open;
+    toggle.setAttribute("aria-expanded", next ? "true" : "false");
+    body.hidden = !next;
+    wrap.classList.toggle("is-open", next);
+  });
 }
 
 var MOBILE_TAX_MQ = "(max-width: 1024px)";
@@ -4851,7 +5635,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   initSearch();
   initTaxCalculator();
   initMobileTaxPanel();
-  showSection("Home");
+
+  // Do not force Home first — that flashes Home when arriving via #sec= from Live Trading.
+  var bootHash = resolveHashSectionRequest();
+  if (bootHash && bootHash.redirectLiveTrading) {
+    var liveBootHref =
+      typeof window.bsvSitePath === "function"
+        ? window.bsvSitePath("live-trading.html")
+        : "live-trading.html";
+    window.location.replace(liveBootHref);
+    return;
+  }
+  if (bootHash && bootHash.section && bootHash.section !== "Home") {
+    var homeBootEl = document.getElementById("home");
+    if (homeBootEl) homeBootEl.style.display = "none";
+    document.body.classList.remove("is-home");
+    showSection(bootHash.section);
+  } else {
+    clearHashSectionBootHide();
+    showSection("Home");
+  }
 
   const giveawayPromise = loadExternalGiveawayConfig();
   const contentPromise = loadSectionContentConfig();
@@ -4866,7 +5669,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     let items = [];
     const cfg = typeof getSectionConfig === "function" ? getSectionConfig(sec) : null;
     try {
-      if (cfg && cfg.dataSource === "richest") {
+      if (cfg && cfg.pageHref) {
+        items = [];
+      } else if (cfg && cfg.dataSource === "richest") {
         items = await fetchRichestPlayers();
         console.log(`Got ${items.length} items for ${sec} from NEW spreadsheet`);
       } else if (cfg && cfg.dataSource === "sheet") {
@@ -4896,16 +5701,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   _sectionsDomReady["Home"] = true;
 
   let initialSection = "Home";
-  if (window.location.hash && window.location.hash.startsWith('#sec=')) {
-    let requested = decodeURIComponent(window.location.hash.substring(5));
-    if (requested === "Uncommon") requested = "Common / Uncommon";
-    if (requested === "richest-players" || requested === "Richest Players") {
-      requested = "💰 Richest Players";
-    }
-    if (requested === "Untradable Items") requested = ACCESSORIES_SECTION_NAME;
-    if (SECTION_NAMES.includes(requested)) {
-      initialSection = requested;
-    }
+  var hashRequest = resolveHashSectionRequest();
+  if (hashRequest && hashRequest.redirectLiveTrading) {
+    var liveHref =
+      typeof window.bsvSitePath === "function"
+        ? window.bsvSitePath("live-trading.html")
+        : "live-trading.html";
+    window.location.replace(liveHref);
+    return;
+  }
+  if (hashRequest && hashRequest.section) {
+    initialSection = hashRequest.section;
   }
 
   // Only paint the active section up front — rendering every rarity into the DOM
@@ -5018,20 +5824,27 @@ document.addEventListener("bsv:languagechange", function () {
   }
 });
 
-document.addEventListener('click', function(e) {
-  const trigger = e.target.closest('.card-giveaway-trigger');
+initExclusiveBadgeTips();
+
+document.addEventListener("click", function (e) {
+  var trigger = e.target.closest(".card-giveaway-trigger");
   if (!trigger) return;
-  ensureGiveawayModal();
-  const modal = document.getElementById('giveaway-modal');
-  if (!modal) return;
-  modal.classList.add('visible');
+  e.preventDefault();
+  e.stopPropagation();
+  openGiveawayModal(trigger.getAttribute("data-item-name") || "");
 });
 
-document.addEventListener('click', function(e) {
-  if (e.target.matches('[data-giveaway-close]') || e.target.closest('[data-giveaway-close]')) {
-    const modal = document.getElementById('giveaway-modal');
-    if (modal) modal.classList.remove('visible');
+document.addEventListener("click", function (e) {
+  if (e.target.matches("[data-giveaway-close]") || e.target.closest("[data-giveaway-close]")) {
+    var modal = document.getElementById("giveaway-modal");
+    if (modal) modal.classList.remove("visible");
   }
+});
+
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "Escape") return;
+  var modal = document.getElementById("giveaway-modal");
+  if (modal) modal.classList.remove("visible");
 });
 
 function openRiverLinks(e) {
@@ -5065,19 +5878,72 @@ function openRiverLinks(e) {
   document.body.appendChild(modal);
 }
 
-// Fetch and display recent value changes from spreadsheet (sheet: "Website Configs", columns: Title, Date, Text, Color)
+function resolveValueChangeImageUrl(row) {
+  var raw = String(
+    (row && (row.Link || row["Item Link"] || row.Image || row["Image URL"] || row["Image Link"])) || ""
+  ).trim();
+  if (!/^https?:\/\//i.test(raw)) return "";
+  return raw;
+}
+
+// Website Configs columns: Title, Date, Text, Color, Link (item image URL)
 function buildValueChangeItemHtml(r, useTimeline) {
   var colorMap = { green: "green", orange: "orange", red: "red", blue: "blue" };
   var title = (r.Title || "").toString().trim();
   var date = (r.Date || "").toString().trim();
   var text = (r.Text || "").toString().trim();
   var color = (r.Color || "").toString().trim().toLowerCase();
+  var imageUrl = resolveValueChangeImageUrl(r);
   var colorKey = colorMap[color] ? color : "";
   var colorClass = colorKey ? " value-change-item--" + colorKey : "";
-  var timelineClass = useTimeline ? " value-change-item--timeline" : "";
-  var titleEsc = title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  var dateEsc = date.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  var textEsc = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/\n/g, "<br>");
+  var titleEsc = escapeHtml(title);
+  var dateEsc = escapeHtml(date);
+  var textEsc = escapeHtml(text).replace(/\n/g, "<br>");
+  var imageAttr = imageUrl ? escapeAttr(imageUrl) : "";
+
+  if (useTimeline === "strip") {
+    var stripMod = colorKey ? " home-changes-strip__item--" + colorKey : "";
+    var mediaHtml = imageAttr
+      ? '<div class="home-changes-strip__media">' +
+          '<img class="home-changes-strip__img" src="' + imageAttr + '" alt="" width="72" height="72" loading="lazy" decoding="async" onerror="this.parentElement.classList.add(\'is-empty\');this.remove();">' +
+        "</div>"
+      : '<div class="home-changes-strip__media is-empty" aria-hidden="true"></div>';
+    return (
+      '<div class="home-changes-strip__item' + stripMod + '" role="listitem">' +
+        mediaHtml +
+        '<div class="home-changes-strip__body">' +
+          (titleEsc ? '<span class="home-changes-strip__title">' + titleEsc + "</span>" : "") +
+          (dateEsc ? '<span class="home-changes-strip__date">' + dateEsc + "</span>" : "") +
+          (textEsc ? '<p class="home-changes-strip__text">' + textEsc + "</p>" : "") +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  if (useTimeline === "feed") {
+    var feedMod = colorKey ? " home-changelog-feed__item--" + colorKey : "";
+    var feedMedia = imageAttr
+      ? '<div class="home-changelog-feed__media">' +
+          '<img src="' + imageAttr + '" alt="" width="72" height="72" loading="lazy" decoding="async" onerror="this.parentElement.classList.add(\'is-empty\');this.remove();">' +
+        "</div>"
+      : '<div class="home-changelog-feed__media is-empty" aria-hidden="true"></div>';
+    return (
+      '<article class="home-changelog-feed__item' + feedMod + '" role="listitem">' +
+        feedMedia +
+        '<div class="home-changelog-feed__body">' +
+          '<div class="home-changelog-feed__top">' +
+            (titleEsc ? '<h3 class="home-changelog-feed__title">' + titleEsc + "</h3>" : "") +
+            (dateEsc ? '<span class="home-changelog-feed__date">' + dateEsc + "</span>" : "") +
+          "</div>" +
+          (textEsc ? '<p class="home-changelog-feed__text">' + textEsc + "</p>" : "") +
+        "</div>" +
+      "</article>"
+    );
+  }
+
+  var classicMedia = imageAttr
+    ? '<div class="value-change-thumb"><img src="' + imageAttr + '" alt="" width="48" height="48" loading="lazy" decoding="async" onerror="this.parentElement.style.display=\'none\'"></div>'
+    : '<div class="value-change-icon' + colorClass + '"></div>';
 
   if (useTimeline) {
     return (
@@ -5087,14 +5953,14 @@ function buildValueChangeItemHtml(r, useTimeline) {
         (dateEsc ? '<p class="value-change-date">' + dateEsc + "</p>" : "") +
         (textEsc ? '<p class="value-change-text">' + textEsc + "</p>" : "") +
         "</div>" +
-        '<div class="value-change-icon' + colorClass + '" aria-hidden="true"></div>' +
+        classicMedia +
       "</div>"
     );
   }
 
   return (
     '<div class="value-change-item' + colorClass + '">' +
-      '<div class="value-change-icon' + colorClass + '"></div>' +
+      classicMedia +
       (titleEsc ? '<p class="value-change-title">' + titleEsc + "</p>" : "") +
       (dateEsc ? '<p class="value-change-date">' + dateEsc + "</p>" : "") +
       (textEsc ? '<p class="value-change-text">' + textEsc + "</p>" : "") +
@@ -5102,44 +5968,256 @@ function buildValueChangeItemHtml(r, useTimeline) {
   );
 }
 
+var homeChangesAutoScrollState = null;
+
+function stopHomeChangesStripAutoScroll() {
+  if (!homeChangesAutoScrollState) return;
+  var state = homeChangesAutoScrollState;
+  if (state.raf) cancelAnimationFrame(state.raf);
+  if (state.retryTimer) clearTimeout(state.retryTimer);
+  var vp = state.viewport;
+  var list = state.list;
+  if (vp && state.handlers) {
+    Object.keys(state.handlers).forEach(function (type) {
+      vp.removeEventListener(type, state.handlers[type]);
+    });
+  }
+  if (list) {
+    list.style.transform = "";
+    list.classList.remove("is-marquee");
+  }
+  if (vp) vp.classList.remove("is-auto-scrolling");
+  homeChangesAutoScrollState = null;
+}
+
+function initHomeChangesStripAutoScroll(viewport, attempt) {
+  attempt = attempt || 0;
+  if (!viewport || !viewport.isConnected) return;
+
+  var list = viewport.querySelector(".home-changes-strip__list");
+  if (!list || list.children.length < 2) {
+    if (attempt < 12) {
+      homeChangesAutoScrollState = {
+        viewport: viewport,
+        retryTimer: setTimeout(function () {
+          initHomeChangesStripAutoScroll(viewport, attempt + 1);
+        }, 200)
+      };
+    }
+    return;
+  }
+
+  // Duplicate once for a seamless loop (transform-based; works on iOS/Safari).
+  if (list.dataset.autoDup !== "1") {
+    var originalCount = list.children.length;
+    var clone = list.cloneNode(true);
+    while (clone.firstChild) list.appendChild(clone.firstChild);
+    list.dataset.autoDup = "1";
+    list.dataset.autoDupCount = String(originalCount);
+  }
+
+  // Need laid-out width before measuring loop distance.
+  var loopAt = list.scrollWidth / 2;
+  if (!(loopAt > viewport.clientWidth + 8)) {
+    if (attempt < 12) {
+      homeChangesAutoScrollState = {
+        viewport: viewport,
+        retryTimer: setTimeout(function () {
+          initHomeChangesStripAutoScroll(viewport, attempt + 1);
+        }, 200)
+      };
+    }
+    return;
+  }
+
+  stopHomeChangesStripAutoScroll();
+
+  viewport.classList.add("is-auto-scrolling");
+  list.classList.add("is-marquee");
+  viewport.scrollLeft = 0;
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var speed = reduceMotion ? 28 : 56; // px / second
+  var offset = 0;
+  var pauseUntil = 0;
+  var lastTs = 0;
+  var dragging = false;
+  var dragStartX = 0;
+  var dragStartOffset = 0;
+
+  function applyOffset() {
+    if (offset < 0) offset = ((offset % loopAt) + loopAt) % loopAt;
+    if (offset >= loopAt) offset = offset % loopAt;
+    // Transform-only motion — scrollLeft+transform together double-shifts on Safari.
+    list.style.transform = "translate3d(" + (-offset) + "px,0,0)";
+    try {
+      viewport.scrollLeft = 0;
+    } catch (e) {}
+  }
+
+  function pauseFor(ms) {
+    pauseUntil = performance.now() + ms;
+  }
+
+  function onPointerDown(e) {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    dragging = true;
+    dragStartX = e.clientX;
+    dragStartOffset = offset;
+    pauseFor(999999);
+    try {
+      viewport.setPointerCapture(e.pointerId);
+    } catch (err) {}
+  }
+
+  function onPointerMove(e) {
+    if (!dragging) return;
+    offset = dragStartOffset - (e.clientX - dragStartX);
+    applyOffset();
+  }
+
+  function onPointerUp() {
+    if (!dragging) return;
+    dragging = false;
+    pauseFor(1800);
+  }
+
+  function onWheel(e) {
+    // Convert vertical/horizontal wheel into horizontal scrub.
+    var dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (!dx) return;
+    offset += dx;
+    applyOffset();
+    pauseFor(1800);
+  }
+
+  var handlers = {
+    pointerdown: onPointerDown,
+    pointermove: onPointerMove,
+    pointerup: onPointerUp,
+    pointercancel: onPointerUp,
+    wheel: onWheel
+  };
+  viewport.addEventListener("pointerdown", onPointerDown, { passive: true });
+  viewport.addEventListener("pointermove", onPointerMove, { passive: true });
+  viewport.addEventListener("pointerup", onPointerUp, { passive: true });
+  viewport.addEventListener("pointercancel", onPointerUp, { passive: true });
+  viewport.addEventListener("wheel", onWheel, { passive: true });
+
+  applyOffset();
+
+  function tick(ts) {
+    var state = homeChangesAutoScrollState;
+    if (!state || state.viewport !== viewport) return;
+    state.raf = requestAnimationFrame(tick);
+
+    if (document.hidden || !viewport.isConnected) {
+      lastTs = ts;
+      return;
+    }
+    if (!document.body.classList.contains("is-home")) {
+      lastTs = ts;
+      return;
+    }
+    if (dragging || ts < pauseUntil) {
+      lastTs = ts;
+      return;
+    }
+
+    if (!lastTs) lastTs = ts;
+    var dt = Math.min(48, ts - lastTs);
+    lastTs = ts;
+
+    // Re-measure in case fonts/layout shifted.
+    loopAt = list.scrollWidth / 2;
+    if (!(loopAt > viewport.clientWidth)) return;
+
+    offset += (speed * dt) / 1000;
+    applyOffset();
+  }
+
+  homeChangesAutoScrollState = {
+    viewport: viewport,
+    list: list,
+    handlers: handlers,
+    raf: requestAnimationFrame(tick),
+    retryTimer: 0
+  };
+}
+
 async function loadValueChanges() {
   var listEl = document.getElementById('value-changes-list');
   var homeMainListEl = document.getElementById('home-main-value-changes-list');
-  if (!listEl && !homeMainListEl) return;
   function setSidebarValueChangesHtml(html) {
     if (listEl) listEl.innerHTML = html;
   }
   try {
     var rows = await fetchSheet("Website Configs");
+    homeStatsChangeRows = rows || [];
+    publishTotalChangesStat(true);
+    applyCachedHomeStatValues(document);
+    if (!listEl && !homeMainListEl) return;
     if (!rows || rows.length === 0) {
+      homeValueChangesCache = [];
       var emptyHtml = '<div class="value-changes-loading">' + escapeHtml(i18n("changes.none")) + '</div>';
       setSidebarValueChangesHtml(emptyHtml);
       if (homeMainListEl) homeMainListEl.innerHTML = emptyHtml;
+      stopHomeChangesStripAutoScroll();
+      renderChangelogModalList();
       return;
     }
     var filtered = filterValueChangeRows(rows);
+    homeValueChangesCache = filtered.slice();
     if (filtered.length === 0) {
       var noneHtml = '<div class="value-changes-loading">' + escapeHtml(i18n("changes.none")) + '</div>';
       setSidebarValueChangesHtml(noneHtml);
       if (homeMainListEl) homeMainListEl.innerHTML = noneHtml;
+      stopHomeChangesStripAutoScroll();
+      renderChangelogModalList();
       return;
     }
     var classicHtml = filtered.map(function (r) { return buildValueChangeItemHtml(r, false); }).join("");
-    var timelineHtml = filtered.map(function (r) { return buildValueChangeItemHtml(r, true); }).join("");
     setSidebarValueChangesHtml(classicHtml);
     if (homeMainListEl) {
+      var stripHtml = filtered.map(function (r) { return buildValueChangeItemHtml(r, "strip"); }).join("");
       homeMainListEl.innerHTML =
-        '<div class="value-changes-list__track">' +
-          '<div class="value-changes-list__items">' + timelineHtml + "</div>" +
-        "</div>";
+        '<div class="home-changes-strip__list" role="list">' + stripHtml + "</div>";
+      // Double-rAF so flex/card widths are measured before auto-scroll starts.
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          initHomeChangesStripAutoScroll(homeMainListEl);
+        });
+      });
     }
+    renderChangelogModalList();
   } catch (err) {
     console.error('Error loading value changes:', err);
+    homeValueChangesCache = [];
     var failHtml = '<div class="value-changes-loading">' + escapeHtml(i18n("changes.failed")) + '</div>';
     setSidebarValueChangesHtml(failHtml);
     if (homeMainListEl) homeMainListEl.innerHTML = failHtml;
+    stopHomeChangesStripAutoScroll();
+    renderChangelogModalList();
   }
 }
+
+document.addEventListener("click", function (e) {
+  if (e.target.closest("[data-changelog-open]")) {
+    e.preventDefault();
+    openChangelogModal();
+    return;
+  }
+  if (e.target.closest("[data-changelog-close]")) {
+    e.preventDefault();
+    closeChangelogModal();
+  }
+});
+
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && document.body.classList.contains("home-changelog-open")) {
+    closeChangelogModal();
+  }
+});
 
 
 /* ========== PINK WEBSITE THEME - theme switcher (remove with theme section in style.css) ========== */

@@ -87,7 +87,8 @@
   var hash = window.location.hash || "";
   var hashParams = parseHashParams(hash);
   var hasAuthToken = Object.prototype.hasOwnProperty.call(hashParams, "bsv_auth");
-  var authError = hashParams.bsv_auth_error;
+  var hasRobloxToken = Object.prototype.hasOwnProperty.call(hashParams, "bsv_roblox_auth");
+  var authError = hashParams.bsv_auth_error || hashParams.bsv_roblox_error;
 
   if (authError) {
     if (bounceToSavedOrigin(hash)) return;
@@ -96,7 +97,7 @@
     return;
   }
 
-  if (hasAuthToken && bounceToSavedOrigin(hash)) return;
+  if ((hasAuthToken || hasRobloxToken) && bounceToSavedOrigin(hash)) return;
 
   var params = new URLSearchParams(window.location.search || "");
   if (params.get("bsv_auth_error")) {

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" data-sidenav-style="glass">
+<head>
+<script>
+(function () {
+  try {
+    var R = "/";
+    if (/\.github\.io$/i.test(location.hostname)) {
+      var seg = (location.pathname || "/").split("/").filter(Boolean)[0];
+      if (seg) R = "/" + seg + "/";
+    }
+    window.BSV_SITE_ROOT = R;
+    window.bsvSitePath = function (p) { return R + String(p || "").replace(/^\//, ""); };
+    function fixAttr(sel, attr) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        var v = el.getAttribute(attr);
+        if (v && v.charAt(0) === "/" && v.indexOf(R) !== 0 && v.indexOf("//") !== 0) {
+          el.setAttribute(attr, R + v.slice(1));
+        }
+      });
+    }
+    function addIcon(rel, file, type, sizes) {
+      var l = document.createElement("link");
+      l.rel = rel;
+      l.href = R + file;
+      if (type) l.type = type;
+      if (sizes) l.setAttribute("sizes", sizes);
+      document.head.appendChild(l);
+    }
+    addIcon("icon", "favicon.ico", null, "any");
+    addIcon("icon", "favicon.png", "image/png", null);
+    addIcon("apple-touch-icon", "apple-touch-icon.png", null, null);
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(function (el) {
+        var v = el.getAttribute("href") || "";
+        if (v.charAt(0) === "/" && v.indexOf(R) !== 0) el.remove();
+      });
+      fixAttr('link[href^="/assets/"], a[href^="/assets/"], a[href^="/x-"], a[href^="/z-"], a[href^="/sponsors"]', "href");
+      fixAttr('img[src^="/assets/"]', "src");
+    });
+  } catch (e) {}
+})();
+</script>
+<script>
+/* Asset build id (no auto-reload). Bump via tools/bump-build.py */
+window.BSV_BUILD = "20260930-sitewide-audit";
+</script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="only light" />
+<meta name="supported-color-schemes" content="light" />
+<meta name="theme-color" content="#0f1724" />
+<style>html{color-scheme:only light;-webkit-color-scheme:light;--bsv-hue:217;--bsv-accent-hue:188;background-color:hsl(217,41%,10%)}</style>
+<script>
+(function () {
+  try {
+    var style = localStorage.getItem("bsv-bg-style") || "standard";
+    var hue = parseInt(localStorage.getItem("bsv-bg-hue") || "210", 10);
+    var root = document.documentElement;
+    if (style === "colorized") {
+      if (isNaN(hue)) hue = 210;
+      hue = Math.max(0, Math.min(360, Math.round(hue)));
+      root.style.setProperty("--bsv-hue", String(hue));
+      root.style.setProperty("--bsv-accent-hue", String(hue));
+      root.style.backgroundColor = "hsl(" + hue + ", 41%, 10%)";
+      root.setAttribute("data-bsv-bg", "colorized");
+    } else if (style === "dark") {
+      root.style.setProperty("--bsv-hue", "220");
+      root.style.setProperty("--bsv-accent-hue", "188");
+      root.style.backgroundColor = "hsl(220, 20%, 4%)";
+      root.setAttribute("data-bsv-bg", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<script>
+(function () {
+  function removeWrongSiteBanner() {
+    var el = document.getElementById("auth-wrong-site-banner");
+    if (el) el.remove();
+  }
+  removeWrongSiteBanner();
+  document.addEventListener("DOMContentLoaded", removeWrongSiteBanner);
+  window.addEventListener("pageshow", removeWrongSiteBanner);
+})();
+</script>
+<script defer src="auth-oauth-bounce.js?v=20260930-sitewide-audit"></script>
+<title>Live Trading — BlockSpin Values</title>
+<meta name="description" content="Live Trading — development build of BlockSpin Values." />
+<link rel="stylesheet" href="style.css?v=20260930-sitewide-audit" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" /></noscript>
+<style>#bsv-site-header { min-height: 70px; }</style>
+<script>
+(function () {
+  try {
+    var f = localStorage.getItem("bsv-font") || "default";
+    if (!f || f === "default" || f === "paytone") return;
+    var link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Nunito+Sans:ital,wght@0,600;0,700;1,600&family=Oswald:wght@500;600;700&family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap";
+    document.head.appendChild(link);
+  } catch (e) {}
+})();
+</script>
+<script>
+(function () {
+  try {
+    var fonts = {
+      default: "system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      paytone: "'Paytone One', sans-serif",
+      nunito: "'Nunito Sans', sans-serif",
+      bebas: "'Bebas Neue', sans-serif",
+      inter: "'Inter', sans-serif",
+      roboto: "'Roboto', sans-serif",
+      poppins: "'Poppins', sans-serif",
+      oswald: "'Oswald', sans-serif"
+    };
+    var f = localStorage.getItem("bsv-font") || "default";
+    var root = document.documentElement;
+    root.style.setProperty("--bsv-site-font", fonts[f] || fonts.default);
+    if (f && f !== "default") root.setAttribute("data-bsv-font", f);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body data-bsv-page="live-trading" class="live-trading-page">
+
+<div id="bsv-site-header"></div>
+
+<button type="button" class="sections-menu-toggle" id="sections-menu-toggle" aria-label="Open sections menu" aria-expanded="false" aria-controls="sections-sidebar">
+  <span class="sections-menu-toggle__bar" aria-hidden="true"></span>
+  <span class="sections-menu-toggle__bar" aria-hidden="true"></span>
+  <span class="sections-menu-toggle__bar" aria-hidden="true"></span>
+</button>
+
+<div class="menu-overlay" id="sections-menu-overlay" hidden></div>
+
+<div class="main-container">
+  <div class="sections-sidebar" id="sections-sidebar">
+    <nav class="sections-nav" id="sections-nav" aria-label="Site sections"></nav>
+  </div>
+
+  <main id="sections" class="sections live-trading-main">
+    <section class="section live-trading-section" id="live-trading" style="display:block;">
+      <div class="live-trading-gate" id="live-trading-gate" hidden>
+        <div class="live-trading-gate__card">
+          <h1 class="live-trading-gate__title" data-i18n="liveTrading.needLogin">You need to Log in</h1>
+          <p class="live-trading-gate__body" data-i18n="liveTrading.needLoginBody">Log in to create posts or interact with trades.</p>
+          <button type="button" class="live-trading-gate__login-btn" id="live-trading-open-login" data-i18n="liveTrading.loginBtn">Log in</button>
+        </div>
+      </div>
+
+      <div class="live-trading-workspace" id="live-trading-workspace">
+        <div class="lt-board" id="lt-board">
+          <h2 class="lt-board__title">Live Trading</h2>
+
+          <section class="lt-composer" id="lt-composer" hidden>
+            <div class="lt-composer__head">
+              <h3 class="lt-composer__title">New trade post</h3>
+              <button type="button" class="lt-composer__close" id="lt-close-create" aria-label="Close">&times;</button>
+            </div>
+            <div class="lt-composer__sides">
+              <div class="lt-side" data-side="giving">
+                <span class="lt-side__pill">I have</span>
+                <div class="lt-side__grid" id="lt-giving-grid"></div>
+                <label class="lt-cash">
+                  <span class="lt-cash__label">Cash</span>
+                  <input type="text" id="lt-giving-cash" placeholder="Type amount…" inputmode="numeric" autocomplete="off" />
+                </label>
+              </div>
+              <div class="lt-side" data-side="wanting">
+                <span class="lt-side__pill">I want</span>
+                <div class="lt-side__grid" id="lt-wanting-grid"></div>
+                <label class="lt-cash">
+                  <span class="lt-cash__label">Cash</span>
+                  <input type="text" id="lt-wanting-cash" placeholder="Type amount…" inputmode="numeric" autocomplete="off" />
+                </label>
+                <p class="lt-side__tags-note">
+                  Tags show whether you’re open to offers that differ from the items you’re requesting.
+                </p>
+                <div class="lt-side__tags" id="lt-want-tags" role="group" aria-labelledby="lt-want-tags-label">
+                  <span class="lt-side__tags-label" id="lt-want-tags-label">Tags</span>
+                  <button type="button" class="lt-tag" id="lt-add-lfo" data-tag="lfo">Looking for offers</button>
+                  <button type="button" class="lt-tag" id="lt-add-nlfo" data-tag="nlfo">Not looking for offers</button>
+                  <p class="lt-side__tags-hint" id="lt-want-tags-hint" hidden>A tag must be selected</p>
+                </div>
+              </div>
+            </div>
+            <p class="lt-composer__error" id="lt-composer-error" hidden></p>
+            <div class="lt-composer__foot">
+              <button type="button" class="lt-composer__paste" id="lt-paste-previous" hidden>
+                Paste previous post
+              </button>
+              <button type="button" class="lt-composer__submit" id="lt-submit-post">Post trade</button>
+            </div>
+            <details class="lt-guide-panel" open>
+              <summary class="lt-guide-panel__summary">
+                <svg class="lt-guide-panel__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7z"></path>
+                  <path d="M9 12l2 2 4-4"></path>
+                </svg>
+                <span>Guidelines</span>
+                <svg class="lt-guide-panel__chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M6 9l6 6 6-6"></path>
+                </svg>
+              </summary>
+              <div class="lt-guide-panel__body">
+                <div class="lt-guidelines__warn">
+                  <span class="lt-guidelines__dot" aria-hidden="true"></span>
+                  <p>Don’t click links, scan QR codes, or share passwords / login codes with anyone.</p>
+                </div>
+                <ul class="lt-guidelines__list">
+                  <li>No cross trading. In-game stuff only gets traded for other in-game stuff.</li>
+                  <li>Don’t use middlemen from random shady servers. Stick to middlemen from our Discord server.</li>
+                  <li>No troll posts, fake offers, or spam.</li>
+                  <li>If a trade feels weird, just stop.</li>
+                </ul>
+              </div>
+            </details>
+          </section>
+
+          <div class="lt-toolbar">
+            <section class="lt-search" aria-label="Search trades">
+              <div class="lt-search__label">
+                <svg class="lt-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"></circle>
+                  <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+                <span>Search Items</span>
+              </div>
+              <input type="search" class="lt-search__input" id="lt-search" placeholder="Search items by name…" autocomplete="off" />
+              <div class="lt-search__in" role="group" aria-label="Search in">
+                <span class="lt-search__in-label">Search in:</span>
+                <button type="button" class="lt-search__scope is-active" data-scope="all">All</button>
+                <button type="button" class="lt-search__scope" data-scope="offering">Offering</button>
+                <button type="button" class="lt-search__scope" data-scope="requesting">Requesting</button>
+                <button type="button" class="lt-search__scope" data-scope="mine">Your posts</button>
+                <span class="lt-search__scope-divider" aria-hidden="true"></span>
+                <button type="button" class="lt-search__scope" data-scope="hidden" id="lt-open-hidden">Hidden</button>
+                <button type="button" class="lt-board__report-btn" id="lt-open-report">
+                  <svg class="lt-board__report-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 4h10l4 3v13H5z"></path>
+                    <path d="M9 10h6"></path>
+                    <path d="M9 14h4"></path>
+                    <circle cx="9" cy="7" r="0.8" fill="currentColor" stroke="none"></circle>
+                  </svg>
+                  <span>Report issue</span>
+                </button>
+              </div>
+            </section>
+            <div class="lt-toolbar__actions">
+              <button type="button" class="lt-board__create-btn" id="lt-open-create">
+                <span class="lt-board__create-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                  </svg>
+                </span>
+                <span class="lt-board__create-copy">
+                  <span class="lt-board__create-label">Create post</span>
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <section class="lt-feed-wrap">
+            <div class="lt-feed" id="lt-feed" role="feed" aria-busy="true">
+              <p class="lt-feed__empty" id="lt-feed-empty">Loading trades…</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="lt-picker" id="lt-picker" hidden>
+        <div class="lt-picker__backdrop" id="lt-picker-backdrop"></div>
+        <div class="lt-picker__box" role="dialog" aria-modal="true" aria-labelledby="lt-picker-title">
+          <div class="lt-picker__head">
+            <h2 class="lt-picker__title" id="lt-picker-title">Add item</h2>
+            <button type="button" class="lt-picker__close" id="lt-picker-close" aria-label="Close">&times;</button>
+          </div>
+          <input type="search" class="lt-picker__search" id="lt-picker-search" placeholder="Search value list…" autocomplete="off" />
+          <div class="lt-picker__rarities" id="lt-picker-rarities" role="tablist"></div>
+          <div class="lt-picker__grid" id="lt-picker-grid"></div>
+          <p class="lt-picker__status" id="lt-picker-status">Loading items…</p>
+        </div>
+      </div>
+
+      <div class="lt-join" id="lt-join-discord" hidden>
+        <div class="lt-join__backdrop" id="lt-join-discord-backdrop"></div>
+        <div class="lt-join__box" role="dialog" aria-modal="true" aria-labelledby="lt-join-discord-title">
+          <button type="button" class="lt-join__close" id="lt-join-discord-close" aria-label="Close">&times;</button>
+          <h2 class="lt-join__title" id="lt-join-discord-title">Join our Discord</h2>
+          <p class="lt-join__body">Required to create and interact with trades.</p>
+          <div class="lt-join__actions">
+            <a class="lt-join__link" id="lt-join-discord-link" href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener noreferrer">Join Discord server</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="lt-msgcheck" id="lt-msgcheck-modal" hidden>
+        <div class="lt-msgcheck__backdrop" id="lt-msgcheck-backdrop"></div>
+        <div class="lt-msgcheck__box" role="dialog" aria-modal="true" aria-labelledby="lt-msgcheck-title">
+          <h2 class="lt-msgcheck__title" id="lt-msgcheck-title">Make sure traders can message you!</h2>
+          <p class="lt-msgcheck__body">
+            If your Discord settings block DMs or friend requests, other traders might not be able to reach you about your post.
+          </p>
+          <figure class="lt-msgcheck__figure">
+            <img
+              class="lt-msgcheck__img"
+              src="https://i.ibb.co/RmZCztq/Screenshot-2026-09-30-072802.png"
+              alt="Example Discord privacy settings for messages and friend requests"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <div class="lt-msgcheck__actions">
+            <button type="button" class="lt-msgcheck__ok" id="lt-msgcheck-ok">Got it — post trade</button>
+            <button type="button" class="lt-msgcheck__cancel" id="lt-msgcheck-cancel">Go back</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="lt-guidelines" id="lt-guidelines-modal" hidden>
+        <div class="lt-guidelines__backdrop" id="lt-guidelines-backdrop"></div>
+        <div class="lt-guidelines__box" role="dialog" aria-modal="true" aria-labelledby="lt-guidelines-title">
+          <h2 class="lt-guidelines__title" id="lt-guidelines-title">
+            <svg class="lt-guidelines__title-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7z"></path>
+              <path d="M9 12l2 2 4-4"></path>
+            </svg>
+            <span>Guidelines</span>
+          </h2>
+          <div class="lt-guidelines__warn">
+            <span class="lt-guidelines__dot" aria-hidden="true"></span>
+            <p>Don’t click links, scan QR codes, or share passwords / login codes with anyone.</p>
+          </div>
+          <ul class="lt-guidelines__list">
+            <li>No cross trading. In-game stuff only gets traded for other in-game stuff.</li>
+            <li>Don’t use middlemen from random shady servers. Stick to middlemen from our Discord server.</li>
+            <li>No troll posts, fake offers, or spam.</li>
+            <li>If a trade feels weird, just stop.</li>
+          </ul>
+          <button type="button" class="lt-guidelines__ok" id="lt-guidelines-ok">I understand</button>
+        </div>
+      </div>
+
+      <div class="lt-report" id="lt-report-modal" hidden>
+        <div class="lt-report__backdrop" id="lt-report-backdrop"></div>
+        <div class="lt-report__box" role="dialog" aria-modal="true" aria-labelledby="lt-report-title">
+          <button type="button" class="lt-report__close" id="lt-report-close" aria-label="Close">&times;</button>
+          <p class="lt-report__eyebrow">Support</p>
+          <h2 class="lt-report__title" id="lt-report-title">Report an issue</h2>
+          <p class="lt-report__lead">Join our Discord to report an issue with Live Trading.</p>
+          <a class="lt-report__discord" id="lt-report-discord" href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            <span>Join Discord to report</span>
+          </a>
+
+          <div class="lt-report__divider" aria-hidden="true"><span>or</span></div>
+
+          <div class="lt-report__form-wrap" id="lt-report-form-wrap">
+            <p class="lt-report__form-title">Type your issue here</p>
+            <p class="lt-report__form-note" id="lt-report-login-note" hidden>
+              Log in with Discord to submit a report from here.
+            </p>
+            <button type="button" class="lt-report__login-btn" id="lt-report-login" hidden>Log in</button>
+            <form class="lt-report__form" id="lt-report-form" hidden>
+              <p class="lt-report__identity" id="lt-report-identity"></p>
+              <label class="lt-report__label" for="lt-report-issue">Describe the issue</label>
+              <textarea class="lt-report__textarea" id="lt-report-issue" rows="4" maxlength="4000" placeholder="What went wrong? Include steps if you can…" required></textarea>
+              <p class="lt-report__scam-note">This is not for scammer reports, to report a scammer join our discord server</p>
+              <p class="lt-report__status" id="lt-report-status" hidden></p>
+              <button type="submit" class="lt-report__submit" id="lt-report-submit">Send report</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="lt-confirm" id="lt-delete-confirm" hidden>
+        <div class="lt-confirm__backdrop" id="lt-delete-confirm-backdrop"></div>
+        <div class="lt-confirm__box" role="dialog" aria-modal="true" aria-labelledby="lt-delete-confirm-title">
+          <h2 class="lt-confirm__title" id="lt-delete-confirm-title">Delete this post?</h2>
+          <p class="lt-confirm__body" id="lt-delete-confirm-body">This can’t be undone.</p>
+          <div class="lt-confirm__actions">
+            <button type="button" class="lt-confirm__btn lt-confirm__btn--danger" id="lt-delete-confirm-yes">Delete</button>
+            <button type="button" class="lt-confirm__btn lt-confirm__btn--ghost" id="lt-delete-confirm-no">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="lt-hidden" id="lt-hidden-modal" hidden>
+        <div class="lt-hidden__backdrop" id="lt-hidden-backdrop"></div>
+        <div class="lt-hidden__box" role="dialog" aria-modal="true" aria-labelledby="lt-hidden-title">
+          <button type="button" class="lt-hidden__close" id="lt-hidden-close" aria-label="Close">&times;</button>
+          <h2 class="lt-hidden__title" id="lt-hidden-title">Hidden traders</h2>
+          <p class="lt-hidden__lead">Posts from these people stay hidden in your feed.</p>
+          <ul class="lt-hidden__list" id="lt-hidden-list"></ul>
+          <p class="lt-hidden__empty" id="lt-hidden-empty" hidden>No hidden traders yet.</p>
+        </div>
+      </div>
+
+      <div class="lt-item-pop" id="lt-item-pop" hidden>
+        <div class="lt-item-pop__backdrop" id="lt-item-pop-backdrop"></div>
+        <div
+          class="lt-icard lt-icard--pop"
+          id="lt-item-pop-card"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Item details"
+        ></div>
+      </div>
+
+      <div class="lt-profile" id="lt-profile" hidden>
+        <div class="lt-profile__backdrop" id="lt-profile-backdrop"></div>
+        <div class="lt-profile__box" role="dialog" aria-modal="true" aria-labelledby="lt-profile-name">
+          <button type="button" class="lt-profile__close" id="lt-profile-close" aria-label="Close">&times;</button>
+          <div class="lt-profile__head">
+            <img class="lt-profile__avatar" id="lt-profile-avatar" alt="" width="72" height="72" hidden />
+            <span class="lt-profile__avatar lt-profile__avatar--ph" id="lt-profile-avatar-ph" hidden></span>
+            <h2 class="lt-profile__name" id="lt-profile-name">Trader</h2>
+            <p class="lt-profile__handle" id="lt-profile-handle" hidden></p>
+            <div class="lt-profile__badges" id="lt-profile-badges" hidden></div>
+          </div>
+          <dl class="lt-profile__meta">
+            <div class="lt-profile__row">
+              <dt>Discord ID</dt>
+              <dd id="lt-profile-id">—</dd>
+            </div>
+            <div class="lt-profile__row">
+              <dt>Account created</dt>
+              <dd id="lt-profile-created">—</dd>
+            </div>
+            <div class="lt-profile__row">
+              <dt>Total posts</dt>
+              <dd id="lt-profile-posts">0</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Keeps sidebar width identical to home (tax column still reserves 240px even when hidden). -->
+  <div class="tax-sidebar-column live-trading-layout-spacer" id="tax-sidebar-column" aria-hidden="true"></div>
+</div>
+
+<button type="button" class="lt-back-to-top" id="lt-back-to-top" hidden aria-label="Back to top">
+  <svg class="lt-back-to-top__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+    <path d="M12 19V5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>
+    <path d="M6 11l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+</button>
+
+<div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
+<div id="bsv-site-footer"></div>
+
+<script defer src="site-chrome.js?v=20260930-sitewide-audit"></script>
+<script defer src="auth.js?v=20260930-sitewide-audit"></script>
+<script defer src="site-i18n.js?v=20260930-sitewide-audit"></script>
+<script defer src="site-settings.js?v=20260930-sitewide-audit"></script>
+<script defer src="section-config.js?v=20260930-sitewide-audit"></script>
+<script defer src="live-trading.js?v=20260930-sitewide-audit"></script>
+</body>
+</html>

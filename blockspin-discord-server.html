@@ -1,88 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-sidenav-style="glass">
 <head>
 <script>
-/* One-time hard client reset: cookies, storage, SW, caches */
 (function () {
-  var BUILD = "20260915-tech-fix";
-  var KEY = "bsv-build";
-  var FLAG = "bsv-hard-resetting";
   try {
-    // Strip one-time cache-bust params before analytics can read them.
-    var clean = new URL(location.href);
-    if (clean.searchParams.has("bsv_r") || clean.searchParams.has("_")) {
-      clean.searchParams.delete("bsv_r");
-      clean.searchParams.delete("_");
-      var qs = clean.searchParams.toString();
-      history.replaceState(null, "", clean.pathname + (qs ? "?" + qs : "") + clean.hash);
+    var R = "/";
+    if (/\.github\.io$/i.test(location.hostname)) {
+      var seg = (location.pathname || "/").split("/").filter(Boolean)[0];
+      if (seg) R = "/" + seg + "/";
     }
-    if (localStorage.getItem(KEY) === BUILD) return;
-    if (sessionStorage.getItem(FLAG) === BUILD) {
-      localStorage.setItem(KEY, BUILD);
-      sessionStorage.removeItem(FLAG);
-      return;
-    }
-    sessionStorage.setItem(FLAG, BUILD);
-    var cookies = document.cookie ? document.cookie.split(";") : [];
-    var host = location.hostname || "";
-    var domains = ["", host, "." + host];
-    for (var i = 0; i < cookies.length; i++) {
-      var name = (cookies[i].split("=")[0] || "").trim();
-      if (!name) continue;
-      for (var d = 0; d < domains.length; d++) {
-        var base = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;Max-Age=0";
-        document.cookie = domains[d] ? base + ";domain=" + domains[d] : base;
-      }
-    }
-    try { localStorage.clear(); } catch (e) {}
-    try { sessionStorage.clear(); sessionStorage.setItem(FLAG, BUILD); } catch (e) {}
-    var pending = 1;
-    function done() {
-      if (--pending > 0) return;
-      var url = new URL(location.href);
-      url.searchParams.delete("bsv_r");
-      url.searchParams.set("_", String(Date.now()));
-      var q = url.searchParams.toString();
-      location.replace(url.pathname + (q ? "?" + q : "") + url.hash);
-    }
-    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
-      pending++;
-      navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (r) { return r.unregister(); }));
-      }).then(done, done);
-    }
-    if (window.caches && caches.keys) {
-      pending++;
-      caches.keys().then(function (keys) {
-        return Promise.all(keys.map(function (k) { return caches.delete(k); }));
-      }).then(done, done);
-    }
-    done();
+    window.BSV_SITE_ROOT = R;
+    window.bsvSitePath = function (p) { return R + String(p || "").replace(/^\//, ""); };
   } catch (e) {}
 })();
 </script>
+<script>
+/* Asset build id (no auto-reload). Bump via tools/bump-build.py */
+window.BSV_BUILD = "20260930-sitewide-audit";
+</script>
 
-    <meta charset="UTF-8">
-    
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light only">
-    <meta name="theme-color" content="#0f1724">
-    <title>BlockSpin Discord Server — Trading, Giveaways &amp; Free Guns | BlockSpin Values</title>
-    <meta name="description" content="Official BlockSpin Discord server by BlockSpin Values. BlockSpin trading, giveaways, free guns, middleman service, and live item values for Roblox BlockSpin traders.">
-    <meta name="keywords" content="BlockSpin, BlockSpin Discord, BlockSpin Values, BlockSpin Trading, BlockSpin Trade, BlockSpin WFL, BlockSpin Value List, BlockSpin Calculator, BlockSpin Giveaway, BlockSpin Dracos, BlockSpin Community, Roblox BlockSpin, Best BlockSpin Discord, Active BlockSpin Server, BlockSpin Events, BlockSpin Trading Hub, BlockSpin Updates, BlockSpin News, BlockSpin Item Values, BlockSpin Scams, BlockSpin Middleman, BlockSpin Price List, BlockSpin Fit Ideas, BlockSpin Car Wraps, BlockSpin Most Expensive Items, BlockSpin Leaks, BlockSpin Firework Launcher, BlockSpin What Is BM, BlockSpin Baddies">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://blockspinvalues.com/blockspin-discord-server.html" />
-    <meta property="og:title" content="BlockSpin Discord Server — Trading, Giveaways &amp; Free Guns">
-    <meta property="og:description" content="Join the official BlockSpin Discord server. BlockSpin trading, giveaways, free guns, middleman trades, and live values from BlockSpin Values.">
-    <meta property="og:image" content="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
-    <meta property="og:url" content="https://blockspinvalues.com/blockspin-discord-server.html">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="BlockSpin Discord Server — Trading, Giveaways &amp; Free Guns">
-    <meta name="twitter:description" content="Official BlockSpin Discord server: trading, giveaways, free guns, middleman service, and live values from BlockSpin Values.">
-    <link rel="icon" type="image/png" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
-    <style>html{color-scheme:light only;-webkit-color-scheme:light;--bsv-hue:217;--bsv-accent-hue:188;background-color:hsl(217,41%,10%)}</style>
+<meta name="color-scheme" content="only light" />
+<meta name="supported-color-schemes" content="light" />
+<meta name="theme-color" content="#0f1724">
+<title>BlockSpin Discord Server — Trading, Giveaways &amp; Free Guns | BlockSpin Values</title>
+<meta name="description" content="Official BlockSpin Discord server by BlockSpin Values. BlockSpin trading, giveaways, free guns, middleman service, and live item values for Roblox BlockSpin traders.">
+<meta property="og:title" content="BlockSpin Discord Server — Trading, Giveaways &amp; Free Guns">
+<meta property="og:description" content="Join the official BlockSpin Discord server. BlockSpin trading, giveaways, free guns, middleman trades, and live values from BlockSpin Values.">
+<meta property="og:image" content="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
+<meta property="og:url" content="https://blockspinvalues.com/blockspin-discord-server.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BlockSpin Discord Server — Trading, Giveaways &amp; Free Guns">
+<meta name="twitter:description" content="Official BlockSpin Discord server: trading, giveaways, free guns, middleman service, and live values from BlockSpin Values.">
+<link rel="icon" type="image/png" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
+<link rel="apple-touch-icon" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
+<style>html{color-scheme:only light;-webkit-color-scheme:light;--bsv-hue:217;--bsv-accent-hue:188;background-color:hsl(217,41%,10%)}</style>
 <script>
 (function () {
   try {
@@ -106,178 +62,177 @@
   } catch (e) {}
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=20260925-responsive-pass">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "BlockSpin Discord Server — BlockSpin Values",
-      "description": "Official BlockSpin Discord server for BlockSpin trading, giveaways, free guns, middleman service, and live item values on Roblox.",
-      "url": "https://blockspinvalues.com/blockspin-discord-server.html",
-      "keywords": [
-        "BlockSpin",
-        "BlockSpin Discord",
-        "BlockSpin Values",
-        "BlockSpin Trading",
-        "BlockSpin Trade",
-        "BlockSpin WFL",
-        "BlockSpin Value List",
-        "BlockSpin Calculator",
-        "BlockSpin Giveaway",
-        "BlockSpin Dracos",
-        "BlockSpin Community",
-        "Roblox BlockSpin",
-        "Best BlockSpin Discord",
-        "Active BlockSpin Server",
-        "BlockSpin Events",
-        "BlockSpin Trading Hub",
-        "BlockSpin Updates",
-        "BlockSpin News",
-        "BlockSpin Item Values",
-        "BlockSpin Scams",
-        "BlockSpin Middleman",
-        "BlockSpin Price List",
-        "BlockSpin Fit Ideas",
-        "BlockSpin Car Wraps",
-        "BlockSpin Most Expensive Items",
-        "BlockSpin Leaks",
-        "BlockSpin Firework Launcher",
-        "BlockSpin What Is BM",
-        "BlockSpin Baddies"
-      ],
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "BlockSpin Values",
-        "url": "https://blockspinvalues.com/"
-      }
-    }
-    </script>
+<link rel="stylesheet" href="style.css?v=20260930-sitewide-audit">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "BlockSpin Discord Server — BlockSpin Values",
+  "description": "Official BlockSpin Discord server for BlockSpin trading, giveaways, free guns, middleman service, and live item values on Roblox.",
+  "url": "https://blockspinvalues.com/blockspin-discord-server.html",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "BlockSpin Values",
+    "url": "https://blockspinvalues.com/"
+  }
+}
+</script>
 </head>
 <body data-bsv-page="discord">
 
 <div id="bsv-site-header"></div>
 
-<div class="join-wrap">
-    <a href="/" class="join-back">← Back to Home</a>
+<main class="discord-learn">
+  <div class="discord-learn__page-bg" aria-hidden="true"></div>
 
-    <section class="join-hero">
-        <div>
-            <h1>BlockSpin Discord Server</h1>
-            <p class="join-hero-lead">The official <strong>BlockSpin Values</strong> Discord server for <strong>BlockSpin trading</strong> on Roblox — live values, <strong>BlockSpin giveaways</strong>, <strong>free guns</strong>, and a free middleman service trusted by thousands of traders.</p>
-        </div>
-        <div class="join-stat-card">
-            <div class="join-live-panel">
-                <div class="join-live-panel__head">
-                    <img src="https://i.ibb.co/Tq7DLCJt/dsfbvbvxcxbvn.png" alt="" width="52" height="52" decoding="async" loading="lazy" class="join-live-panel__logo">
-                    <div>
-                        <p class="join-live-panel__name">BlockSpin Values</p>
-                        <p class="join-live-panel__online"><span class="join-live-dot" aria-hidden="true"></span> <span id="join-online-count">—</span> online now</p>
-                    </div>
-                </div>
-                <div class="join-live-panel__stats">
-                    <div class="join-stat-num"><span id="join-member-count">—</span>+</div>
-                    <div class="join-stat-label">traders &amp; growing</div>
-                </div>
-                <a href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener noreferrer" class="join-live-panel__join">Join Discord Server</a>
-            </div>
-        </div>
-    </section>
+  <a class="discord-learn__back" href="index.html" id="discord-learn-back">← Back to Home</a>
 
-    <section class="join-benefits-section">
-        <div class="join-section-head">
-            <h2>What we offer</h2>
-            <p>Our BlockSpin Discord server is built for safer, smarter trading — everything a BlockSpin trader needs in one community.</p>
+  <section class="discord-learn__hero" aria-labelledby="discord-learn-title">
+    <div class="discord-learn__hero-inner">
+      <span class="discord-learn__logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="72" height="72" focusable="false">
+          <path fill="#5865F2" d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+        </svg>
+      </span>
+      <p class="discord-learn__eyebrow">BlockSpin Values</p>
+      <h1 id="discord-learn-title">Join Our Discord Server</h1>
+      <p class="discord-learn__lead">Live values, free middleman, daily item prizes, and a big trader community in one place.</p>
+      <div class="discord-learn__actions">
+        <a class="discord-learn__btn discord-learn__btn--join" href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener noreferrer">Join now <span aria-hidden="true">→</span></a>
+        <a class="discord-learn__btn discord-learn__btn--ghost" href="#discord-learn-offer">What we offer</a>
+      </div>
+      <div class="discord-learn__live" aria-label="Server stats">
+        <div class="discord-learn__pill">
+          <span class="discord-learn__pill-num" id="join-member-count">...</span>
+          <span class="discord-learn__pill-label">Traders</span>
         </div>
-        <div class="join-benefits">
-            <article class="join-benefit join-benefit--giveaways">
-                <div class="join-benefit__icon" aria-hidden="true">🎁</div>
-                <div class="join-benefit__body">
-                    <h3>BlockSpin giveaways</h3>
-                    <p>Members-only <strong>BlockSpin giveaway</strong> events for in-game items, Robux, and rare guns. Join the BlockSpin server to enter prizes you won't find anywhere else.</p>
-                </div>
-            </article>
-            <article class="join-benefit join-benefit--values">
-                <div class="join-benefit__icon" aria-hidden="true">📊</div>
-                <div class="join-benefit__body">
-                    <h3>Value list updates</h3>
-                    <p>Our Value List Team maintains this website. Discord is where changes are discussed, announced, and suggested first — so you stay ahead of the market.</p>
-                </div>
-            </article>
-            <article class="join-benefit join-benefit--middleman">
-                <div class="join-benefit__icon join-benefit__icon--shield" aria-hidden="true">
-                    <svg class="middleman-shield-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
-                        <path fill="#ffffff" stroke="#000000" stroke-width="1.65" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        <path fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12.5l2 2.5 4.5-5"></path>
-                    </svg>
-                </div>
-                <div class="join-benefit__body">
-                    <h3>Middleman service</h3>
-                    <p>Trade with confidence using our free Middleman service. Staff hold items during trades so buyers and sellers don't get scammed.</p>
-                </div>
-            </article>
-            <article class="join-benefit join-benefit--suggestions">
-                <div class="join-benefit__icon" aria-hidden="true">💬</div>
-                <div class="join-benefit__body">
-                    <h3>Value suggestions</h3>
-                    <p>Submit value change ideas and vote on community suggestions. Help shape the BlockSpin value list with direct input.</p>
-                </div>
-            </article>
-            <article class="join-benefit join-benefit--community">
-                <div class="join-benefit__icon" aria-hidden="true">🤝</div>
-                <div class="join-benefit__body">
-                    <h3>BlockSpin trading community</h3>
-                    <p>Connect with BlockSpin traders on Discord — find deals, ask questions, and learn from experienced players in an active trading community.</p>
-                </div>
-            </article>
+        <div class="discord-learn__pill discord-learn__pill--online">
+          <span class="discord-learn__dot" aria-hidden="true"></span>
+          <span class="discord-learn__pill-num" id="join-online-count">...</span>
+          <span class="discord-learn__pill-label">Online now</span>
         </div>
-    </section>
-
-    <section class="join-faq">
-        <h2>Frequently asked questions</h2>
-        <details>
-            <summary>What is BlockSpin Values?</summary>
-            <p>A community-driven value list for BlockSpin on Roblox — accurate trading values, a tax calculator, and the BlockSpin trading community Discord run by traders.</p>
-        </details>
-        <details>
-            <summary>How do I get a middleman for my trade?</summary>
-            <p>Join our Discord server and press <strong>Get a Middleman</strong> to open a ticket. Our MM team will guide you through a safe trade.</p>
-        </details>
-        <details>
-            <summary>How can I suggest a value change?</summary>
-            <p>After joining, go to the Value Suggestions channel in the Website Portal category. You can submit ideas and vote on other people's suggestions.</p>
-        </details>
-        <details>
-            <summary>Does the BlockSpin server have giveaways?</summary>
-            <p>Yes — the BlockSpin Values Discord runs regular <strong>BlockSpin giveaway</strong> events for members. Join the server and check the giveaway channels for active prizes.</p>
-        </details>
-        <details>
-            <summary>Can I get free guns from the BlockSpin Discord?</summary>
-            <p>Members can win <strong>BlockSpin free guns</strong> and other items through server giveaways and community events. Join the BlockSpin server and follow the announcements channels so you don't miss them.</p>
-        </details>
-        <details>
-            <summary>Is the Discord server free to join?</summary>
-            <p>Yes — click Join Discord Server above to open the invite and accept it in Discord.</p>
-        </details>
-    </section>
-
-    <div class="join-bottom-cta">
-        <p class="join-bottom-cta__text">Ready to join the BlockSpin trading community on Discord?</p>
-        <a href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener noreferrer" class="join-cta-bottom">
-            Join Discord Server
-        </a>
+      </div>
     </div>
-</div>
+  </section>
+
+  <section class="discord-learn__section" id="discord-learn-offer" aria-labelledby="discord-learn-offer-title">
+    <header class="discord-learn__section-head">
+      <h2 id="discord-learn-offer-title">What we offer</h2>
+      <p>Safer trades, live values, and giveaways for BlockSpin players.</p>
+    </header>
+    <div class="discord-learn__features">
+      <article class="discord-learn__feature discord-learn__feature--community">
+        <span class="discord-learn__feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="8" r="3"/>
+            <circle cx="17" cy="9.5" r="2.2"/>
+            <path d="M3.5 19c.5-2.6 2.8-4.2 5.5-4.2S14 16.4 14.5 19"/>
+            <path d="M15.2 15.2c1.7-.35 3.5.2 4.8 1.55V19"/>
+          </svg>
+        </span>
+        <h3>Active Community</h3>
+        <p>Thousands of traders online talking deals and answering questions every day.</p>
+        <span class="discord-learn__feature-tag">Always online</span>
+      </article>
+      <article class="discord-learn__feature discord-learn__feature--middleman">
+        <span class="discord-learn__feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="M9 12.5l2 2.5 4.5-5"></path>
+          </svg>
+        </span>
+        <h3>Free Middleman Service</h3>
+        <p>Staff hold items during trades so neither side gets scammed. Free for members.</p>
+        <span class="discord-learn__feature-tag">Scam free trades</span>
+      </article>
+      <article class="discord-learn__feature discord-learn__feature--giveaways">
+        <span class="discord-learn__feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7z"/>
+            <path d="M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </span>
+        <h3>Daily Item Prizes</h3>
+        <p>Members only giveaways for in game items and rare drops you will not find elsewhere.</p>
+        <span class="discord-learn__feature-tag">Members only</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="discord-learn__section" aria-labelledby="discord-learn-more-title">
+    <header class="discord-learn__section-head">
+      <h2 id="discord-learn-more-title">Also in the server</h2>
+      <p>More tools that keep trading simple.</p>
+    </header>
+    <ul class="discord-learn__extras">
+      <li>
+        <strong>Value list updates</strong>
+        <span>Value changes get talked about in Discord first, then go live on the site.</span>
+      </li>
+      <li>
+        <strong>Value suggestions</strong>
+        <span>Post your own ideas and vote on what other people want changed.</span>
+      </li>
+      <li>
+        <strong>Active trading channels</strong>
+        <span>Post offers, find deals, and talk WFL with other traders in real time.</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="discord-learn__section discord-learn__faq" aria-labelledby="discord-learn-faq-title">
+    <header class="discord-learn__section-head">
+      <h2 id="discord-learn-faq-title">FAQ</h2>
+    </header>
+    <div class="discord-learn__faq-list">
+      <details>
+        <summary>What is BlockSpin Values?</summary>
+        <p>We run the BlockSpin value list, tax calculator, and the Discord where traders hang out.</p>
+      </details>
+      <details>
+        <summary>How do I get a middleman for my trade?</summary>
+        <p>Join the server and press <strong>Get a Middleman</strong> to open a ticket. Staff will walk you through it.</p>
+      </details>
+      <details>
+        <summary>How can I suggest a value change?</summary>
+        <p>After you join, open Value Suggestions under Website Portal. Post there and vote on other posts.</p>
+      </details>
+      <details>
+        <summary>Are there giveaways?</summary>
+        <p>Yes. Members only item giveaways run often. Check the giveaway channels for what is live.</p>
+      </details>
+      <details>
+        <summary>Is the Discord free to join?</summary>
+        <p>Yes. Hit Join now, open the invite, and accept it in Discord.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="discord-learn__cta" aria-label="Join Discord">
+    <p class="discord-learn__cta-title">Want in?</p>
+    <p class="discord-learn__cta-text">Free middleman, daily item prizes, and thousands of traders already here.</p>
+    <a class="discord-learn__btn discord-learn__btn--join" href="https://discord.gg/QbapryYUUx" target="_blank" rel="noopener noreferrer">Join Discord Server <span aria-hidden="true">→</span></a>
+  </section>
+</main>
 
 <div id="bsv-discord-boosters-slot" class="join-boosters-slot"></div>
-
-
-
 <div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
 <div id="bsv-site-footer"></div>
 
-<script src="site-chrome.js?v=20260925-responsive-pass"></script>
+<script src="site-chrome.js?v=20260930-sitewide-audit"></script>
+<script src="site-i18n.js?v=20260930-sitewide-audit"></script>
+<script src="auth.js?v=20260930-sitewide-audit"></script>
+<script src="site-settings.js?v=20260930-sitewide-audit"></script>
 <script defer>
 (function () {
+  try {
+    var back = document.getElementById("discord-learn-back");
+    if (back && typeof window.bsvSitePath === "function") {
+      back.setAttribute("href", window.bsvSitePath("index.html"));
+    }
+  } catch (e) {}
+
   function loadCounts() {
     fetch("https://discord.com/api/v10/invites/QbapryYUUx?with_counts=true")
       .then(function (r) { return r.json(); })

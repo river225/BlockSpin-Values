@@ -2,74 +2,24 @@
 <html lang="en">
 <head>
 <script>
-/* One-time hard client reset: cookies, storage, SW, caches */
-(function () {
-  var BUILD = "20260915-tech-fix";
-  var KEY = "bsv-build";
-  var FLAG = "bsv-hard-resetting";
-  try {
-    // Strip one-time cache-bust params before analytics can read them.
-    var clean = new URL(location.href);
-    if (clean.searchParams.has("bsv_r") || clean.searchParams.has("_")) {
-      clean.searchParams.delete("bsv_r");
-      clean.searchParams.delete("_");
-      var qs = clean.searchParams.toString();
-      history.replaceState(null, "", clean.pathname + (qs ? "?" + qs : "") + clean.hash);
-    }
-    if (localStorage.getItem(KEY) === BUILD) return;
-    if (sessionStorage.getItem(FLAG) === BUILD) {
-      localStorage.setItem(KEY, BUILD);
-      sessionStorage.removeItem(FLAG);
-      return;
-    }
-    sessionStorage.setItem(FLAG, BUILD);
-    var cookies = document.cookie ? document.cookie.split(";") : [];
-    var host = location.hostname || "";
-    var domains = ["", host, "." + host];
-    for (var i = 0; i < cookies.length; i++) {
-      var name = (cookies[i].split("=")[0] || "").trim();
-      if (!name) continue;
-      for (var d = 0; d < domains.length; d++) {
-        var base = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;Max-Age=0";
-        document.cookie = domains[d] ? base + ";domain=" + domains[d] : base;
-      }
-    }
-    try { localStorage.clear(); } catch (e) {}
-    try { sessionStorage.clear(); sessionStorage.setItem(FLAG, BUILD); } catch (e) {}
-    var pending = 1;
-    function done() {
-      if (--pending > 0) return;
-      var url = new URL(location.href);
-      url.searchParams.delete("bsv_r");
-      url.searchParams.set("_", String(Date.now()));
-      var q = url.searchParams.toString();
-      location.replace(url.pathname + (q ? "?" + q : "") + url.hash);
-    }
-    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
-      pending++;
-      navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (r) { return r.unregister(); }));
-      }).then(done, done);
-    }
-    if (window.caches && caches.keys) {
-      pending++;
-      caches.keys().then(function (keys) {
-        return Promise.all(keys.map(function (k) { return caches.delete(k); }));
-      }).then(done, done);
-    }
-    done();
-  } catch (e) {}
-})();
+/* Asset build id (no auto-reload). Bump via tools/bump-build.py */
+window.BSV_BUILD = "20260930-sitewide-audit";
 </script>
 
+
     <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
     
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="canonical" href="https://blockspinvalues.com/x-faq.html" />
-    <link rel="icon" type="image/png" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
+<meta name="color-scheme" content="only light" />
+<meta name="supported-color-schemes" content="light" />
+<meta name="theme-color" content="#0f1724" />
+<style>html{color-scheme:only light;-webkit-color-scheme:light;--bsv-hue:217;--bsv-accent-hue:188;background-color:hsl(217,41%,10%)}</style>
+<link rel="icon" type="image/png" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
     <link rel="apple-touch-icon" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
     <title>FAQ</title>
-    <style>html{color-scheme:light only;-webkit-color-scheme:light;--bsv-hue:217;--bsv-accent-hue:188;background-color:hsl(217,41%,10%)}</style>
+    <style>html{color-scheme:only light;-webkit-color-scheme:light;--bsv-hue:217;--bsv-accent-hue:188;background-color:hsl(217,41%,10%)}</style>
 <script>
 (function () {
   try {
@@ -93,7 +43,7 @@
   } catch (e) {}
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=20260925-responsive-pass">
+<link rel="stylesheet" href="style.css?v=20260930-sitewide-audit">
     <style>
         .faq-container {
             max-width: 900px;
@@ -287,6 +237,9 @@
 
 <div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
 <div id="bsv-site-footer"></div>
-<script src="site-chrome.js?v=20260925-responsive-pass"></script>
+<script src="site-chrome.js?v=20260930-sitewide-audit"></script>
+<script src="site-i18n.js?v=20260930-sitewide-audit"></script>
+<script src="auth.js?v=20260930-sitewide-audit"></script>
+<script src="site-settings.js?v=20260930-sitewide-audit"></script>
 </body>
 </html>

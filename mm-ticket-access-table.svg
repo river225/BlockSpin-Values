@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="320" viewBox="0 0 1180 320">
+  <rect width="1180" height="320" fill="#1e1f22"/>
+  <defs>
+    <style>
+      .h { fill: #dbdee1; font: 600 16px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; }
+      .c { fill: #dbdee1; font: 600 17px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; }
+      .ok { fill: #3ba55d; font: 700 26px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; }
+      .no { fill: #ed4245; font: 700 26px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; }
+      .line { stroke: #3f4147; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <!-- column x positions / widths:
+       Ticket 120 | Trial 100 | Junior 100 | MM 100 | Senior 110 | Elevated 200 | Head 100 | Upper 230
+       ends: 120,220,320,420,530,730,830,1060,1180? wait sum=1160, pad to 1180
+  -->
+  <!-- grid background -->
+  <rect x="10" y="10" width="1160" height="300" fill="#2b2d31" stroke="#3f4147"/>
+
+  <!-- header row -->
+  <rect x="10" y="10" width="1160" height="50" fill="#313338"/>
+
+  <!-- horizontal lines -->
+  <line class="line" x1="10" y1="60" x2="1170" y2="60"/>
+  <line class="line" x1="10" y1="110" x2="1170" y2="110"/>
+  <line class="line" x1="10" y1="160" x2="1170" y2="160"/>
+  <line class="line" x1="10" y1="210" x2="1170" y2="210"/>
+  <line class="line" x1="10" y1="260" x2="1170" y2="260"/>
+
+  <!-- vertical lines: 10+120=130, +100=220, +100=320, +100=420, +110=530, +200=730, +100=830, +230=1060, +110? 
+       Total content width 1160: 120+100+100+100+110+200+100+230 = 1060, leftover 100 - distribute to elevated/upper
+       Recalc: 120 + 95 + 95 + 90 + 105 + 210 + 95 + 255 = 1115, +45 pad...
+       Use exact: 130,230,330,430,540,750,850,1170 with start 10
+  -->
+  <line class="line" x1="130" y1="10" x2="130" y2="310"/>
+  <line class="line" x1="230" y1="10" x2="230" y2="310"/>
+  <line class="line" x1="330" y1="10" x2="330" y2="310"/>
+  <line class="line" x1="430" y1="10" x2="430" y2="310"/>
+  <line class="line" x1="540" y1="10" x2="540" y2="310"/>
+  <line class="line" x1="750" y1="10" x2="750" y2="310"/>
+  <line class="line" x1="850" y1="10" x2="850" y2="310"/>
+
+  <!-- headers centered in columns -->
+  <text class="h" text-anchor="middle" x="70" y="42">Ticket</text>
+  <text class="h" text-anchor="middle" x="180" y="42">Trial</text>
+  <text class="h" text-anchor="middle" x="280" y="42">Junior</text>
+  <text class="h" text-anchor="middle" x="380" y="42">MM</text>
+  <text class="h" text-anchor="middle" x="485" y="42">Senior</text>
+  <text class="h" text-anchor="middle" x="645" y="42">Elevated Middleman</text>
+  <text class="h" text-anchor="middle" x="800" y="42">Head</text>
+  <text class="h" text-anchor="middle" x="1010" y="42">Upper Elevated Middleman</text>
+
+  <!-- row labels -->
+  <text class="c" x="24" y="92">Under 1M</text>
+  <text class="c" x="24" y="142">Over 1M</text>
+  <text class="c" x="24" y="192">Over 3M</text>
+  <text class="c" x="24" y="242">Over 6M</text>
+  <text class="c" x="24" y="292">Over 8M</text>
+
+  <!-- Under 1M: all checks -->
+  <text class="ok" text-anchor="middle" x="180" y="95"></text>
+  <text class="ok" text-anchor="middle" x="280" y="95"></text>
+  <text class="ok" text-anchor="middle" x="380" y="95"></text>
+  <text class="ok" text-anchor="middle" x="485" y="95"></text>
+  <text class="ok" text-anchor="middle" x="645" y="95"></text>
+  <text class="ok" text-anchor="middle" x="800" y="95"></text>
+  <text class="ok" text-anchor="middle" x="1010" y="95"></text>
+
+  <!-- Over 1M: Trial no -->
+  <text class="no" text-anchor="middle" x="180" y="145"></text>
+  <text class="ok" text-anchor="middle" x="280" y="145"></text>
+  <text class="ok" text-anchor="middle" x="380" y="145"></text>
+  <text class="ok" text-anchor="middle" x="485" y="145"></text>
+  <text class="ok" text-anchor="middle" x="645" y="145"></text>
+  <text class="ok" text-anchor="middle" x="800" y="145"></text>
+  <text class="ok" text-anchor="middle" x="1010" y="145"></text>
+
+  <!-- Over 3M: Trial Junior no -->
+  <text class="no" text-anchor="middle" x="180" y="195"></text>
+  <text class="no" text-anchor="middle" x="280" y="195"></text>
+  <text class="ok" text-anchor="middle" x="380" y="195"></text>
+  <text class="ok" text-anchor="middle" x="485" y="195"></text>
+  <text class="ok" text-anchor="middle" x="645" y="195"></text>
+  <text class="ok" text-anchor="middle" x="800" y="195"></text>
+  <text class="ok" text-anchor="middle" x="1010" y="195"></text>
+
+  <!-- Over 6M: through MM no; Senior+Elevated+Head+Upper yes -->
+  <text class="no" text-anchor="middle" x="180" y="245"></text>
+  <text class="no" text-anchor="middle" x="280" y="245"></text>
+  <text class="no" text-anchor="middle" x="380" y="245"></text>
+  <text class="ok" text-anchor="middle" x="485" y="245"></text>
+  <text class="ok" text-anchor="middle" x="645" y="245"></text>
+  <text class="ok" text-anchor="middle" x="800" y="245"></text>
+  <text class="ok" text-anchor="middle" x="1010" y="245"></text>
+
+  <!-- Over 8M: only Head + Upper Elevated -->
+  <text class="no" text-anchor="middle" x="180" y="295"></text>
+  <text class="no" text-anchor="middle" x="280" y="295"></text>
+  <text class="no" text-anchor="middle" x="380" y="295"></text>
+  <text class="no" text-anchor="middle" x="485" y="295"></text>
+  <text class="no" text-anchor="middle" x="645" y="295"></text>
+  <text class="ok" text-anchor="middle" x="800" y="295"></text>
+  <text class="ok" text-anchor="middle" x="1010" y="295"></text>
+</svg>
