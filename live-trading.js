@@ -650,7 +650,7 @@
     }, 50);
   }
 
-  var DISCORD_INVITE_FALLBACK = "https://discord.gg/QbapryYUUx";
+  var DISCORD_INVITE_FALLBACK = "https://discord.gg/QbapryYUUx?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=live-trading";
   // Optional direct Apps Script URL. Prefer Railway env LT_REPORT_APPS_SCRIPT_URL via bot proxy.
   var LT_REPORT_APPS_SCRIPT_URL = "";
   var LT_REPORT_SHEET_ID = "1FEwl6yfOIVm79d1OlNMy8olYVngcdrVocWi462DXWRk";

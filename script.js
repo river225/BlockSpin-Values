@@ -57,15 +57,15 @@ const FISH_WEIGHT_STEP = 0.1;
 const GIVEAWAY_CAROUSEL_INTERVAL_MS = 10000;
 const DISCORD_CARD_CAROUSEL_INTERVAL_MS = 9000;
 const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/QqD6BSd/j-Sn2mv-Y-1-removebg-preview.png";
-const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv";
+const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=anaconda";
 const BSV_LOGO_URL = "https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png";
 const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
-const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh";
+const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=robux";
 const FISHING_GUIDE_FOOTER_IMAGE_URL = "https://i.ibb.co/pvBhZgf5/no-Filter-7-removebg-preview.png";
 const FARMING_GUIDE_FOOTER_IMAGE_URL = "https://i.ibb.co/WWjndtxz/8b388c3c-7695-431b-8b2f-9350b0406615-removebg-preview.png";
 const GUIDE_COMING_SOON_IMAGE_URL = "https://i.ibb.co/WpMkM9xS/Screenshot-2026-07-05-at-11-09-38-removebg-preview.png";
 const BSV_DISCORD_GUILD_ID = "1402820361539817554";
-const BSV_DISCORD_INVITE_URL = "https://discord.gg/QbapryYUUx";
+const BSV_DISCORD_INVITE_URL = "https://discord.gg/QbapryYUUx?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=home";
 const BSV_BOT_PUBLIC_BASE_DEFAULT = "https://bsv-bot-production.up.railway.app";
 
 function normalizeApiBase(url) {
@@ -128,8 +128,26 @@ const CONTENT_SECTIONS = [
 ];
 
 function isBsvTestEnvironment() {
+  try {
+    var h = (location.hostname || "").toLowerCase();
+    if (h && h !== "blockspinvalues.com" && h !== "www.blockspinvalues.com") return true;
+  } catch (_) {}
   if (document.documentElement && document.documentElement.dataset.bsvEnv === "test") return true;
   return !!document.querySelector('meta[name="bsv-env"][content="test"]');
+}
+
+function withDiscordUtm(url, content) {
+  try {
+    var u = new URL(String(url || ""), "https://blockspinvalues.com");
+    if (!/discord\.(gg|com)/i.test(u.hostname + u.pathname)) return String(url || "");
+    if (!u.searchParams.get("utm_source")) u.searchParams.set("utm_source", "blockspinvalues");
+    if (!u.searchParams.get("utm_medium")) u.searchParams.set("utm_medium", "referral");
+    if (!u.searchParams.get("utm_campaign")) u.searchParams.set("utm_campaign", "site");
+    if (content && !u.searchParams.get("utm_content")) u.searchParams.set("utm_content", String(content).slice(0, 40));
+    return u.toString();
+  } catch (_) {
+    return String(url || "");
+  }
 }
 
 function i18n(key, vars) {
@@ -1131,16 +1149,13 @@ function buildRobuxGiveawayBannerHtml(bannerId) {
 }
 
 function normalizeSectionNameForAnalytics(sectionName) {
-  var name = sectionName || "Home";
-  if (name === "Untradable Items") return ACCESSORIES_SECTION_NAME;
-  if (
-    name === "Richest Players" ||
-    name === "richest-players" ||
-    name === "💰 Richest Players"
-  ) {
-    return "Richest Players";
-  }
-  return name;
+  var name = String(sectionName || "Home").trim();
+  // Strip common leading emoji used in section titles (e.g. money bag).
+  name = name.replace(/^\uD83D\uDCB0\s*/, "").replace(/^\uFE0F/, "").trim();
+  if (name === "Untradable Items" || name === "Untradeable Items") return ACCESSORIES_SECTION_NAME;
+  if (name === "Richest Players" || name === "richest-players") return "Richest Players";
+  if (name === "Test") return "Home";
+  return name || "Home";
 }
 
 function cleanAnalyticsPagePath() {

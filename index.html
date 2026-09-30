@@ -59,12 +59,12 @@
 </script>
 <script>
 /* Asset build id (no auto-reload). Bump via tools/bump-build.py */
-window.BSV_BUILD = "20260930-header-fit";
+window.BSV_BUILD = "20260930-audit-fix";
 </script>
 <script>
 /* One-time hard client reset: cookies, storage, SW, caches */
 (function () {
-  var BUILD = "20260930-header-fit";
+  var BUILD = "20260930-audit-fix";
   var KEY = "bsv-build";
   var FLAG = "bsv-hard-resetting";
   try {
@@ -181,7 +181,7 @@ window.BSV_BUILD = "20260930-header-fit";
   window.addEventListener("pageshow", removeWrongSiteBanner);
 })();
 </script>
-<script defer src="auth-oauth-bounce.js?v=20260930-header-fit"></script>
+<script defer src="auth-oauth-bounce.js?v=20260930-audit-fix"></script>
 <title>BlockSpin Values</title>
 <meta property="og:description" content="BlockSpin Values — trusted Roblox BlockSpin value list, tax calculator, and Discord for trading, giveaways &amp; middleman service.">
 <link rel="canonical" href="https://blockspinvalues.com/" />
@@ -193,8 +193,8 @@ window.BSV_BUILD = "20260930-header-fit";
 <meta property="og:title" content="BlockSpin Values">
 
 <!-- Google Analytics loads only after cookie consent (see site-chrome.js) -->
-<link rel="preload" href="style.css?v=20260930-header-fit" as="style" />
-<link rel="stylesheet" href="style.css?v=20260930-header-fit" />
+<link rel="preload" href="style.css?v=20260930-audit-fix" as="style" />
+<link rel="stylesheet" href="style.css?v=20260930-audit-fix" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
@@ -309,6 +309,13 @@ window.BSV_BUILD = "20260930-header-fit";
 } 
 
 </style> 
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"BlockSpin Values","url":"https://blockspinvalues.com/","potentialAction":{"@type":"SearchAction","target":"https://blockspinvalues.com/?q={search_term_string}","query-input":"required name=search_term_string"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Live Trading","url":"https://blockspinvalues.com/live-trading.html","isPartOf":{"@type":"WebSite","url":"https://blockspinvalues.com/"}}
+</script>
 </head> 
 <body data-bsv-page="home"> 
 
@@ -476,15 +483,31 @@ window.BSV_BUILD = "20260930-header-fit";
 
 <div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
 
-<script defer src="site-chrome.js?v=20260930-header-fit"></script>
-<script defer src="auth.js?v=20260930-header-fit"></script>
-<script defer src="saved-cards.js?v=20260930-header-fit"></script>
-<script defer src="site-i18n.js?v=20260930-header-fit"></script>
-<script defer src="site-settings.js?v=20260930-header-fit"></script>
-<script defer src="section-config.js?v=20260930-header-fit"></script>
-<script defer src="quest-guide-i18n.js?v=20260930-header-fit"></script>
-<script defer src="script.js?v=20260930-header-fit"></script> 
+<script defer src="site-chrome.js?v=20260930-audit-fix"></script>
+<script defer src="auth.js?v=20260930-audit-fix"></script>
+<script defer src="saved-cards.js?v=20260930-audit-fix"></script>
+<script defer src="site-i18n.js?v=20260930-audit-fix"></script>
+<script defer src="site-settings.js?v=20260930-audit-fix"></script>
+<script defer src="section-config.js?v=20260930-audit-fix"></script>
+<script defer src="quest-guide-i18n.js?v=20260930-audit-fix"></script>
+<script defer src="script.js?v=20260930-audit-fix"></script> 
 
+
+
+<!-- Crawlable primary links (header/footer mount via JS) -->
+<nav class="bsv-crawl-nav" aria-label="Primary pages">
+  <a href="/live-trading.html">Live Trading</a>
+  <a href="/sponsors/">Sponsors</a>
+  <a href="/blockspin-discord-server.html">Discord Server</a>
+  <a href="/x-about.html">About Us</a>
+  <a href="/x-faq.html">FAQ</a>
+  <a href="/x-trading-guide.html">Trading Guide</a>
+  <a href="/x-richest-not-listed.html">Richest Players Help</a>
+  <a href="/z-contact.html">Contact</a>
+</nav>
+<style>
+.bsv-crawl-nav{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
 
 <div id="bsv-site-footer"></div>
 
