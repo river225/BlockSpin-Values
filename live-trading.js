@@ -2268,13 +2268,18 @@
     return list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
   }
 
+  function sideEmptyTradeLabel(side, emptyLabel) {
+    if (side && side.lookingForOffers) return "offers";
+    return emptyLabel || "nothing";
+  }
+
   function sideTradePhrase(side, emptyLabel) {
     var parts = [];
     ((side && side.items) || []).forEach(function (item) {
       parts.push(itemPhrase(item));
     });
     if (side && side.cash) parts.push(formatCash(side.cash));
-    return joinPhrases(parts) || emptyLabel || "nothing";
+    return joinPhrases(parts) || sideEmptyTradeLabel(side, emptyLabel);
   }
 
   function sideTradePhraseCompact(side, emptyLabel) {
@@ -2291,7 +2296,7 @@
       parts.push(qty > 1 ? qty + "× " + label : label);
     }
     if (side.cash) parts.push(formatCash(side.cash));
-    return joinPhrases(parts) || emptyLabel || "nothing";
+    return joinPhrases(parts) || sideEmptyTradeLabel(side, emptyLabel);
   }
 
   function postSummaryHtml(post) {
