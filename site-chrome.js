@@ -1137,10 +1137,110 @@
         }
         toolbar.classList.remove("is-active");
       }
+      fitNavBrandTitle();
     }
 
     apply();
     mq.addEventListener("change", apply);
+  }
+
+  var navBrandFitTimer = null;
+  var navBrandFitBound = false;
+
+  /** Scale "BlockSpin Values" so it never ellipsizes on phones. */
+  function fitNavBrandTitle() {
+    var title = document.querySelector(".nav-title");
+    var brand = document.querySelector(".nav-brand");
+    var container = document.querySelector(".nav-container-full");
+    var right = document.querySelector(".nav-right");
+    if (!title || !brand || !container) return;
+
+    if (!window.matchMedia("(max-width: 900px)").matches) {
+      title.style.fontSize = "";
+      if (brand.querySelector(".nav-logo-img")) {
+        brand.querySelector(".nav-logo-img").style.height = "";
+      }
+      return;
+    }
+
+    var logo = brand.querySelector(".nav-logo-img");
+    var rightW = right ? Math.ceil(right.getBoundingClientRect().width) : 0;
+    var styles = window.getComputedStyle(container);
+    var pad =
+      (parseFloat(styles.paddingLeft) || 0) +
+      (parseFloat(styles.paddingRight) || 0);
+    var gap = parseFloat(styles.gap) || 8;
+    var logoW = logo ? Math.ceil(logo.getBoundingClientRect().width) : 0;
+    var avail = Math.floor(container.clientWidth - rightW - logoW - pad - gap - 6);
+    if (!Number.isFinite(avail) || avail < 72) avail = 72;
+
+    var maxPx = Math.min(30, Math.max(17, window.innerWidth * 0.054));
+    var minPx = window.innerWidth <= 360 ? 12.5 : 13.5;
+    title.style.whiteSpace = "nowrap";
+    title.style.overflow = "visible";
+    title.style.textOverflow = "clip";
+
+    var lo = minPx;
+    var hi = maxPx;
+    var best = minPx;
+    for (var i = 0; i < 14; i++) {
+      var mid = (lo + hi) / 2;
+      title.style.fontSize = mid + "px";
+      if (title.scrollWidth <= avail + 0.5) {
+        best = mid;
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    title.style.fontSize = best.toFixed(2) + "px";
+
+    // If still overflowing at the floor, shrink the logo a touch.
+    if (logo && title.scrollWidth > avail + 1) {
+      var logoH = Math.max(28, Math.round(logo.getBoundingClientRect().height - 4));
+      logo.style.height = logoH + "px";
+      logoW = Math.ceil(logo.getBoundingClientRect().width);
+      avail = Math.floor(container.clientWidth - rightW - logoW - pad - gap - 6);
+      title.style.fontSize = minPx + "px";
+      if (title.scrollWidth > avail + 1) {
+        // last resort: keep shrinking type a little more
+        var tiny = minPx;
+        while (tiny > 11 && title.scrollWidth > avail + 1) {
+          tiny -= 0.5;
+          title.style.fontSize = tiny + "px";
+        }
+      }
+    }
+  }
+
+  function scheduleFitNavBrandTitle() {
+    if (navBrandFitTimer) window.clearTimeout(navBrandFitTimer);
+    navBrandFitTimer = window.setTimeout(function () {
+      navBrandFitTimer = null;
+      fitNavBrandTitle();
+    }, 40);
+  }
+
+  function bindNavBrandTitleFit() {
+    if (navBrandFitBound) {
+      scheduleFitNavBrandTitle();
+      return;
+    }
+    navBrandFitBound = true;
+    window.addEventListener("resize", scheduleFitNavBrandTitle);
+    window.addEventListener("orientationchange", scheduleFitNavBrandTitle);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(scheduleFitNavBrandTitle).catch(function () {});
+    }
+    var login = document.getElementById("nav-login");
+    if (login && typeof MutationObserver !== "undefined") {
+      var mo = new MutationObserver(scheduleFitNavBrandTitle);
+      mo.observe(login, { childList: true, subtree: true, attributes: true });
+    }
+    scheduleFitNavBrandTitle();
+    // Auth / layout often settles a beat later.
+    window.setTimeout(scheduleFitNavBrandTitle, 120);
+    window.setTimeout(scheduleFitNavBrandTitle, 400);
   }
 
   function mount(activePage) {
@@ -1159,6 +1259,7 @@
     var boosters = document.getElementById("footer-boosters");
     if (boostersSlot && boosters) boostersSlot.appendChild(boosters);
     initMobileHeaderToolbar();
+    bindNavBrandTitleFit();
     initHeaderIconMenus();
     ensureHomeHeaderDeps();
     initConsent();
@@ -1412,11 +1513,13 @@
 
   window.addEventListener("resize", function () {
     alignSponsorBannerToHomeContent();
+    scheduleFitNavBrandTitle();
   });
 
   global.bsvMountSiteChrome = mount;
   global.bsvInitMobileHeaderToolbar = initMobileHeaderToolbar;
   global.initMobileHeaderToolbar = initMobileHeaderToolbar;
+  global.bsvFitNavBrandTitle = fitNavBrandTitle;
   global.bsvHasMarketingConsent = hasMarketingConsent;
   global.bsvOpenCookieSettings = openConsentSettings;
   global.bsvPlaceSponsorBanner = placeSponsorBanner;
