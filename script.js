@@ -258,7 +258,6 @@ function buildHomeAnacondaBannerHtml() {
         '<div class="home-anaconda-banner__copy">' +
           '<p class="home-anaconda-banner__eyebrow">Omega Giveaway</p>' +
           '<h3 class="home-anaconda-banner__title">Anaconda Giveaway</h3>' +
-          '<p class="home-anaconda-banner__hook">Join our discord server to enter!</p>' +
         "</div>" +
         '<a href="' + href + '" target="_blank" rel="noopener noreferrer" class="home-anaconda-banner__cta">Enter Now <span aria-hidden="true">→</span></a>' +
       "</div>" +
