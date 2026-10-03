@@ -250,7 +250,6 @@ function buildHomeAnacondaBannerHtml() {
         '<span></span><span></span><span></span><span></span>' +
       "</div>" +
       '<div class="home-anaconda-banner__inner">' +
-        '<span class="home-anaconda-banner__urgency">Ends Very Soon!</span>' +
         '<div class="home-anaconda-banner__stage">' +
           '<span class="home-anaconda-banner__ring" aria-hidden="true"></span>' +
           '<span class="home-anaconda-banner__pedestal" aria-hidden="true"></span>' +
