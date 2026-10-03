@@ -1,4 +1,4 @@
-const SPREADSHEET_ID = "18s5ZK-b256navTEfZQFF1TxICwQ3xLjhiSJH4X97Ji4";
+const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
 const SECTION_NAMES = typeof getSectionTitles === "function" ? getSectionTitles() : [];
 
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
@@ -298,8 +298,11 @@ function buildHumveeGiveawayBannerHtml(bannerId) {
 }
 
 function mountHomeGiveawayCarousel() {
-  var homeHumveeWrap = document.querySelector(".home-humvee-banner-wrap");
-  if (homeHumveeWrap) homeHumveeWrap.innerHTML = "";
+  var homeHumveeWrap =
+    document.getElementById("home-anaconda-banner-slot") ||
+    document.querySelector(".home-humvee-banner-wrap");
+  if (!homeHumveeWrap) return;
+  homeHumveeWrap.innerHTML = buildHomeAnacondaBannerHtml();
 }
 
 function getDiscordPromoSectionCopy(sectionTitle) {
