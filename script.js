@@ -123,7 +123,7 @@ const CONTENT_SECTIONS = [
   "Epic",
   "Legendary",
   "Omega",
-  "Misc",
+  "Gamepass / Misc",
   "Vehicles"
 ];
 
@@ -181,6 +181,7 @@ function resolveHashSectionRequest() {
   }
   var requested = decodeURIComponent(window.location.hash.substring(5));
   if (requested === "Uncommon") requested = "Common / Uncommon";
+  if (requested === "Misc") requested = "Gamepass / Misc";
   if (
     requested === "richest-players" ||
     requested === "Richest Players" ||
@@ -308,6 +309,7 @@ function getDiscordPromoSectionCopy(sectionTitle) {
     "Epic": { tags: "Giveaways · Trading · Middleman" },
     "Legendary": { tags: "Giveaways · Middleman · Trading" },
     "Omega": { tags: "Trading · Giveaways · Middleman" },
+    "Gamepass / Misc": { tags: "Middleman · Trading · Giveaways" },
     "Misc": { tags: "Middleman · Trading · Giveaways" },
     "Vehicles": { tags: "Giveaways · Trading · Middleman" },
     "Untradeable Items": { tags: "Trading · Community · Giveaways" }
@@ -1154,6 +1156,7 @@ function normalizeSectionNameForAnalytics(sectionName) {
   name = name.replace(/^\uD83D\uDCB0\s*/, "").replace(/^\uFE0F/, "").trim();
   if (name === "Untradable Items" || name === "Untradeable Items") return ACCESSORIES_SECTION_NAME;
   if (name === "Richest Players" || name === "richest-players") return "Richest Players";
+  if (name === "Misc") return "Gamepass / Misc";
   if (name === "Test") return "Home";
   return name || "Home";
 }
@@ -1736,7 +1739,7 @@ function normalizeContentSectionName(name) {
   if (raw.includes("epic")) return "Epic";
   if (raw.includes("legendary")) return "Legendary";
   if (raw.includes("omega")) return "Omega";
-  if (raw.includes("misc")) return "Misc";
+  if (raw.includes("gamepass") || raw.includes("misc")) return "Gamepass / Misc";
   if (raw.includes("vehicle")) return "Vehicles";
   return "";
 }
@@ -1754,7 +1757,7 @@ function sectionFromVideoColumnHeader(header) {
     e: "Epic",
     l: "Legendary",
     o: "Omega",
-    m: "Misc",
+    m: "Gamepass / Misc",
     v: "Vehicles"
   };
   return byLetter[m[1]] || "";

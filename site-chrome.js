@@ -382,7 +382,7 @@
     "Epic",
     "Legendary",
     "Omega",
-    "Misc",
+    "Gamepass / Misc",
     "Vehicles"
   ];
   var VALUE_LIST_EXTRAS = [

@@ -103,7 +103,7 @@
       accessoriesFastNav: false,
     },
     {
-      title: "Misc",
+      title: "Gamepass / Misc",
       id: "misc",
       navGroup: "main",
       dataSource: "sheet",
@@ -276,6 +276,8 @@
         '<path d="M5 9.5 7.5 7l2.2 2.2L12 5.5l2.3 3.7L16.5 7 19 9.5l-1 8H6z"/><path d="M8 17.5h8"/>',
       Omega:
         '<path d="M13 3 7.5 12.5H12l-1 8.5L17.5 11H13z"/>',
+      "Gamepass / Misc":
+        '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
       Misc:
         '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
       Vehicles:
