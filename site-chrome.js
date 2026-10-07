@@ -1523,7 +1523,7 @@
       // Pages without script.js still count toward website presence.
       if (presenceTimer) return;
       sendPresenceHeartbeat();
-      presenceTimer = setInterval(sendPresenceHeartbeat, 25000);
+      presenceTimer = setInterval(sendPresenceHeartbeat, 45000);
       document.addEventListener("visibilitychange", function () {
         if (!document.hidden) sendPresenceHeartbeat();
       });

@@ -15,8 +15,9 @@
   var postsFetchGen = 0;
   var postsPollTimer = null;
   var lastRenderedPostIds = "";
-  var POSTS_POLL_MS = 2000;
-  var POSTS_POLL_HIDDEN_MS = 15000;
+  // Cost control: full board JSON is large. 12s feels live; hidden tabs stop polling.
+  var POSTS_POLL_MS = 12000;
+  var POSTS_POLL_HIDDEN_MS = 0;
   var TRADE_SHEETS = [
     { sheet: "Uncommon", rarity: "Common / Uncommon", color: "#4caf50" },
     { sheet: "Rare", rarity: "Rare", color: "#4a90e2" },
@@ -257,21 +258,31 @@
     return headers;
   }
 
+  var postsEtag = "";
+
   function fetchPosts(opts) {
     opts = opts || {};
     if (postsFetchInFlight && !opts.force) return postsFetchInFlight;
     var gen = ++postsFetchGen;
+    var headers = { Accept: "application/json" };
+    if (postsEtag) headers["If-None-Match"] = postsEtag;
     postsFetchInFlight = fetch(authApiUrl("api/live-trading/posts"), {
-      headers: { Accept: "application/json" },
+      headers: headers,
       cache: "no-store"
     })
       .then(function (res) {
+        if (res.status === 304) {
+          return { unchanged: true };
+        }
+        var etag = res.headers.get("ETag") || res.headers.get("etag") || "";
+        if (etag) postsEtag = etag;
         return res.json().catch(function () {
           return null;
         });
       })
       .then(function (data) {
         if (gen !== postsFetchGen) return postsCache;
+        if (data && data.unchanged) return postsCache;
         if (data && Array.isArray(data.posts)) {
           postsCache = data.posts;
         } else if (!postsCache.length) {
@@ -303,12 +314,17 @@
   }
 
   function schedulePostsPoll() {
-    if (postsPollTimer) clearTimeout(postsPollTimer);
+    if (postsPollTimer) {
+      clearTimeout(postsPollTimer);
+      postsPollTimer = 0;
+    }
+    var ms = currentPollMs();
+    if (!ms || ms < 0) return;
     postsPollTimer = setTimeout(function () {
       fetchPosts({ force: true }).finally(function () {
         schedulePostsPoll();
       });
-    }, currentPollMs());
+    }, ms);
   }
 
   function startPostsPolling() {

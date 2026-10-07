@@ -1407,7 +1407,10 @@ function buildRichestPlayerCard(player, index) {
     ';">#' +
     p.rank +
     "</div>" +
+    '<div class="player-avatar-wrap">' +
     '<img class="player-avatar" alt="" width="56" height="56" decoding="async" />' +
+    '<button type="button" class="player-avatar-expand" hidden aria-expanded="false" aria-label="Show full avatar" title="Show full avatar">Full</button>' +
+    "</div>" +
     '<div class="player-info">' +
     '<div class="player-name">' +
     escapeHtml(p.playerName) +
@@ -1538,10 +1541,19 @@ async function loadRichestPlayerAvatars() {
     names.push(name);
   });
 
-  const apiUrl =
-    typeof window.bsvBotApiUrl === "function"
-      ? window.bsvBotApiUrl("api/roblox-avatars")
-      : `${BSV_BOT_PUBLIC_BASE}/api/roblox-avatars`;
+  // On local live-host (LAN IP / localhost), use the local avatar proxy so Full works
+  // before the production bot redeploy lands. Elsewhere keep the Railway bot API.
+  var host = (location && location.hostname) || "";
+  var localLive =
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    /^192\.168\.\d+\.\d+$/.test(host) ||
+    /^10\.\d+\.\d+\.\d+$/.test(host);
+  const apiUrl = localLive
+    ? (location.origin + "/api/roblox-avatars")
+    : (typeof window.bsvBotApiUrl === "function"
+        ? window.bsvBotApiUrl("api/roblox-avatars")
+        : `${BSV_BOT_PUBLIC_BASE}/api/roblox-avatars`);
 
   for (let i = 0; i < names.length; i += RICHEST_AVATAR_BATCH_SIZE) {
     const batch = names.slice(i, i + RICHEST_AVATAR_BATCH_SIZE);
@@ -1561,11 +1573,17 @@ async function loadRichestPlayerAvatars() {
         if (!entry || !entry.imageUrl) return;
 
         const img = card.querySelector(".player-avatar");
+        const expandBtn = card.querySelector(".player-avatar-expand");
         if (img) {
           img.loading = "lazy";
           img.decoding = "async";
           img.src = entry.imageUrl;
           img.alt = name;
+          img.dataset.headshotUrl = entry.imageUrl;
+          if (entry.fullImageUrl) img.dataset.fullUrl = entry.fullImageUrl;
+        }
+        if (expandBtn && entry.fullImageUrl) {
+          expandBtn.hidden = false;
         }
         if (entry.profileUrl) {
           const link = card.querySelector(".profile-link");
@@ -1576,6 +1594,37 @@ async function loadRichestPlayerAvatars() {
       console.warn("Failed to load richest player avatars:", err);
     }
   }
+
+  initRichestAvatarExpand(section);
+}
+
+function initRichestAvatarExpand(section) {
+  const root = section || document.querySelector(".richest-players-section");
+  if (!root || root.dataset.avatarExpandReady === "1") return;
+  root.dataset.avatarExpandReady = "1";
+
+  root.addEventListener("click", function (event) {
+    const btn = event.target.closest(".player-avatar-expand");
+    if (!btn || !root.contains(btn)) return;
+    const card = btn.closest(".richest-card");
+    const img = card && card.querySelector(".player-avatar");
+    if (!card || !img) return;
+
+    const fullUrl = img.dataset.fullUrl || "";
+    const headUrl = img.dataset.headshotUrl || img.src || "";
+    if (!fullUrl) return;
+
+    const expanding = !card.classList.contains("richest-card--avatar-full");
+    card.classList.toggle("richest-card--avatar-full", expanding);
+    img.src = expanding ? fullUrl : headUrl;
+    btn.setAttribute("aria-expanded", expanding ? "true" : "false");
+    btn.setAttribute(
+      "aria-label",
+      expanding ? "Show headshot avatar" : "Show full avatar"
+    );
+    btn.title = expanding ? "Collapse avatar" : "Show full avatar";
+    btn.textContent = expanding ? "Hide" : "Full";
+  });
 }
 
 async function fetchSheet(sheetName) {
@@ -3827,7 +3876,7 @@ function sendSitePresenceHeartbeat() {
 function startSitePresenceTracking() {
   if (sitePresenceTimer) return;
   sendSitePresenceHeartbeat();
-  sitePresenceTimer = setInterval(sendSitePresenceHeartbeat, 25000);
+  sitePresenceTimer = setInterval(sendSitePresenceHeartbeat, 45000);
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) sendSitePresenceHeartbeat();
   });
