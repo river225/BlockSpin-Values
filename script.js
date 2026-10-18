@@ -56,7 +56,7 @@ const FISH_WEIGHT_STEP = 0.1;
 
 const GIVEAWAY_CAROUSEL_INTERVAL_MS = 10000;
 const DISCORD_CARD_CAROUSEL_INTERVAL_MS = 9000;
-const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/DfCtYj1p/Screenshot-20261017-193245-Roblox-removebg-preview.png";
+const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/QjPWFvHy/Screenshot-2026-10-18-230555-removebg-preview.png";
 const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=pumpkin-launcher";
 const BSV_LOGO_URL = "https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png";
 const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
@@ -249,9 +249,10 @@ function buildHomeAnacondaBannerHtml() {
       '<div class="home-anaconda-banner__sparks" aria-hidden="true">' +
         '<span></span><span></span><span></span><span></span>' +
       "</div>" +
-      '<span class="home-anaconda-banner__urgency">Ends Soon</span>' +
       '<div class="home-anaconda-banner__inner">' +
         '<div class="home-anaconda-banner__stage">' +
+          '<span class="home-anaconda-banner__shine" aria-hidden="true"></span>' +
+          '<span class="home-anaconda-banner__shine home-anaconda-banner__shine--burst" aria-hidden="true"></span>' +
           '<span class="home-anaconda-banner__ring" aria-hidden="true"></span>' +
           '<span class="home-anaconda-banner__pedestal" aria-hidden="true"></span>' +
           '<img src="' + img + '" alt="Pumpkin Launcher" class="home-anaconda-banner__gun" width="280" height="170" loading="lazy" decoding="async">' +
@@ -259,7 +260,7 @@ function buildHomeAnacondaBannerHtml() {
         '<div class="home-anaconda-banner__copy">' +
           '<p class="home-anaconda-banner__eyebrow">Halloween Giveaway</p>' +
           '<h3 class="home-anaconda-banner__title">Pumpkin Launcher Giveaway</h3>' +
-          '<p class="home-anaconda-banner__hook">Going exclusive soon — enter before it\'s locked</p>' +
+          '<p class="home-anaconda-banner__hook">This gun will be unobtainable soon — enter our giveaway before it\'s too late!</p>' +
         "</div>" +
         '<a href="' + href + '" target="_blank" rel="noopener noreferrer" class="home-anaconda-banner__cta">Enter Now <span aria-hidden="true">→</span></a>' +
       "</div>" +
