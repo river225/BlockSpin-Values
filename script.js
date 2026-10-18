@@ -56,7 +56,7 @@ const FISH_WEIGHT_STEP = 0.1;
 
 const GIVEAWAY_CAROUSEL_INTERVAL_MS = 10000;
 const DISCORD_CARD_CAROUSEL_INTERVAL_MS = 9000;
-const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/QjPWFvHy/Screenshot-2026-10-18-230555-removebg-preview.png";
+const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.postimg.cc/2bTWDD3D/Screenshot-2026-10-18-230555-removebg-preview.png";
 const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=pumpkin-launcher";
 const BSV_LOGO_URL = "https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png";
 const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
