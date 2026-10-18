@@ -2236,11 +2236,11 @@ function initExclusiveBadgeTips() {
   });
 }
 
-function buildCardBottomActionsHtml(exclusiveTier) {
+function buildCardBottomActionsHtml(exclusiveTiers) {
   return (
     '<div class="card-bottom-actions">' +
       buildCardSaveButtonHtml() +
-      buildCardExclusiveBadgeHtml(exclusiveTier) +
+      buildCardExclusiveBadgeHtml(exclusiveTiers) +
     "</div>"
   );
 }
@@ -2378,7 +2378,7 @@ if (pawnTextOverride) {
       ${hasGiveaway ? `
         <button class="card-giveaway-trigger" type="button" aria-label="${escapeAttr(i18n("card.giveawayAria"))}" data-item-name="${escapeAttr(name)}"></button>
       ` : ''}
-      ${buildCardBottomActionsHtml(exclusiveTier)}
+      ${buildCardBottomActionsHtml(exclusiveTiers)}
     </div>
   `;
 }
@@ -2535,7 +2535,7 @@ function createAccessoryCard(item) {
   const imgTag = img
     ? `<img src="${img}" alt="${escapeAttr(name)}" width="140" height="140" loading="lazy" decoding="async" onerror="this.style.display='none'">`
     : "";
-  const exclusiveTier = getItemExclusiveTier(item);
+  const exclusiveTiers = getItemExclusiveTier(item);
 
   return `
     <div class="card" data-name="${escapeAttr(name)}"
@@ -2560,7 +2560,7 @@ function createAccessoryCard(item) {
           <div class="card-ranged">${escapeHtml(i18n("card.crate"))}: <span>${escapeHtml(crate || i18n("card.na"))}</span></div>
         </div>
       </div>
-      ${buildCardBottomActionsHtml(exclusiveTier)}
+      ${buildCardBottomActionsHtml(exclusiveTiers)}
     </div>
   `;
 }
