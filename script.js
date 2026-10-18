@@ -56,8 +56,8 @@ const FISH_WEIGHT_STEP = 0.1;
 
 const GIVEAWAY_CAROUSEL_INTERVAL_MS = 10000;
 const DISCORD_CARD_CAROUSEL_INTERVAL_MS = 9000;
-const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/QqD6BSd/j-Sn2mv-Y-1-removebg-preview.png";
-const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=anaconda";
+const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/DfCtYj1p/Screenshot-20261017-193245-Roblox-removebg-preview.png";
+const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=pumpkin-launcher";
 const BSV_LOGO_URL = "https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png";
 const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
 const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=robux";
@@ -241,7 +241,7 @@ function buildHomeAnacondaBannerHtml() {
   var img = escapeAttr(ANACONDA_GIVEAWAY_IMAGE_URL);
   var href = escapeAttr(ANACONDA_GIVEAWAY_DISCORD_URL);
   return (
-    '<article class="home-anaconda-banner" role="complementary" aria-label="Anaconda Giveaway">' +
+    '<article class="home-anaconda-banner home-anaconda-banner--halloween" role="complementary" aria-label="Pumpkin Launcher Giveaway">' +
       '<div class="home-anaconda-banner__haze" aria-hidden="true"></div>' +
       '<div class="home-anaconda-banner__scan" aria-hidden="true"></div>' +
       '<div class="home-anaconda-banner__orb home-anaconda-banner__orb--a" aria-hidden="true"></div>' +
@@ -249,15 +249,17 @@ function buildHomeAnacondaBannerHtml() {
       '<div class="home-anaconda-banner__sparks" aria-hidden="true">' +
         '<span></span><span></span><span></span><span></span>' +
       "</div>" +
+      '<span class="home-anaconda-banner__urgency">Ends Soon</span>' +
       '<div class="home-anaconda-banner__inner">' +
         '<div class="home-anaconda-banner__stage">' +
           '<span class="home-anaconda-banner__ring" aria-hidden="true"></span>' +
           '<span class="home-anaconda-banner__pedestal" aria-hidden="true"></span>' +
-          '<img src="' + img + '" alt="Anaconda" class="home-anaconda-banner__gun" width="280" height="170" loading="lazy" decoding="async">' +
+          '<img src="' + img + '" alt="Pumpkin Launcher" class="home-anaconda-banner__gun" width="280" height="170" loading="lazy" decoding="async">' +
         "</div>" +
         '<div class="home-anaconda-banner__copy">' +
-          '<p class="home-anaconda-banner__eyebrow">Omega Giveaway</p>' +
-          '<h3 class="home-anaconda-banner__title">Anaconda Giveaway</h3>' +
+          '<p class="home-anaconda-banner__eyebrow">Halloween Giveaway</p>' +
+          '<h3 class="home-anaconda-banner__title">Pumpkin Launcher Giveaway</h3>' +
+          '<p class="home-anaconda-banner__hook">Going exclusive soon — enter before it\'s locked</p>' +
         "</div>" +
         '<a href="' + href + '" target="_blank" rel="noopener noreferrer" class="home-anaconda-banner__cta">Enter Now <span aria-hidden="true">→</span></a>' +
       "</div>" +
@@ -1659,15 +1661,19 @@ async function fetchSheet(sheetName) {
       return items;
     }
 
-    return items.filter(x =>
-      String(
+    return items.filter((x) => {
+      const hasLabel = String(
         x["Name"] ||
-        x["Header"] ||
-        x["Roblox Name"] ||
-        x["Player Name"] ||
-        ""
-      ).trim().length > 0
-    );
+          x["Header"] ||
+          x["Roblox Name"] ||
+          x["Player Name"] ||
+          ""
+      ).trim().length > 0;
+      if (!hasLabel) return false;
+      // Sheet column "Hidden" = Yes → omit from the website entirely.
+      if (isItemMarkedHidden(x)) return false;
+      return true;
+    });
   } catch (err) {
     console.error(`Failed to fetch sheet: ${sheetName}`, err);
     return [];
@@ -2274,8 +2280,11 @@ function createCard(item) {
   const isDurabilityInvisible =
     /^(yes|true|1|ticked|checked|on|y)$/i.test(durabilityInvisibleNormalized);
   const invisibleStyle = isDurabilityInvisible ? 'style="opacity: 0;"' : '';
-  const showPawn = !isMiscSection && durability && durability.includes('/') && hasInternalValue;
-  const showRepair = showPawn && !isDurabilityInvisible;
+  const pawnTextOverride = getPawnTextOverride(item);
+  const showPawnCalculated =
+    !isMiscSection && durability && durability.includes("/") && hasInternalValue && !pawnTextOverride;
+  const showPawn = Boolean(pawnTextOverride) || showPawnCalculated;
+  const showRepair = showPawnCalculated && !isDurabilityInvisible;
   const showNetworth = !isMiscSection || (internalRawDirect !== "" && internalRawDirect !== "-");
   
   if (durability && durability.includes('/')) {
@@ -2304,7 +2313,7 @@ function createCard(item) {
   }
 
 let repairPrice = 0;
-if (showPawn) {
+if (showPawnCalculated) {
   const [currentDurability, maxDurability] = durability.split('/').map(v => parseInt(v) || 0);
   const missingDurability = maxDurability - currentDurability;
   const internalVal = internalNum;
@@ -2313,8 +2322,10 @@ if (showPawn) {
   repairPrice = Math.round(rawRepair);
 }
 
-let pawnAmount = 0;
-if (showPawn) {
+let pawnAmount = "";
+if (pawnTextOverride) {
+  pawnAmount = pawnTextOverride;
+} else if (showPawnCalculated) {
   const [currentDurability, maxDurability] = durability.split('/').map(v => parseInt(v) || 0);
   const internalVal = internalNum;
 
@@ -2323,13 +2334,11 @@ if (showPawn) {
   const deduction = missingDurability * ((internalVal * 0.3) / maxDurability / 1.43);
   
   const rawPawn = baseValue - deduction;
-  pawnAmount = Math.round(rawPawn);
-
-  pawnAmount = `$${pawnAmount.toLocaleString()}`;
+  pawnAmount = `$${Math.round(rawPawn).toLocaleString()}`;
 }
   
   const hasGiveaway = (giveawayFlag && giveawayFlag.toString().trim().toLowerCase() === 'yes') || giveawayItems.has(normalizeItemName(name));
-  const exclusiveTier = getItemExclusiveTier(item);
+  const exclusiveTiers = getItemExclusiveTier(item);
   const sectionLabel = safe(item.__sheet || "Unknown");
   
   return `
@@ -2343,7 +2352,8 @@ if (showPawn) {
          data-avg="${escapeAttr(avg)}" 
          data-ranged="${escapeAttr(ranged)}" 
          data-max-durability="${durability ? durability.split('/')[1] : '100'}"
-         data-internal-value="${escapeAttr(internalValueForAttr)}">
+         data-internal-value="${escapeAttr(internalValueForAttr)}"
+         data-pawn-fixed="${pawnTextOverride ? "1" : ""}">
       <div class="card-left">
         ${imgTag ? `<div class="card-item-image-wrap">${imgTag}</div>` : ""}
         ${durabilityHTML}
@@ -2356,7 +2366,7 @@ if (showPawn) {
         <div class="card-value-separator"></div>
         <div class="card-secondary-values">
           ${showNetworth ? `<div class="card-networth">${escapeHtml(i18n("card.networth"))}: <span class="networth-value">${escapeHtml(String(networthDisplay))}</span></div>` : ""}
-          ${showPawn ? `<div class="card-pawn">${escapeHtml(i18n("card.pawn"))}: <span class="pawn-value">${pawnAmount}</span></div>` : ''}
+          ${showPawn ? `<div class="card-pawn">${escapeHtml(i18n("card.pawn"))}: <span class="pawn-value">${escapeHtml(String(pawnAmount))}</span></div>` : ''}
           ${showRepair ? `
             <div class="card-repair">
               ${escapeHtml(i18n("card.repair"))}: <span class="repair-value">$${repairPrice.toLocaleString()}</span>
@@ -2499,15 +2509,19 @@ function createAccessoryCard(item) {
   const name = safe(item["Name"]);
   const img = safe(item["Image URL"] || item["Image"]);
   const rarity = safe(item["Rarity"]);
-  const networthValue = safe(item["Networth Value"]);
+  const networthValue = safe(
+    item["Networth Value"] || getSheetFieldByNormalizedKey(item, "networthvalue")
+  );
   const crate = safe(item["Crate"]);
   const networthNum = parseInternalValue(networthValue);
   const networthDisplay = networthNum > 0
     ? "$" + Math.round(networthNum).toLocaleString("en-US")
-    : "N/A";
-  const pawnDisplay = networthNum > 0
-    ? "$" + Math.round(networthNum * 0.3).toLocaleString("en-US")
-    : "N/A";
+    : networthValue && /[a-z]/i.test(networthValue)
+      ? networthValue
+      : "N/A";
+  // Pawn can be an explicit sheet label (e.g. "Cannot be pawned") even when networth is numeric.
+  const pawnDisplay = formatPawnDisplayFromSheet(item, networthNum);
+  const pawnFixed = getPawnTextOverride(item) ? "1" : "";
   const rarityNorm = String(rarity || "").trim().toLowerCase();
   const rarityClass =
     rarityNorm === "omega" ? "rarity-omega" :
@@ -2529,6 +2543,7 @@ function createAccessoryCard(item) {
          data-rarity="${escapeAttr(rarity)}"
          data-crate="${escapeAttr(crate)}"
          data-networth="${escapeAttr(networthDisplay)}"
+         data-pawn-fixed="${escapeAttr(pawnFixed)}"
          data-card-type="accessory"
          data-save-card>
       <div class="card-left">
@@ -5459,7 +5474,8 @@ function updateCardValues(input) {
   
   const pawnValueElement = card.querySelector('.pawn-value');
   
-  if (pawnValueElement && internalValue) {
+  // Respect sheet overrides like "Cannot be pawned" — never overwrite with a calculated $.
+  if (pawnValueElement && internalValue && card.dataset.pawnFixed !== "1") {
     const missingDurability = maxDurability - currentDurability;
     const internalVal = parseInternalValue(internalValue);
     
@@ -5579,6 +5595,60 @@ function parseInternalValue(value) {
 }
 function normalizeHeaderKey(s) {
   return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+/** Exact sheet header match after normalizing (e.g. "Hidden", "Pawn Value"). */
+function getSheetFieldByNormalizedKey(item, normalizedKey) {
+  if (!item || typeof item !== "object" || !normalizedKey) return "";
+  for (const key of Object.keys(item)) {
+    if (String(key).startsWith("__")) continue;
+    if (normalizeHeaderKey(key) === normalizedKey) {
+      const v = item[key];
+      if (v !== undefined && v !== null && String(v).trim() !== "") return v;
+    }
+  }
+  return "";
+}
+
+function isItemMarkedHidden(item) {
+  const raw = String(getSheetFieldByNormalizedKey(item, "hidden") || "").trim();
+  return TRUE_REGEX.test(raw);
+}
+
+/**
+ * Pawn display for cards. Sheet "Pawn Value" / "Pawn Amount" wins:
+ * - text like "Cannot be pawned" is shown as-is (even when Networth is a number)
+ * - numeric pawn values format as money
+ * - empty pawn cell falls back to 30% of networth when available
+ */
+function formatPawnDisplayFromSheet(item, fallbackNetworthNum) {
+  const raw = String(
+    getSheetFieldByNormalizedKey(item, "pawnvalue") ||
+      getSheetFieldByNormalizedKey(item, "pawnamount") ||
+      getSheetFieldByNormalizedKey(item, "pawn") ||
+      ""
+  ).trim();
+  if (raw) {
+    // Any letters → treat as an explicit label override (e.g. cannot be pawned).
+    if (/[a-z]/i.test(raw)) return raw;
+    const n = parseInternalValue(raw);
+    if (n > 0) return "$" + Math.round(n).toLocaleString("en-US");
+    return raw;
+  }
+  const nw = Number(fallbackNetworthNum) || 0;
+  if (nw > 0) return "$" + Math.round(nw * 0.3).toLocaleString("en-US");
+  return "N/A";
+}
+
+function getPawnTextOverride(item) {
+  const raw = String(
+    getSheetFieldByNormalizedKey(item, "pawnvalue") ||
+      getSheetFieldByNormalizedKey(item, "pawnamount") ||
+      getSheetFieldByNormalizedKey(item, "pawn") ||
+      ""
+  ).trim();
+  if (raw && /[a-z]/i.test(raw)) return raw;
+  return "";
 }
 function getInternalValueFromItem(item) {
   if (!item || typeof item !== "object") return "";
