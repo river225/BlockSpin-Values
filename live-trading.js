@@ -139,15 +139,29 @@
             return obj;
           })
           .filter(function (x) {
-            return (
+            var hasName =
               String(
                 x.Name ||
                   x["Fishing Item Name"] ||
                   x["Item Name"] ||
                   x["Fishing Name"] ||
                   ""
-              ).trim().length > 0
-            );
+              ).trim().length > 0;
+            if (!hasName) return false;
+            // Sheet column "Hidden" = Yes → omit from live trading catalogs too.
+            var hidden = false;
+            Object.keys(x || {}).some(function (key) {
+              if (
+                String(key || "")
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]/g, "") === "hidden"
+              ) {
+                hidden = /^(yes|true|1|on|y)$/i.test(String(x[key] || "").trim());
+                return true;
+              }
+              return false;
+            });
+            return !hidden;
           });
       })
       .catch(function () {
@@ -373,16 +387,30 @@
     return sessionDiscordId() === LT_OWNER_DISCORD_ID;
   }
 
-  var viewerFlags = { communityStaff: false, checkedAt: 0 };
+  var viewerFlags = {
+    communityStaff: false,
+    canPin: false,
+    pinTier: null,
+    checkedAt: 0
+  };
   var VIEWER_FLAGS_CACHE_MS = 30 * 1000;
 
   function isCommunityStaffViewer() {
     return !!viewerFlags.communityStaff;
   }
 
+  function canPinPostsViewer() {
+    return !!viewerFlags.canPin || isLiveTradingAdmin();
+  }
+
   function refreshViewerFlags(force) {
     if (!isLoggedIn()) {
-      viewerFlags = { communityStaff: false, checkedAt: 0 };
+      viewerFlags = {
+        communityStaff: false,
+        canPin: false,
+        pinTier: null,
+        checkedAt: 0
+      };
       return Promise.resolve(viewerFlags);
     }
     if (
@@ -402,16 +430,58 @@
       })
       .then(function (data) {
         data = data || {};
+        var admin = !!data.admin || isLiveTradingAdmin();
+        var canPin = !!(data.canPin || admin);
+        var pinTier =
+          data.pinTier === "owner" || data.pinTier === "role"
+            ? data.pinTier
+            : admin
+              ? "owner"
+              : canPin
+                ? "role"
+                : null;
         viewerFlags = {
           communityStaff: !!data.communityStaff,
+          canPin: canPin,
+          pinTier: pinTier,
           checkedAt: Date.now()
         };
         return viewerFlags;
       })
       .catch(function () {
-        viewerFlags = { communityStaff: false, checkedAt: Date.now() };
+        viewerFlags = {
+          communityStaff: false,
+          canPin: isLiveTradingAdmin(),
+          pinTier: isLiveTradingAdmin() ? "owner" : null,
+          checkedAt: Date.now()
+        };
         return viewerFlags;
       });
+  }
+
+  function pinSortRank(post) {
+    if (!post || !post.pinned) return 2;
+    if (String(post.pinTier || "") === "owner") return 0;
+    return 1;
+  }
+
+  function sortPostsForFeed(posts) {
+    return (posts || []).slice().sort(function (a, b) {
+      var ra = pinSortRank(a);
+      var rb = pinSortRank(b);
+      if (ra !== rb) return ra - rb;
+      return (Number(b && b.createdAt) || 0) - (Number(a && a.createdAt) || 0);
+    });
+  }
+
+  function canPinPost(post) {
+    return !!(post && !post.pinned && isOwnPost(post) && canPinPostsViewer());
+  }
+
+  function canUnpinPost(post) {
+    if (!post || !post.pinned) return false;
+    if (isLiveTradingAdmin()) return true;
+    return !!(isOwnPost(post) && canPinPostsViewer());
   }
 
   function canDeletePost(post) {
@@ -846,7 +916,12 @@
     };
     guildMemberCache.checkedAt = 0;
     guildMemberCache.inGuild = false;
-    viewerFlags = { communityStaff: false, checkedAt: 0 };
+    viewerFlags = {
+      communityStaff: false,
+      canPin: false,
+      pinTier: null,
+      checkedAt: 0
+    };
     var gate = document.getElementById("live-trading-gate");
     var workspace = document.getElementById("live-trading-workspace");
     // Board is always visible; gate stays unused (login modal handles prompts).
@@ -1029,10 +1104,14 @@
     return formatWeight(entry) || formatDurability(entry);
   }
 
-  var MAX_DRAFT_QTY = 99;
+  function clampDraftQty(n) {
+    var q = Math.floor(Number(n));
+    if (!Number.isFinite(q) || q < 1) return 1;
+    return q;
+  }
 
   function itemSlotHtml(entry, side, index) {
-    var qty = Math.max(1, Math.min(MAX_DRAFT_QTY, Number(entry.qty) || 1));
+    var qty = clampDraftQty(entry.qty);
     var hasDura = itemHasDurability(entry);
     var hasWeight = itemHasWeight(entry);
     var metricLabel = formatMetricFull(entry);
@@ -1208,7 +1287,7 @@
     var slot = draftSlotEl(side, i);
     if (!slot) return;
     var entry = list[i];
-    var qty = Math.max(1, Math.min(MAX_DRAFT_QTY, Number(entry.qty) || 1));
+    var qty = clampDraftQty(entry.qty);
     var label = formatMetricFull(entry);
     slot.setAttribute(
       "data-lt-tip",
@@ -1247,7 +1326,7 @@
     if (!Number.isFinite(i) || i < 0 || i >= list.length) return;
     var slot = draftSlotEl(side, i);
     if (!slot) return;
-    var qty = Math.max(1, Math.min(MAX_DRAFT_QTY, Number(list[i].qty) || 1));
+    var qty = clampDraftQty(list[i].qty);
     var val = slot.querySelector(".lt-slot__qty-val");
     if (val && document.activeElement !== val) val.value = String(qty);
     syncDraftSlotTitle(side, i);
@@ -1262,7 +1341,7 @@
       syncDraftQtyLabel(side, i);
       return;
     }
-    list[i].qty = Math.max(1, Math.min(MAX_DRAFT_QTY, parsed));
+    list[i].qty = clampDraftQty(parsed);
     draft[side] = list;
     syncDraftQtyLabel(side, i);
   }
@@ -1302,8 +1381,8 @@
     var i = Number(index);
     if (!Number.isFinite(i) || i < 0 || i >= list.length) return false;
     var entry = list[i];
-    var cur = Math.max(1, Math.min(MAX_DRAFT_QTY, Number(entry.qty) || 1));
-    var next = Math.max(1, Math.min(MAX_DRAFT_QTY, cur + (Number(delta) || 0)));
+    var cur = clampDraftQty(entry.qty);
+    var next = clampDraftQty(cur + (Number(delta) || 0));
     if (next === cur) return false;
     entry.qty = next;
     draft[side] = list;
@@ -1410,10 +1489,7 @@
       }
     }
     if (existing) {
-      existing.qty = Math.min(
-        MAX_DRAFT_QTY,
-        Math.max(1, Number(existing.qty) || 1) + 1
-      );
+      existing.qty = clampDraftQty((Number(existing.qty) || 1) + 1);
     } else {
       var entry = {
         id: item.id,
@@ -1486,7 +1562,7 @@
         rarity: it.rarity,
         color: it.color,
         image: it.image || "",
-        qty: Math.max(1, Math.min(MAX_DRAFT_QTY, Number(it.qty) || 1))
+        qty: clampDraftQty(it.qty)
       };
       if (itemHasWeight(it)) {
         entry.metric = "weight";
@@ -2224,6 +2300,85 @@
     });
   }
 
+  function togglePinPost(id, wantPinned) {
+    requireLoginForAction().then(function (ok) {
+      if (!ok) return;
+      var pinned = !!wantPinned;
+      return fetch(
+        authApiUrl(
+          "api/live-trading/posts/" + encodeURIComponent(id) + "/pin"
+        ),
+        {
+          method: "POST",
+          headers: Object.assign({ "Content-Type": "application/json" }, authHeaders()),
+          body: JSON.stringify({ pinned: pinned })
+        }
+      )
+        .then(function (res) {
+          return res
+            .json()
+            .catch(function () {
+              return null;
+            })
+            .then(function (data) {
+              return { res: res, data: data };
+            });
+        })
+        .then(function (out) {
+          if (!out.res.ok) {
+            var err = (out.data && out.data.error) || "pin_failed";
+            if (err === "login_required" || err === "guild_required") {
+              openSharedLogin();
+              return;
+            }
+            if (err === "no_pin_permission" || err === "not_author" || err === "not_allowed") {
+              window.alert("You don’t have permission to change that pin.");
+              fetchPosts({ force: true });
+              return;
+            }
+            window.alert(
+              pinned ? "Couldn’t pin that post. Try again." : "Couldn’t unpin that post. Try again."
+            );
+            fetchPosts({ force: true });
+            return;
+          }
+          var updated = out.data && out.data.post;
+          if (updated && updated.id) {
+            var tier = String(updated.pinTier || viewerFlags.pinTier || "role");
+            postsCache = (postsCache || []).map(function (p) {
+              if (!p) return p;
+              if (p.id === updated.id) {
+                return Object.assign({}, p, updated);
+              }
+              if (
+                pinned &&
+                p.pinned &&
+                String(p.pinTier || "") === tier &&
+                p.id !== updated.id
+              ) {
+                var cleared = Object.assign({}, p);
+                delete cleared.pinned;
+                delete cleared.pinTier;
+                delete cleared.pinnedAt;
+                return cleared;
+              }
+              return p;
+            });
+            postsCache = sortPostsForFeed(postsCache);
+          }
+          lastRenderedPostIds = "";
+          renderFeed({ force: true });
+          fetchPosts({ force: true });
+        })
+        .catch(function () {
+          window.alert(
+            pinned ? "Couldn’t pin that post. Try again." : "Couldn’t unpin that post. Try again."
+          );
+          fetchPosts({ force: true });
+        });
+    });
+  }
+
   function sideSearchTerms(side) {
     var terms = ((side && side.items) || []).map(function (i) {
       return String(i.name || "");
@@ -2527,9 +2682,19 @@
     } else if (wanting.notLookingForOffers) {
       offerCorner = offersBadgeCircleHtml("nlfo", "lt-offers-badge--corner", true);
     }
+    var pinnedMark = post.pinned
+      ? '<span class="lt-post__pin-mark" data-lt-tip="Pinned post" aria-label="Pinned post">' +
+        '<svg class="lt-post__pin-mark-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">' +
+        '<path fill="currentColor" d="M16 3a1 1 0 0 1 .8 1.6l-1.7 2.3.6 3.3a1 1 0 0 1-1.5 1l-2.2-1.1-2.2 2.2V21a1 1 0 1 1-2 0v-8.7l-2.2-2.2-2.2 1.1a1 1 0 0 1-1.5-1l.6-3.3L1.2 4.6A1 1 0 0 1 2 3h14z"/>' +
+        "</svg>" +
+        "<span>Pinned</span>" +
+        "</span>"
+      : "";
     return (
       '<article class="lt-post' +
       (isNew ? " lt-post--enter" : "") +
+      (post.pinned ? " lt-post--pinned" : "") +
+      (post.pinned && post.pinTier === "owner" ? " lt-post--pinned-owner" : "") +
       '" data-id="' +
       escapeAttr(post.id) +
       '" role="article">' +
@@ -2594,7 +2759,10 @@
       escapeHtml(timeAgo(post.createdAt)) +
       "</p>" +
       "</div></div>" +
+      '<div class="lt-post__head-end">' +
+      pinnedMark +
       (offerCorner || "") +
+      "</div>" +
       "</header>" +
       '<div class="lt-post__trade">' +
       '<div class="lt-post__panel">' +
@@ -2729,9 +2897,19 @@
     );
   }
 
+  function pinButtonSvg() {
+    return (
+      '<svg class="lt-post__pin-btn-icon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">' +
+      '<path fill="currentColor" d="M16 3a1 1 0 0 1 .8 1.6l-1.7 2.3.6 3.3a1 1 0 0 1-1.5 1l-2.2-1.1-2.2 2.2V21a1 1 0 1 1-2 0v-8.7l-2.2-2.2-2.2 1.1a1 1 0 0 1-1.5-1l.6-3.3L1.2 4.6A1 1 0 0 1 2 3h14z"/>' +
+      "</svg>"
+    );
+  }
+
   function postFootHtml(post) {
     var own = canEditPost(post);
     var canDel = canDeletePost(post);
+    var showPin = canPinPost(post);
+    var showUnpin = canUnpinPost(post);
     var author = post.author || {};
     var discordId = String(author.discordId || author.id || "").trim();
     var ownId = sessionDiscordId();
@@ -2740,9 +2918,25 @@
       /^\d{5,32}$/.test(discordId) &&
       !isOwnPost(post) &&
       (!ownId || discordId !== ownId);
-    if (!own && !canDel && !canHide) return "";
+    if (!own && !canDel && !canHide && !showPin && !showUnpin) return "";
     return (
       '<div class="lt-post__foot">' +
+      (showPin
+        ? '<button type="button" class="lt-post__pin" data-pin="' +
+          escapeAttr(post.id) +
+          '" data-pin-state="1" aria-label="Pin this post">' +
+          pinButtonSvg() +
+          "<span>Pin</span>" +
+          "</button>"
+        : "") +
+      (showUnpin
+        ? '<button type="button" class="lt-post__pin lt-post__pin--on" data-pin="' +
+          escapeAttr(post.id) +
+          '" data-pin-state="0" aria-label="Unpin this post">' +
+          pinButtonSvg() +
+          "<span>Unpin</span>" +
+          "</button>"
+        : "") +
       (own
         ? '<button type="button" class="lt-post__edit" data-edit="' +
           escapeAttr(post.id) +
@@ -2952,7 +3146,8 @@
         return (
           String(p.id) +
           (p.author && p.author.scammer ? ":s" : "") +
-          (p.author && p.author.trustedTrader ? ":t" : "")
+          (p.author && p.author.trustedTrader ? ":t" : "") +
+          (p.pinned ? ":p" + String(p.pinTier || "") : "")
         );
       })
       .join(",");
@@ -2962,6 +3157,7 @@
       "|" +
       (isLiveTradingAdmin() ? "a" : "") +
       (isCommunityStaffViewer() ? "s" : "") +
+      (canPinPostsViewer() ? "p" : "") +
       "|h:" +
       hiddenAuthorsKey() +
       "|" +
@@ -2973,7 +3169,7 @@
     opts = opts || {};
     var feed = document.getElementById("lt-feed");
     if (!feed) return;
-    var posts = readPosts().filter(postMatchesFilters);
+    var posts = sortPostsForFeed(readPosts().filter(postMatchesFilters));
     var key = feedRenderKey(posts);
     var ids = posts
       .map(function (p) {
@@ -3320,6 +3516,15 @@
       var del = e.target.closest && e.target.closest("[data-delete]");
       if (del) {
         deletePost(del.getAttribute("data-delete"));
+        return;
+      }
+      var pinBtn = e.target.closest && e.target.closest("[data-pin]");
+      if (pinBtn) {
+        e.preventDefault();
+        togglePinPost(
+          pinBtn.getAttribute("data-pin"),
+          pinBtn.getAttribute("data-pin-state") === "1"
+        );
         return;
       }
       var pick = e.target.closest && e.target.closest(".lt-picker__item");

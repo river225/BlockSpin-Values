@@ -20767,6 +20767,68 @@ body.live-trading-page .live-trading-workspace {
   margin-top: 10px;
   padding-top: 2px;
 }
+.lt-post__head-end {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.lt-post__pin-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(96, 165, 250, 0.55);
+  background: rgba(30, 64, 175, 0.45);
+  color: #bfdbfe;
+  font: 800 0.68rem/1 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.35);
+}
+.lt-post__pin-mark-icon {
+  display: block;
+  flex: 0 0 auto;
+  transform: rotate(-28deg);
+}
+.lt-post--pinned {
+  outline: 1px solid rgba(96, 165, 250, 0.28);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.12), 0 10px 28px rgba(15, 23, 42, 0.28);
+}
+.lt-post--pinned-owner {
+  outline-color: rgba(125, 211, 252, 0.45);
+}
+.lt-post__pin {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.42) 0%, rgba(29, 78, 216, 0.5) 100%);
+  color: #dbeafe;
+  font: 700 0.78rem/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+.lt-post__pin:hover {
+  filter: brightness(1.08);
+  color: #fff;
+}
+.lt-post__pin--on {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.55) 0%, rgba(30, 64, 175, 0.65) 100%);
+  border-color: rgba(147, 197, 253, 0.65);
+}
+.lt-post__pin-btn-icon {
+  display: block;
+  flex: 0 0 auto;
+  transform: rotate(-28deg);
+}
 .lt-post__hide {
   appearance: none;
   margin-left: auto;
