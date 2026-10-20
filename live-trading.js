@@ -273,42 +273,87 @@
   }
 
   var postsEtag = "";
+  var postsAbortController = null;
+
+  function feedStillLoading() {
+    var feed = document.getElementById("lt-feed");
+    // The placeholder stays aria-busy="true" until renderFeed paints.
+    if (!feed) return true;
+    return feed.getAttribute("aria-busy") !== "false";
+  }
 
   function fetchPosts(opts) {
     opts = opts || {};
     if (postsFetchInFlight && !opts.force) return postsFetchInFlight;
     var gen = ++postsFetchGen;
+    // Clicking Live Trading starts several forced fetches at once (first load,
+    // auth session, window focus). A stale response used to store its ETag
+    // before the generation check dropped the body. The fetch that won then
+    // got 304 and returned without renderFeed, and every later poll 304'd too.
+    // The board stayed on "Loading trades…" until a reload cleared postsEtag.
+    if (postsAbortController) {
+      try {
+        postsAbortController.abort();
+      } catch (_) {}
+    }
+    postsAbortController =
+      typeof AbortController === "function" ? new AbortController() : null;
     var headers = { Accept: "application/json" };
-    if (postsEtag) headers["If-None-Match"] = postsEtag;
-    postsFetchInFlight = fetch(authApiUrl("api/live-trading/posts"), {
+    // Only conditional-request after a real paint. A 304 cannot fill the placeholder.
+    var sendEtag = !opts.fresh && !!postsEtag && !feedStillLoading();
+    if (sendEtag) headers["If-None-Match"] = postsEtag;
+    var fetchInit = {
       headers: headers,
       cache: "no-store"
-    })
+    };
+    if (postsAbortController) fetchInit.signal = postsAbortController.signal;
+    postsFetchInFlight = fetch(authApiUrl("api/live-trading/posts"), fetchInit)
       .then(function (res) {
-        if (res.status === 304) {
-          return { unchanged: true };
-        }
+        if (res.status === 304) return { unchanged: true };
         var etag = res.headers.get("ETag") || res.headers.get("etag") || "";
-        if (etag) postsEtag = etag;
-        return res.json().catch(function () {
-          return null;
-        });
+        return res
+          .json()
+          .catch(function () {
+            return null;
+          })
+          .then(function (data) {
+            return { data: data, etag: etag };
+          });
       })
-      .then(function (data) {
+      .then(function (result) {
         if (gen !== postsFetchGen) return postsCache;
-        if (data && data.unchanged) return postsCache;
+        if (result && result.unchanged) {
+          if (feedStillLoading() && !opts.fresh) {
+            postsEtag = "";
+            return fetchPosts({ force: true, fresh: true });
+          }
+          if (feedStillLoading()) {
+            if (!postsCache.length) postsCache = readLocalPostsFallback();
+            syncPastePreviousButton();
+            renderFeed();
+          }
+          return postsCache;
+        }
+        var data = result && result.data;
         if (data && Array.isArray(data.posts)) {
           postsCache = data.posts;
+          if (result.etag) postsEtag = result.etag;
         } else if (!postsCache.length) {
           postsCache = readLocalPostsFallback();
+          postsEtag = "";
         }
         syncPastePreviousButton();
         renderFeed();
         return postsCache;
       })
-      .catch(function () {
+      .catch(function (err) {
         if (gen !== postsFetchGen) return postsCache;
-        if (!postsCache.length) postsCache = readLocalPostsFallback();
+        // Superseded fetches are aborted on purpose. Don't paint an empty board over them.
+        if (err && err.name === "AbortError") return postsCache;
+        if (!postsCache.length) {
+          postsCache = readLocalPostsFallback();
+          postsEtag = "";
+        }
         syncPastePreviousButton();
         renderFeed();
         return postsCache;
@@ -3857,9 +3902,23 @@
         syncLiveTradingBoardHeight();
       });
     }
-    fetchPosts({ force: true });
-    startPostsPolling();
-    refreshSession();
+    window.addEventListener("pageshow", function (event) {
+      // Back-forward cache restores this document without running init again.
+      // The posts fetch that was in flight is aborted, so the placeholder can stick.
+      if (!event.persisted) return;
+      fetchPosts({ force: true, fresh: feedStillLoading() });
+    });
+    function startBoard() {
+      fetchPosts({ force: true });
+      startPostsPolling();
+      refreshSession();
+    }
+    // A prerendered click activates a document whose init already ran. Fetch then.
+    if (document.prerendering) {
+      document.addEventListener("prerenderingchange", startBoard, { once: true });
+    } else {
+      startBoard();
+    }
     requestAnimationFrame(syncLiveTradingBoardHeight);
   }
 
