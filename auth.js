@@ -673,7 +673,7 @@
       if (guildStatus) {
         guildStatus.textContent =
           membership.error === "check_failed" || membership.error === "checker_unavailable"
-            ? "Couldn’t verify yet — join, then come back here."
+            ? "We’re having outage issues verifying Discord right now. We’ll be back soon — please try again later."
             : "";
       }
       // Keep / reopen the login modal on the join step (header login never sets this purpose).
