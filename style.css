@@ -8022,7 +8022,8 @@ body.home-changelog-open {
   align-items: center;
 }.nav-discord,
 .nav-roblox,
-.nav-tiktok {
+.nav-tiktok,
+.nav-youtube {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8057,6 +8058,12 @@ body.home-changelog-open {
   background: rgba(254, 44, 85, 0.1);
 }.nav-tiktok:hover {
   background: rgba(254, 44, 85, 0.2);
+  transform: scale(1.1);
+}.nav-youtube {
+  color: #FF0000;
+  background: rgba(255, 0, 0, 0.1);
+}.nav-youtube:hover {
+  background: rgba(255, 0, 0, 0.2);
   transform: scale(1.1);
 }[data-nav-tip]::after {
   content: attr(data-nav-tip);
@@ -15854,7 +15861,8 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
 
   .nav-right .nav-discord,
   .nav-right .nav-roblox,
-  .nav-right .nav-tiktok {
+  .nav-right .nav-tiktok,
+  .nav-right .nav-youtube {
     display: none !important;
   }
 
@@ -16681,7 +16689,8 @@ body[data-theme="pink"] .faq-page--pills .faq-icon {
 
   .nav-discord,
   .nav-roblox,
-  .nav-tiktok {
+  .nav-tiktok,
+  .nav-youtube {
     width: 34px;
     height: 34px;
   }
