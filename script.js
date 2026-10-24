@@ -994,6 +994,9 @@ function filterValueChangeRows(rows) {
   return rows.filter(function (r) {
     var name = (r.Title || r.Name || "").toString().trim();
     if (isWebsiteConfigMetaRow(name)) return false;
+    // Sheet column "Hidden" = Yes → omit from recently updated lists.
+    // A missing Hidden header (or a blank cell) leaves the row visible.
+    if (isItemMarkedHidden(r)) return false;
     var t = (r.Title || r.Date || r.Text || "").toString().trim();
     return t.length > 0;
   });
@@ -1659,6 +1662,7 @@ async function fetchSheet(sheetName) {
     });
 
     if (sheetName === "Website Configs") {
+      // Title/Date/Text rows, not Name. Hidden is applied in filterValueChangeRows.
       return items;
     }
 
