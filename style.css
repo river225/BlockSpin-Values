@@ -16638,3 +16638,4 @@ html[data-bsv-bg="dark"] .lt-slot__dura {
 .ugc-promo-card__viewport { height: 210px; }
 .bsv-ugc-banner--inline { flex-basis: 100%; width: 100%; margin: 0 0 12px; border: 2px solid #000; border-radius: 12px; box-sizing: border-box; }
 @media (max-width: 480px) { .bsv-ugc-banner__text { display: none; } .bsv-ugc-banner__link { justify-content: center; } }
+.bsv-ugc-banner__img { width: auto; height: 36px; border-radius: 6px; object-fit: contain; background: transparent; }

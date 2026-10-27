@@ -1308,7 +1308,7 @@
     bar.setAttribute("aria-label", "New UGC item");
     bar.innerHTML =
       '<a class="bsv-ugc-banner__link" href="' + UGC_PROMO.url + '" target="_blank" rel="noopener">' +
-        '<img class="bsv-ugc-banner__img" src="' + sitePath(UGC_PROMO.images[0]) + '" alt="" width="34" height="34" decoding="async">' +
+        '<img class="bsv-ugc-banner__img" src="' + sitePath("assets/ugc/crates-bubbles-banner.webp") + '" alt="i love opening crates in blockspin" height="34" decoding="async">' +
         '<span class="bsv-ugc-banner__tag">NEW UGC</span>' +
         '<span class="bsv-ugc-banner__text">Check out our new item: <b>' + UGC_PROMO.name + "</b></span>" +
         '<span class="bsv-ugc-banner__cta">Get it on Roblox</span>' +
