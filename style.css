@@ -16598,3 +16598,43 @@ html[data-bsv-bg="dark"] .lt-slot__dura {
 @media (max-width: 900px) {
   .richest-card__full { width: 260px; height: 260px; max-width: 78vw; max-height: 78vw; }
 }
+
+/* ===== UGC promo: top banner ===== */
+.bsv-ugc-banner { position: relative; z-index: 5; display: flex; align-items: center; gap: 8px; padding: 6px 44px 6px 12px; background: linear-gradient(90deg, #4c1d95, #7c3aed 55%, #db2777); border-bottom: 2px solid #000; }
+.bsv-ugc-banner__link { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 700; font-size: 0.92rem; }
+.bsv-ugc-banner__img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; background: #fff; flex: 0 0 auto; }
+.bsv-ugc-banner__tag { flex: 0 0 auto; padding: 2px 8px; border-radius: 999px; background: #facc15; color: #111; font-size: 0.72rem; font-weight: 900; letter-spacing: .04em; }
+.bsv-ugc-banner__text { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bsv-ugc-banner__cta { flex: 0 0 auto; padding: 5px 12px; border-radius: 999px; background: #fff; color: #4c1d95; font-weight: 900; font-size: 0.82rem; border: 2px solid #000; }
+.bsv-ugc-banner__link:hover .bsv-ugc-banner__cta { background: #fde68a; }
+.bsv-ugc-banner__close { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(0,0,0,0.3); color: #fff; cursor: pointer; }
+.bsv-ugc-banner__close:hover { background: rgba(0,0,0,0.55); }
+@media (max-width: 640px) {
+  .bsv-ugc-banner__text b { display: none; }
+  .bsv-ugc-banner__text::after { content: ""; }
+  .bsv-ugc-banner__link { justify-content: flex-start; font-size: 0.85rem; }
+}
+
+/* ===== UGC promo: card in item grids ===== */
+.ugc-promo-card { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; border: 3px solid #000; background: linear-gradient(160deg, #2e1065 0%, #4c1d95 45%, #831843 100%); color: #fff; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.35); transition: transform .15s ease, box-shadow .15s ease; }
+.ugc-promo-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(124,58,237,0.45); }
+.ugc-promo-card__badge { position: absolute; top: 10px; left: 10px; z-index: 2; padding: 3px 9px; border-radius: 999px; background: #facc15; color: #111; font-weight: 900; font-size: 0.72rem; letter-spacing: .05em; border: 2px solid #000; }
+.ugc-promo-card__viewport { position: relative; height: 190px; overflow: hidden; background: #0b0b14; }
+.ugc-promo-card__track { display: flex; height: 100%; width: 300%; animation: ugc-promo-scroll 14s ease-in-out infinite; }
+.ugc-promo-card__img { width: calc(100% / 3); height: 100%; object-fit: contain; flex: 0 0 auto; background: radial-gradient(circle at 50% 40%, #fff 0%, #e5e7eb 70%); }
+@keyframes ugc-promo-scroll {
+  0%, 38% { transform: translateX(0); }
+  50%, 88% { transform: translateX(-33.3333%); }
+  100% { transform: translateX(-66.6667%); }
+}
+.ugc-promo-card__body { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 14px 16px; text-align: center; }
+.ugc-promo-card__title { margin: 0; font-size: 1.15rem; font-weight: 900; }
+.ugc-promo-card__name { margin: 0; font-size: 0.9rem; opacity: 0.85; font-style: italic; }
+.ugc-promo-card__btn { margin-top: 6px; padding: 8px 18px; border-radius: 999px; background: #fff; color: #4c1d95; font-weight: 900; border: 2px solid #000; box-shadow: 0 2px 0 #000; }
+.ugc-promo-card:hover .ugc-promo-card__btn { background: #fde68a; }
+@media (prefers-reduced-motion: reduce) { .ugc-promo-card__track { animation: none; } }
+.ugc-promo-card__img { background: #1f2c38; }
+.ugc-promo-card__img--light { background: #f3f4f6; }
+.ugc-promo-card__viewport { height: 210px; }
+.bsv-ugc-banner--inline { flex-basis: 100%; width: 100%; margin: 0 0 12px; border: 2px solid #000; border-radius: 12px; box-sizing: border-box; }
+@media (max-width: 480px) { .bsv-ugc-banner__text { display: none; } .bsv-ugc-banner__link { justify-content: center; } }

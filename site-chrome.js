@@ -1283,6 +1283,61 @@
     window.setTimeout(scheduleFitNavBrandTitle, 400);
   }
 
+  /* ---------- UGC promo (top banner; item-grid card lives in script.js) ---------- */
+  var UGC_PROMO = {
+    name: "i love opening crates in blockspin",
+    url: "https://www.roblox.com/catalog/128836349317861/i-love-opening-crates-in-blockspin",
+    images: ["assets/ugc/crates-avatar.webp", "assets/ugc/crates-bubbles.webp"]
+  };
+  global.BSV_UGC_PROMO = UGC_PROMO;
+  var UGC_BANNER_KEY = "bsv-ugc-banner-closed-at";
+  var UGC_BANNER_HIDE_MS = 24 * 60 * 60 * 1000;
+
+  function mountUgcBanner(activePage) {
+    if (activePage === "sponsors" || document.getElementById("bsv-ugc-banner")) return;
+    try {
+      var closedAt = Number(localStorage.getItem(UGC_BANNER_KEY) || 0);
+      if (closedAt && Date.now() - closedAt < UGC_BANNER_HIDE_MS) return;
+    } catch (_) {}
+    var header = document.querySelector(".top-navbar");
+    if (!header || !header.parentNode) return;
+    var bar = document.createElement("div");
+    bar.id = "bsv-ugc-banner";
+    bar.className = "bsv-ugc-banner";
+    bar.setAttribute("role", "region");
+    bar.setAttribute("aria-label", "New UGC item");
+    bar.innerHTML =
+      '<a class="bsv-ugc-banner__link" href="' + UGC_PROMO.url + '" target="_blank" rel="noopener">' +
+        '<img class="bsv-ugc-banner__img" src="' + sitePath(UGC_PROMO.images[0]) + '" alt="" width="34" height="34" decoding="async">' +
+        '<span class="bsv-ugc-banner__tag">NEW UGC</span>' +
+        '<span class="bsv-ugc-banner__text">Check out our new item: <b>' + UGC_PROMO.name + "</b></span>" +
+        '<span class="bsv-ugc-banner__cta">Get it on Roblox</span>' +
+      "</a>" +
+      '<button type="button" class="bsv-ugc-banner__close" aria-label="Close">' +
+        '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
+      "</button>";
+    // Desktop: right under the header. Phones: top of the page content, below the pinned
+    // menu / bookmark / settings row, so nothing overlaps.
+    var mq = window.matchMedia("(max-width: 900px)");
+    function place() {
+      var main = document.querySelector(".main-container");
+      if (mq.matches && main) {
+        if (bar.parentNode !== main || main.firstElementChild !== bar) main.insertBefore(bar, main.firstChild);
+        bar.classList.add("bsv-ugc-banner--inline");
+      } else {
+        if (bar.previousElementSibling !== header) header.parentNode.insertBefore(bar, header.nextSibling);
+        bar.classList.remove("bsv-ugc-banner--inline");
+      }
+    }
+    place();
+    if (mq.addEventListener) mq.addEventListener("change", place);
+    bar.querySelector(".bsv-ugc-banner__close").addEventListener("click", function () {
+      try { localStorage.setItem(UGC_BANNER_KEY, String(Date.now())); } catch (_) {}
+      if (mq.removeEventListener) mq.removeEventListener("change", place);
+      bar.remove();
+    });
+  }
+
   function mount(activePage) {
     if (THEMES_DISABLED) {
       try {
@@ -1299,6 +1354,7 @@
     var boosters = document.getElementById("footer-boosters");
     if (boostersSlot && boosters) boostersSlot.appendChild(boosters);
     initMobileHeaderToolbar();
+    mountUgcBanner(activePage || "");
     bindNavBrandTitleFit();
     initHeaderIconMenus();
     ensureHomeHeaderDeps();

@@ -859,12 +859,37 @@ function buildCardsHtmlWithDiscordPromo(items, cardBuilder, sectionTitle, minIte
     return items.map(buildCard).join("");
   }
   var insertAt = Math.floor(items.length / 2);
+  // UGC promo card further down longer lists, so it never sits next to the Discord card.
+  var ugcAt = items.length >= 8 && window.BSV_UGC_PROMO ? Math.floor(items.length * 0.8) : -1;
   var parts = [];
   for (var i = 0; i < items.length; i++) {
     if (i === insertAt) parts.push(buildDiscordPromoCardSlotHtml(sectionTitle));
+    if (i === ugcAt) parts.push(buildUgcPromoCardHtml());
     parts.push(buildCard(items[i]));
   }
   return parts.join("");
+}
+
+/** "Check out our new UGC item" card, sized like an item card; images slowly scroll. */
+function buildUgcPromoCardHtml() {
+  var p = window.BSV_UGC_PROMO;
+  if (!p) return "";
+  var root = bsvSiteRoot();
+  var imgs = p.images.concat(p.images[0]).map(function (src, i) {
+    var light = /bubbles/.test(src) ? " ugc-promo-card__img--light" : "";
+    return '<img class="ugc-promo-card__img' + light + '" src="' + escapeAttr(root + src) + '" alt="' + (i === 0 ? escapeAttr(p.name) : "") + '" loading="lazy" decoding="async">';
+  }).join("");
+  return (
+    '<a class="ugc-promo-card" href="' + escapeAttr(p.url) + '" target="_blank" rel="noopener" aria-label="Check out our new UGC item on Roblox">' +
+      '<span class="ugc-promo-card__badge">NEW UGC</span>' +
+      '<div class="ugc-promo-card__viewport"><div class="ugc-promo-card__track">' + imgs + "</div></div>" +
+      '<div class="ugc-promo-card__body">' +
+        '<p class="ugc-promo-card__title">Check out our new UGC item</p>' +
+        '<p class="ugc-promo-card__name">' + escapeHtml(p.name) + "</p>" +
+        '<span class="ugc-promo-card__btn">Get it on Roblox</span>' +
+      "</div>" +
+    "</a>"
+  );
 }
 
 function homeLiveTradingHref() {
