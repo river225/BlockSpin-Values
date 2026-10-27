@@ -121,10 +121,7 @@
   function fetchSheet(sheetName) {
     var base = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/gviz/tq";
     var url = base + "?tqx=out:json&sheet=" + encodeURIComponent(sheetName) + "&headers=1";
-    return fetch(url)
-      .then(function (res) {
-        return res.text();
-      })
+    return window.bsvFetchSheetText(url)
       .then(function (text) {
         var json = JSON.parse(text.substring(47, text.length - 2));
         var cols = (json.table.cols || []).map(function (c) {

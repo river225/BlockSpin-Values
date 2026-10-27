@@ -63,19 +63,26 @@ for (const f of walk(TEST)) {
 const siteFile = path.join(TEST, "tools", "site.json");
 if (!fs.existsSync(siteFile)) fs.writeFileSync(siteFile, JSON.stringify({ root: TEST_ROOT, test: true }, null, 2) + "\n");
 
-// Test-only add-ons listed in tools/site.json ("extraScripts"/"extraStyles") are linked into
-// index.html here, so experiments live only on the test site and never in main.
+// Test-only add-ons listed in tools/site.json are linked into pages here, so experiments live
+// only on the test site and never in main. Format:
+//   "extras": { "live-trading.html": { "scripts": ["lt-share.js"], "styles": ["lt-share.css"] } }
+// (older "extraScripts"/"extraStyles" keys mean index.html.)
 const settings = JSON.parse(fs.readFileSync(siteFile, "utf8"));
-{
-  const idx = path.join(TEST, "index.html");
-  let s = fs.readFileSync(idx, "utf8");
-  for (const css of settings.extraStyles || []) {
+const extras = Object.assign({}, settings.extras || {});
+if (settings.extraScripts || settings.extraStyles) {
+  extras["index.html"] = { scripts: settings.extraScripts || [], styles: settings.extraStyles || [] };
+}
+for (const [page, add] of Object.entries(extras)) {
+  const file = path.join(TEST, page);
+  if (!fs.existsSync(file)) continue;
+  let s = fs.readFileSync(file, "utf8");
+  for (const css of add.styles || []) {
     if (!s.includes(`href="${css}`)) s = s.replace("</head>", `<link rel="stylesheet" href="${css}?v=init" />\n</head>`);
   }
-  for (const js of settings.extraScripts || []) {
-    if (!s.includes(`src="${js}`)) s = s.replace('<script defer src="script.js', `<script defer src="${js}?v=init"></script>\n<script defer src="script.js`);
+  for (const js of add.scripts || []) {
+    if (!s.includes(`src="${js}`)) s = s.replace("</body>", `<script defer src="${js}?v=init"></script>\n</body>`);
   }
-  fs.writeFileSync(idx, s);
+  fs.writeFileSync(file, s);
 }
 
 execFileSync("node", ["tools/release.mjs"], { cwd: TEST, stdio: "inherit" });

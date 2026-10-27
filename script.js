@@ -2000,8 +2000,7 @@ async function fetchSheet(sheetName) {
   try {
     const base = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq`;
     const url = `${base}?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
-    const res = await fetch(url);
-    const text = await res.text();
+    const text = await window.bsvFetchSheetText(url);
     const json = JSON.parse(text.substring(47, text.length - 2));
 
     const cols = json.table.cols.map(c => c.label?.trim() || "");
@@ -2053,8 +2052,7 @@ async function fetchRichestPlayers() {
     const RICHEST_SPREADSHEET_ID = "1nfWrJcFkVCZ-Yr0mWmCCjQoQgUD3_-W2Qsy4XD4NT3k";
     const base = `https://docs.google.com/spreadsheets/d/${RICHEST_SPREADSHEET_ID}/gviz/tq`;
     const url = `${base}?tqx=out:json&headers=1`;
-    const res = await fetch(url);
-    const text = await res.text();
+    const text = await window.bsvFetchSheetText(url);
     const json = JSON.parse(text.substring(47, text.length - 2));
 
     const cols = json.table.cols.map(c => c.label?.trim() || "");
@@ -2082,8 +2080,7 @@ async function fetchExternalSheet(spreadsheetId, sheetName) {
   try {
     const base = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq`;
     const url = `${base}?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
-    const res = await fetch(url);
-    const text = await res.text();
+    const text = await window.bsvFetchSheetText(url);
     const json = JSON.parse(text.substring(47, text.length - 2));
     const cols = json.table.cols.map((c) => c.label?.trim() || "");
     const rows = json.table.rows || [];
@@ -3008,8 +3005,7 @@ async function fetchGuideSheet(sheetName, kind) {
   try {
     const base = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/gviz/tq";
     const url = base + "?tqx=out:json&sheet=" + encodeURIComponent(sheetName) + "&headers=1";
-    const res = await fetch(url);
-    const text = await res.text();
+    const text = await window.bsvFetchSheetText(url);
     const json = JSON.parse(text.substring(47, text.length - 2));
     const cols = (json.table.cols || []).map(function (c) { return (c.label || "").trim(); });
     const headerOk = kind === "items"
