@@ -121,6 +121,10 @@
       "home.whatIsTitle": "What is BlockSpin Values?",
       "home.whatIsBody":
         "BlockSpin Values is the trusted value list for all items in the Roblox game BlockSpin. Our dedicated team of top traders keeps values updated daily to help you make fair trades and avoid scams. Whether you're looking for weapon values, checking crew logos, or calculating taxes, we've got everything you need to trade with confidence.",
+      "announce.live.date": "Oct 27, 2026",
+      "announce.live.text": "Live Trading just got better: post owners can pin their best trade to the top, and big trades show clearly. Every value list, guide and item now has its own page, so you can share a link straight to any item.",
+      "announce.launch.date": "Sept 30, 2026",
+      "announce.launch.text": "Live Trading is here! Post what you're giving and what you want, browse live offers, and message traders on Discord in one click. We also launched a brand-new home page and header with quicker navigation — plus a YouTube button so you can catch River's videos.",
       "announce.1.date": "April 17, 2026",
       "announce.1.text":
         "Website update is now live! The Tax Calculator is back and more advanced — it shows exactly how much to trade and in what order to avoid overpaying. The new Recent Changes box lets you track all value list updates. (On mobile, tap the blue arrow in a gun section to open the tax calculator.)",
@@ -463,6 +467,10 @@
       "home.whatIsTitle": "Qu'est-ce que BlockSpin Values ?",
       "home.whatIsBody":
         "BlockSpin Values est la liste de valeurs de confiance pour tous les objets du jeu Roblox BlockSpin. Notre équipe de traders expérimentés met à jour les valeurs chaque jour pour vous aider à faire des échanges équitables et éviter les arnaques. Que vous cherchiez des valeurs d'armes, des logos de crew ou des calculs de taxes, nous avons tout ce qu'il vous faut pour échanger en toute confiance.",
+      "announce.live.date": "27 oct. 2026",
+      "announce.live.text": "Le Live Trading s'améliore : épinglez votre meilleur échange en haut, et les gros échanges s'affichent clairement. Chaque liste de valeurs, guide et objet a maintenant sa propre page, pour partager un lien direct vers n'importe quel objet.",
+      "announce.launch.date": "30 sept. 2026",
+      "announce.launch.text": "Le Live Trading est là ! Publiez ce que vous donnez et ce que vous voulez, parcourez les offres en direct et contactez les traders sur Discord en un clic. Nous avons aussi lancé une toute nouvelle page d'accueil et un nouvel en-tête, avec un bouton YouTube pour les vidéos de River.",
       "announce.1.date": "17 avril 2026",
       "announce.1.text":
         "La mise à jour du site est en ligne ! Le calculateur de taxe est de retour, plus avancé 🔥 Il indique exactement combien échanger et dans quel ordre pour éviter de surpayer. La nouvelle section Changements récents vous permet de suivre toutes les mises à jour de la liste. (Sur mobile, cliquez sur la flèche bleue dans une section d'armes pour accéder au calculateur.)",
@@ -805,6 +813,10 @@
       "home.whatIsTitle": "¿Qué es BlockSpin Values?",
       "home.whatIsBody":
         "BlockSpin Values es la lista de valores confiable para todos los objetos del juego Roblox BlockSpin. Nuestro equipo de traders expertos actualiza los valores a diario para ayudarte a hacer intercambios justos y evitar estafas. Ya sea que busques valores de armas, logos de crew o cálculos de impuestos, tenemos todo lo que necesitas para intercambiar con confianza.",
+      "announce.live.date": "27 de oct. de 2026",
+      "announce.live.text": "Live Trading mejora: fija tu mejor intercambio arriba y los intercambios grandes se ven con claridad. Cada lista de valores, guía y objeto tiene ahora su propia página, para compartir un enlace directo a cualquier objeto.",
+      "announce.launch.date": "30 de sept. de 2026",
+      "announce.launch.text": "¡Llegó Live Trading! Publica lo que das y lo que quieres, mira ofertas en vivo y contacta a traders en Discord con un clic. También estrenamos una página de inicio y cabecera nuevas, con un botón de YouTube para los vídeos de River.",
       "announce.1.date": "17 de abril de 2026",
       "announce.1.text":
         "¡La actualización del sitio ya está en vivo! La calculadora de impuestos ha vuelto y es más avanzada 🔥 Muestra exactamente cuánto intercambiar y en qué orden para no pagar de más. La nueva sección de Cambios recientes te permite seguir todas las actualizaciones. (En móvil, pulsa la flecha azul en una sección de armas para abrir la calculadora.)",
