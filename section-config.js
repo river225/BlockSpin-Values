@@ -15,6 +15,9 @@
     {
       title: "Home",
       id: "home",
+      path: "",
+      seoTitle: "BlockSpin Values – Trusted BlockSpin Value List & Trading Hub",
+      seoDescription: "The most trusted BlockSpin value list. Check item values, demand and pawn prices, trade on Live Trading, use the tax calculator and find safe middlemen.",
       navGroup: "main",
       dataSource: "none",
       search: "hide",
@@ -30,6 +33,9 @@
     {
       title: "Common / Uncommon",
       id: "uncommon",
+      path: "values/uncommon/",
+      seoTitle: "BlockSpin Common & Uncommon Item Values | BlockSpin Values",
+      seoDescription: "Up-to-date values for every Common and Uncommon item in BlockSpin, with demand, ranged value, networth and pawn prices.",
       navGroup: "main",
       dataSource: "sheet",
       sheetName: "Uncommon",
@@ -45,6 +51,9 @@
     {
       title: "Rare",
       id: "rare",
+      path: "values/rare/",
+      seoTitle: "BlockSpin Rare Item Values | BlockSpin Values",
+      seoDescription: "Current values for every Rare item in BlockSpin, including demand, ranged value, networth and pawn prices.",
       navGroup: "main",
       dataSource: "sheet",
       sheetName: "Rare",
@@ -60,6 +69,9 @@
     {
       title: "Epic",
       id: "epic",
+      path: "values/epic/",
+      seoTitle: "BlockSpin Epic Item Values | BlockSpin Values",
+      seoDescription: "Current values for every Epic item in BlockSpin, including demand, ranged value, networth and pawn prices.",
       navGroup: "main",
       dataSource: "sheet",
       sheetName: "Epic",
@@ -75,6 +87,9 @@
     {
       title: "Legendary",
       id: "legendary",
+      path: "values/legendary/",
+      seoTitle: "BlockSpin Legendary Item Values | BlockSpin Values",
+      seoDescription: "Current values for every Legendary item in BlockSpin, including demand, ranged value, networth and pawn prices.",
       navGroup: "main",
       dataSource: "sheet",
       sheetName: "Legendary",
@@ -90,6 +105,9 @@
     {
       title: "Omega",
       id: "omega",
+      path: "values/omega/",
+      seoTitle: "BlockSpin Omega Item Values | BlockSpin Values",
+      seoDescription: "Current values for every Omega item in BlockSpin, including demand, ranged value, networth and pawn prices.",
       navGroup: "main",
       dataSource: "sheet",
       sheetName: "Omega",
@@ -105,6 +123,9 @@
     {
       title: "Gamepass / Misc",
       id: "misc",
+      path: "values/misc/",
+      seoTitle: "BlockSpin Gamepass & Misc Values | BlockSpin Values",
+      seoDescription: "Values for BlockSpin gamepasses and miscellaneous items, kept up to date by the BlockSpin Values team.",
       navGroup: "main",
       dataSource: "sheet",
       sheetName: "Misc",
@@ -120,6 +141,9 @@
     {
       title: "Vehicles",
       id: "vehicles",
+      path: "values/vehicles/",
+      seoTitle: "BlockSpin Vehicle Values | BlockSpin Values",
+      seoDescription: "Current values for every vehicle in BlockSpin, with demand and pricing kept up to date.",
       navGroup: "main",
       dataSource: "sheet",
       sheetName: "Vehicles",
@@ -153,6 +177,9 @@
     {
       title: "Money & Game Guide",
       id: "money-game-guide",
+      path: "guides/",
+      seoTitle: "BlockSpin Money & Game Guide – Fishing, Farming & Quests",
+      seoDescription: "How to make money in BlockSpin: fishing and farming guides with prices, plus a full quest guide.",
       navGroup: "extras",
       dataSource: "none",
       search: "hide",
@@ -168,6 +195,9 @@
     {
       title: ACCESSORIES_SECTION_TITLE,
       id: "untradeable-items",
+      path: "values/untradeable-items/",
+      seoTitle: "BlockSpin Untradeable Items | BlockSpin Values",
+      seoDescription: "Every untradeable item in BlockSpin, including accessories, with how to get them.",
       navGroup: "extras",
       dataSource: "sheet",
       sheetName: "Accessories",
@@ -185,6 +215,9 @@
     {
       title: "Richest Players",
       id: "richest-players",
+      path: "richest-players/",
+      seoTitle: "Richest BlockSpin Players Leaderboard | BlockSpin Values",
+      seoDescription: "See the richest players in BlockSpin, ranked by networth and updated by the BlockSpin Values team.",
       navGroup: "extras",
       dataSource: "richest",
       search: "hide",
@@ -200,6 +233,9 @@
     {
       title: "Crew Logos",
       id: "crew-logos",
+      path: "crew-logos/",
+      seoTitle: "BlockSpin Crew Logos | BlockSpin Values",
+      seoDescription: "Browse BlockSpin crew logos and find inspiration for your own crew.",
       navGroup: "extras",
       dataSource: "sheet",
       sheetName: "Crew Logos",

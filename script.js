@@ -1,4 +1,4 @@
-const SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
+const SPREADSHEET_ID = window.BSV_CONFIG.SPREADSHEET_ID; // single source: bsv-config.js
 const SECTION_NAMES = typeof getSectionTitles === "function" ? getSectionTitles() : [];
 
 const GA_MEASUREMENT_ID = "G-0T25993BCC";
@@ -168,6 +168,20 @@ var _renderedSectionCache = [];
 var _sectionsDomReady = Object.create(null);
 var _pendingSectionName = null;
 var _activeSectionName = "Home";
+var _bsvPendingRoute = null;
+var _bsvRenderingSection = null;
+
+/** Item name as a real link to its own page (crawlable; click switches without reload). */
+function bsvItemNameHtml(rawName, displayHtml) {
+  var section = _bsvRenderingSection;
+  var slug = section ? bsvItemSlug(section, rawName) : null;
+  if (!slug) return displayHtml;
+  return (
+    '<a class="card-item-link" href="' + escapeAttr(bsvSiteRoot() + "items/" + slug + "/") +
+    '" data-bsv-route-section="' + escapeAttr(section) +
+    '" data-bsv-route-item="' + escapeAttr(String(rawName).trim()) + '">' + displayHtml + "</a>"
+  );
+}
 
 function clearHashSectionBootHide() {
   document.documentElement.classList.remove("bsv-hash-section");
@@ -198,6 +212,247 @@ function resolveHashSectionRequest() {
   }
   return null;
 }
+
+/* ===================== Page routing (real URLs per section / guide / item) =====================
+ * Every section has a real address (section-config.js `path`). Switching sections never reloads:
+ * it swaps the visible section and updates the address bar with history.pushState, so Back/Forward
+ * work and nothing is re-downloaded (no stale copies). Generated pages (tools/release.mjs) set
+ * window.BSV_ROUTE so a direct visit opens the right section immediately.
+ */
+var BSV_GUIDE_TABS = {
+  fishing: { path: "guides/fishing/", title: "BlockSpin Fishing Guide – Fish Prices & Best Spots | BlockSpin Values" },
+  farming: { path: "guides/farming/", title: "BlockSpin Farming Guide – Crops & Profits | BlockSpin Values" },
+  quest: { path: "guides/quests/", title: "BlockSpin Quest Guide – Every Quest Explained | BlockSpin Values" }
+};
+var BSV_ITEM_SECTION_IDS = ["uncommon", "rare", "epic", "legendary", "omega", "misc", "vehicles", "untradeable-items"];
+var _bsvItemSlugIndex = null; // "Section|Name" -> slug
+var _bsvItemBySlug = null; // slug -> { section, name }
+var _bsvRouteState = { section: "Home", item: null, guide: null };
+
+function bsvSiteRoot() {
+  return (typeof window.BSV_SITE_ROOT === "string" && window.BSV_SITE_ROOT) || "/";
+}
+
+/** Same slug rule as tools/release.mjs — keep the two in sync. */
+function bsvSlugifyItemName(name) {
+  return String(name || "")
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Build item slugs from loaded sheet data (same order + collision rule as the generator). */
+function bsvBuildItemSlugIndex(results) {
+  var bySlug = Object.create(null);
+  var byKey = Object.create(null);
+  var registry = typeof getSectionRegistry === "function" ? getSectionRegistry() : [];
+  registry.forEach(function (cfg) {
+    if (BSV_ITEM_SECTION_IDS.indexOf(cfg.id) === -1) return;
+    var hit = (results || []).find(function (r) { return r.section === cfg.title; });
+    (hit && hit.items ? hit.items : []).forEach(function (item) {
+      var name = String((item && item["Name"]) || "").trim();
+      if (!name) return;
+      var key = cfg.title + "|" + name;
+      if (byKey[key]) return;
+      var base = bsvSlugifyItemName(name);
+      if (!base) return;
+      var slug = bySlug[base] ? base + "-" + cfg.id : base;
+      if (bySlug[slug]) return;
+      bySlug[slug] = { section: cfg.title, name: name };
+      byKey[key] = slug;
+    });
+  });
+  _bsvItemSlugIndex = byKey;
+  _bsvItemBySlug = bySlug;
+}
+
+function bsvItemSlug(sectionTitle, name) {
+  if (!_bsvItemSlugIndex) return null;
+  return _bsvItemSlugIndex[sectionTitle + "|" + String(name || "").trim()] || null;
+}
+
+function bsvPathForRoute(route) {
+  var root = bsvSiteRoot();
+  if (route.item) {
+    var slug = bsvItemSlug(route.section, route.item);
+    if (slug) return root + "items/" + slug + "/";
+  }
+  if (route.guide && BSV_GUIDE_TABS[route.guide]) return root + BSV_GUIDE_TABS[route.guide].path;
+  var cfg = typeof getSectionConfig === "function" ? getSectionConfig(route.section) : null;
+  if (cfg && typeof cfg.path === "string") return root + cfg.path;
+  return null;
+}
+
+/** Map an address (e.g. /values/rare/) back to a route. */
+function bsvRouteFromPath(pathname) {
+  var root = bsvSiteRoot();
+  var p = String(pathname || "/");
+  if (p.indexOf(root) === 0) p = p.slice(root.length);
+  else p = p.replace(/^\//, "");
+  p = p.replace(/index\.html$/i, "");
+  if (p && p.charAt(p.length - 1) !== "/") p += "/";
+  if (p === "" || p === "/") return { section: "Home" };
+  var m = /^items\/([^/]+)\/$/.exec(p);
+  if (m) {
+    var hit = _bsvItemBySlug && _bsvItemBySlug[m[1]];
+    if (hit) return { section: hit.section, item: hit.name };
+    if (window.BSV_ROUTE && window.BSV_ROUTE.item) {
+      return { section: window.BSV_ROUTE.section, item: window.BSV_ROUTE.item };
+    }
+    return null;
+  }
+  for (var key in BSV_GUIDE_TABS) {
+    if (BSV_GUIDE_TABS[key].path === p) return { section: MONEY_GAME_GUIDE_SECTION, guide: key };
+  }
+  var registry = typeof getSectionRegistry === "function" ? getSectionRegistry() : [];
+  for (var i = 0; i < registry.length; i++) {
+    if (typeof registry[i].path === "string" && registry[i].path && registry[i].path === p) {
+      return { section: registry[i].title };
+    }
+  }
+  return null;
+}
+
+/** Where to start: generated page route → #sec= link (old style) → the address itself. */
+function resolveBootRoute() {
+  var hash = resolveHashSectionRequest();
+  if (hash && hash.redirectLiveTrading) return hash;
+  if (window.BSV_ROUTE && window.BSV_ROUTE.section) {
+    return {
+      section: window.BSV_ROUTE.section,
+      item: window.BSV_ROUTE.item || null,
+      guide: window.BSV_ROUTE.guide || null
+    };
+  }
+  if (hash && hash.section) return { section: hash.section };
+  return bsvRouteFromPath(window.location.pathname);
+}
+
+function bsvSetMeta(selector, attr, value) {
+  var el = document.querySelector(selector);
+  if (el && value) el.setAttribute(attr, value);
+}
+
+function bsvRouteTitle(route) {
+  if (route.item) {
+    return route.item + " Value in BlockSpin | BlockSpin Values";
+  }
+  if (route.guide && BSV_GUIDE_TABS[route.guide]) return BSV_GUIDE_TABS[route.guide].title;
+  var cfg = typeof getSectionConfig === "function" ? getSectionConfig(route.section) : null;
+  return (cfg && cfg.seoTitle) || "BlockSpin Values";
+}
+
+/**
+ * Keep address bar, tab title and canonical in step with what is on screen.
+ * mode: "push" (user navigation), "replace" (boot / cleanup), "none" (Back/Forward).
+ */
+function bsvSyncRouteUrl(route, mode) {
+  _bsvRouteState = { section: route.section, item: route.item || null, guide: route.guide || null };
+  var path = bsvPathForRoute(_bsvRouteState);
+  var title = bsvRouteTitle(_bsvRouteState);
+  if (title) document.title = title;
+  if (path) {
+    var abs = "https://blockspinvalues.com" + path.replace(bsvSiteRoot(), "/");
+    bsvSetMeta('link[rel="canonical"]', "href", abs);
+    bsvSetMeta('meta[property="og:url"]', "content", abs);
+  }
+  if (!path || mode === "none" || !window.history || !history.pushState) return;
+  var here = window.location.pathname + window.location.hash;
+  if (here === path) return;
+  try {
+    if (mode === "push" && window.location.pathname !== path) {
+      history.pushState(_bsvRouteState, "", path);
+    } else {
+      history.replaceState(_bsvRouteState, "", path);
+    }
+  } catch (_) {}
+}
+
+/** Item page: show a spotlight copy of the item's card above its section. */
+function bsvApplyItemSpotlight(route) {
+  document.querySelectorAll(".bsv-item-spotlight").forEach(function (el) { el.remove(); });
+  document.body.classList.remove("is-item-page");
+  if (!route || !route.item) return;
+  var cfg = typeof getSectionConfig === "function" ? getSectionConfig(route.section) : null;
+  var sectionEl = cfg && document.getElementById(cfg.id);
+  if (!sectionEl) return;
+  var target = null;
+  sectionEl.querySelectorAll("[data-name]").forEach(function (el) {
+    if (!target && String(el.getAttribute("data-name") || "").trim() === route.item) target = el;
+  });
+  if (!target) return;
+  var wrap = document.createElement("div");
+  wrap.className = "bsv-item-spotlight";
+  var h1 = document.createElement("h1");
+  h1.className = "bsv-item-spotlight__title";
+  h1.textContent = route.item + " value";
+  var sub = document.createElement("p");
+  sub.className = "bsv-item-spotlight__sub";
+  sub.textContent = "Live BlockSpin value from the " + i18nSection(route.section) + " list.";
+  var cardHost = document.createElement("div");
+  cardHost.className = "cards bsv-item-spotlight__cards";
+  var clone = target.cloneNode(true);
+  clone.classList.add("card--spotlight");
+  clone.removeAttribute("id");
+  cardHost.appendChild(clone);
+  var back = document.createElement("a");
+  back.className = "bsv-item-spotlight__all";
+  back.href = bsvPathForRoute({ section: route.section }) || "#";
+  back.setAttribute("data-bsv-route-section", route.section);
+  back.textContent = "See all " + i18nSection(route.section) + " values";
+  wrap.appendChild(h1);
+  wrap.appendChild(sub);
+  wrap.appendChild(cardHost);
+  wrap.appendChild(back);
+  var heading = sectionEl.querySelector("h2");
+  if (heading && heading.parentNode === sectionEl) heading.insertAdjacentElement("afterend", wrap);
+  else sectionEl.insertBefore(wrap, sectionEl.firstChild);
+  document.body.classList.add("is-item-page");
+  if (typeof window.bsvRefreshSavedCardButtons === "function") window.bsvRefreshSavedCardButtons();
+  // Section render snaps to top; keep the spotlight in view.
+  requestAnimationFrame(function () {
+    var se = document.scrollingElement || document.documentElement;
+    if (se) se.scrollTop = 0;
+  });
+}
+
+/** Navigate inside the site without a reload. */
+function bsvNavigate(route, mode) {
+  if (!route || !route.section) return;
+  var cfg = typeof getSectionConfig === "function" ? getSectionConfig(route.section) : null;
+  if (cfg && cfg.pageHref) {
+    window.location.href = typeof window.bsvSitePath === "function" ? window.bsvSitePath(cfg.pageHref) : cfg.pageHref;
+    return;
+  }
+  showSection(route.section, { route: route, history: mode || "push" });
+}
+
+function bsvInitRouting() {
+  if (window.__bsvRoutingInit) return;
+  window.__bsvRoutingInit = true;
+  window.addEventListener("popstate", function (e) {
+    var route = (e.state && e.state.section && e.state) || bsvRouteFromPath(window.location.pathname);
+    if (!route) route = { section: "Home" };
+    showSection(route.section, { route: route, history: "none" });
+  });
+  // Internal links (item names, "see all", footer value links) switch without reloading.
+  document.addEventListener("click", function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target && e.target.closest ? e.target.closest("a[data-bsv-route-section]") : null;
+    if (!a || !document.getElementById("sections-nav")) return;
+    e.preventDefault();
+    bsvNavigate({
+      section: a.getAttribute("data-bsv-route-section"),
+      item: a.getAttribute("data-bsv-route-item") || null,
+      guide: a.getAttribute("data-bsv-route-guide") || null
+    }, "push");
+  });
+}
+window.bsvNavigate = bsvNavigate;
+window.bsvPathForRoute = bsvPathForRoute;
 
 function shouldShowGiveawayCarousel() {
   return false;
@@ -375,7 +630,7 @@ function buildDiscordCardExplainerSlideHtml(kind) {
   var actions =
     '<div class="home-discord-promo__card-actions">' +
       '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__card-btn home-discord-promo__card-btn--join">' + escapeHtml(i18n("discord.card.joinNow")) + '</a>' +
-      '<a href="blockspin-discord-server.html" class="home-discord-promo__card-btn home-discord-promo__card-btn--more">' + escapeHtml(i18n("discord.card.learnMore")) + '</a>' +
+      '<a href="' + bsvSiteRoot() + 'blockspin-discord-server.html" class="home-discord-promo__card-btn home-discord-promo__card-btn--more">' + escapeHtml(i18n("discord.card.learnMore")) + '</a>' +
     '</div>';
 
   return (
@@ -400,7 +655,7 @@ function buildDiscordPromoCardSlotHtml(sectionTitle) {
         '<p class="home-discord-promo__card-tags">' + escapeHtml(copy.tags) + '</p>' +
         '<div class="home-discord-promo__card-actions">' +
           '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__card-btn home-discord-promo__card-btn--join">' + escapeHtml(i18n("discord.card.joinNow")) + '</a>' +
-          '<a href="blockspin-discord-server.html" class="home-discord-promo__card-btn home-discord-promo__card-btn--more">' + escapeHtml(i18n("discord.card.whatWeOffer")) + '</a>' +
+          '<a href="' + bsvSiteRoot() + 'blockspin-discord-server.html" class="home-discord-promo__card-btn home-discord-promo__card-btn--more">' + escapeHtml(i18n("discord.card.whatWeOffer")) + '</a>' +
         '</div>' +
       '</div>' +
     '</div>'
@@ -473,7 +728,7 @@ function buildDiscordPromoBannerHtml(inCards) {
           '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__btn home-discord-promo__btn--primary home-discord-promo__btn--flash-join">' +
             escapeHtml(i18n("discord.card.joinNow")) + ' <span aria-hidden="true">→</span>' +
           "</a>" +
-          '<a href="blockspin-discord-server.html" class="home-discord-promo__btn home-discord-promo__btn--secondary">' + escapeHtml(i18n("discord.card.learnMore")) + "</a>" +
+          '<a href="' + bsvSiteRoot() + 'blockspin-discord-server.html" class="home-discord-promo__btn home-discord-promo__btn--secondary">' + escapeHtml(i18n("discord.card.learnMore")) + "</a>" +
         "</div>" +
       "</div>" +
     "</div>"
@@ -1249,12 +1504,8 @@ function trackSectionPageView(sectionName) {
   }
   document.documentElement.dataset.bsvGaHomePv = "1";
 
+  // Sections have real addresses now (see Page routing), so the path says which page this is.
   var path = cleanAnalyticsPagePath();
-  try {
-    if (normalized && normalized !== "Home") {
-      path = (path.split("#")[0] || "/") + "#sec=" + encodeURIComponent(normalized);
-    }
-  } catch (_) {}
   window.gtag("event", "page_view", {
     page_title: normalized ? "BlockSpin Values — " + normalized : "BlockSpin Values",
     page_path: path,
@@ -1301,7 +1552,7 @@ function initDiscordJoinNudge() {
       '</div>' +
       '<div class="discord-join-nudge__actions">' +
         '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="discord-join-nudge__btn discord-join-nudge__btn--join">Join now</a>' +
-        '<a href="blockspin-discord-server.html" class="discord-join-nudge__btn discord-join-nudge__btn--more">Learn more</a>' +
+        '<a href="' + bsvSiteRoot() + 'blockspin-discord-server.html" class="discord-join-nudge__btn discord-join-nudge__btn--more">Learn more</a>' +
       '</div>';
 
     document.body.appendChild(nudge);
@@ -1445,7 +1696,7 @@ function buildRichestNotListedFooterHtml() {
   return (
     '<p class="richest-not-listed">' +
     escapeHtml(i18n("richest.notListedPrompt")) +
-    ' <a href="x-richest-not-listed.html" class="richest-not-listed__link">' +
+    ' <a href="' + bsvSiteRoot() + 'x-richest-not-listed.html" class="richest-not-listed__link">' +
     escapeHtml(i18n("richest.notListedLink")) +
     "</a></p>"
   );
@@ -2364,7 +2615,7 @@ if (pawnTextOverride) {
         ${durabilityHTML}
       </div>
       <div class="card-info">
-        <h3>${name}</h3>
+        <h3>${bsvItemNameHtml(item["Name"], name)}</h3>
         ${demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : ""}
         <div class="card-avg">${escapeHtml(i18n("card.avg"))}: <span class="avg-value">${avg}</span></div>
         <div class="card-ranged">${escapeHtml(i18n("card.ranged"))}: <span class="ranged-value">${ranged}</span></div>
@@ -2555,7 +2806,7 @@ function createAccessoryCard(item) {
         ${imgTag ? `<div class="card-item-image-wrap">${imgTag}</div>` : ""}
       </div>
       <div class="card-info">
-        <h3>${escapeHtml(name)}</h3>
+        <h3>${bsvItemNameHtml(item["Name"], escapeHtml(name))}</h3>
         ${rarity ? `<span class="badge accessory-rarity-badge ${rarityClass}">${escapeHtml(rarity)}</span>` : ""}
         <div class="card-value-separator"></div>
         <div class="card-secondary-values">
@@ -3701,7 +3952,13 @@ function initMoneyGuideTabs() {
   }
 
   tabs.forEach(tab => {
-    tab.addEventListener("click", () => activate(tab.dataset.panel));
+    tab.addEventListener("click", () => {
+      activate(tab.dataset.panel);
+      var key = String(tab.dataset.panel || "").replace("money-guide-", "");
+      if (BSV_GUIDE_TABS[key] && _activeSectionName === MONEY_GAME_GUIDE_SECTION && _bsvRouteState.guide !== key) {
+        bsvSyncRouteUrl({ section: MONEY_GAME_GUIDE_SECTION, guide: key }, "push");
+      }
+    });
   });
   activate("money-guide-fishing");
 }
@@ -3709,6 +3966,7 @@ function initMoneyGuideTabs() {
 window.bsvActivateMoneyGuideTab = activateMoneyGuideTab;
 
 function renderSection(title, items) {
+  _bsvRenderingSection = title;
   if (title === "BlockSpin Map") {
     renderBlockSpinMapSection();
     _sectionsDomReady[title] = true;
@@ -4807,9 +5065,16 @@ function setSectionDisplay(el, sectionCfg, visible) {
   }
 }
 
-function showSection(name) {
+function showSection(name, opts) {
+  opts = opts || {};
   const cfg = typeof getSectionConfig === "function" ? getSectionConfig(name) : null;
   if (!cfg) return;
+  var route = {
+    section: name,
+    item: (opts.route && opts.route.item) || null,
+    guide: (opts.route && opts.route.guide) || null
+  };
+  var historyMode = opts.history || "push";
 
   if (cfg.pageHref) {
     var pageHref =
@@ -4822,6 +5087,7 @@ function showSection(name) {
   // section existed, leaving a blank main pane.
   if (name !== "Home" && !_renderedSectionCache.length) {
     _pendingSectionName = name;
+    _bsvPendingRoute = route;
     const nav = document.getElementById("sections-nav");
     if (nav) {
       nav.querySelectorAll("button").forEach(function (b) {
@@ -4839,11 +5105,13 @@ function showSection(name) {
     const targetEl = targetCfg && document.getElementById(targetCfg.id);
     if (!targetEl) {
       _pendingSectionName = name;
+      _bsvPendingRoute = route;
       return;
     }
   }
 
   _pendingSectionName = null;
+  _bsvPendingRoute = null;
   _activeSectionName = name;
   clearHashSectionBootHide();
 
@@ -4882,9 +5150,16 @@ function showSection(name) {
 
   closeSectionsMenu();
 
+  // Real address + tab title for what is now on screen (see Page routing).
+  bsvSyncRouteUrl(route, historyMode);
+  if (route.guide && typeof activateMoneyGuideTab === "function") {
+    activateMoneyGuideTab(route.guide);
+  }
+
   // Snap to top immediately so a deep scroll in the previous section
   // cannot leave you stranded at the bottom of the next one.
   scrollActiveSectionToTop(cfg);
+  bsvApplyItemSpotlight(route);
 
   // Defer everything that is not needed for the tap paint.
   requestAnimationFrame(function () {
@@ -5779,8 +6054,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   initTaxCalculator();
   initMobileTaxPanel();
 
+  bsvInitRouting();
   // Do not force Home first — that flashes Home when arriving via #sec= from Live Trading.
-  var bootHash = resolveHashSectionRequest();
+  var bootHash = resolveBootRoute();
   if (bootHash && bootHash.redirectLiveTrading) {
     var liveBootHref =
       typeof window.bsvSitePath === "function"
@@ -5793,10 +6069,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     var homeBootEl = document.getElementById("home");
     if (homeBootEl) homeBootEl.style.display = "none";
     document.body.classList.remove("is-home");
-    showSection(bootHash.section);
+    showSection(bootHash.section, { route: bootHash, history: "replace" });
   } else {
     clearHashSectionBootHide();
-    showSection("Home");
+    showSection("Home", { history: "replace" });
   }
 
   const giveawayPromise = loadExternalGiveawayConfig();
@@ -5843,8 +6119,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   _sectionsDomReady = Object.create(null);
   _sectionsDomReady["Home"] = true;
 
+  bsvBuildItemSlugIndex(results);
   let initialSection = "Home";
-  var hashRequest = resolveHashSectionRequest();
+  var hashRequest = resolveBootRoute();
   if (hashRequest && hashRequest.redirectLiveTrading) {
     var liveHref =
       typeof window.bsvSitePath === "function"
@@ -5853,14 +6130,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.replace(liveHref);
     return;
   }
+  var initialRoute = { section: "Home" };
   if (hashRequest && hashRequest.section) {
     initialSection = hashRequest.section;
+    initialRoute = hashRequest;
   }
 
   // Only paint the active section up front — rendering every rarity into the DOM
   // was creating 14k+ nodes and ~19MB of images on mobile LCP.
   if (_pendingSectionName && SECTION_NAMES.includes(_pendingSectionName)) {
     initialSection = _pendingSectionName;
+    initialRoute = _bsvPendingRoute || { section: _pendingSectionName };
+    // A click before data finished loading is a real navigation.
+    var pendingWasClick = initialRoute.section !== (hashRequest && hashRequest.section);
   }
   ensureSectionRendered(initialSection);
   if (typeof window.bsvRefreshSavedCardButtons === "function") {
@@ -5875,7 +6157,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   initDiscordPromoCardCarousels();
   renderSectionContentEmbeds();
 
-  showSection(initialSection);
+  showSection(initialSection, {
+    route: initialRoute,
+    history: typeof pendingWasClick !== "undefined" && pendingWasClick ? "push" : "replace"
+  });
+  // If that section could not be built (its sheet failed to load), never leave a blank
+  // page: fall back to Home instead.
+  if (_pendingSectionName === initialSection && initialSection !== "Home") {
+    clearHashSectionBootHide();
+    showSection("Home", { history: "replace" });
+  }
   loadValueChanges();
   fetchDiscordMemberCount();
   loadFooterBoosters();
@@ -5934,7 +6225,7 @@ function refreshDynamicContentForLanguage() {
   initDiscordPromoCardCarousels();
   renderSectionContentEmbeds();
   initSectionsNav();
-  showSection(_activeSectionName);
+  showSection(_activeSectionName, { route: _bsvRouteState, history: "replace" });
 
   var taxInput = document.getElementById("taxInput");
   if (taxInput) taxInput.dispatchEvent(new Event("input"));

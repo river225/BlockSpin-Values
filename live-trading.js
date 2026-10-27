@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var SPREADSHEET_ID = "1vAm9x7c5JPxpHxDHVcDgQifXsAvW9iW2wPVuQLENiYs";
+  var SPREADSHEET_ID = window.BSV_CONFIG.SPREADSHEET_ID; // single source: bsv-config.js
   var POSTS_KEY = "bsv-live-trades-v1";
   var HIDDEN_AUTHORS_KEY = "bsv-lt-hidden-authors-v1";
   var GUIDELINES_ACK_KEY = "bsv-lt-guidelines-ack-v1";
@@ -761,6 +761,10 @@
         if (cfg.id === "live-trading") return;
         if (cfg.pageHref) {
           window.location.href = sitePath(cfg.pageHref);
+          return;
+        }
+        if (typeof cfg.path === "string") {
+          window.location.href = sitePath(cfg.path);
           return;
         }
         var hash = "#sec=" + encodeURIComponent(cfg.title);

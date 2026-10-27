@@ -409,6 +409,10 @@
       location.href = sitePath(cfg.pageHref);
       return;
     }
+    if (cfg && typeof cfg.path === "string") {
+      location.href = sitePath(cfg.path);
+      return;
+    }
     location.href = sitePath("") + "#sec=" + encodeURIComponent(title);
   }
 
@@ -1054,7 +1058,11 @@
     if (hasScriptFile(fileName)) return Promise.resolve();
     return new Promise(function (resolve, reject) {
       var s = document.createElement("script");
-      s.src = sitePath(fileName) + (version ? "?v=" + version : "");
+      // Prefer the per-file content hash stamped by tools/release.mjs, so every page
+      // loads the current copy (never an old cached one).
+      var manifestV = window.BSV_ASSET_V && window.BSV_ASSET_V[fileName];
+      var v = manifestV || version;
+      s.src = sitePath(fileName) + (v ? "?v=" + v : "");
       s.async = false;
       s.onload = function () { resolve(); };
       s.onerror = function () { reject(new Error("failed_load_" + fileName)); };
