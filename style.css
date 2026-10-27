@@ -16592,3 +16592,9 @@ html[data-bsv-bg="dark"] .lt-slot__dura {
 }
 .richest-players-section .richest-card { row-gap: 0; }
 .richest-players-section .richest-card .profile-link { white-space: nowrap; }
+/* Bigger, bolder open state */
+.richest-card--open { box-shadow: 0 0 0 2px rgba(255,255,255,0.18), 0 18px 40px -16px rgba(0,0,0,0.65); }
+.richest-card__full { width: 340px; height: 340px; margin: 18px 0 10px; border-radius: 20px; }
+@media (max-width: 900px) {
+  .richest-card__full { width: 260px; height: 260px; max-width: 78vw; max-height: 78vw; }
+}
