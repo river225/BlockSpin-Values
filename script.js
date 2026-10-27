@@ -283,6 +283,8 @@ function bsvPathForRoute(route) {
   if (route.guide && BSV_GUIDE_TABS[route.guide]) return root + BSV_GUIDE_TABS[route.guide].path;
   var cfg = typeof getSectionConfig === "function" ? getSectionConfig(route.section) : null;
   if (cfg && typeof cfg.path === "string") return root + cfg.path;
+  // Sections without their own page keep the old #sec= style address.
+  if (cfg && !cfg.pageHref) return root + "#sec=" + encodeURIComponent(route.section);
   return null;
 }
 
@@ -371,6 +373,101 @@ function bsvSyncRouteUrl(route, mode) {
   } catch (_) {}
 }
 
+/** "$18,750" / "$15k to $19k" / "1.2m" → number (first figure), or NaN. */
+function bsvParseMoney(raw) {
+  var m = /(-?[\d.,]+)\s*([kmb])?/i.exec(String(raw || "").replace(/\s+/g, " "));
+  if (!m) return NaN;
+  var n = parseFloat(m[1].replace(/,/g, ""));
+  if (!isFinite(n)) return NaN;
+  var mult = { k: 1e3, m: 1e6, b: 1e9 }[String(m[2] || "").toLowerCase()] || 1;
+  return n * mult;
+}
+
+function bsvFindSheetItem(sectionTitle, name) {
+  var hit = (_renderedSectionCache || []).find(function (r) { return r.section === sectionTitle; });
+  var items = (hit && hit.items) || [];
+  return {
+    item: items.find(function (it) { return String(it["Name"] || "").trim() === name; }) || null,
+    items: items
+  };
+}
+
+/** Plain-English summary + similar-value items, under the spotlight card. */
+function bsvBuildItemDetailsEl(route) {
+  var found = bsvFindSheetItem(route.section, route.item);
+  var item = found.item;
+  if (!item) return null;
+  var name = route.item;
+  var section = i18nSection(route.section);
+  var avg = String(item["Average Value"] || "").trim();
+  var ranged = String(item["Ranged Value"] || "").trim();
+  var demand = String(item["Demand"] || "").trim();
+
+  var box = document.createElement("div");
+  box.className = "bsv-item-details";
+  var h2 = document.createElement("h2");
+  h2.className = "bsv-item-details__title";
+  h2.textContent = "How much is " + name + " worth in BlockSpin?";
+  box.appendChild(h2);
+
+  var sentences = [];
+  if (avg) {
+    sentences.push(name + " is a " + section + " item in BlockSpin with an average value of " + avg + ".");
+  } else {
+    sentences.push(name + " is listed in the BlockSpin " + section + " values.");
+  }
+  if (ranged) sentences.push("Most trades for it land in the range of " + ranged + ".");
+  if (demand) sentences.push("Its current demand rating is " + demand + ", which shows how easy it is to trade.");
+  sentences.push("Values come from the BlockSpin Values team and update as the market moves.");
+  var p = document.createElement("p");
+  p.className = "bsv-item-details__text";
+  p.textContent = sentences.join(" ");
+  box.appendChild(p);
+
+  // Similar value: same rarity, closest average values.
+  var mine = bsvParseMoney(avg);
+  var others = found.items
+    .filter(function (it) {
+      var n = String(it["Name"] || "").trim();
+      return n && n !== name && bsvItemSlug(route.section, n);
+    })
+    .map(function (it) {
+      var v = bsvParseMoney(it["Average Value"]);
+      return { name: String(it["Name"]).trim(), avg: String(it["Average Value"] || "").trim(), d: isFinite(mine) && isFinite(v) ? Math.abs(v - mine) : Infinity };
+    })
+    .sort(function (a, b) { return a.d - b.d; })
+    .slice(0, 6);
+  if (others.length) {
+    var h3 = document.createElement("h3");
+    h3.className = "bsv-item-details__subtitle";
+    h3.textContent = isFinite(mine) ? "Items worth about the same" : "More " + section + " items";
+    box.appendChild(h3);
+    var ul = document.createElement("ul");
+    ul.className = "bsv-item-details__similar";
+    others.forEach(function (o) {
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = bsvPathForRoute({ section: route.section, item: o.name }) || "#";
+      a.setAttribute("data-bsv-route-section", route.section);
+      a.setAttribute("data-bsv-route-item", o.name);
+      var nm = document.createElement("span");
+      nm.className = "bsv-item-details__similar-name";
+      nm.textContent = o.name;
+      a.appendChild(nm);
+      if (o.avg) {
+        var val = document.createElement("span");
+        val.className = "bsv-item-details__similar-value";
+        val.textContent = o.avg;
+        a.appendChild(val);
+      }
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  }
+  return box;
+}
+
 /** Item page: show a spotlight copy of the item's card above its section. */
 function bsvApplyItemSpotlight(route) {
   document.querySelectorAll(".bsv-item-spotlight").forEach(function (el) { el.remove(); });
@@ -406,6 +503,8 @@ function bsvApplyItemSpotlight(route) {
   wrap.appendChild(h1);
   wrap.appendChild(sub);
   wrap.appendChild(cardHost);
+  var details = bsvBuildItemDetailsEl(route);
+  if (details) wrap.appendChild(details);
   wrap.appendChild(back);
   var heading = sectionEl.querySelector("h2");
   if (heading && heading.parentNode === sectionEl) heading.insertAdjacentElement("afterend", wrap);
@@ -562,18 +661,31 @@ function mountHomeGiveawayCarousel() {
 }
 
 function getDiscordPromoSectionCopy(sectionTitle) {
+  // Reasons to join, matched to what someone browsing that list is about to do.
   var map = {
-    "Common / Uncommon": { tags: "Trading · Middleman · Giveaways" },
-    "Rare": { tags: "Middleman · Trading · Giveaways" },
-    "Epic": { tags: "Giveaways · Trading · Middleman" },
-    "Legendary": { tags: "Giveaways · Middleman · Trading" },
-    "Omega": { tags: "Trading · Giveaways · Middleman" },
-    "Gamepass / Misc": { tags: "Middleman · Trading · Giveaways" },
-    "Misc": { tags: "Middleman · Trading · Giveaways" },
-    "Vehicles": { tags: "Giveaways · Trading · Middleman" },
-    "Untradeable Items": { tags: "Trading · Community · Giveaways" }
+    "Common / Uncommon": { tags: "Find trades fast · Free giveaways" },
+    "Rare": { tags: "Fair offers fast · Trusted middlemen" },
+    "Epic": { tags: "Value checks from traders · Weekly giveaways" },
+    "Legendary": { tags: "Safe middlemen for big trades" },
+    "Omega": { tags: "Top-tier trades · Trusted middlemen" },
+    "Gamepass / Misc": { tags: "Gamepass deals · Free giveaways" },
+    "Misc": { tags: "Gamepass deals · Free giveaways" },
+    "Vehicles": { tags: "Vehicle trades · Giveaways" },
+    "Untradeable Items": { tags: "Show off your collection · Community" }
   };
-  return map[sectionTitle] || { tags: "Trading · Middleman · Giveaways" };
+  return map[sectionTitle] || { tags: "Trusted middlemen · Free giveaways" };
+}
+
+/** Discord invite tagged with the section, so Analytics shows which card brings joins. */
+function bsvSectionDiscordInviteUrl(sectionTitle) {
+  try {
+    var u = new URL(BSV_DISCORD_INVITE_URL);
+    var id = (typeof getSectionConfig === "function" && getSectionConfig(sectionTitle) || {}).id || "section";
+    u.searchParams.set("utm_content", "card-" + id);
+    return u.toString();
+  } catch (_) {
+    return BSV_DISCORD_INVITE_URL;
+  }
 }
 
 function buildMiddlemanShieldIconHtml(size) {
@@ -654,7 +766,7 @@ function buildDiscordPromoCardSlotHtml(sectionTitle) {
         '<p class="home-discord-promo__card-stat"><span class="discord-member-count" data-home-stat="traders">0</span>+ traders</p>' +
         '<p class="home-discord-promo__card-tags">' + escapeHtml(copy.tags) + '</p>' +
         '<div class="home-discord-promo__card-actions">' +
-          '<a href="' + BSV_DISCORD_INVITE_URL + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__card-btn home-discord-promo__card-btn--join">' + escapeHtml(i18n("discord.card.joinNow")) + '</a>' +
+          '<a href="' + escapeAttr(bsvSectionDiscordInviteUrl(sectionTitle)) + '" target="_blank" rel="noopener noreferrer" class="home-discord-promo__card-btn home-discord-promo__card-btn--join">' + escapeHtml(i18n("discord.card.joinNow")) + '</a>' +
           '<a href="' + bsvSiteRoot() + 'blockspin-discord-server.html" class="home-discord-promo__card-btn home-discord-promo__card-btn--more">' + escapeHtml(i18n("discord.card.whatWeOffer")) + '</a>' +
         '</div>' +
       '</div>' +
@@ -3983,6 +4095,13 @@ function renderSection(title, items) {
     _sectionsDomReady[title] = true;
     return;
   }
+  // Sections drawn by an extra script (e.g. test-site-only experiments).
+  var customRenderer = window.BSV_CUSTOM_SECTION_RENDERERS && window.BSV_CUSTOM_SECTION_RENDERERS[title];
+  if (typeof customRenderer === "function") {
+    customRenderer({ results: _renderedSectionCache, container: document.getElementById("sections") });
+    _sectionsDomReady[title] = true;
+    return;
+  }
   if (!items || items.length === 0) {
     _sectionsDomReady[title] = true;
     return;
@@ -4040,6 +4159,7 @@ function renderSection(title, items) {
     window.bsvRefreshSavedCardButtons();
   }
 }
+
 
 function ensureSectionRendered(title) {
   if (!title || _sectionsDomReady[title]) return;

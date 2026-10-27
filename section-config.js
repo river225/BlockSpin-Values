@@ -362,6 +362,13 @@
   global.getSectionTitles = getSectionTitles;
   global.getSectionConfig = getSectionConfig;
   global.getSectionConfigById = getSectionConfigById;
+  /** Add a section at runtime (used by test-site-only add-ons). Call before script.js runs. */
+  global.registerSection = function (cfg) {
+    if (!cfg || !cfg.title || registryByTitle[cfg.title]) return;
+    BSV_SECTION_REGISTRY.push(cfg);
+    registryByTitle[cfg.title] = cfg;
+    if (cfg.id) registryById[cfg.id] = cfg;
+  };
   global.applyVisibilityMode = applyVisibilityMode;
   global.getSectionNavIconHtml = getSectionNavIconHtml;
   global.appendSectionNavIcon = appendSectionNavIcon;
