@@ -1778,7 +1778,6 @@ function buildRichestPlayerCard(player, index) {
     "</div>" +
     '<div class="player-avatar-wrap">' +
     '<img class="player-avatar" alt="" width="56" height="56" decoding="async" />' +
-    '<button type="button" class="player-avatar-expand" hidden aria-expanded="false" aria-label="Show full avatar" title="Show full avatar">Full</button>' +
     "</div>" +
     '<div class="player-info">' +
     '<div class="player-name">' +
@@ -1790,7 +1789,15 @@ function buildRichestPlayerCard(player, index) {
     '<a href="' +
     escapeAttr(p.profileUrl) +
     '" target="_blank" rel="noopener" class="profile-link">' + escapeHtml(i18n("richest.viewProfile")) + '</a>' +
-    "</div></div>"
+    "</div>" +
+    // Arrow that opens a dropdown with the player's full-body avatar (shown once it has loaded).
+    '<button type="button" class="player-avatar-expand richest-card__toggle" hidden aria-expanded="false" aria-label="Show full avatar" title="Show full avatar">' +
+    '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
+    "</button>" +
+    '<div class="richest-card__drop" aria-hidden="true"><div class="richest-card__drop-inner">' +
+    '<img class="richest-card__full" alt="" width="240" height="240" decoding="async" />' +
+    "</div></div>" +
+    "</div>"
   );
 }
 
@@ -1977,22 +1984,22 @@ function initRichestAvatarExpand(section) {
     if (!btn || !root.contains(btn)) return;
     const card = btn.closest(".richest-card");
     const img = card && card.querySelector(".player-avatar");
-    if (!card || !img) return;
-
+    const full = card && card.querySelector(".richest-card__full");
+    const drop = card && card.querySelector(".richest-card__drop");
+    if (!card || !img || !full || !drop) return;
     const fullUrl = img.dataset.fullUrl || "";
-    const headUrl = img.dataset.headshotUrl || img.src || "";
     if (!fullUrl) return;
 
-    const expanding = !card.classList.contains("richest-card--avatar-full");
-    card.classList.toggle("richest-card--avatar-full", expanding);
-    img.src = expanding ? fullUrl : headUrl;
-    btn.setAttribute("aria-expanded", expanding ? "true" : "false");
-    btn.setAttribute(
-      "aria-label",
-      expanding ? "Show headshot avatar" : "Show full avatar"
-    );
-    btn.title = expanding ? "Collapse avatar" : "Show full avatar";
-    btn.textContent = expanding ? "Hide" : "Full";
+    const opening = !card.classList.contains("richest-card--open");
+    if (opening && !full.getAttribute("src")) {
+      full.src = fullUrl;
+      full.alt = (card.dataset.playerName || "") + " full avatar";
+    }
+    card.classList.toggle("richest-card--open", opening);
+    drop.setAttribute("aria-hidden", opening ? "false" : "true");
+    btn.setAttribute("aria-expanded", opening ? "true" : "false");
+    btn.setAttribute("aria-label", opening ? "Hide full avatar" : "Show full avatar");
+    btn.title = opening ? "Hide full avatar" : "Show full avatar";
   });
 }
 

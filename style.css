@@ -16546,3 +16546,49 @@ html[data-bsv-bg="dark"] .lt-slot__dura {
 .bsv-item-details__similar a:hover { border-color: var(--bsv-accent); }
 .bsv-item-details__similar-value { color: #4ade80; white-space: nowrap; }
 
+
+/* ===== Richest players: full-avatar dropdown ===== */
+.richest-players-section .richest-card { flex-wrap: wrap; }
+.richest-card__toggle.player-avatar-expand {
+  margin-left: auto;
+  align-self: center;
+  width: 40px; height: 40px; padding: 0;
+  display: inline-grid; place-items: center;
+  border: 2px solid #000; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45); color: #fff;
+  box-shadow: 0 2px 0 #000; cursor: pointer;
+  transition: background 0.15s ease;
+}
+.richest-card__toggle.player-avatar-expand[hidden] { display: none; }
+.richest-card__toggle.player-avatar-expand:hover { background: rgba(0, 0, 0, 0.7); }
+.richest-card__toggle svg { transition: transform 0.25s ease; }
+.richest-card--open .richest-card__toggle svg { transform: rotate(180deg); }
+.richest-card__drop {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.richest-card--open .richest-card__drop { grid-template-rows: 1fr; }
+.richest-card__drop-inner { overflow: hidden; display: flex; justify-content: center; }
+.richest-card__full {
+  width: 240px; height: 240px; max-width: 70vw; max-height: 70vw;
+  margin: 12px 0 4px;
+  object-fit: contain;
+  border-radius: 16px;
+  border: 2px solid #000;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04) 70%);
+}
+@media (max-width: 900px) {
+  .richest-players-section .richest-card { grid-template-columns: 40px 40px minmax(0, 1fr) 36px; }
+  .richest-players-section .richest-card .richest-card__toggle.player-avatar-expand {
+    grid-column: 4; grid-row: 1 / span 4; align-self: center; width: 34px; height: 34px; margin: 0;
+  }
+  .richest-players-section .richest-card .richest-card__drop { grid-column: 1 / -1; grid-row: 5; }
+  .richest-card__full { width: 200px; height: 200px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .richest-card__drop, .richest-card__toggle svg { transition: none; }
+}
+.richest-players-section .richest-card { row-gap: 0; }
+.richest-players-section .richest-card .profile-link { white-space: nowrap; }
