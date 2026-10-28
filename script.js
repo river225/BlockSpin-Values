@@ -2674,11 +2674,8 @@ function buildCardBottomActionsHtml(exclusiveTiers) {
   );
 }
 
-// Star symbols in item names (e.g. "✪ Sawnoff") are shown after the demand box instead.
-const CARD_STAR_RE = /[\u2605\u2606\u272a\u272b\u272c\u272d\u272e\u272f\u2730\u2729\u2b50]\ufe0f?/g;
 function createCard(item) {
   const name = safe(item["Name"]);
-  const cardStars = (name.match(CARD_STAR_RE) || []).join("");
   const img = safe(item["Image URL"]);
   const demand = safe(item["Demand"]);
   const avg = safe(item["Average Value"]);
@@ -2794,9 +2791,9 @@ if (pawnTextOverride) {
         ${durabilityHTML}
       </div>
       <div class="card-info">
-        <h3>${bsvItemNameHtml(item["Name"], cardStars ? name.replace(CARD_STAR_RE, "").replace(/\s{2,}/g, " ").trim() : name)}</h3>
-        ${cardStars
-          ? `<div class="card-demand-row">${demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : ""}<span class="card-stars" aria-label="Starred">${cardStars}</span></div>`
+        <h3>${bsvItemNameHtml(item["Name"], name)}</h3>
+        ${exclusiveTiers
+          ? `<div class="card-demand-row">${demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : ""}${buildCardExclusiveBadgeHtml(exclusiveTiers)}</div>`
           : (demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : "")}
         <div class="card-avg">${escapeHtml(i18n("card.avg"))}: <span class="avg-value">${avg}</span></div>
         <div class="card-ranged">${escapeHtml(i18n("card.ranged"))}: <span class="ranged-value">${ranged}</span></div>
@@ -2814,7 +2811,7 @@ if (pawnTextOverride) {
       ${hasGiveaway ? `
         <button class="card-giveaway-trigger" type="button" aria-label="${escapeAttr(i18n("card.giveawayAria"))}" data-item-name="${escapeAttr(name)}"></button>
       ` : ''}
-      ${buildCardBottomActionsHtml(exclusiveTiers)}
+      ${buildCardBottomActionsHtml(null)}
     </div>
   `;
 }
