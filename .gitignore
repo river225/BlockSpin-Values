@@ -1,3 +1,4 @@
 .DS_Store
 .cursor/
 *.production-backup
+node_modules/

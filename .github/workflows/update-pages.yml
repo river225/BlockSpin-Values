@@ -22,6 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Install the minifier (makes style.min.css / script.min.js)
+        run: npm install --no-save --no-package-lock esbuild@0.24.0
       - name: Regenerate pages from the Sheet
         run: node tools/release.mjs --fetch-items
       - name: Commit if anything changed

@@ -247,8 +247,37 @@ function fileHash(abs) {
   }
   return hashCache.get(abs);
 }
+/* ---------- minified copies of the big files ---------- */
+const MINIFY = { "style.css": "style.min.css", "script.js": "script.min.js" };
+let minReady = false;
+async function buildMinified() {
+  let esbuild = null;
+  try { esbuild = await import("esbuild"); } catch (_) {}
+  if (!esbuild) {
+    // No minifier here: serve the normal files (and drop stale .min copies so they can't be used).
+    for (const min of Object.values(MINIFY)) { const f = path.join(ROOT, min); if (fs.existsSync(f) && !CHECK) fs.unlinkSync(f); }
+    console.log("esbuild not installed: pages use the full-size style.css / script.js.");
+    return;
+  }
+  for (const [src, min] of Object.entries(MINIFY)) {
+    const code = read(src);
+    const loader = src.endsWith(".css") ? "css" : "js";
+    // Plain minify only (no bundling, no syntax changes beyond whitespace/renaming locals).
+    const r = await esbuild.transform(code, { loader, minify: true, legalComments: "none", target: loader === "js" ? "es2017" : undefined });
+    writeIfChanged(path.join(ROOT, min), r.code);
+  }
+  minReady = true;
+}
+function useMinified(html) {
+  if (!minReady) {
+    return html.replace(/(["'/])style\.min\.css\?v=/g, "$1style.css?v=").replace(/(["'/])script\.min\.js\?v=/g, "$1script.js?v=");
+  }
+  return html.replace(/((?:src|href)="(?:[^"]*\/)?)style\.css\?v=/g, "$1style.min.css?v=").replace(/((?:src|href)="(?:[^"]*\/)?)script\.js\?v=/g, "$1script.min.js?v=");
+}
+
 function stampVersions(htmlAbs, html, manifestLine) {
   const dir = path.dirname(htmlAbs);
+  html = useMinified(html);
   let out = html.replace(/((?:src|href)=")([^"?#]+)\?v=[^"]*"/g, (m, a, u) => {
     if (/^(https?:)?\/\//.test(u)) return m;
     let rel = u;
@@ -279,6 +308,10 @@ async function main() {
 
   const template = read("index.html");
   const pages = [...sectionPages(), ...itemPages(slugged)];
+
+  // Smaller copies of the two big files for visitors (style.min.css / script.min.js).
+  // You keep editing style.css / script.js; pages load the .min copies made here.
+  await buildMinified();
 
   // Versions first: assets do not depend on HTML, so hashes are final before any page is written.
   const assets = listFiles(ROOT, (p) => /\.(js|css)$/.test(p) && path.dirname(p) === ROOT);
