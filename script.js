@@ -510,12 +510,10 @@ function bsvApplyItemSpotlight(route) {
   back.className = "bsv-item-spotlight__all";
   back.href = bsvPathForRoute({ section: route.section }) || "#";
   back.setAttribute("data-bsv-route-section", route.section);
-  back.textContent = "See all " + i18nSection(route.section) + " values";
+  back.textContent = bsvSeeAllLabel(route.section);
   wrap.appendChild(h1);
   wrap.appendChild(sub);
   wrap.appendChild(cardHost);
-  var details = bsvBuildItemDetailsEl(route);
-  if (details) wrap.appendChild(details);
   wrap.appendChild(back);
   var heading = sectionEl.querySelector("h2");
   if (heading && heading.parentNode === sectionEl) heading.insertAdjacentElement("afterend", wrap);
@@ -527,6 +525,21 @@ function bsvApplyItemSpotlight(route) {
     var se = document.scrollingElement || document.documentElement;
     if (se) se.scrollTop = 0;
   });
+}
+
+/** "See all Epic gun values", "See all vehicle values", … for the item page's back link. */
+function bsvSeeAllLabel(section) {
+  var labels = {
+    "Common / Uncommon": "See all Common & Uncommon gun values",
+    "Rare": "See all Rare gun values",
+    "Epic": "See all Epic gun values",
+    "Legendary": "See all Legendary gun values",
+    "Omega": "See all Omega gun values",
+    "Gamepass / Misc": "See all Gamepass & Misc values",
+    "Vehicles": "See all vehicle values",
+    "Untradeable Items": "See all untradeable items"
+  };
+  return labels[section] || "See all " + i18nSection(section) + " values";
 }
 
 /** Navigate inside the site without a reload. */
