@@ -2985,7 +2985,9 @@ function createAccessoryCard(item) {
       </div>
       <div class="card-info">
         <h3>${bsvItemNameHtml(item["Name"], escapeHtml(name))}</h3>
-        ${rarity ? `<span class="badge accessory-rarity-badge ${rarityClass}">${escapeHtml(rarity)}</span>` : ""}
+        ${exclusiveTiers
+          ? `<div class="card-demand-row">${rarity ? `<span class="badge accessory-rarity-badge ${rarityClass}">${escapeHtml(rarity)}</span>` : ""}${buildCardExclusiveBadgeHtml(exclusiveTiers)}</div>`
+          : (rarity ? `<span class="badge accessory-rarity-badge ${rarityClass}">${escapeHtml(rarity)}</span>` : "")}
         <div class="card-value-separator"></div>
         <div class="card-secondary-values">
           <div class="card-networth">${escapeHtml(i18n("card.networth"))}: <span class="networth-value">${escapeHtml(networthDisplay)}</span></div>
@@ -2993,7 +2995,7 @@ function createAccessoryCard(item) {
           <div class="card-ranged">${escapeHtml(i18n("card.crate"))}: <span>${escapeHtml(crate || i18n("card.na"))}</span></div>
         </div>
       </div>
-      ${buildCardBottomActionsHtml(exclusiveTiers)}
+      ${buildCardBottomActionsHtml(null)}
     </div>
   `;
 }
