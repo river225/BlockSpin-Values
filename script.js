@@ -5388,6 +5388,9 @@ function showSectionDeferred(name, cfg, isHome) {
     applyVisibilityMode(taxCalc, cfg.taxCalc, cfg.id === "home" ? "none" : "block");
     applyVisibilityMode(middlemanPromo, cfg.middlemanPromo, "block");
   }
+  // Inventory Calculator button: only under a real (visible) tax calculator, not on its own page.
+  var invBtn = taxSidebarColumn ? taxSidebarColumn.querySelector(".inv-calc-btn") : null;
+  if (invBtn) invBtn.style.display = cfg.taxCalc === "show" && cfg.id !== "inventory" ? "" : "none";
 
   if (cfg.accessoriesFastNav) {
     removeEmbeddedMoneyGuideFastNav();
