@@ -110,13 +110,6 @@
         '<p class="inv-intro">Add every gun and item you own in BlockSpin to get the total value of your ' +
           '<strong class="inv-em">tradeable inventory</strong>. Set each item\'s durability, as damaged items are worth less. ' +
           '<button type="button" class="inv-nw-link" data-inv-act="networth" aria-expanded="false">See your BlockSpin networth</button></p>' +
-        '<div class="inv-summary">' +
-          '<div class="inv-sum"><span class="inv-sum__label">Tradeable inventory</span><b class="inv-sum__value" data-inv="value">$0</b><span class="inv-sum__meta" data-inv="meta">No items yet</span></div>' +
-          '<div class="inv-sum inv-sum--nw" data-inv="nw" hidden>' +
-            '<span class="inv-sum__label">BlockSpin networth</span><b class="inv-sum__value" data-inv="networth">$0</b>' +
-            '<label class="inv-sum__cash">+ cash <input type="text" inputmode="numeric" class="inv-input" data-inv="cash" placeholder="0" autocomplete="off" aria-label="Cash and bank"></label>' +
-          '</div>' +
-        '</div>' +
         '<div class="inv-layout">' +
           '<div class="inv-picker">' +
             '<div class="inv-tabs" role="tablist" data-inv="tabs"></div>' +
@@ -125,6 +118,11 @@
           '</div>' +
           '<aside class="inv-mine">' +
             '<div class="inv-mine__head"><h3>Your inventory</h3><button type="button" class="inv-clear" data-inv-act="clear" hidden>Clear</button></div>' +
+            '<div class="inv-totals">' +
+              '<div class="inv-total"><span>Tradeable value</span><b data-inv="value">$0</b><small data-inv="meta">No items yet</small></div>' +
+              '<div class="inv-total inv-total--nw" data-inv="nw" hidden><span>BlockSpin networth</span><b data-inv="networth">$0</b>' +
+                '<label class="inv-total__cash">+ cash <input type="text" inputmode="numeric" class="inv-input" data-inv="cash" placeholder="0" autocomplete="off" aria-label="Cash and bank"></label></div>' +
+            '</div>' +
             '<ul class="inv-mine__list" data-inv="list"></ul>' +
           '</aside>' +
         '</div>' +
@@ -162,7 +160,7 @@
         '<span class="inv-tile__pic">' + imgHtml(it, "inv-tile__img") + (owned[it.key] ? '<span class="inv-tile__owned">×' + owned[it.key] + "</span>" : "") + "</span>" +
         '<span class="inv-tile__name">' + esc(it.name) + "</span>" +
         '<span class="inv-tile__val' + (it.tradeable ? "" : " is-nw") + '">' + val + "</span>" +
-        '<span class="inv-tile__plus" aria-hidden="true">+</span>' +
+        '<span class="inv-tile__plus" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>' +
       "</button>";
     }).join("");
   }
@@ -216,14 +214,80 @@
   }
   function paintAll() { paintNw(); paintGrid(); paintList(); }
 
-  function addItem(key, newCopy) {
+  /* ---------- add pop-up: durability + how many ---------- */
+  var pop = null, popState = null;
+  function popValue() {
+    var it = byKey[popState.key];
+    return (it.tradeable ? it.avg * durMult(it, popState.dur) : it.nw) * popState.qty;
+  }
+  function paintPop() {
+    var it = byKey[popState.key];
+    pop.querySelector("[data-pop=total]").textContent = money(popValue());
+    pop.querySelector("[data-pop=qty]").value = popState.qty;
+    if (it.maxDur) {
+      pop.querySelector("[data-pop=dur]").value = popState.dur;
+      pop.querySelector("[data-pop=durn]").value = popState.dur;
+      pop.querySelector("[data-pop=dur]").style.setProperty("--p", (popState.dur / it.maxDur) * 100 + "%");
+    }
+  }
+  function closePop() {
+    if (!pop) return;
+    pop.remove(); pop = null; popState = null;
+    document.removeEventListener("keydown", popKey);
+  }
+  function popKey(e) { if (e.key === "Escape") closePop(); }
+  function openPop(key) {
     var it = byKey[key];
     if (!it) return;
-    var full = null;
-    if (!newCopy) state.entries.forEach(function (e) { if (e.key === key && (e.dur == null || e.dur === it.maxDur)) full = e; });
-    if (full) full.qty = Math.min(999, full.qty + 1);
-    else state.entries.push({ id: nextId++, key: key, qty: 1, dur: it.maxDur ? it.maxDur : null });
-    save(); paintGrid(); paintList();
+    closePop();
+    popState = { key: key, qty: 1, dur: it.maxDur || null };
+    pop = document.createElement("div");
+    pop.className = "inv-pop";
+    pop.innerHTML =
+      '<div class="inv-pop__box" role="dialog" aria-modal="true" aria-labelledby="inv-pop-title">' +
+        '<button type="button" class="inv-pop__x" data-pop-act="close" aria-label="Close">×</button>' +
+        '<div class="inv-pop__top">' +
+          '<span class="inv-pop__pic">' + imgHtml(it, "inv-pop__img") + "</span>" +
+          '<div><p class="inv-pop__sec">' + esc(label(it.section)) + '</p><h3 id="inv-pop-title">' + esc(it.name) + "</h3>" +
+          '<p class="inv-pop__each">' + (it.tradeable ? "Average value " + (it.avg ? money(it.avg) : esc(it.avgText || "N/A")) : "Networth " + money(it.nw)) + "</p></div>" +
+        "</div>" +
+        (it.maxDur
+          ? '<div class="inv-pop__field"><div class="inv-pop__label">Durability <span><input type="number" min="0" max="' + it.maxDur + '" data-pop="durn" aria-label="Durability"> / ' + it.maxDur + "</span></div>" +
+            '<input type="range" min="0" max="' + it.maxDur + '" data-pop="dur" class="inv-pop__range" aria-label="Durability slider"></div>'
+          : "") +
+        '<div class="inv-pop__field"><div class="inv-pop__label">How many</div>' +
+          '<div class="inv-pop__qty"><button type="button" data-pop-act="dec" aria-label="One less">−</button>' +
+          '<input type="number" min="1" max="999" data-pop="qty" aria-label="How many">' +
+          '<button type="button" data-pop-act="inc" aria-label="One more">+</button></div></div>' +
+        '<div class="inv-pop__foot"><div><span>Adds</span><b data-pop="total">$0</b></div>' +
+          '<button type="button" class="inv-pop__add" data-pop-act="add">Add to inventory</button></div>' +
+      "</div>";
+    document.body.appendChild(pop);
+    paintPop();
+    pop.addEventListener("click", function (e) {
+      if (e.target === pop) return closePop();
+      var b = e.target.closest("[data-pop-act]");
+      if (!b) return;
+      var act = b.getAttribute("data-pop-act");
+      if (act === "close") closePop();
+      else if (act === "inc") { popState.qty = Math.min(999, popState.qty + 1); paintPop(); }
+      else if (act === "dec") { popState.qty = Math.max(1, popState.qty - 1); paintPop(); }
+      else if (act === "add") {
+        var same = null;
+        state.entries.forEach(function (x) { if (x.key === popState.key && (x.dur == null ? null : x.dur) === popState.dur) same = x; });
+        if (same) same.qty = Math.min(999, same.qty + popState.qty);
+        else state.entries.push({ id: nextId++, key: popState.key, qty: popState.qty, dur: popState.dur });
+        save(); closePop(); paintGrid(); paintList();
+      }
+    });
+    pop.addEventListener("input", function (e) {
+      var w = e.target.getAttribute("data-pop"), mx = it.maxDur;
+      if (w === "dur" || w === "durn") { popState.dur = Math.max(0, Math.min(mx, parseInt(e.target.value, 10) || 0)); paintPop(); }
+      else if (w === "qty") { popState.qty = Math.max(1, Math.min(999, parseInt(e.target.value, 10) || 1)); pop.querySelector("[data-pop=total]").textContent = money(popValue()); }
+    });
+    document.addEventListener("keydown", popKey);
+    var first = pop.querySelector(it.maxDur ? "[data-pop=dur]" : "[data-pop-act=add]");
+    if (first) first.focus();
   }
 
   function wire() {
@@ -231,8 +295,8 @@
       var t = ev.target.closest("button");
       if (!t || !root.contains(t)) return;
       var v, e;
-      if ((v = t.getAttribute("data-inv-add"))) addItem(v, false);
-      else if ((v = t.getAttribute("data-inv-again")) && (e = find(v))) addItem(e.key, true);
+      if ((v = t.getAttribute("data-inv-add"))) openPop(v);
+      else if ((v = t.getAttribute("data-inv-again")) && (e = find(v))) openPop(e.key);
       else if ((v = t.getAttribute("data-inv-inc")) && (e = find(v))) { e.qty = Math.min(999, e.qty + 1); save(); paintGrid(); paintList(); }
       else if ((v = t.getAttribute("data-inv-dec")) && (e = find(v))) {
         e.qty -= 1;

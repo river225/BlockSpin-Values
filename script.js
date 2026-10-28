@@ -872,6 +872,7 @@ function buildDiscordPromoBannerHtml(inCards) {
   );
 }
 
+var _bsvUgcPlaced = Object.create(null);
 function buildCardsHtmlWithDiscordPromo(items, cardBuilder, sectionTitle, minItemsForPromo) {
   if (!items || !items.length) return "";
   if (typeof sectionTitle === "number") {
@@ -884,14 +885,20 @@ function buildCardsHtmlWithDiscordPromo(items, cardBuilder, sectionTitle, minIte
     return items.map(buildCard).join("");
   }
   var insertAt = Math.floor(items.length / 2);
-  // UGC promo card further down longer lists, so it never sits next to the Discord card.
-  var ugcAt = items.length >= 8 && window.BSV_UGC_PROMO ? Math.floor(items.length * 0.8) : -1;
+  // UGC promo card: once per section — further down long lists (never next to the Discord card),
+  // at the end of short ones.
+  var ugcAt = -1;
+  if (window.BSV_UGC_PROMO && !_bsvUgcPlaced[sectionTitle || ""]) {
+    ugcAt = items.length >= 8 ? Math.floor(items.length * 0.8) : items.length;
+    _bsvUgcPlaced[sectionTitle || ""] = true;
+  }
   var parts = [];
   for (var i = 0; i < items.length; i++) {
     if (i === insertAt) parts.push(buildDiscordPromoCardSlotHtml(sectionTitle));
     if (i === ugcAt) parts.push(buildUgcPromoCardHtml());
     parts.push(buildCard(items[i]));
   }
+  if (ugcAt === items.length) parts.push(buildUgcPromoCardHtml());
   return parts.join("");
 }
 
@@ -4132,6 +4139,7 @@ window.bsvActivateMoneyGuideTab = activateMoneyGuideTab;
 
 function renderSection(title, items) {
   _bsvRenderingSection = title;
+  if (typeof _bsvUgcPlaced !== "undefined") _bsvUgcPlaced[title] = false;
   if (title === "BlockSpin Map") {
     renderBlockSpinMapSection();
     _sectionsDomReady[title] = true;
