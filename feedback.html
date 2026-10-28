@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow" />
+<script>
+/* Asset build id (no auto-reload). Bump via tools/bump-build.py */
+window.BSV_BUILD = "b9f078d2e1";
+window.BSV_ASSET_V = {"auth-oauth-bounce.js":"2a676b1e2b","auth.js":"f84b58ab8d","bsv-config.js":"55d117ff98","feedback-admin.js":"ef841246d2","inventory-calc.js":"9e415455ee","item-actions.css":"2637db9b15","item-actions.js":"0bd87f673a","item-focus.css":"f35958715d","join-discord.css":"8da582713d","live-trading.js":"e0312ae52e","lt-share.css":"6eb96fcd93","lt-share.js":"3a2b56fbbb","quest-guide-i18n.js":"14042cc269","saved-cards.js":"55cdf34fc8","script.js":"aa9e29f0a0","script.min.js":"254553a350","section-config.js":"d97bfb8b71","site-chrome.js":"5956186e83","site-i18n.js":"7beb7cefcd","site-settings.js":"70546910d3","style.css":"ff233648a2","style.min.css":"d3acf5e3d9","sw.js":"1cae7dfdd2"};
+</script>
+
+
+    <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="only light" />
+<meta name="supported-color-schemes" content="light" />
+<meta name="theme-color" content="#0f1724" />
+<style>html{color-scheme:only light;-webkit-color-scheme:light;--bsv-hue:217;--bsv-accent-hue:188;background-color:hsl(217,41%,10%)}</style>
+<link rel="icon" type="image/png" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png">
+    <title>Value Feedback | BlockSpin Values</title>
+<link rel="stylesheet" href="style.css" />
+<script>
+(function () {
+  try {
+    if (/\/sponsors(\/|$)/i.test(location.pathname || "")) return;
+    var style = localStorage.getItem("bsv-bg-style") || "standard";
+    var hue = parseInt(localStorage.getItem("bsv-bg-hue") || "210", 10);
+    var root = document.documentElement;
+    if (style === "colorized") {
+      if (isNaN(hue)) hue = 210;
+      hue = Math.max(0, Math.min(360, Math.round(hue)));
+      root.style.setProperty("--bsv-hue", String(hue));
+      root.style.setProperty("--bsv-accent-hue", String(hue));
+      root.style.backgroundColor = "hsl(" + hue + ", 41%, 10%)";
+      root.setAttribute("data-bsv-bg", "colorized");
+    } else if (style === "dark") {
+      root.style.setProperty("--bsv-hue", "220");
+      root.style.setProperty("--bsv-accent-hue", "188");
+      root.style.backgroundColor = "hsl(220, 20%, 4%)";
+      root.setAttribute("data-bsv-bg", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<style>
+.fb { max-width: 1100px; margin: 100px auto 60px; padding: 0 16px; color: #fff; min-height: calc(100vh - 470px); box-sizing: border-box; }
+.fb h1 { margin: 0 0 6px; font-size: 2rem; }
+.fb__sub { margin: 0 0 18px; color: var(--bsv-muted); }
+.fb__msg { padding: 18px; border-radius: 12px; border: 2px solid var(--bsv-accent); background: var(--bsv-surface-card); }
+.fb__bar { display: flex; gap: 8px; margin: 0 0 12px; flex-wrap: wrap; align-items: center; }
+.fb__bar label { display: inline-flex; gap: 6px; align-items: center; color: var(--bsv-muted); font-weight: 700; font-size: .85rem; }
+.fb__bar input { padding: 8px 10px; border-radius: 8px; border: 2px solid var(--bsv-surface-soft); background: var(--bsv-surface-panel); color: #fff; font: inherit; color-scheme: dark; }
+.fb__bar--search input { width: 100%; max-width: 420px; font-size: 1rem; }
+.fb-btn { padding: 7px 12px; border-radius: 8px; border: 2px solid #000; background: var(--bsv-surface-raised); color: #fff; font: inherit; font-weight: 800; font-size: .85rem; cursor: pointer; }
+.fb-btn.is-on, .fb-btn:hover { background: var(--bsv-accent); color: #001018; }
+.fb-muted { color: var(--bsv-muted); font-size: .85rem; }
+.fb-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0 0 12px; }
+.fb-stat { padding: 12px; border-radius: 12px; border: 2px solid #000; background: var(--bsv-surface-card); }
+.fb-stat span { display: block; font-size: .75rem; font-weight: 800; text-transform: uppercase; color: var(--bsv-muted); }
+.fb-stat b { font-size: 1.6rem; }
+.fb-stat--up b { color: #4ade80; } .fb-stat--down b { color: #f87171; }
+.fb-table { width: 100%; border-collapse: collapse; background: var(--bsv-surface-card); border-radius: 12px; overflow: hidden; }
+.fb-table th, .fb-table td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--bsv-surface-soft); }
+.fb-table th { background: var(--bsv-surface-raised); font-size: .8rem; text-transform: uppercase; color: var(--bsv-muted); }
+.fb-row { cursor: pointer; } .fb-row:hover { background: var(--bsv-surface-hover); }
+.fb-up { color: #4ade80; font-weight: 800; } .fb-down { color: #f87171; font-weight: 800; }
+.fb-item-title { margin: 12px 0 2px; font-size: 1.6rem; }
+.fb-hist { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 14px; }
+.fb-hist p { flex-basis: 100%; margin: 0; }
+.fb-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fb-cols h3 { margin: 0 0 8px; }
+.fb-vote { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: start; padding: 10px; margin-bottom: 8px; border-radius: 10px; border: 2px solid #000; background: var(--bsv-surface-card); }
+.fb-vote img, .fb-vote__av { width: 34px; height: 34px; border-radius: 50%; background: var(--bsv-surface-soft); }
+.fb-vote p { margin: 0; }
+.fb-vote__why { margin-top: 6px !important; padding: 8px; border-radius: 8px; background: var(--bsv-surface-panel); white-space: pre-wrap; }
+.fb-vote__why i { color: #facc15; font-style: normal; font-weight: 800; }
+@media (max-width: 760px) { .fb { margin-top: 80px; } .fb-cols { grid-template-columns: 1fr; } .fb-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+</head>
+<body data-bsv-page="feedback">
+<div id="bsv-site-header"></div>
+<main class="fb">
+  <h1>Value feedback</h1>
+  <p class="fb__sub">What the community thinks of item values (thumbs up / down on item cards).</p>
+  <div id="fb-root"><div class="fb__msg">Loading…</div></div>
+</main>
+<div id="bsv-site-footer"></div>
+<script src="site-chrome.js"></script>
+<script src="site-i18n.js"></script>
+<script src="auth.js"></script>
+<script src="site-settings.js"></script>
+<script src="feedback-admin.js"></script>
+</body>
+</html>
