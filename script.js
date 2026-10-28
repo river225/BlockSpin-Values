@@ -228,6 +228,17 @@ var BSV_ITEM_SECTION_IDS = ["uncommon", "rare", "epic", "legendary", "omega", "m
 var _bsvItemSlugIndex = null; // "Section|Name" -> slug
 var _bsvItemBySlug = null; // slug -> { section, name }
 var _bsvRouteState = { section: "Home", item: null, guide: null };
+var _bsvNavToken = 0;
+
+/** Run fn after the browser has painted the current frame; only the latest request runs. */
+function bsvAfterNextPaint(_key, fn) {
+  var token = ++_bsvNavToken;
+  requestAnimationFrame(function () {
+    setTimeout(function () {
+      if (token === _bsvNavToken) fn();
+    }, 0);
+  });
+}
 
 function bsvSiteRoot() {
   return (typeof window.BSV_SITE_ROOT === "string" && window.BSV_SITE_ROOT) || "/";
@@ -543,11 +554,12 @@ function bsvInitRouting() {
     var a = e.target && e.target.closest ? e.target.closest("a[data-bsv-route-section]") : null;
     if (!a || !document.getElementById("sections-nav")) return;
     e.preventDefault();
-    bsvNavigate({
+    var route = {
       section: a.getAttribute("data-bsv-route-section"),
       item: a.getAttribute("data-bsv-route-item") || null,
       guide: a.getAttribute("data-bsv-route-guide") || null
-    }, "push");
+    };
+    bsvAfterNextPaint(route.section, function () { bsvNavigate(route, "push"); });
   });
 }
 window.bsvNavigate = bsvNavigate;
@@ -4885,7 +4897,11 @@ function initSectionsNav() {
         window.location.href = href;
         return;
       }
-      showSection(name);
+      // Paint the response first (highlight + close menu), then build the section.
+      // Keeps taps feeling instant on slow phones (Core Web Vitals INP).
+      nav.querySelectorAll("button").forEach(function (b) { b.classList.toggle("active", b === btn); });
+      closeSectionsMenu();
+      bsvAfterNextPaint(name, function () { showSection(name); });
     });
     nav.appendChild(btn);
   });
@@ -6337,7 +6353,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         var sec = results[i++].section;
         if (sec === "Home" || _sectionsDomReady[sec]) continue;
         ensureSectionRendered(sec);
-        setTimeout(step, 0);
+        idle(step, { timeout: 4000 });
         return;
       }
       if (typeof window.bsvRefreshSavedCardButtons === "function") {
@@ -6347,10 +6363,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     step();
   }
-  ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (evt) {
-    window.addEventListener(evt, warmRemainingSections, { once: true, passive: true });
-  });
-  setTimeout(warmRemainingSections, 12000);
+  // Build the other sections only while the phone is idle (never right after a tap),
+  // one section per idle period, so taps never queue behind this work.
+  var idle = window.requestIdleCallback || function (cb) { return setTimeout(function () { cb({ timeRemaining: function () { return 8; } }); }, 200); };
+  setTimeout(function () { idle(warmRemainingSections, { timeout: 8000 }); }, 6000);
 });
 
 function refreshDynamicContentForLanguage() {

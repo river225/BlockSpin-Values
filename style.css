@@ -16639,3 +16639,35 @@ html[data-bsv-bg="dark"] .lt-slot__dura {
 .bsv-ugc-banner--inline { flex-basis: 100%; width: 100%; margin: 0 0 12px; border: 2px solid #000; border-radius: 12px; box-sizing: border-box; }
 @media (max-width: 480px) { .bsv-ugc-banner__text { display: none; } .bsv-ugc-banner__link { justify-content: center; } }
 .bsv-ugc-banner__img { width: auto; height: 36px; border-radius: 6px; object-fit: contain; background: transparent; }
+
+/* ===== Core Web Vitals ===== */
+/* CLS: hold space for the content that loads in, so the footer never jumps up then down. */
+.main-container > #sections { min-height: calc(100vh - 70px); }
+/* INP: don't lay out / paint cards that are off-screen until they scroll into view. */
+#sections .cards > .card,
+#sections .cards > .ugc-promo-card,
+.richest-container > .richest-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 260px;
+}
+.richest-container > .richest-card { contain-intrinsic-size: auto 96px; }
+/* CLS: the sidebar's buttons are added by script; hold its width so the page doesn't slide right. */
+@media (min-width: 901px) { .main-container > .sections-sidebar { min-width: 274px; } }
+@media (max-width: 900px) { #bsv-site-header { min-height: 54px !important; } }
+/* CLS: desktop header is fixed (space already reserved), so its placeholder must take no space. */
+@media (min-width: 901px) { #bsv-site-header { min-height: 0 !important; } }
+/* CLS: Home never shows the tax column; hide it from the first paint, not after script runs. */
+body.is-home .main-container > .tax-sidebar-column { display: none; }
+/* CLS: on desktop the UGC banner sits in the existing 36px gap under the fixed header, so it pushes nothing. */
+@media (min-width: 901px) {
+  .bsv-ugc-banner:not(.bsv-ugc-banner--inline) { position: fixed; top: 70px; left: 0; right: 0; height: 36px; padding: 0 44px 0 12px; z-index: 900; border-bottom-width: 1px; }
+  .bsv-ugc-banner:not(.bsv-ugc-banner--inline) .bsv-ugc-banner__img { height: 26px; }
+  .bsv-ugc-banner:not(.bsv-ugc-banner--inline) .bsv-ugc-banner__cta { padding: 3px 10px; }
+  .bsv-ugc-banner:not(.bsv-ugc-banner--inline) .bsv-ugc-banner__close { width: 26px; height: 26px; }
+}
+/* CLS: hold space for the home banner and the Discord/stats block that scripts insert, so the
+   Announcements box starts below the fold instead of being pushed down in view. */
+@media (min-width: 901px) {
+  body.is-home #home-anaconda-banner-slot:empty { min-height: 185px; }
+  body.is-home #home-discord-promo-slot { min-height: 100vh; }
+}

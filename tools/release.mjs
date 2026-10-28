@@ -180,6 +180,8 @@ function buildPage(template, page) {
     `document.documentElement.classList.add("bsv-hash-section");</script>\n` +
     `<style id="bsv-hash-section-style">#home{display:none!important}</style>`;
   h = setTag(h, /<head>/, `<head>\n${boot}`);
+  // Section pages start on their section, not Home (avoids a layout jump when script removes it).
+  h = h.replace('<body data-bsv-page="home" class="is-home">', '<body data-bsv-page="home">');
   // Page lives in a sub-folder: make every relative URL site-rooted.
   h = h.replace(/(\s(?:src|href)=")(?!https?:|\/\/|\/|#|data:|mailto:|javascript:|tel:)([^"]+)"/g, (m, a, u) => `${a}${BASE}${u}"`);
   return h;
