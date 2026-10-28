@@ -2731,13 +2731,13 @@ function createCard(item) {
                  oninput="enforceMaxDurability(this)"
                  onchange="updateCardValues(this)">
           <span class="durability-max">/${maxDurability}</span>
-          <input type="range" class="durability-range" min="0" max="${maxDurability}" value="${currentDurability}"
-                 aria-label="${escapeAttr(i18n("card.durability"))}" oninput="bsvDurabilityRange(this)">
           <div class="durability-arrows">
             <button onmousedown="adjustDurability(this, 1, event)" ontouchstart="adjustDurability(this, 1, event)">▲</button>
             <button onmousedown="adjustDurability(this, -1, event)" ontouchstart="adjustDurability(this, -1, event)">▼</button>
           </div>
         </div>
+          <input type="range" class="durability-range" min="0" max="${maxDurability}" value="${currentDurability}"
+                 aria-label="${escapeAttr(i18n("card.durability"))}" oninput="bsvDurabilityRange(this)">
       </div>
     `;
     
@@ -5922,8 +5922,8 @@ function stopDurabilityAdjust() {
 
 /** Desktop durability slider → same path as typing in the number box. */
 function bsvDurabilityRange(range) {
-  const row = range.closest(".durability-input-row");
-  const input = row && row.querySelector(".durability-input");
+  const box = range.closest(".durability-control");
+  const input = box && box.querySelector(".durability-input");
   if (!input) return;
   input.value = range.value;
   updateCardValues(input);
@@ -5932,7 +5932,8 @@ function bsvDurabilityRange(range) {
 function updateCardValues(input) {
   const card = input.closest('.card');
   const currentDurability = parseInt(input.value) || 0;
-  const rangeEl = input.parentElement && input.parentElement.querySelector(".durability-range");
+  const ctl = input.closest(".durability-control");
+  const rangeEl = ctl && ctl.querySelector(".durability-range");
   if (rangeEl && rangeEl !== document.activeElement) rangeEl.value = currentDurability;
   const maxDurability = parseInt(card.dataset.maxDurability);
   

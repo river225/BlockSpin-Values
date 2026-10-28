@@ -16836,9 +16836,8 @@ body.is-home .main-container > .tax-sidebar-column { display: none; }
 .durability-range { display: none; }
 @media (hover: hover) and (pointer: fine) {
   .durability-control .durability-arrows { display: none; }
-  .durability-control .durability-input-row { flex-wrap: wrap; }
   .durability-control .durability-range {
-    display: block; flex: 0 0 100%; width: 100%; max-width: 128px; height: 6px; margin: 10px 0 2px;
+    display: block; width: 100%; max-width: 128px; height: 6px; margin: 10px 0 2px;
     appearance: none; -webkit-appearance: none; border-radius: 999px; cursor: pointer;
     background: linear-gradient(90deg, #ef4444 0%, #facc15 50%, #22c55e 100%);
   }
