@@ -16827,8 +16827,8 @@ body.is-home .main-container > .tax-sidebar-column { display: none; }
 /* BSV watermark over item pictures in the Inventory Calculator */
 .inv-tile__pic, .inv-pop__pic, .inv-row__pic { position: relative; }
 .inv-tile__pic::after, .inv-pop__pic::after, .inv-row__pic::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
-  background: url("assets/bsv-logo.png") center / 46% auto no-repeat; opacity: .4;
+  content: ""; position: absolute; left: 5px; bottom: 4px; width: 20px; height: 14px; pointer-events: none; z-index: 1;
+  background: url("assets/bsv-logo.png") left bottom / contain no-repeat; opacity: .85;
 }
 .inv-tile__plus, .inv-tile__owned { z-index: 2; }
 
