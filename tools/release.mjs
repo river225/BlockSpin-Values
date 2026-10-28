@@ -208,14 +208,12 @@ function sectionPages() {
   return pages;
 }
 function itemDescription(it) {
-  const bits = [];
-  if (it.value) bits.push(`${it.name} is worth ${it.value} in BlockSpin`);
-  else bits.push(`${it.name} value in BlockSpin`);
-  const extra = [];
-  if (it.ranged) extra.push(`ranged ${it.ranged}`);
-  if (it.demand) extra.push(`demand: ${it.demand}`);
-  return (bits[0] + (extra.length ? ` (${extra.join(", ")})` : "") +
-    `. Live ${it.section} value, updated by BlockSpin Values.`).slice(0, 300);
+  const parts = [];
+  if (it.value) parts.push(`Average Value: ${it.value}`);
+  if (it.ranged) parts.push(`Ranged Value: ${it.ranged}`);
+  if (it.demand) parts.push(`Demand: ${it.demand}`);
+  const stats = parts.length ? parts.join(" · ") + ". " : "";
+  return (`${it.name} BlockSpin value. ${stats}Live ${it.section} values from BlockSpin Values.`).slice(0, 300);
 }
 function itemPages(items) {
   return items.map((it) => ({
