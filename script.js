@@ -2547,6 +2547,7 @@ function buildCardSaveButtonHtml() {
       '<svg class="card-save-btn__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
         '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>' +
       "</svg>" +
+      '<span class="card-save-btn__label">Save</span>' +
     "</button>"
   );
 }
@@ -2673,8 +2674,11 @@ function buildCardBottomActionsHtml(exclusiveTiers) {
   );
 }
 
+// Star symbols in item names (e.g. "✪ Sawnoff") are shown after the demand box instead.
+const CARD_STAR_RE = /[\u2605\u2606\u272a\u272b\u272c\u272d\u272e\u272f\u2730\u2729\u2b50]\ufe0f?/g;
 function createCard(item) {
   const name = safe(item["Name"]);
+  const cardStars = (name.match(CARD_STAR_RE) || []).join("");
   const img = safe(item["Image URL"]);
   const demand = safe(item["Demand"]);
   const avg = safe(item["Average Value"]);
@@ -2790,8 +2794,8 @@ if (pawnTextOverride) {
         ${durabilityHTML}
       </div>
       <div class="card-info">
-        <h3>${bsvItemNameHtml(item["Name"], name)}</h3>
-        ${demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : ""}
+        <h3>${bsvItemNameHtml(item["Name"], cardStars ? name.replace(CARD_STAR_RE, "").replace(/\s{2,}/g, " ").trim() : name)}</h3>
+        ${demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : ""}${cardStars ? `<span class="card-stars" aria-label="Starred">${cardStars}</span>` : ""}
         <div class="card-avg">${escapeHtml(i18n("card.avg"))}: <span class="avg-value">${avg}</span></div>
         <div class="card-ranged">${escapeHtml(i18n("card.ranged"))}: <span class="ranged-value">${ranged}</span></div>
         <div class="card-value-separator"></div>
