@@ -1,6 +1,22 @@
 (function (global) {
   "use strict";
 
+  // Header/title font (Paytone One) + chosen theme font on every page, not just the ones that
+  // link them in <head> (the Discord, FAQ, legal and guide pages were falling back to system fonts).
+  (function ensureSiteFonts() {
+    try {
+      var head = document.head;
+      if (!head) return;
+      var have = function (part) { return !!head.querySelector('link[href*="' + part + '"]'); };
+      var add = function (href) { var l = document.createElement("link"); l.rel = "stylesheet"; l.href = href; head.appendChild(l); };
+      if (!have("family=Paytone+One")) add("https://fonts.googleapis.com/css2?family=Paytone+One&display=swap");
+      var f = localStorage.getItem("bsv-font") || "default";
+      if (f && f !== "default" && f !== "paytone" && !have("family=Bebas+Neue")) {
+        add("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Nunito+Sans:ital,wght@0,600;0,700;1,600&family=Oswald:wght@500;600;700&family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap");
+      }
+    } catch (_) {}
+  })();
+
   var CONSENT_KEY = "bsv-cookie-consent";
   var GA_ID = "G-0T25993BCC";
   var DISCORD_INVITE_BASE = "https://discord.gg/QbapryYUUx";
@@ -1080,6 +1096,8 @@
     return loadScriptOnce("site-i18n.js", CHROME_ASSET_V)
       .then(function () { return loadScriptOnce("auth.js", CHROME_ASSET_V); })
       .then(function () { return loadScriptOnce("site-settings.js", CHROME_ASSET_V); })
+      // Saved-items bookmark button in the header on every page, same as the main page.
+      .then(function () { return loadScriptOnce("saved-cards.js", CHROME_ASSET_V); })
       .catch(function (err) {
         try { console.warn("BSV chrome deps:", err); } catch (_) {}
       });

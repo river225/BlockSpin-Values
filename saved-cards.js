@@ -567,6 +567,13 @@
     if (!card) return;
 
     closePanel();
+    // Pages without the value lists (Discord, FAQ, Live Trading…): open the section on the main page.
+    if (typeof window.showSection !== "function" && !document.getElementById("sections")) {
+      var target = String(card.section || "").trim();
+      var home = typeof window.bsvSitePath === "function" ? window.bsvSitePath("") : "/";
+      window.location.href = home + (target ? "#sec=" + encodeURIComponent(target) : "");
+      return;
+    }
     clearItemSearchFilter();
 
     var cardEl = findCardElementForSaved(card);

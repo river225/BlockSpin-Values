@@ -249,6 +249,24 @@
       accessoriesFastNav: false,
       crewFastNav: true,
       moneyGuideFastNav: false,
+    },
+    {
+      // Reached from the orange button under the tax calculator (not listed in the sidebar).
+      title: "Inventory Calculator",
+      id: "inventory",
+      path: "inventory/",
+      seoTitle: "BlockSpin Inventory Calculator | BlockSpin Values",
+      seoDescription: "Add the guns you own in BlockSpin and see the total value of your tradeable inventory and your networth.",
+      navGroup: "hidden",
+      dataSource: "none",
+      search: "hide",
+      mobileSearchInSection: false,
+      sidebarColumn: "show",
+      taxCalc: "show",
+      middlemanPromo: "hide",
+      mobileTaxArrow: true,
+      homeValueChanges: false,
+      accessoriesFastNav: false,
     }
   ];
 

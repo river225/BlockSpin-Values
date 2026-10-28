@@ -62,8 +62,8 @@
 </script>
 <script>
 /* Asset build id (no auto-reload). Bump via tools/bump-build.py */
-window.BSV_BUILD = "18d4898e3e";
-window.BSV_ASSET_V = {"auth-oauth-bounce.js":"2a676b1e2b","auth.js":"f84b58ab8d","bsv-config.js":"55d117ff98","join-discord.css":"8da582713d","live-trading.js":"b00bcc007d","quest-guide-i18n.js":"14042cc269","saved-cards.js":"00dc5dbc5e","script.js":"dd11f651f5","section-config.js":"49644d4f25","site-chrome.js":"4070f0ea5d","site-i18n.js":"7beb7cefcd","site-settings.js":"70546910d3","style.css":"370fef2a44","sw.js":"1cae7dfdd2"};
+window.BSV_BUILD = "f2c80aac0a";
+window.BSV_ASSET_V = {"auth-oauth-bounce.js":"2a676b1e2b","auth.js":"f84b58ab8d","bsv-config.js":"55d117ff98","inventory-calc.js":"fd152f37c4","join-discord.css":"8da582713d","live-trading.js":"e0312ae52e","quest-guide-i18n.js":"14042cc269","saved-cards.js":"55cdf34fc8","script.js":"1320224977","section-config.js":"d97bfb8b71","site-chrome.js":"5956186e83","site-i18n.js":"7beb7cefcd","site-settings.js":"70546910d3","style.css":"3a64b40416","sw.js":"1cae7dfdd2"};
 </script>
 <script>
 /* One-time hard client reset: cookies, storage, SW, caches */
@@ -201,8 +201,8 @@ window.BSV_ASSET_V = {"auth-oauth-bounce.js":"2a676b1e2b","auth.js":"f84b58ab8d"
 <meta property="og:title" content="Race X4500 Value in BlockSpin | BlockSpin Values">
 
 <!-- Google Analytics loads only after cookie consent (see site-chrome.js) -->
-<link rel="preload" href="/style.css?v=370fef2a44" as="style" />
-<link rel="stylesheet" href="/style.css?v=370fef2a44" />
+<link rel="preload" href="/style.css?v=3a64b40416" as="style" />
+<link rel="stylesheet" href="/style.css?v=3a64b40416" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
@@ -481,6 +481,10 @@ window.BSV_ASSET_V = {"auth-oauth-bounce.js":"2a676b1e2b","auth.js":"f84b58ab8d"
           </div>
         </div>
     </aside>
+    <a class="inv-calc-btn" href="/inventory/" data-bsv-route-section="Inventory Calculator">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>
+      <span>Inventory Calculator</span>
+    </a>
     
 <aside class="home-value-changes" id="home-value-changes">
         <h2 class="value-changes-heading" data-i18n="home.valueChanges">Value Changes</h2>
@@ -494,15 +498,16 @@ window.BSV_ASSET_V = {"auth-oauth-bounce.js":"2a676b1e2b","auth.js":"f84b58ab8d"
 
 <div id="bsv-sponsor-banner-slot" class="bsv-sponsor-banner-slot"></div>
 
-<script defer src="/site-chrome.js?v=4070f0ea5d"></script>
+<script defer src="/site-chrome.js?v=5956186e83"></script>
 <script defer src="/auth.js?v=f84b58ab8d"></script>
-<script defer src="/saved-cards.js?v=00dc5dbc5e"></script>
+<script defer src="/saved-cards.js?v=55cdf34fc8"></script>
 <script defer src="/site-i18n.js?v=7beb7cefcd"></script>
 <script defer src="/site-settings.js?v=70546910d3"></script>
-<script defer src="/section-config.js?v=49644d4f25"></script>
+<script defer src="/section-config.js?v=d97bfb8b71"></script>
 <script defer src="/quest-guide-i18n.js?v=14042cc269"></script>
 <script defer src="/bsv-config.js?v=55d117ff98"></script>
-<script defer src="/script.js?v=dd11f651f5"></script> 
+<script defer src="/inventory-calc.js?v=fd152f37c4"></script>
+<script defer src="/script.js?v=1320224977"></script> 
 
 
 
@@ -539,6 +544,10 @@ window.BSV_ASSET_V = {"auth-oauth-bounce.js":"2a676b1e2b","auth.js":"f84b58ab8d"
   </div>
   <input type="number" id="mobile-tax-input" data-tax-input data-i18n-placeholder="tax.placeholder" placeholder="Enter amount" inputmode="numeric" />
   <p class="mobile-tax-calc__note" data-i18n-html="tax.bulletsShort">Needs <strong>BlockSpin Plus</strong> · Never reset with 60k+ cash</p>
+  <a class="inv-calc-btn inv-calc-btn--mobile" href="/inventory/" data-bsv-route-section="Inventory Calculator">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>
+      <span>Inventory Calculator</span>
+    </a>
 </aside>
 
 </body> 

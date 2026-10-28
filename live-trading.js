@@ -718,6 +718,7 @@
     nav.innerHTML = "";
     var extrasHeaderShown = false;
     getSectionRegistry().forEach(function (cfg) {
+      if (cfg.navGroup === "hidden") return;
       if (cfg.navGroup === "extras" && !extrasHeaderShown) {
         var gap = document.createElement("div");
         gap.className = "nav-gap";
