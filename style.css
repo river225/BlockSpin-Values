@@ -16615,28 +16615,27 @@ html[data-bsv-bg="dark"] .lt-slot__dura {
   .bsv-ugc-banner__link { justify-content: flex-start; font-size: 0.85rem; }
 }
 
-/* ===== UGC promo: card in item grids (same shape as the Discord card slot) ===== */
-.home-discord-promo--card-slot.ugc-slot {
-  background: linear-gradient(145deg, #7c3aed 0%, #be185d 48%, var(--bsv-surface-card) 100%);
+/* ===== UGC promo: card in item grids ===== */
+.ugc-promo-card { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; border: 3px solid #000; background: linear-gradient(160deg, #2e1065 0%, #4c1d95 45%, #831843 100%); color: #fff; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.35); transition: transform .15s ease, box-shadow .15s ease; }
+.ugc-promo-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(124,58,237,0.45); }
+.ugc-promo-card__badge { position: absolute; top: 10px; left: 10px; z-index: 2; padding: 3px 9px; border-radius: 999px; background: #facc15; color: #111; font-weight: 900; font-size: 0.72rem; letter-spacing: .05em; border: 2px solid #000; }
+.ugc-promo-card__viewport { position: relative; height: 190px; overflow: hidden; background: #0b0b14; }
+.ugc-promo-card__track { display: flex; height: 100%; width: 300%; animation: ugc-promo-scroll 14s ease-in-out infinite; }
+.ugc-promo-card__img { width: calc(100% / 3); height: 100%; object-fit: contain; flex: 0 0 auto; background: radial-gradient(circle at 50% 40%, #fff 0%, #e5e7eb 70%); }
+@keyframes ugc-promo-scroll {
+  0%, 38% { transform: translateX(0); }
+  50%, 88% { transform: translateX(-33.3333%); }
+  100% { transform: translateX(-66.6667%); }
 }
-.ugc-slot .home-discord-promo__card-inner { gap: 8px; }
-.ugc-slot__badge {
-  position: absolute; top: 10px; left: 10px; z-index: 2;
-  padding: 3px 9px; border-radius: 999px; border: 2px solid #000;
-  background: #facc15; color: #111; font-weight: 900; font-size: 0.72rem; letter-spacing: .05em;
-}
-.ugc-slot__avatar {
-  display: block; width: 104px; height: 106px; object-fit: cover; object-position: 50% 20%;
-  border-radius: 12px; border: 2px solid rgba(255,255,255,0.18); background: #000;
-}
-.home-discord-promo--card-slot .ugc-slot__title { font-size: 1.4rem; line-height: 1.15; margin: 2px 0 0; }
-.ugc-slot__chat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.ugc-slot__bubble {
-  display: inline-block; padding: 6px 14px; border-radius: 16px;
-  background: #000; color: #d4d4d8; font-weight: 600; font-size: 0.95rem; line-height: 1.2;
-  border: 1px solid rgba(255,255,255,0.14);
-}
-.ugc-slot__bubble--tail { margin-left: 64px; border-bottom-right-radius: 4px; }
+.ugc-promo-card__body { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 14px 16px; text-align: center; }
+.ugc-promo-card__title { margin: 0; font-size: 1.4rem; font-weight: 900; }
+.ugc-promo-card__name { margin: 0; font-size: 0.9rem; opacity: 0.85; font-style: italic; }
+.ugc-promo-card__btn { margin-top: 6px; padding: 8px 18px; border-radius: 999px; background: #fff; color: #4c1d95; font-weight: 900; border: 2px solid #000; box-shadow: 0 2px 0 #000; }
+.ugc-promo-card:hover .ugc-promo-card__btn { background: #fde68a; }
+@media (prefers-reduced-motion: reduce) { .ugc-promo-card__track { animation: none; } }
+.ugc-promo-card__img { background: #1f2c38; }
+.ugc-promo-card__img--light { background: linear-gradient(160deg, #1e3a8a 0%, #2563eb 100%); }
+.ugc-promo-card__viewport { height: 210px; }
 .bsv-ugc-banner--inline { flex-basis: 100%; width: 100%; margin: 0 0 12px; border: 2px solid #000; border-radius: 12px; box-sizing: border-box; }
 @media (max-width: 480px) { .bsv-ugc-banner__text { display: none; } .bsv-ugc-banner__link { justify-content: center; } }
 .bsv-ugc-banner__img { width: auto; height: 36px; border-radius: 6px; object-fit: contain; background: transparent; }
@@ -16646,6 +16645,7 @@ html[data-bsv-bg="dark"] .lt-slot__dura {
 .main-container > #sections { min-height: calc(100vh - 70px); }
 /* INP: don't lay out / paint cards that are off-screen until they scroll into view. */
 #sections .cards > .card,
+#sections .cards > .ugc-promo-card,
 .richest-container > .richest-card {
   content-visibility: auto;
   contain-intrinsic-size: auto 260px;

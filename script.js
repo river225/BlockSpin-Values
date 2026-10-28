@@ -895,26 +895,25 @@ function buildCardsHtmlWithDiscordPromo(items, cardBuilder, sectionTitle, minIte
   return parts.join("");
 }
 
-/** "Check out our new UGC item!" card — same shape and buttons as the Discord card slot. */
+/** "Check out our new UGC item" card, sized like an item card; images slowly scroll. */
 function buildUgcPromoCardHtml() {
   var p = window.BSV_UGC_PROMO;
   if (!p) return "";
   var root = bsvSiteRoot();
+  var imgs = p.images.concat(p.images[0]).map(function (src, i) {
+    var light = /bubbles/.test(src) ? " ugc-promo-card__img--light" : "";
+    return '<img class="ugc-promo-card__img' + light + '" src="' + escapeAttr(root + src) + '" alt="' + (i === 0 ? escapeAttr(p.name) : "") + '" loading="lazy" decoding="async">';
+  }).join("");
   return (
-    '<div class="home-discord-promo home-discord-promo--card-slot ugc-slot" role="complementary" aria-label="Our new UGC item">' +
-      '<div class="home-discord-promo__card-inner">' +
-        '<span class="ugc-slot__badge">NEW UGC</span>' +
-        '<img class="ugc-slot__avatar" src="' + escapeAttr(root + p.images[0]) + '" alt="' + escapeAttr(p.name) + ' on an avatar" width="625" height="640" loading="lazy" decoding="async">' +
-        '<p class="home-discord-promo__card-title ugc-slot__title">Check out our new UGC item!</p>' +
-        '<div class="ugc-slot__chat" aria-label="I love opening crates in BlockSpin">' +
-          '<span class="ugc-slot__bubble">I love opening crates</span>' +
-          '<span class="ugc-slot__bubble ugc-slot__bubble--tail">in BlockSpin!</span>' +
-        '</div>' +
-        '<div class="home-discord-promo__card-actions">' +
-          '<a href="' + escapeAttr(p.url) + '" target="_blank" rel="noopener" class="home-discord-promo__card-btn home-discord-promo__card-btn--join">Get it on Roblox</a>' +
-        '</div>' +
-      '</div>' +
-    '</div>'
+    '<a class="ugc-promo-card" href="' + escapeAttr(p.url) + '" target="_blank" rel="noopener" aria-label="Check out our new UGC item on Roblox">' +
+      '<span class="ugc-promo-card__badge">NEW UGC</span>' +
+      '<div class="ugc-promo-card__viewport"><div class="ugc-promo-card__track">' + imgs + "</div></div>" +
+      '<div class="ugc-promo-card__body">' +
+        '<p class="ugc-promo-card__title">Check out our new UGC item!</p>' +
+        '<p class="ugc-promo-card__name">&ldquo;I love opening crates in BlockSpin!&rdquo;</p>' +
+        '<span class="ugc-promo-card__btn">Get it on Roblox</span>' +
+      "</div>" +
+    "</a>"
   );
 }
 
