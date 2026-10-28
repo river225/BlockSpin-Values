@@ -16688,7 +16688,9 @@ body.is-home .main-container > .tax-sidebar-column { display: none; }
 .inv-calc-btn--mobile { max-width: none; margin-top: 14px; }
 
 /* ===== Inventory Calculator page (same look as the item cards / tax calculator) ===== */
-.inv-intro { max-width: 760px; margin: -4px auto 16px; text-align: center; color: var(--bsv-text-soft); line-height: 1.55; }
+.inv-intro { max-width: 820px; margin: 0 auto 28px; text-align: center; color: var(--bsv-text-soft); line-height: 1.6; font-size: 1.12rem; }
+#inventory > h2 { margin-top: 18px; }
+.inv-nw-link { font-size: .95rem; }
 .inv-em { color: #fb923c; font-weight: 900; }
 .inv-nw-link {
   appearance: none; background: none; border: 0; padding: 0 0 0 4px; cursor: pointer; white-space: nowrap;
@@ -16770,7 +16772,7 @@ body.is-home .main-container > .tax-sidebar-column { display: none; }
   .inv-mine__list { max-height: 320px; }
 }
 @media (max-width: 640px) {
-  .inv-intro { font-size: .93rem; }
+  .inv-intro { font-size: 1rem; margin-bottom: 20px; }
   .inv-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
   .inv-tile__pic { height: 60px; }
 }
@@ -16827,8 +16829,8 @@ body.is-home .main-container > .tax-sidebar-column { display: none; }
 /* BSV watermark over item pictures in the Inventory Calculator */
 .inv-tile__pic, .inv-pop__pic, .inv-row__pic { position: relative; }
 .inv-tile__pic::after, .inv-pop__pic::after, .inv-row__pic::after {
-  content: ""; position: absolute; left: 5px; bottom: 4px; width: 20px; height: 14px; pointer-events: none; z-index: 1;
-  background: url("assets/bsv-logo.png") left bottom / contain no-repeat; opacity: .85;
+  content: ""; position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); width: 20px; height: 14px; pointer-events: none; z-index: 1;
+  background: url("assets/bsv-logo.png") center bottom / contain no-repeat; opacity: .85;
 }
 .inv-tile__plus, .inv-tile__owned { z-index: 2; }
 
