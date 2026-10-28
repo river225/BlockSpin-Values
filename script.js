@@ -2795,7 +2795,9 @@ if (pawnTextOverride) {
       </div>
       <div class="card-info">
         <h3>${bsvItemNameHtml(item["Name"], cardStars ? name.replace(CARD_STAR_RE, "").replace(/\s{2,}/g, " ").trim() : name)}</h3>
-        ${demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : ""}${cardStars ? `<span class="card-stars" aria-label="Starred">${cardStars}</span>` : ""}
+        ${cardStars
+          ? `<div class="card-demand-row">${demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : ""}<span class="card-stars" aria-label="Starred">${cardStars}</span></div>`
+          : (demand ? `<span class="badge">${escapeHtml(i18n("card.demand"))}: ${escapeHtml(demand)}</span>` : "")}
         <div class="card-avg">${escapeHtml(i18n("card.avg"))}: <span class="avg-value">${avg}</span></div>
         <div class="card-ranged">${escapeHtml(i18n("card.ranged"))}: <span class="ranged-value">${ranged}</span></div>
         <div class="card-value-separator"></div>

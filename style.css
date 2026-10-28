@@ -16851,7 +16851,9 @@ body.is-home .main-container > .tax-sidebar-column { display: none; }
 .card-save-btn { width: auto; min-width: 32px; padding: 0 10px 0 8px; gap: 5px; }
 .card-save-btn__label { font: 800 0.76rem/1 system-ui, sans-serif; }
 /* Stars from the item name, shown after the demand box */
-.card-stars { display: inline-block; margin-left: 8px; vertical-align: middle; color: #facc15; font-size: 1.15rem; line-height: 1; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000; }
+.card-demand-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.card-demand-row .badge { margin-right: 0; }
+.card-stars { display: inline-block; margin-left: 0; vertical-align: middle; color: #facc15; font-size: 1.15rem; line-height: 1; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000; }
 
 /* Desktop UGC strip: push the page down by its height so it never covers the first banner. */
 @media (min-width: 901px) {
