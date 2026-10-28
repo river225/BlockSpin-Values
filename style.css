@@ -16824,6 +16824,14 @@ body.is-home .main-container > .tax-sidebar-column { display: none; }
 .ugc-promo-card { flex: 1 1 calc(50% - 16px); min-width: min(100%, 280px); box-sizing: border-box; }
 @media (min-width: 641px) { .ugc-promo-card { max-width: calc(50% - 8px); } }
 
+/* BSV watermark over item pictures in the Inventory Calculator */
+.inv-tile__pic, .inv-pop__pic, .inv-row__pic { position: relative; }
+.inv-tile__pic::after, .inv-pop__pic::after, .inv-row__pic::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: url("assets/bsv-logo.png") center / 46% auto no-repeat; opacity: .4;
+}
+.inv-tile__plus, .inv-tile__owned { z-index: 2; }
+
 /* Desktop UGC strip: push the page down by its height so it never covers the first banner. */
 @media (min-width: 901px) {
   body:has(.bsv-ugc-banner:not(.bsv-ugc-banner--inline)) .main-container { margin-top: 72px; }
