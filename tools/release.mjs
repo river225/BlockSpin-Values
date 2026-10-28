@@ -163,7 +163,8 @@ function buildPage(template, page) {
     : h.replace("</title>", `</title>\n<meta property="og:url" content="${escHtml(url)}">`);
   h = setTag(h, /<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${escHtml(url)}" />`);
   if (page.image) {
-    h = setTag(h, /<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${escHtml(page.image)}">`);
+    h = setTag(h, /<meta property="og:image" content="[^"]*">/,
+      `<meta property="og:image" content="${escHtml(page.image)}">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">`);
   }
   // Structured data: breadcrumb for this page instead of the home page's blocks.
   h = h.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/g, "");
@@ -221,7 +222,8 @@ function itemPages(items) {
     path: `items/${it.slug}/`,
     title: `${it.name} Value in BlockSpin | BlockSpin Values`,
     description: itemDescription(it),
-    image: /^https:\/\//.test(it.image) ? it.image : null,
+    // Watermarked BlockSpin Values preview card drawn by the bot (share.blockspinvalues.com).
+    image: `https://share.blockspinvalues.com/i/${it.slug}.png`,
     route: { section: it.section, item: it.name },
     crumbs: [
       { name: it.section, url: SITE + "/" + it.sectionPath },
