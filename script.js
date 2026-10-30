@@ -56,8 +56,8 @@ const FISH_WEIGHT_STEP = 0.1;
 
 const GIVEAWAY_CAROUSEL_INTERVAL_MS = 10000;
 const DISCORD_CARD_CAROUSEL_INTERVAL_MS = 9000;
-const ANACONDA_GIVEAWAY_IMAGE_URL = "https://i.postimg.cc/2bTWDD3D/Screenshot-2026-10-18-230555-removebg-preview.png";
-const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=pumpkin-launcher";
+const ANACONDA_GIVEAWAY_IMAGE_URL = "assets/giveaways/awp.webp";
+const ANACONDA_GIVEAWAY_DISCORD_URL = "https://discord.gg/nKKkXyqCsv?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=awp";
 const BSV_LOGO_URL = "https://i.ibb.co/VYjk9L14/Block-Spin-Values-Logo.png";
 const ROBUX_GIVEAWAY_IMAGE_URL = "https://i.ibb.co/7fC16qY/Screenshot-2026-05-06-at-02-28-05-removebg-preview.png";
 const ROBUX_GIVEAWAY_DISCORD_URL = "https://discord.gg/GufVWmACAh?utm_source=blockspinvalues&utm_medium=referral&utm_campaign=site&utm_content=robux";
@@ -617,10 +617,10 @@ function initGiveawayBannerCarousels() {
 }
 
 function buildHomeAnacondaBannerHtml() {
-  var img = escapeAttr(ANACONDA_GIVEAWAY_IMAGE_URL);
+  var img = escapeAttr(/^https?:/.test(ANACONDA_GIVEAWAY_IMAGE_URL) ? ANACONDA_GIVEAWAY_IMAGE_URL : bsvSiteRoot() + ANACONDA_GIVEAWAY_IMAGE_URL);
   var href = escapeAttr(ANACONDA_GIVEAWAY_DISCORD_URL);
   return (
-    '<article class="home-anaconda-banner home-anaconda-banner--halloween" role="complementary" aria-label="Pumpkin Launcher Giveaway">' +
+    '<article class="home-anaconda-banner home-anaconda-banner--halloween" role="complementary" aria-label="AWP Giveaway">' +
       '<div class="home-anaconda-banner__haze" aria-hidden="true"></div>' +
       '<div class="home-anaconda-banner__scan" aria-hidden="true"></div>' +
       '<div class="home-anaconda-banner__orb home-anaconda-banner__orb--a" aria-hidden="true"></div>' +
@@ -634,12 +634,12 @@ function buildHomeAnacondaBannerHtml() {
           '<span class="home-anaconda-banner__shine home-anaconda-banner__shine--burst" aria-hidden="true"></span>' +
           '<span class="home-anaconda-banner__ring" aria-hidden="true"></span>' +
           '<span class="home-anaconda-banner__pedestal" aria-hidden="true"></span>' +
-          '<img src="' + img + '" alt="Pumpkin Launcher" class="home-anaconda-banner__gun" width="280" height="170" loading="lazy" decoding="async">' +
+          '<img src="' + img + '" alt="AWP" class="home-anaconda-banner__gun" width="280" height="170" loading="lazy" decoding="async">' +
         "</div>" +
         '<div class="home-anaconda-banner__copy">' +
-          '<p class="home-anaconda-banner__eyebrow">Halloween Giveaway</p>' +
-          '<h3 class="home-anaconda-banner__title">Pumpkin Launcher Giveaway</h3>' +
-          '<p class="home-anaconda-banner__hook">This gun will be unobtainable soon — enter our giveaway before it\'s too late!</p>' +
+          '<p class="home-anaconda-banner__eyebrow">Giveaway</p>' +
+          '<h3 class="home-anaconda-banner__title">AWP Giveaway</h3>' +
+          '<p class="home-anaconda-banner__hook">Win one of the newest and rarest snipers in BlockSpin — enter our giveaway now!</p>' +
         "</div>" +
         '<a href="' + href + '" target="_blank" rel="noopener noreferrer" class="home-anaconda-banner__cta">Enter Now <span aria-hidden="true">→</span></a>' +
       "</div>" +
