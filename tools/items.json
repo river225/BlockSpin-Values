@@ -164,7 +164,7 @@
   "name": "Firework Launcher",
   "value": "$1,500,000",
   "ranged": "$1,200,000 to $1,700,000",
-  "demand": "6",
+  "demand": "8",
   "image": "https://i.ibb.co/nNC54qpD/7ofeqRP.png"
  },
  {
@@ -266,9 +266,9 @@
  {
   "section": "Legendary",
   "name": "Pumpkin Launcher",
-  "value": "$450,000",
+  "value": "$350,000",
   "ranged": "$350,000 to $500,000",
-  "demand": "8",
+  "demand": "5",
   "image": "https://i.ibb.co/DfCtYj1p/Screenshot-20261017-193245-Roblox-removebg-preview.png"
  },
  {
@@ -284,7 +284,7 @@
   "name": "AUG",
   "value": "$100,000",
   "ranged": "$100,000 to $150,000+",
-  "demand": "10",
+  "demand": "7",
   "image": "https://i.ibb.co/Z6rD7jwk/Screenshot-2026-10-24-121810-removebg-preview.png"
  },
  {
@@ -355,24 +355,24 @@
   "section": "Omega",
   "name": "M249",
   "value": "$9,000,000",
-  "ranged": "$8,500,000 to $9,000,000",
+  "ranged": "$8,500,000 to $12,000,000",
   "demand": "9",
   "image": "https://i.ibb.co/PGnxZK2f/Screenshot-2026-05-09-234622-removebg-preview.png"
  },
  {
   "section": "Omega",
   "name": "AWP",
-  "value": "$1,700,000",
+  "value": "$2,000,000",
   "ranged": "$1,500,000 to $2,000,000+",
-  "demand": "10",
+  "demand": "9",
   "image": "https://i.ibb.co/R4HXtbV3/Screenshot-2026-10-24-121814-removebg-preview.png"
  },
  {
   "section": "Omega",
   "name": "Anaconda",
-  "value": "$1,300,000",
-  "ranged": "$1,000,000 to $1,300,000",
-  "demand": "9",
+  "value": "$1,200,000",
+  "ranged": "$1,000,000 to $1,200,000",
+  "demand": "7",
   "image": "https://i.ibb.co/mFyYfsqW/jSn2mvY.png"
  },
  {
