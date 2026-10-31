@@ -16859,3 +16859,36 @@ body.is-home .main-container > .tax-sidebar-column { display: none; }
 @media (min-width: 901px) {
   body:has(.bsv-ugc-banner:not(.bsv-ugc-banner--inline)) .main-container { margin-top: 72px; }
 }
+
+/* Home giveaway banner: red theme */
+.home-anaconda-banner--halloween {
+  border-color: #1a0000;
+  background:
+    radial-gradient(ellipse 55% 120% at 8% 50%, rgba(248, 113, 113, 0.5) 0%, transparent 58%),
+    radial-gradient(ellipse 50% 140% at 92% 50%, rgba(127, 29, 29, 0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 80% at 50% 110%, rgba(69, 10, 10, 0.45) 0%, transparent 55%),
+    linear-gradient(105deg, #7f1d1d 0%, #b91c1c 28%, #dc2626 55%, #ef4444 78%, #991b1b 100%);
+  animation-name: bsv-giveaway-red-glow;
+}
+@keyframes bsv-giveaway-red-glow {
+  0%, 100% { box-shadow: 0 5px 0 #1a0000, 0 0 32px rgba(239, 68, 68, 0.45), 0 0 54px rgba(185, 28, 28, 0.22); }
+  50% { box-shadow: 0 5px 0 #1a0000, 0 0 48px rgba(248, 113, 113, 0.75), 0 0 78px rgba(220, 38, 38, 0.4); }
+}
+.home-anaconda-banner--halloween .home-anaconda-banner__orb--a { background: rgba(248, 113, 113, 0.6); }
+.home-anaconda-banner--halloween .home-anaconda-banner__orb--b { background: rgba(127, 29, 29, 0.5); }
+.home-anaconda-banner--halloween .home-anaconda-banner__hook,
+.home-anaconda-banner--halloween .home-anaconda-banner__eyebrow { color: #fecaca; }
+.home-anaconda-banner--halloween .home-anaconda-banner__cta {
+  background: linear-gradient(180deg, #fee2e2 0%, #f87171 35%, #dc2626 70%, #7f1d1d 100%);
+  box-shadow: 0 4px 0 #1a0000, 0 0 18px rgba(239, 68, 68, 0.55);
+  animation-name: bsv-giveaway-red-cta;
+}
+@keyframes bsv-giveaway-red-cta {
+  0%, 100% { box-shadow: 0 4px 0 #1a0000, 0 0 16px rgba(239, 68, 68, 0.45); }
+  50% { box-shadow: 0 4px 0 #1a0000, 0 0 28px rgba(248, 113, 113, 0.85); }
+}
+.home-anaconda-banner--halloween .home-anaconda-banner__cta:hover { box-shadow: 0 6px 0 #1a0000, 0 0 28px rgba(248, 113, 113, 0.9); }
+.home-anaconda-banner--halloween .home-anaconda-banner__shine,
+.home-anaconda-banner--halloween .home-anaconda-banner__ring,
+.home-anaconda-banner--halloween .home-anaconda-banner__sparks,
+.home-anaconda-banner--halloween .home-anaconda-banner__haze { filter: hue-rotate(-28deg) saturate(1.2); }
